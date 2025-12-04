@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Swiper 원형 카드 레이아웃</title>
+
+    <!-- Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        overflow: hidden;
+        background: linear-gradient(to bottom right, #fffbeb, #ffedd5, #fef3c7);
+      }
+
+      .main-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* 배경 원 */
+      .background-circle {
+        position: absolute;
+        width: 700px;
+        height: 700px;
+        border: 8px solid #fb923c;
+        border-radius: 50%;
+        opacity: 0.3;
+        z-index: 1;
+      }
+
+      /* Swiper 컨테이너 */
+      .swiper {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        z-index: 2;
+      }
+
+      .swiper-wrapper {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+        width: 800px;
+        height: 800px;
+      }
+
+      /* 각 카드 (swiper-slide) - 원형 배치 */
+      .swiper-slide {
+        position: absolute;
+        width: 16rem !important;
+        height: auto;
+        top: 50%;
+        left: 50%;
+        transition: all 0.6s ease;
+      }
+
+      /* 6개 카드 배치 - 왼쪽 3개, 오른쪽 3개 */
+      /* 오른쪽 상단 */
+      .swiper-slide:nth-child(6n + 1) {
+        transform: translate(-50%, -50%) translate(400px, -250px);
+      }
+      /* 오른쪽 중앙 */
+      .swiper-slide:nth-child(6n + 2) {
+        transform: translate(-50%, -50%) translate(450px, 0px);
+      }
+      /* 오른쪽 하단 */
+      .swiper-slide:nth-child(6n + 3) {
+        transform: translate(-50%, -50%) translate(400px, 250px);
+      }
+      /* 왼쪽 하단 */
+      .swiper-slide:nth-child(6n + 4) {
+        transform: translate(-50%, -50%) translate(-400px, 250px);
+      }
+      /* 왼쪽 중앙 */
+      .swiper-slide:nth-child(6n + 5) {
+        transform: translate(-50%, -50%) translate(-450px, 0px);
+      }
+      /* 왼쪽 상단 */
+      .swiper-slide:nth-child(6n + 6) {
+        transform: translate(-50%, -50%) translate(-400px, -250px);
+      }
+
+      /* 현재 활성화된 그룹만 표시 */
+      .swiper-slide {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .swiper-slide-active,
+      .swiper-slide-next,
+      .swiper-slide-next + .swiper-slide,
+      .swiper-slide-next + .swiper-slide + .swiper-slide,
+      .swiper-slide-next + .swiper-slide + .swiper-slide + .swiper-slide,
+      .swiper-slide-next
+        + .swiper-slide
+        + .swiper-slide
+        + .swiper-slide
+        + .swiper-slide {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border-bottom: 4px solid #fb923c;
+        transition: transform 0.3s;
+      }
+
+      .card:hover {
+        transform: scale(1.05);
+      }
+
+      .card-image {
+        position: relative;
+        height: 8rem;
+        background: linear-gradient(to bottom right, #1f2937, #4b5563);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+      }
+
+      .heart-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1.25rem;
+      }
+
+      .heart-btn:hover {
+        color: #ef4444;
+      }
+
+      .card-content {
+        padding: 1rem;
+      }
+
+      .card-category {
+        font-size: 0.75rem;
+        color: #ea580c;
+        font-weight: 500;
+        background: #ffedd5;
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .card-title {
+        font-size: 0.875rem;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .card-author {
+        font-size: 0.75rem;
+        color: #6b7280;
+      }
+
+      /* Swiper 네비게이션 버튼 */
+      .swiper-button-prev,
+      .swiper-button-next {
+        width: 3rem;
+        height: 3rem;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s;
+        z-index: 10;
+      }
+
+      .swiper-button-prev:hover,
+      .swiper-button-next:hover {
+        background: #ffedd5;
+      }
+
+      .swiper-button-prev::after,
+      .swiper-button-next::after {
+        font-size: 1.5rem;
+        color: #374151;
+        font-weight: bold;
+      }
+
+      /* Swiper 페이지네이션 */
+      .swiper-pagination {
+        bottom: 2rem !important;
+        z-index: 10;
+      }
+
+      .swiper-pagination-bullet {
+        background: #fb923c;
+        opacity: 0.5;
+        width: 12px;
+        height: 12px;
+      }
+
+      .swiper-pagination-bullet-active {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <!-- 배경 원 -->
+      <div class="background-circle"></div>
+
+      <!-- Swiper -->
+      <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+          <!-- 카드 1 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>👔</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">리더십</div>
+                <h3 class="card-title">
+                  정선근 교수가 알려주는 목티스크 지...
+                </h3>
+                <p class="card-author">소통 · 건강</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 2 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>💰</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">인사이트</div>
+                <h3 class="card-title">회계를 조금이라도 이해하면 인생이...</h3>
+                <p class="card-author">소통 · 교정</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 3 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>🎯</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">리더십</div>
+                <h3 class="card-title">
+                  정선근 교수가 알려주는 목디스크 지...
+                </h3>
+                <p class="card-author">마인드셋 · 중간관리자</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 4 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>📊</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">인사이트</div>
+                <h3 class="card-title">
+                  정선근 교수가 알려주는 목디스크 지...
+                </h3>
+                <p class="card-author">소통 · 건강</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 5 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>✈️</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">비즈트렌드</div>
+                <h3 class="card-title">
+                  3/2 - 이대호의 별책부록 [1조 여행 꿀...
+                </h3>
+                <p class="card-author">별로유감 · AI</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 6 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>💬</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">리더십</div>
+                <h3 class="card-title">
+                  기꺼이 "이 말"을 내 뱉을 줄 알아야 인...
+                </h3>
+                <p class="card-author">마인드셋 · 자기개발</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 7 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>🚀</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">비즈니스</div>
+                <h3 class="card-title">스타트업 성공 전략</h3>
+                <p class="card-author">비즈 · 전략</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 8 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>⏰</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">자기계발</div>
+                <h3 class="card-title">시간 관리의 기술</h3>
+                <p class="card-author">효율 · 생산성</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 9 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>👥</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">리더십</div>
+                <h3 class="card-title">팀 빌딩의 모든 것</h3>
+                <p class="card-author">리더 · 협업</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 10 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>📱</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">마케팅</div>
+                <h3 class="card-title">디지털 마케팅 트렌드</h3>
+                <p class="card-author">마케팅 · SNS</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 11 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>🤖</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">기술</div>
+                <h3 class="card-title">AI 시대의 준비</h3>
+                <p class="card-author">테크 · 미래</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 카드 12 -->
+          <div class="swiper-slide">
+            <div class="card">
+              <div class="card-image">
+                <span>📈</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">경제</div>
+                <h3 class="card-title">2024 경제 전망</h3>
+                <p class="card-author">경제 · 금융</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 네비게이션 버튼 -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+
+        <!-- 페이지네이션 -->
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+
+    <!-- Swiper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+
+    <script>
+      // Swiper 초기화 - 6개씩 한 묶음으로 원형 배치
+      const swiper = new Swiper(".mySwiper", {
+        slidesPerView: 6,
+        slidesPerGroup: 6,
+        spaceBetween: 0,
+        loop: false,
+        centeredSlides: false,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        keyboard: {
+          enabled: true,
+        },
+        speed: 600,
+        allowTouchMove: false, // 드래그 비활성화 (원형 레이아웃 유지)
+      });
+    </script>
+  </body>
+</html>

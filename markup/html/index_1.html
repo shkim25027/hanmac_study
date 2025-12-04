@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>원형 카드 레이아웃 Swiper</title>
+
+    <!-- Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        overflow: hidden;
+      }
+
+      .header {
+        background: #1e293b;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .logo {
+        font-weight: bold;
+        font-size: 1.25rem;
+      }
+
+      .nav {
+        display: flex;
+        gap: 2rem;
+        font-size: 0.875rem;
+      }
+
+      .nav a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .nav a:hover {
+        color: #fb923c;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .search-input {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        background: #334155;
+        border: none;
+        color: white;
+        font-size: 0.875rem;
+      }
+
+      .main-container {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 64px);
+        background: linear-gradient(to bottom right, #fffbeb, #ffedd5, #fef3c7);
+      }
+
+      .swiper {
+        width: 100%;
+        height: 100%;
+      }
+
+      .swiper-slide {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slide-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .background-circle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        border: 8px solid #fb923c;
+        border-radius: 50%;
+        opacity: 0.3;
+      }
+
+      .center-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        text-align: center;
+        max-width: 28rem;
+      }
+
+      .center-title {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+      }
+
+      .center-subtitle {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+      }
+
+      .tags-container {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+
+      .tag {
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .tag-1 {
+        background: #fed7aa;
+        color: #9a3412;
+      }
+
+      .tag-2 {
+        background: #fb923c;
+        color: white;
+      }
+
+      .tag-3 {
+        background: #ef4444;
+        color: white;
+      }
+
+      .sub-tags {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .sub-tag {
+        padding: 0.25rem 0.75rem;
+        background: #d1d5db;
+        color: #374151;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+      }
+
+      .center-description {
+        font-size: 1.25rem;
+        font-weight: 500;
+        color: #374151;
+      }
+
+      .cards-container {
+        position: absolute;
+        inset: 0;
+      }
+
+      .card {
+        position: absolute;
+        width: 16rem;
+        transition: all 0.5s;
+        transform: translate(-50%, -50%);
+      }
+
+      .card-inner {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border-bottom: 4px solid #fb923c;
+        transition: transform 0.3s;
+      }
+
+      .card-inner:hover {
+        transform: scale(1.05);
+      }
+
+      .card-image {
+        position: relative;
+        height: 8rem;
+        background: linear-gradient(to bottom right, #1f2937, #4b5563);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+      }
+
+      .heart-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 1.25rem;
+      }
+
+      .heart-btn:hover {
+        color: #ef4444;
+      }
+
+      .card-content {
+        padding: 1rem;
+      }
+
+      .card-category {
+        font-size: 0.75rem;
+        color: #ea580c;
+        font-weight: 500;
+        background: #ffedd5;
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .card-title {
+        font-size: 0.875rem;
+        font-weight: bold;
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .card-author {
+        font-size: 0.75rem;
+        color: #6b7280;
+      }
+
+      /* Swiper 커스텀 네비게이션 버튼 */
+      .swiper-button-prev,
+      .swiper-button-next {
+        width: 3rem;
+        height: 3rem;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s;
+      }
+
+      .swiper-button-prev:hover,
+      .swiper-button-next:hover {
+        background: #ffedd5;
+      }
+
+      .swiper-button-prev::after,
+      .swiper-button-next::after {
+        font-size: 1.5rem;
+        color: #374151;
+        font-weight: bold;
+      }
+
+      /* Swiper 페이지네이션 */
+      .swiper-pagination {
+        bottom: 2rem !important;
+      }
+
+      .swiper-pagination-bullet {
+        background: #fb923c;
+        opacity: 0.5;
+      }
+
+      .swiper-pagination-bullet-active {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 헤더 -->
+    <header class="header">
+      <div style="display: flex; align-items: center; gap: 2rem">
+        <div class="logo">🎯 배움터</div>
+        <nav class="nav">
+          <a href="#">온보딩</a>
+          <a href="#">법정교육</a>
+          <a href="#">리더십</a>
+          <a href="#">인사이트</a>
+          <a href="#">비즈트렌드</a>
+        </nav>
+      </div>
+      <div class="header-right">
+        <span style="font-size: 0.875rem">🏆 1분기 마이플렉스</span>
+        <input type="text" placeholder="검색" class="search-input" />
+      </div>
+    </header>
+
+    <!-- 메인 컨텐츠 -->
+    <div class="main-container">
+      <div class="swiper mySwiper">
+        <div class="swiper-wrapper" id="swiperWrapper"></div>
+
+        <!-- 네비게이션 버튼 -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+
+        <!-- 페이지네이션 -->
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+
+    <!-- Swiper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+
+    <script>
+      // 슬라이드 데이터
+      const slides = [
+        {
+          center: {
+            title: "홍길동 선임연구원님",
+            subtitle: "나의 키워드",
+            tags: ["#유익함", "#소통", "#변협"],
+            description: "취향저격 영상 추천드려요.",
+          },
+          cards: [
+            {
+              category: "리더십",
+              title: "정선근 교수가 알려주는 목티스크 지...",
+              author: "소통 · 건강",
+              image: "👔",
+            },
+            {
+              category: "인사이트",
+              title: "회계를 조금이라도 이해하면 인생이...",
+              author: "소통 · 교정",
+              image: "💰",
+            },
+            {
+              category: "리더십",
+              title: "정선근 교수가 알려주는 목디스크 지...",
+              author: "마인드셋 · 중간관리자",
+              image: "🎯",
+            },
+            {
+              category: "인사이트",
+              title: "정선근 교수가 알려주는 목디스크 지...",
+              author: "소통 · 건강",
+              image: "📊",
+            },
+            {
+              category: "비즈트렌드",
+              title: "3/2 - 이대호의 별책부록 [1조 여행 꿀...",
+              author: "별로유감 · AI",
+              image: "✈️",
+            },
+            {
+              category: "리더십",
+              title: '기꺼이 "이 말"을 내 뱉을 줄 알아야 인...',
+              author: "마인드셋 · 자기개발",
+              image: "💬",
+            },
+          ],
+        },
+        {
+          center: {
+            title: "두 번째 추천",
+            subtitle: "인기 콘텐츠",
+            tags: ["#트렌드", "#인기", "#추천"],
+            description: "지금 가장 인기있는 콘텐츠",
+          },
+          cards: [
+            {
+              category: "비즈니스",
+              title: "스타트업 성공 전략",
+              author: "비즈 · 전략",
+              image: "🚀",
+            },
+            {
+              category: "자기계발",
+              title: "시간 관리의 기술",
+              author: "효율 · 생산성",
+              image: "⏰",
+            },
+            {
+              category: "리더십",
+              title: "팀 빌딩의 모든 것",
+              author: "리더 · 협업",
+              image: "👥",
+            },
+            {
+              category: "마케팅",
+              title: "디지털 마케팅 트렌드",
+              author: "마케팅 · SNS",
+              image: "📱",
+            },
+            {
+              category: "기술",
+              title: "AI 시대의 준비",
+              author: "테크 · 미래",
+              image: "🤖",
+            },
+            {
+              category: "경제",
+              title: "2024 경제 전망",
+              author: "경제 · 금융",
+              image: "📈",
+            },
+          ],
+        },
+        {
+          center: {
+            title: "세 번째 추천",
+            subtitle: "맞춤 추천",
+            tags: ["#성장", "#학습", "#개발"],
+            description: "당신을 위한 특별한 콘텐츠",
+          },
+          cards: [
+            {
+              category: "자기계발",
+              title: "효과적인 독서법",
+              author: "학습 · 성장",
+              image: "📚",
+            },
+            {
+              category: "건강",
+              title: "직장인 운동 루틴",
+              author: "웰니스 · 건강",
+              image: "💪",
+            },
+            {
+              category: "재테크",
+              title: "초보자를 위한 투자",
+              author: "금융 · 재테크",
+              image: "💵",
+            },
+            {
+              category: "커리어",
+              title: "이직 준비 가이드",
+              author: "커리어 · 성장",
+              image: "🎓",
+            },
+            {
+              category: "소통",
+              title: "효과적인 피드백 방법",
+              author: "소통 · 리더십",
+              image: "💡",
+            },
+            {
+              category: "생산성",
+              title: "업무 자동화 팁",
+              author: "효율 · 도구",
+              image: "⚙️",
+            },
+          ],
+        },
+      ];
+
+      // 카드 위치 계산 (원형 배치)
+      function getCardPosition(index) {
+        const angle = (index * 60 - 90) * (Math.PI / 180);
+        const radius = 280;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+
+        return {
+          left: `calc(50% + ${x}px)`,
+          top: `calc(50% + ${y}px)`,
+        };
+      }
+
+      // 슬라이드 HTML 생성
+      function createSlideHTML(data) {
+        const tagsHTML = data.center.tags
+          .map((tag, i) => `<span class="tag tag-${i + 1}">${tag}</span>`)
+          .join("");
+
+        const cardsHTML = data.cards
+          .map((card, index) => {
+            const position = getCardPosition(index);
+            return `
+          <div class="card" style="left: ${position.left}; top: ${position.top};">
+            <div class="card-inner">
+              <div class="card-image">
+                <span>${card.image}</span>
+                <button class="heart-btn">♡</button>
+              </div>
+              <div class="card-content">
+                <div class="card-category">${card.category}</div>
+                <h3 class="card-title">${card.title}</h3>
+                <p class="card-author">${card.author}</p>
+              </div>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+
+        return `
+        <div class="slide-content">
+          <div class="background-circle"></div>
+          <div class="center-content">
+            <h1 class="center-title">${data.center.title}</h1>
+            <p class="center-subtitle">
+              <span>${data.center.subtitle}</span>
+              <span style="color: #f97316;">👑</span>
+            </p>
+            <div class="tags-container">${tagsHTML}</div>
+            <div class="sub-tags">
+              <span class="sub-tag">#마인드셋</span>
+              <span class="sub-tag">#웰니스</span>
+            </div>
+            <p class="center-description">${data.center.description}</p>
+          </div>
+          <div class="cards-container">${cardsHTML}</div>
+        </div>
+      `;
+      }
+
+      // Swiper 슬라이드 생성
+      const swiperWrapper = document.getElementById("swiperWrapper");
+      slides.forEach((slideData) => {
+        const slideDiv = document.createElement("div");
+        slideDiv.className = "swiper-slide";
+        slideDiv.innerHTML = createSlideHTML(slideData);
+        swiperWrapper.appendChild(slideDiv);
+      });
+
+      // Swiper 초기화
+      const swiper = new Swiper(".mySwiper", {
+        slidesPerView: 1,
+        spaceBetween: 0,
+        loop: false,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        keyboard: {
+          enabled: true,
+        },
+        mousewheel: {
+          enabled: false,
+        },
+        speed: 600,
+        effect: "slide",
+      });
+    </script>
+  </body>
+</html>

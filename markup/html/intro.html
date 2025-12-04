@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <script>
+      // 최초 접속일 등록
+      if (!localStorage.getItem("startVisit")) {
+        localStorage.setItem("startVisit", new Date().toISOString());
+        localStorage.setItem("lastVisit", new Date().toISOString());
+      }
+    </script>
+    @@include("_include/_head.html")
+    <link rel="stylesheet" type="text/css" href="./assets/css/intro.min.css" />
+  </head>
+  <body>
+    <div class="wrap intro">
+      <!-- container -->
+      <div class="container">
+        <section class="text-ani">
+          <!-- 텍스트 영역 (고정 위치에서 교체) -->
+          <div class="text-area">
+            <!-- Section 1: 인사 -->
+            <div id="section1Text" class="greeting">
+              <p>
+                <span class="name" id="typedName"></span
+                ><span class="cursor" id="cursor">|</span> 안녕하세요!
+              </p>
+              <p class="welcome" id="welcome"></p>
+            </div>
+
+            <!-- Section 2: 업데이트 소개 -->
+            <div id="section2Text" class="update-text hidden">
+              <div class="update-line">
+                <span id="line1">이번 업데이트에서</span>
+              </div>
+              <div class="update-line">
+                <span id="line2"
+                  >더 <em>편리하고 즐겁게 학습</em> 하실 수 있도록</span
+                >
+              </div>
+              <div class="update-line bold">
+                <span id="line3">배움터가 이렇게 달라졌어요</span>
+              </div>
+            </div>
+          </div>
+          <!-- 콘텐츠 영역 -->
+          <div class="content-area">
+            <!-- Cards -->
+            <div class="card-list" id="cardsContainer">
+              <div class="card" id="card1">
+                <div class="card-num">01</div>
+                <div class="card-title">
+                  <em>나만의 맞춤형 배움터</em>가<br />
+                  생겼어요
+                </div>
+                <div class="card-desc">
+                  팀과 관심 키워드를 설정하면 <br />
+                  홍길동님께 꼭 맞는 <br />
+                  <em>“콘텐츠를 추천”</em>해드려요
+                </div>
+              </div>
+              <div class="card" id="card2">
+                <div class="card-num">02</div>
+                <div class="card-title">
+                  <em>나의 학습을 한 곳</em>에서<br />
+                  확인해요
+                </div>
+                <div class="card-desc">
+                  새로 추가된 마이페이지에서 <br />
+                  <em>“나의학습현황과 마이클래스”</em>를 <br />
+                  한 번에 확인할 수 있어요
+                </div>
+              </div>
+              <div class="card" id="card3">
+                <div class="card-num">03</div>
+                <div class="card-title">
+                  <em>중요한 공지사항</em>도 <br />놓치지 않아요
+                </div>
+                <div class="card-desc">
+                  상단 <em>"알림기능"</em>을 통해<br />새 소식을 빠르게<br />확인할
+                  수 있어요
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- // content-->
+        </section>
+
+        <!-- Section 3: CTA 텍스트 -->
+        <div id="section3Text" class="cta-text hidden">
+          <!-- 메인 컨테이너 -->
+          <div id="mainContainer">
+            <div class="text-section" id="ctaBg">
+              <p id="ctaLine1">지금부터 <em>나만의 학습으로</em></p>
+              <p id="ctaLine2">성장해 볼까요?</p>
+            </div>
+          </div>
+          <!-- 마스크 오버레이 -->
+          <div class="mask" id="maskContainer">
+            <div class="text-section">
+              <p class="mask-text" id="maskLine1">
+                계속 <em>성장해 나가는 배움터</em>를
+              </p>
+              <p class="mask-text" id="maskLine2">지켜봐 주세요!</p>
+            </div>
+          </div>
+          <!-- // 마스크 오버레이-->
+          <button
+            class="cta-btn"
+            id="ctaBtn"
+            onclick="location.href = './index.html';"
+          >
+            약속
+            <i class="ico-arrow"></i>
+          </button>
+        </div>
+
+        <div class="scroll-indicator" id="scrollIndicator">
+          <span>Scroll</span>
+          <span class="bar"></span>
+        </div>
+      </div>
+      <!-- // container -->
+    </div>
+
+    <script>
+      const fullName = "홍길동 선임연구원님";
+      const welcomeText =
+        "<em>새로워진</em> <em>배움터</em>에 오신 것을 <em>환영합니다</em>";
+
+      let currentSection = 0;
+      let typedIndex = 0;
+      let isScrolling = false;
+      let isAnimating = false;
+      let section2AnimDone = false;
+      let autoScrollTimer = null;
+      let lastInteractionTime = Date.now();
+
+      // 자동 스크롤 타이머 시작
+      function startAutoScrollTimer() {
+        clearTimeout(autoScrollTimer);
+        autoScrollTimer = setTimeout(() => {
+          // 마지막 상호작용 후 5초가 지났는지 확인
+          if (Date.now() - lastInteractionTime >= 3000) {
+            handleScrollDown();
+          }
+        }, 3000);
+      }
+
+      // 사용자 상호작용 감지
+      function resetAutoScrollTimer() {
+        lastInteractionTime = Date.now();
+        startAutoScrollTimer();
+      }
+
+      // Section 1: 타이핑
+      function typeName() {
+        if (typedIndex < fullName.length) {
+          document.getElementById("typedName").textContent = fullName.slice(
+            0,
+            typedIndex + 1
+          );
+          typedIndex++;
+          setTimeout(typeName, 100);
+        } else {
+          document.getElementById("cursor").style.opacity = "0";
+          setTimeout(animateWelcome, 600);
+        }
+      }
+
+      function animateWelcome() {
+        const container = document.getElementById("welcome");
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = welcomeText;
+
+        let html = "";
+        tempDiv.childNodes.forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            html += node.textContent
+              .split("")
+              .map((c) => `<span>${c === " " ? "&nbsp;" : c}</span>`)
+              .join("");
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            const innerText = node.textContent
+              .split("")
+              .map((c) => `<span>${c === " " ? "&nbsp;" : c}</span>`)
+              .join("");
+            html += `<${node.tagName.toLowerCase()}>${innerText}</${node.tagName.toLowerCase()}>`;
+          }
+        });
+
+        container.innerHTML = html;
+        container.querySelectorAll("span").forEach((char, i) => {
+          setTimeout(() => char.classList.add("show"), i * 60);
+        });
+
+        // 애니메이션 완료 후 자동 스크롤 타이머 시작
+        setTimeout(
+          () => {
+            startAutoScrollTimer();
+          },
+          fullName.length * 60 + 1000
+        );
+      }
+
+      // Section 2: 업데이트 텍스트 + 카드
+      function animateSection2() {
+        const lines = ["line1", "line2", "line3"];
+        lines.forEach((id, i) => {
+          setTimeout(
+            () => document.getElementById(id).classList.add("show"),
+            i * 600
+          );
+        });
+
+        setTimeout(
+          () => {
+            ["card1", "card2", "card3"].forEach((id, i) => {
+              setTimeout(() => {
+                document.getElementById(id).classList.add("show");
+                if (i === 2) {
+                  section2AnimDone = true;
+                  // Section 2 애니메이션 완료 후 자동 스크롤 타이머 시작
+                  startAutoScrollTimer();
+                }
+              }, i * 250);
+            });
+          },
+          lines.length * 600 + 300
+        );
+      }
+
+      function resetSection2() {
+        ["line1", "line2", "line3"].forEach((id) =>
+          document.getElementById(id).classList.remove("show")
+        );
+        ["card1", "card2", "card3"].forEach((id) =>
+          document.getElementById(id).classList.remove("show")
+        );
+        section2AnimDone = false;
+      }
+
+      // Section 3: CTA
+      function animateSection3() {
+        setTimeout(() => {
+          document.getElementById("ctaBtn").classList.add("show");
+        }, 100);
+        setTimeout(() => {
+          document.getElementById("ctaLine1").classList.add("show");
+        }, 300);
+        setTimeout(() => {
+          document.getElementById("ctaLine2").classList.add("show");
+        }, 500);
+      }
+
+      function resetSection3() {
+        document.getElementById("ctaLine1").classList.remove("show");
+        document.getElementById("ctaLine2").classList.remove("show");
+        document.getElementById("ctaBtn").classList.remove("show");
+      }
+
+      // 섹션 전환
+      function goToSection(index) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        // 자동 스크롤 타이머 정지
+        clearTimeout(autoScrollTimer);
+
+        const section1Text = document.getElementById("section1Text");
+        const section2Text = document.getElementById("section2Text");
+        const section3Text = document.getElementById("section3Text");
+        const cardsContainer = document.getElementById("cardsContainer");
+        const ctaBtn = document.getElementById("ctaBtn");
+        const scrollIndicator = document.getElementById("scrollIndicator");
+
+        if (currentSection === 0) {
+          section1Text.classList.add("fade-out");
+        } else if (currentSection === 1) {
+          section2Text.classList.add("fade-out");
+          ["card1", "card2", "card3"].forEach((id) =>
+            document.getElementById(id).classList.remove("show")
+          );
+        } else if (currentSection === 2) {
+          section3Text.classList.add("fade-out");
+          ctaBtn.classList.remove("show");
+        }
+
+        setTimeout(() => {
+          section1Text.classList.add("hidden");
+          section2Text.classList.add("hidden");
+          section3Text.classList.add("hidden");
+          scrollIndicator.classList.remove("sec2");
+          section1Text.classList.remove("fade-out");
+          section2Text.classList.remove("fade-out");
+          section3Text.classList.remove("fade-out");
+
+          if (index === 0) {
+            section1Text.classList.remove("hidden");
+            cardsContainer.style.display = "none";
+            ctaBtn.style.display = "none";
+            scrollIndicator.classList.remove("hidden");
+          } else if (index === 1) {
+            scrollIndicator.classList.add("sec2");
+            section2Text.classList.remove("hidden");
+            cardsContainer.style.display = "flex";
+            ctaBtn.style.display = "none";
+            scrollIndicator.classList.remove("hidden");
+            resetSection2();
+            setTimeout(animateSection2, 200);
+          } else if (index === 2) {
+            section3Text.classList.remove("hidden");
+            cardsContainer.style.display = "none";
+            ctaBtn.style.display = "block";
+            scrollIndicator.classList.add("hidden");
+            scrollIndicator.classList.remove("sec2");
+            resetSection3();
+            setTimeout(animateSection3, 200);
+          }
+
+          currentSection = index;
+          setTimeout(() => (isAnimating = false), 500);
+        }, 400);
+      }
+
+      // 스크롤 핸들러
+      function handleScrollDown() {
+        if (isScrolling || isAnimating) return;
+
+        if (currentSection === 0) {
+          isScrolling = true;
+          setTimeout(() => (isScrolling = false), 700);
+          goToSection(1);
+        } else if (currentSection === 1 && section2AnimDone) {
+          isScrolling = true;
+          setTimeout(() => (isScrolling = false), 700);
+          goToSection(2);
+        }
+      }
+
+      function handleScrollUp() {
+        if (isScrolling || isAnimating) return;
+        isScrolling = true;
+        setTimeout(() => (isScrolling = false), 700);
+
+        if (currentSection === 2) {
+          goToSection(1);
+        } else if (currentSection === 1) {
+          goToSection(0);
+        }
+      }
+
+      // 이벤트 리스너
+      document.addEventListener("wheel", (e) => {
+        resetAutoScrollTimer();
+        if (e.deltaY > 0) handleScrollDown();
+        else handleScrollUp();
+      });
+
+      let touchStartY = 0;
+      document.addEventListener(
+        "touchstart",
+        (e) => {
+          touchStartY = e.touches[0].clientY;
+          resetAutoScrollTimer();
+        },
+        { passive: true }
+      );
+
+      document.addEventListener(
+        "touchend",
+        (e) => {
+          const diff = touchStartY - e.changedTouches[0].clientY;
+          if (Math.abs(diff) > 60) {
+            if (diff > 0) handleScrollDown();
+            else handleScrollUp();
+          }
+        },
+        { passive: true }
+      );
+
+      document.addEventListener("keydown", (e) => {
+        if (["ArrowDown", "PageDown", " "].includes(e.key)) {
+          e.preventDefault();
+          resetAutoScrollTimer();
+          handleScrollDown();
+        } else if (["ArrowUp", "PageUp"].includes(e.key)) {
+          e.preventDefault();
+          resetAutoScrollTimer();
+          handleScrollUp();
+        }
+      });
+
+      // 마우스 움직임도 상호작용으로 감지
+      document.addEventListener("mousemove", (e) => {
+        if (currentSection === 2) {
+          const maskContainer = document.getElementById("maskContainer");
+          const mouseX = e.clientX;
+          const mouseY = e.clientY;
+
+          maskContainer.style.setProperty("--x", `${mouseX}px`);
+          maskContainer.style.setProperty("--y", `${mouseY}px`);
+
+          const mainContainer = document.getElementById("mainContainer");
+          const h1Elements = mainContainer.querySelectorAll("p");
+          let hovering = false;
+
+          h1Elements.forEach((element) => {
+            const h1Rect = element.getBoundingClientRect();
+            if (
+              mouseX >= h1Rect.left &&
+              mouseX <= h1Rect.right &&
+              mouseY >= h1Rect.top &&
+              mouseY <= h1Rect.bottom
+            ) {
+              hovering = true;
+            }
+          });
+
+          const targetSize = hovering ? 380 : 30;
+          maskContainer.style.setProperty("--size", `${targetSize}px`);
+        }
+      });
+
+      // 초기 설정
+      document.getElementById("cardsContainer").style.display = "none";
+      document.getElementById("ctaBtn").style.display = "none";
+      document
+        .getElementById("maskContainer")
+        .style.setProperty("--size", "30px");
+
+      // 시작
+      setTimeout(typeName, 800);
+    </script>
+  </body>
+</html>

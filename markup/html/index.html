@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <script>
+      // 페이지 로드 시 실행
+      if (!localStorage.getItem("startVisit")) {
+        window.location.href = "./intro.html"; // intro 페이지 경로
+      } else {
+        // 접속일 갱신
+        localStorage.setItem("lastVisit", new Date().toISOString());
+      }
+    </script>
+    @@include("_include/_head.html")
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.min.css" />
+  </head>
+  <body>
+    <div class="wrap main">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+        <div class="bg-circle">
+          <ul>
+            <li>
+              <div></div>
+            </li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
+        <div class="main-contents">
+          <div class="text-box">
+            <span><em>홍길동</em> 선임연구원님</span>
+            <div class="keyword-area">
+              <button>나의 키워드</button>
+              <ul class="keyword-list">
+                <li>#인물</li>
+                <li>#소통</li>
+                <li>#협업</li>
+                <li>#마인드셋</li>
+                <li>#웰니스</li>
+              </ul>
+            </div>
+            <p><em>취향저격 영상 추천</em>드려요</p>
+          </div>
+
+          <div class="main-slider"></div>
+          <div class="cards-container" id="cardsContainer">
+            <div
+              class="card"
+              style="left: calc(50% + 1.71451e-14px); top: calc(50% - 280px)"
+            >
+              <div class="card-inner">
+                <div class="card-image">
+                  <span>👔</span>
+                  <button class="heart-btn">♡</button>
+                </div>
+                <div class="card-content">
+                  <div class="card-category">리더십</div>
+                  <h3 class="card-title">
+                    정선근 교수가 알려주는 목티스크 지...
+                  </h3>
+                  <p class="card-author">소통 · 건강</p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card"
+              style="left: calc(50% + 242.487px); top: calc(50% - 140px)"
+            >
+              <div class="card-inner">
+                <div class="card-image">
+                  <span>💰</span>
+                  <button class="heart-btn">♡</button>
+                </div>
+                <div class="card-content">
+                  <div class="card-category">인사이트</div>
+                  <h3 class="card-title">
+                    회계를 조금이라도 이해하면 인생이...
+                  </h3>
+                  <p class="card-author">소통 · 교정</p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card"
+              style="left: calc(50% + 242.487px); top: calc(50% + 140px)"
+            >
+              <div class="card-inner">
+                <div class="card-image">
+                  <span>🎯</span>
+                  <button class="heart-btn">♡</button>
+                </div>
+                <div class="card-content">
+                  <div class="card-category">리더십</div>
+                  <h3 class="card-title">
+                    정선근 교수가 알려주는 목디스크 지...
+                  </h3>
+                  <p class="card-author">마인드셋 · 중간관리자</p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card"
+              style="left: calc(50% + 1.71451e-14px); top: calc(50% + 280px)"
+            >
+              <div class="card-inner">
+                <div class="card-image">
+                  <span>📊</span>
+                  <button class="heart-btn">♡</button>
+                </div>
+                <div class="card-content">
+                  <div class="card-category">인사이트</div>
+                  <h3 class="card-title">
+                    정선근 교수가 알려주는 목디스크 지...
+                  </h3>
+                  <p class="card-author">소통 · 건강</p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card"
+              style="left: calc(50% - 242.487px); top: calc(50% + 140px)"
+            >
+              <div class="card-inner">
+                <div class="card-image">
+                  <span>✈️</span>
+                  <button class="heart-btn">♡</button>
+                </div>
+                <div class="card-content">
+                  <div class="card-category">비즈트렌드</div>
+                  <h3 class="card-title">
+                    3/2 - 이대호의 별책부록 [1조 여행 꿀...
+                  </h3>
+                  <p class="card-author">별로유감 · AI</p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="card"
+              style="left: calc(50% - 242.487px); top: calc(50% - 140px)"
+            >
+              <div class="card-inner">
+                <div class="card-image">
+                  <span>💬</span>
+                  <button class="heart-btn">♡</button>
+                </div>
+                <div class="card-content">
+                  <div class="card-category">리더십</div>
+                  <h3 class="card-title">
+                    기꺼이 "이 말"을 내 뱉을 줄 알아야 인...
+                  </h3>
+                  <p class="card-author">마인드셋 · 자기개발</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- // container -->
+    </div>
+    <script>
+      var swiper = new Swiper(".main-swiper", {
+        slidesPerView: 2,
+        slidesPerGroup: 6,
+        grid: {
+          rows: 3,
+          fill: "row",
+        },
+        spaceBetween: 30,
+        loop: false,
+        keyboard: {
+          enabled: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          type: "fraction",
+        },
+      });
+    </script>
+  </body>
+</html>

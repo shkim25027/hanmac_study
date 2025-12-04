@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <script>
+      // 페이지 로드 시 실행
+      if (!localStorage.getItem("startVisit")) {
+        window.location.href = "./intro.html"; // intro 페이지 경로
+      } else {
+        // 접속일 갱신
+        localStorage.setItem("lastVisit", new Date().toISOString());
+      }
+    </script>
+    @@include("_include/_head.html")
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.min.css" />
+  </head>
+  <body>
+    <div class="wrap main">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+        <div class="swiper main-swiper">
+          <div class="swiper-wrapper" id="swiperWrapper">
+            <div class="swiper-slide">Slide 1</div>
+            <div class="swiper-slide">Slide 2</div>
+            <div class="swiper-slide">Slide 3</div>
+            <div class="swiper-slide">Slide 4</div>
+            <div class="swiper-slide">Slide 5</div>
+            <div class="swiper-slide">Slide 6</div>
+            <div class="swiper-slide">Slide 7</div>
+            <div class="swiper-slide">Slide 8</div>
+            <div class="swiper-slide">Slide 9</div>
+          </div>
+
+          <!-- 네비게이션 버튼 -->
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+
+          <!-- 페이지네이션 -->
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+      <!-- // container -->
+    </div>
+    <script>
+      var swiper = new Swiper(".main-swiper", {
+        slidesPerView: 2,
+        grid: {
+          rows: 3,
+        },
+        centeredSlides: false,
+        slidesPerGroupSkip: 1,
+        grabCursor: true,
+        keyboard: {
+          enabled: true,
+        },
+        breakpoints: {
+          769: {
+            slidesPerView: 2,
+            slidesPerGroup: 2,
+          },
+        },
+        scrollbar: {
+          el: ".swiper-scrollbar",
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          type: "fraction",
+        },
+      });
+    </script>
+  </body>
+</html>
