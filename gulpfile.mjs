@@ -7,7 +7,7 @@ import autoprefixer from "autoprefixer"; //브라우저 벤더 프리픽스 자�
 import cssnano from "cssnano"; //CSS 최소화 (minify) SCSS → CSS 후 종합 최적화(PostCSS 필요)
 import browserSyncLib from "browser-sync"; // 개발 서버를 띄우고 파일 변경 시 브라우저 자동 새로고침
 import concat from "gulp-concat"; //여러 파일을 하나로 합침
-import rename from "gulp-rename"; //파일 이름 변경 (예: style.css → style.min.css)
+//import rename from "gulp-rename"; //파일 이름 변경 (예: style.css → style.min.css)
 import terser from "gulp-terser"; //JS 압축/최적화
 import imagemin from "gulp-imagemin"; //PNG, JPEG, GIF, SVG 이미지 용량 최적화
 import includer from "gulp-file-include"; //Gulp 빌드 시 정적 HTML 조립
@@ -81,12 +81,17 @@ function images() {
 
 // SCSS → CSS
 function scss() {
-  return src([paths.scss.src, paths.scss.ignore])
-    .pipe(sassCompiler({ quietDeps: true }).on("error", sassCompiler.logError))
-    .pipe(postcss([autoprefixer(), cssnano()]))
-    .pipe(rename({ suffix: ".min" }))
-    .pipe(dest(paths.scss.dest))
-    .pipe(browserSync.stream());
+  return (
+    src([paths.scss.src, paths.scss.ignore])
+      .pipe(
+        sassCompiler({ quietDeps: true }).on("error", sassCompiler.logError)
+      )
+      .pipe(postcss([autoprefixer()])) // 압축 안됨
+      //.pipe(postcss([autoprefixer(), cssnano()]))  // 압축
+      //.pipe(rename({ suffix: ".min" }))
+      .pipe(dest(paths.scss.dest))
+      .pipe(browserSync.stream())
+  );
 }
 
 // CSS Library copy

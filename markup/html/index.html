@@ -32,8 +32,10 @@
           <div class="text-box">
             <span><em>홍길동</em> 선임연구원님</span>
             <div class="keyword-area">
-              <button>나의 키워드 <i class="ico-setting"></i></button>
-              <ul class="keyword-list">
+              <button id="keywordSettingsBtn">
+                나의 키워드 <i class="ico-setting"></i>
+              </button>
+              <ul class="keyword-list" id="myKeyword">
                 <li class="kw-allow">#인물</li>
                 <li class="kw-allow active">#소통</li>
                 <li class="kw-allow active">#협업</li>
@@ -55,6 +57,43 @@
               <span class="current">1</span> / 1
             </div>
           </div>
+
+          <!-- // keyword modal-->
+          <div class="modal keyword" id="keywordModal">
+            <div class="modal-content">
+              <div class="modal-header">
+                나의 키워드 수정<i class="ico-check"></i>
+              </div>
+              <div class="modal-body" id="modalBody">
+                <ul class="keyword-list modal-keyword-tag">
+                  <li>
+                    <label><input class="" type="checkbox" /> #온보딩</label>
+                    <input type="checkbox" class="" />
+                  </li>
+                  <li>
+                    <label><input type="checkbox" /> #성장 </label>
+                  </li>
+                  <li>#코칭</li>
+                  <li class="kw-allow">#인물</li>
+                  <li class="kw-allow active">#소통</li>
+                  <li class="kw-allow active">#협업</li>
+                  <li>AI</li>
+                  <li>IT테크</li>
+                  <li>#중간관리자</li>
+                  <li>#리더십</li>
+                  <li>#팔로우십</li>
+                  <li>#동기부여</li>
+                  <li>#인간관계</li>
+                  <li>#스킬업</li>
+                  <li>#피드백</li>
+                  <li>#커리어</li>
+                  <li>#경영</li>
+                  <li>#경제</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- // keyword modal-->
         </div>
       </div>
       <!-- // container -->
@@ -102,13 +141,13 @@
         },
         {
           id: "XKqLz6WJSRA",
-          category: "팀워크",
+          category: "리더십",
           title: "효과적인 협업을 위한 5가지 원칙",
           keywords: ["협업", "전문가"],
         },
         {
           id: "3U0cbzmwSYc",
-          category: "커뮤니케이션",
+          category: "인사이트",
           title: "팀 생산성을 높이는 협업 도구",
           keywords: ["성장", "코칭"],
         },
@@ -126,13 +165,13 @@
         },
         {
           id: "wWcn4fRcVXI",
-          category: "팀워크",
+          category: "비즈트렌드",
           title: "애자일 방식으로 일하는 법",
           keywords: ["성장", "코칭"],
         },
         {
           id: "wWcn4fRcVXI",
-          category: "협업",
+          category: "비즈트렌드",
           title: "크로스펑셔널 팀 운영 노하우",
           keywords: ["팔로우십", "온보딩"],
         },
@@ -145,7 +184,7 @@
       ];
 
       // 현재 선택된 키워드들 (배열)
-      let selectedKeywords = ["관찰"];
+      let selectedKeywords = ["소통", "협업", "마인드셋"];
 
       // 페이지당 보여줄 영상 개수
       const VIDEOS_PER_PAGE = 6;
@@ -200,12 +239,21 @@
           .map((kw) => `<span class="keyword-badge">${kw}</span>`)
           .join(" ");
 
+        // 카테고리에 따른 클래스명 매핑
+        const categoryClassMap = {
+          리더십: "leader",
+          인사이트: "insight",
+          비즈트렌드: "biz",
+        };
+
+        const categoryClass = categoryClassMap[video.category] || "default";
+
         card.innerHTML = `
                 <div class="thumbnail" >
                     <img src="https://img.youtube.com/vi/${video.id}/sddefault.jpg" />
                 </div>
                 <div class="txt-box">
-                <div class="category">${video.category}</div>
+                <div class="category  ${categoryClass}">${video.category}</div>
                 <div class="title">${video.title}</div>
                 <div class="author">${keywordTags}</div>
                 </div>
@@ -297,7 +345,7 @@
       });
 
       // 키워드 태그 클릭 이벤트
-      document.querySelectorAll(".keyword-list > li").forEach((tag) => {
+      document.querySelectorAll("#myKeyword > li").forEach((tag) => {
         tag.addEventListener("click", async function () {
           const keyword = this.dataset.keyword;
 
@@ -322,6 +370,64 @@
 
       // 초기 렌더링
       renderVideos();
+    </script>
+
+    <script>
+      // 모달 관련 기능
+      const keywordModal = document.getElementById("keywordModal");
+      const keywordSettingsBtn = document.getElementById("keywordSettingsBtn");
+      const modalClose = document.getElementById("modalClose");
+
+      // 모달 열기
+      keywordSettingsBtn.addEventListener("click", () => {
+        keywordModal.style.display = "block";
+      });
+
+      // 모달 닫기
+      modalClose.addEventListener("click", () => {
+        keywordModal.style.display = "none";
+      });
+
+      // 모달 외부 클릭 시 닫기
+      keywordModal.addEventListener("click", (e) => {
+        if (e.target === keywordModal) {
+          keywordModal.style.display = "none";
+        }
+      });
+
+      // 모달 내 키워드 태그 클릭
+      document.querySelectorAll(".modal-keyword-tag > li").forEach((tag) => {
+        tag.addEventListener("click", function () {
+          this.classList.toggle("selected");
+
+          const keyword = this.dataset.keyword;
+
+          // 중앙 원의 태그들과 동기화
+          const centerTag = document.querySelector(
+            `.tag[data-keyword="${keyword}"]`
+          );
+          if (centerTag) {
+            if (this.classList.contains("selected")) {
+              centerTag.classList.add("active");
+              if (!selectedKeywords.includes(keyword)) {
+                selectedKeywords.push(keyword);
+              }
+            } else {
+              centerTag.classList.remove("active");
+              selectedKeywords = selectedKeywords.filter((k) => k !== keyword);
+            }
+          } else {
+            // 중앙 원에 없는 새로운 키워드
+            if (this.classList.contains("selected")) {
+              if (!selectedKeywords.includes(keyword)) {
+                selectedKeywords.push(keyword);
+              }
+            } else {
+              selectedKeywords = selectedKeywords.filter((k) => k !== keyword);
+            }
+          }
+        });
+      });
     </script>
   </body>
 </html>

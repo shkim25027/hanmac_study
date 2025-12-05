@@ -54,6 +54,13 @@
     #0b221b 87.51%,
     #0d231c 100%
   );
+  --bg-nav-depth: #fff;
+  --bg-nav-alerts: #ff2200;
+  --bg-nav-alerts-hover: #188f6b;
+
+  --bg-cate-primary: #ded7cf;
+  --bg-cate-secondary: #d4decf;
+  --bg-cate-tertiary: #e8cfe4;
 
   --bg-search: #e4dbc9;
 
@@ -63,9 +70,12 @@
   --bg-keyword-secondary: #786c60;
   --bg-keyword-secondary-hover: #dcd3c9;
 
-  /* border */
-  --border-radius: 4px;
+  --bg-lecture-state: linear-gradient(270deg, #00ab66 0%, #058bb0 100%);
+  --bg-lecture-progress-primary: rgba(3, 9, 7, 0.3);
+  --bg-lecture-progress-secondary: #07855c;
 
+  /* border */
+  --border-base: rgba(0, 0, 0, 0.05);
   --border-keyword-base: rgba(0, 0, 0, 0.05);
   --border-keyword-primary: rgba(255, 255, 255, 0.4);
   --border-keyword-primary-hover: rgba(0, 0, 0, 0.05);
