@@ -11,7 +11,7 @@
       }
     </script>
     @@include("_include/_head.html")
-    <link rel="stylesheet" type="text/css" href="./assets/css/main.min.css" />
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
   </head>
   <body>
     <div class="wrap main">
@@ -28,6 +28,13 @@
             <li></li>
           </ul>
         </div>
+        <div class="learning-area">
+          <svg
+            id="gauge"
+            viewBox="0 0 794 460"
+            preserveAspectRatio="xMidYMid meet"
+          ></svg>
+        </div>
         <div class="main-contents">
           <div class="text-box">
             <span><em>홍길동</em> 선임연구원님</span>
@@ -35,13 +42,28 @@
               <button id="keywordSettingsBtn">
                 나의 키워드 <i class="ico-setting"></i>
               </button>
-              <ul class="keyword-list" id="myKeyword">
-                <li class="kw-allow">#인물</li>
-                <li class="kw-allow active">#소통</li>
-                <li class="kw-allow active">#협업</li>
-                <li class="kw-deny active">#마인드셋</li>
-                <li class="kw-deny">#웰니스</li>
-              </ul>
+              <div class="keyword-list" id="myKeyword">
+                <label class="kw-allow" for="chk1">
+                  <input type="checkbox" id="chk1" />
+                  #인물
+                </label>
+                <label class="kw-allow" for="chk2">
+                  <input type="checkbox" id="chk2" checked />
+                  #소통
+                </label>
+                <label class="kw-allow" for="chk3">
+                  <input type="checkbox" id="chk3" checked />
+                  #협업
+                </label>
+                <label class="kw-deny" for="chk4">
+                  <input type="checkbox" id="chk4" checked />
+                  #마인드셋
+                </label>
+                <label class="kw-deny" for="chk5">
+                  <input type="checkbox" id="chk5" />
+                  #웰니스
+                </label>
+              </div>
             </div>
             <p><em>취향저격 영상 추천</em>드려요.</p>
           </div>
@@ -65,30 +87,116 @@
                 나의 키워드 수정<i class="ico-check"></i>
               </div>
               <div class="modal-body" id="modalBody">
-                <ul class="keyword-list modal-keyword-tag">
-                  <li>
-                    <label><input class="" type="checkbox" /> #온보딩</label>
-                    <input type="checkbox" class="" />
+                <ul class="keyword-tag">
+                  <li class="kw-box">
+                    <label for="kwtag_1">
+                      <input type="checkbox" id="kwtag_1" disabled /> #온보딩
+                    </label>
+                    <input type="checkbox" class="kw-add" />
                   </li>
-                  <li>
-                    <label><input type="checkbox" /> #성장 </label>
+                  <li class="kw-box">
+                    <label for="kwtag_2">
+                      <input type="checkbox" id="kwtag_2" disabled /> #성장
+                    </label>
+                    <input type="checkbox" class="kw-add" />
                   </li>
-                  <li>#코칭</li>
-                  <li class="kw-allow">#인물</li>
-                  <li class="kw-allow active">#소통</li>
-                  <li class="kw-allow active">#협업</li>
-                  <li>AI</li>
-                  <li>IT테크</li>
-                  <li>#중간관리자</li>
-                  <li>#리더십</li>
-                  <li>#팔로우십</li>
-                  <li>#동기부여</li>
-                  <li>#인간관계</li>
-                  <li>#스킬업</li>
-                  <li>#피드백</li>
-                  <li>#커리어</li>
-                  <li>#경영</li>
-                  <li>#경제</li>
+                  <li class="kw-box">
+                    <label for="kwtag_3">
+                      <input type="checkbox" id="kwtag_3" disabled /> #코칭
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_4">
+                      <input type="checkbox" id="kwtag_4" /> #인물
+                    </label>
+                    <input type="checkbox" class="kw-add" checked />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_5">
+                      <input type="checkbox" id="kwtag_5" checked /> #소통
+                    </label>
+                    <input type="checkbox" class="kw-add" checked />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_6">
+                      <input type="checkbox" id="kwtag_6" checked /> #협업
+                    </label>
+                    <input type="checkbox" class="kw-add" checked />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_7">
+                      <input type="checkbox" id="kwtag_7" disabled /> AI
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_8">
+                      <input type="checkbox" id="kwtag_8" disabled /> IT테크
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_9">
+                      <input type="checkbox" id="kwtag_9" disabled />
+                      #중간관리자
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_10">
+                      <input type="checkbox" id="kwtag_10" disabled /> #리더십
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_11">
+                      <input type="checkbox" id="kwtag_11" disabled /> #팔로우십
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_12">
+                      <input type="checkbox" id="kwtag_12" disabled /> #동기부여
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_13">
+                      <input type="checkbox" id="kwtag_13" disabled /> #인간관계
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_14">
+                      <input type="checkbox" id="kwtag_14" disabled /> #스킬업
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_15">
+                      <input type="checkbox" id="kwtag_15" disabled /> #피드백
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_16">
+                      <input type="checkbox" id="kwtag_16" disabled /> #커리어
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_17">
+                      <input type="checkbox" id="kwtag_17" disabled /> #경영
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
+                  <li class="kw-box">
+                    <label for="kwtag_18">
+                      <input type="checkbox" id="kwtag_18" disabled /> #경제
+                    </label>
+                    <input type="checkbox" class="kw-add" />
+                  </li>
                 </ul>
               </div>
             </div>
@@ -100,7 +208,183 @@
     </div>
 
     <script>
-      // 전체 영상 데이터 (키워드 구분 없이)
+      const svg = document.getElementById("gauge");
+      const size = 832;
+      const center = size / 2;
+      const strokeWidth = 31;
+      const maxValue = 140;
+
+      // 내부 좌표계는 고정!
+      // 실제 화면 크기와 관계 없음
+      svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
+      svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+      // 여백 20 추가 → 튀어나가지 않음
+      const radius = size / 2 - strokeWidth / 2 - 20;
+
+      // 오프셋 40 제거
+      function ptc(cx, cy, r, angle) {
+        const rad = (angle * Math.PI) / 180;
+        return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+      }
+
+      function arc(r, start, end) {
+        const s = ptc(center, center, r, start);
+        const e = ptc(center, center, r, end);
+        return `M ${s.x} ${s.y} A ${r} ${r} 0 0 1 ${e.x} ${e.y}`;
+      }
+
+      function updateGauge(value) {
+        svg.innerHTML = "";
+
+        const percent = Math.min(value / maxValue, 1);
+        const angle = -180 + percent * 180;
+
+        // 배경 반원
+        const bg = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        bg.setAttribute("d", arc(radius, -180, 0));
+        bg.setAttribute("stroke", "#f2dfc7");
+        bg.setAttribute("stroke-width", strokeWidth);
+        bg.setAttribute("stroke-linecap", "square");
+        bg.setAttribute("fill", "none");
+        svg.appendChild(bg);
+
+        // 채워진 반원
+        const fg = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        fg.setAttribute("d", arc(radius, -180, angle));
+        fg.setAttribute("stroke", "#e89555");
+        fg.setAttribute("stroke-width", strokeWidth);
+        fg.setAttribute("stroke-linecap", "round");
+        fg.setAttribute("fill", "none");
+        svg.appendChild(fg);
+
+        // ─────────────────────────────────────────────
+        // 🔥 텍스트용 아크 2개 (겉/안쪽)
+        // ─────────────────────────────────────────────
+        const defs = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "defs"
+        );
+
+        // 외곽 텍스트: "나의 학습 : xx분"
+        const outerArc = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        outerArc.setAttribute("id", "outerArc");
+        outerArc.setAttribute("d", arc(radius - 6, -180, 0));
+        defs.appendChild(outerArc);
+
+        // 내부 텍스트: "전체 평균 학습 : xx분"
+        const innerArc = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        innerArc.setAttribute("id", "innerArc");
+        innerArc.setAttribute("d", arc(radius - 35, -180, 0)); // 안쪽으로 이동
+        defs.appendChild(innerArc);
+
+        svg.appendChild(defs);
+
+        // ─────────────────────────────────────────────
+        // 🔥 "나의 학습"
+        // ─────────────────────────────────────────────
+        if (percent > 0.15) {
+          const text = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+          );
+          text.setAttribute("font-size", "15");
+          text.setAttribute("font-weight", "600");
+          text.setAttribute("fill", "#000");
+
+          const tp = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "textPath"
+          );
+          tp.setAttributeNS(
+            "http://www.w3.org/1999/xlink",
+            "xlink:href",
+            "#outerArc"
+          );
+          tp.setAttribute("startOffset", `${Math.max(10, percent * 100 - 6)}%`);
+          tp.setAttribute("text-anchor", "middle");
+          tp.textContent = `나의 학습 : ${value}분`;
+
+          text.appendChild(tp);
+          svg.appendChild(text);
+        }
+
+        // 끝점 원
+        const p = ptc(center, center, radius, angle);
+        const dot = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "circle"
+        );
+        dot.setAttribute("cx", p.x);
+        dot.setAttribute("cy", p.y);
+        dot.setAttribute("r", 7);
+        dot.setAttribute("fill", "#804514");
+        svg.appendChild(dot);
+
+        // 끝점 아이콘
+        const ico = ptc(center, center, radius, angle);
+
+        const icon = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "g"
+        );
+        icon.setAttribute(
+          "transform",
+          `translate(${ico.x - 4}, ${ico.y - 3.5})`
+        );
+        icon.innerHTML = `
+        <path d="M7.25859 5.72241C7.45848 6.05134 7.22735 6.47331 6.84254 6.48196L0.511261 6.62427C-0.0386892 6.63663 -0.202465 5.88127 0.303221 5.66476L3.21705 4.41716C3.42672 4.32738 3.54907 4.10709 3.51446 3.88165L3.00742 0.578948C2.92444 0.0384521 3.64493 -0.223896 3.92892 0.243408L7.25859 5.72241Z" fill="#E28A41"/>
+      `;
+
+        svg.appendChild(icon);
+
+        // ─────────────────────────────────────────────
+        // 🔥 "전체 평균 학습" (게이지 안쪽)
+        // ─────────────────────────────────────────────
+        const maxText = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "text"
+        );
+        maxText.setAttribute("font-size", "15");
+        maxText.setAttribute("font-weight", "400");
+        maxText.setAttribute("fill", "#4A4947");
+
+        const maxLabel = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "textPath"
+        );
+        maxLabel.setAttributeNS(
+          "http://www.w3.org/1999/xlink",
+          "xlink:href",
+          "#innerArc"
+        );
+        maxLabel.setAttribute("startOffset", "100%"); // 위치 미세조정 가능
+        maxLabel.setAttribute("text-anchor", "end");
+        maxLabel.innerHTML = `전체 평균 학습 : <tspan font-weight="700">${maxValue}</tspan>분`;
+
+        maxText.appendChild(maxLabel);
+        svg.appendChild(maxText);
+      }
+
+      updateGauge(100);
+    </script>
+    <script src="../assets/js/kw_tag.js"></script>
+    <script>
+      // ============================================
+      // 데이터 정의
+      // ============================================
       const allVideos = [
         {
           id: "IZm1m_FKmc0",
@@ -130,7 +414,6 @@
           id: "FUXT_m6nzhg",
           category: "인사이트",
           title: "정선근 교수가 알려주는 목디스크 지식",
-          keywords: "소통 전문",
           keywords: ["소통", "전문"],
         },
         {
@@ -183,251 +466,471 @@
         },
       ];
 
-      // 현재 선택된 키워드들 (배열)
-      let selectedKeywords = ["소통", "협업", "마인드셋"];
+      // ============================================
+      // 상태 관리
+      // ============================================
+      const STATE = {
+        selectedKeywords: ["소통", "협업", "마인드셋"],
+        currentPage: 0,
+        VIDEOS_PER_PAGE: 6,
+        cachedVideos: [],
+      };
 
-      // 페이지당 보여줄 영상 개수
-      const VIDEOS_PER_PAGE = 6;
-
-      // 현재 페이지
-      let currentPage = 0;
-
-      // 키워드에 맞는 영상 필터링 및 정렬 (매칭된 영상 우선, 나머지는 랜덤)
-      function getFilteredAndSortedVideos() {
-        if (selectedKeywords.length === 0) {
-          return shuffleArray(allVideos); // 선택된 키워드가 없으면 전체 랜덤
-        }
-
-        // 매칭되는 영상과 매칭되지 않는 영상 분리
-        const matchedVideos = [];
-        const unmatchedVideos = [];
-
-        allVideos.forEach((video) => {
-          const hasMatch = video.keywords.some((keyword) =>
-            selectedKeywords.includes(keyword)
-          );
-          if (hasMatch) {
-            matchedVideos.push(video);
-          } else {
-            unmatchedVideos.push(video);
+      // ============================================
+      // 유틸리티 함수
+      // ============================================
+      const Utils = {
+        // Fisher-Yates 알고리즘을 이용한 배열 섞기
+        shuffleArray(array) {
+          const shuffled = [...array];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
           }
-        });
+          return shuffled;
+        },
 
-        // 매칭된 영상은 랜덤 섞기
-        const shuffledMatched = shuffleArray(matchedVideos);
+        // 카테고리에 따른 CSS 클래스 반환
+        getCategoryClass(category) {
+          const categoryClassMap = {
+            리더십: "leader",
+            인사이트: "insight",
+            비즈트렌드: "biz",
+          };
+          return categoryClassMap[category] || "default";
+        },
 
-        // 매칭되지 않은 영상도 랜덤 섞기
-        const shuffledUnmatched = shuffleArray(unmatchedVideos);
+        // 키워드 분리 (공백, 쉼표 등으로)
+        splitKeywords(input) {
+          return input
+            .split(/[\s,\/\-]+/)
+            .map((k) => k.trim())
+            .filter((k) => k.length > 0);
+        },
 
-        // 매칭된 영상을 먼저 보여주고, 그 다음 나머지 영상
-        return [...shuffledMatched, ...shuffledUnmatched];
-      }
+        // 문자열 유사도 검사 (Levenshtein Distance)
+        isSimilar(a, b, maxDistance = 1) {
+          a = a.toLowerCase();
+          b = b.toLowerCase();
 
-      // 전체 페이지 수 계산
-      function getTotalPages() {
-        const sortedVideos = getFilteredAndSortedVideos();
-        return Math.ceil(sortedVideos.length / VIDEOS_PER_PAGE);
-      }
-
-      // 비디오 카드 생성
-      function createVideoCard(video, index) {
-        const card = document.createElement("div");
-        card.className = "video-card";
-
-        // keywords를 태그 형식으로 표시
-        const keywordTags = video.keywords
-          .map((kw) => `<span class="keyword-badge">${kw}</span>`)
-          .join(" ");
-
-        // 카테고리에 따른 클래스명 매핑
-        const categoryClassMap = {
-          리더십: "leader",
-          인사이트: "insight",
-          비즈트렌드: "biz",
-        };
-
-        const categoryClass = categoryClassMap[video.category] || "default";
-
-        card.innerHTML = `
-                <div class="thumbnail" >
-                    <img src="https://img.youtube.com/vi/${video.id}/sddefault.jpg" />
-                </div>
-                <div class="txt-box">
-                <div class="category  ${categoryClass}">${video.category}</div>
-                <div class="title">${video.title}</div>
-                <div class="author">${keywordTags}</div>
-                </div>
-            `;
-
-        return card;
-      }
-
-      // 현재 페이지의 영상 목록 가져오기
-      function getCurrentPageVideos() {
-        const sortedVideos = getFilteredAndSortedVideos();
-        const startIndex = currentPage * VIDEOS_PER_PAGE;
-        const endIndex = startIndex + VIDEOS_PER_PAGE;
-        return sortedVideos.slice(startIndex, endIndex);
-      }
-
-      // 영상 목록 렌더링
-      function renderVideos() {
-        const container = document.getElementById("videoCardsContainer");
-        const videos = getCurrentPageVideos();
-
-        // 기존 카드 제거
-        container.innerHTML = "";
-
-        // 새 카드 생성 및 순차적 애니메이션
-        videos.forEach((video, index) => {
-          const card = createVideoCard(video, index);
-          container.appendChild(card);
-
-          // 순차적으로 나타나게 딜레이 추가
-          setTimeout(() => {
-            card.classList.add("show");
-          }, index * 100);
-        });
-
-        // 페이지네이션 업데이트
-        updatePagination();
-      }
-
-      // 페이지네이션 업데이트
-      function updatePagination() {
-        const pagination = document.getElementById("pagination");
-        const totalPages = getTotalPages();
-
-        pagination.innerHTML = `<span class="current">${currentPage + 1}</span> / ${totalPages}`;
-      }
-
-      // 배열 섞기 (Fisher-Yates 알고리즘)
-      function shuffleArray(array) {
-        const shuffled = [...array];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-      }
-
-      // 페이지 변경 (페이드 효과)
-      async function changePage() {
-        const cardsContainer = document.getElementById("videoCardsContainer");
-
-        // 1. 페이드 아웃
-        cardsContainer.classList.add("fade-out");
-
-        // 2. 페이드 아웃 완료 대기
-        await new Promise((resolve) => setTimeout(resolve, 400));
-
-        // 3. 새로운 영상 목록 렌더링
-        renderVideos();
-
-        // 4. 페이드 인
-        cardsContainer.classList.remove("fade-out");
-      }
-
-      // 네비게이션 버튼 이벤트
-      document.getElementById("prevBtn").addEventListener("click", async () => {
-        if (currentPage > 0) {
-          currentPage--;
-          await changePage();
-        }
-      });
-
-      document.getElementById("nextBtn").addEventListener("click", async () => {
-        const totalPages = getTotalPages();
-        if (currentPage < totalPages - 1) {
-          currentPage++;
-          await changePage();
-        }
-      });
-
-      // 키워드 태그 클릭 이벤트
-      document.querySelectorAll("#myKeyword > li").forEach((tag) => {
-        tag.addEventListener("click", async function () {
-          const keyword = this.dataset.keyword;
-
-          // 토글 방식으로 동작
-          if (this.classList.contains("active")) {
-            // 이미 선택된 키워드면 제거
-            this.classList.remove("active");
-            selectedKeywords = selectedKeywords.filter((k) => k !== keyword);
-          } else {
-            // 선택되지 않은 키워드면 추가
-            this.classList.add("active");
-            selectedKeywords.push(keyword);
-          }
-
-          // 페이지를 첫 페이지로 리셋
-          currentPage = 0;
-
-          // 페이드 효과와 함께 영상 변경
-          await changePage();
-        });
-      });
-
-      // 초기 렌더링
-      renderVideos();
-    </script>
-
-    <script>
-      // 모달 관련 기능
-      const keywordModal = document.getElementById("keywordModal");
-      const keywordSettingsBtn = document.getElementById("keywordSettingsBtn");
-      const modalClose = document.getElementById("modalClose");
-
-      // 모달 열기
-      keywordSettingsBtn.addEventListener("click", () => {
-        keywordModal.style.display = "block";
-      });
-
-      // 모달 닫기
-      modalClose.addEventListener("click", () => {
-        keywordModal.style.display = "none";
-      });
-
-      // 모달 외부 클릭 시 닫기
-      keywordModal.addEventListener("click", (e) => {
-        if (e.target === keywordModal) {
-          keywordModal.style.display = "none";
-        }
-      });
-
-      // 모달 내 키워드 태그 클릭
-      document.querySelectorAll(".modal-keyword-tag > li").forEach((tag) => {
-        tag.addEventListener("click", function () {
-          this.classList.toggle("selected");
-
-          const keyword = this.dataset.keyword;
-
-          // 중앙 원의 태그들과 동기화
-          const centerTag = document.querySelector(
-            `.tag[data-keyword="${keyword}"]`
+          const dp = Array.from({ length: a.length + 1 }, () =>
+            Array(b.length + 1).fill(0)
           );
-          if (centerTag) {
-            if (this.classList.contains("selected")) {
-              centerTag.classList.add("active");
-              if (!selectedKeywords.includes(keyword)) {
-                selectedKeywords.push(keyword);
+
+          for (let i = 0; i <= a.length; i++) dp[i][0] = i;
+          for (let j = 0; j <= b.length; j++) dp[0][j] = j;
+
+          for (let i = 1; i <= a.length; i++) {
+            for (let j = 1; j <= b.length; j++) {
+              if (a[i - 1] === b[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1];
+              } else {
+                dp[i][j] =
+                  1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
               }
-            } else {
-              centerTag.classList.remove("active");
-              selectedKeywords = selectedKeywords.filter((k) => k !== keyword);
-            }
-          } else {
-            // 중앙 원에 없는 새로운 키워드
-            if (this.classList.contains("selected")) {
-              if (!selectedKeywords.includes(keyword)) {
-                selectedKeywords.push(keyword);
-              }
-            } else {
-              selectedKeywords = selectedKeywords.filter((k) => k !== keyword);
             }
           }
+
+          return dp[a.length][b.length] <= maxDistance;
+        },
+      };
+
+      // ============================================
+      // 비디오 필터링 및 정렬
+      // ============================================
+      const VideoFilter = {
+        // 키워드 매칭 검사 (유연한 매칭)
+        isVideoMatched(video, searchKeywords) {
+          const videoWords = video.keywords.map((k) => k.toLowerCase());
+
+          const searchWords = searchKeywords
+            .map((kw) => Utils.splitKeywords(kw))
+            .flat()
+            .map((w) => w.toLowerCase());
+
+          return searchWords.some((word) => {
+            return videoWords.some((tag) => {
+              // 완전일치
+              if (tag === word) return true;
+
+              // 최소 2글자 이상 부분 매칭만 허용
+              if (word.length > 1 && tag.includes(word)) return true;
+
+              // 유사도 검색은 3글자 이상일 때만
+              if (word.length > 2 && Utils.isSimilar(tag, word, 1)) return true;
+
+              return false;
+            });
+          });
+        },
+
+        // 키워드에 맞는 영상 필터링 및 정렬 (캐시 사용)
+        getFilteredAndSortedVideos(forceRefresh = false) {
+          // 캐시가 있고 강제 새로고침이 아니면 캐시 반환
+          if (STATE.cachedVideos.length > 0 && !forceRefresh) {
+            return STATE.cachedVideos;
+          }
+
+          let matchedVideos = [];
+          let unmatchedVideos = [];
+
+          if (STATE.selectedKeywords.length === 0) {
+            // 키워드 없으면 전체 랜덤
+            STATE.cachedVideos = Utils.shuffleArray(allVideos);
+            return STATE.cachedVideos;
+          }
+
+          // 매칭되는 영상과 매칭되지 않는 영상 분리
+          allVideos.forEach((video) => {
+            if (this.isVideoMatched(video, STATE.selectedKeywords)) {
+              matchedVideos.push(video);
+            } else {
+              unmatchedVideos.push(video);
+            }
+          });
+
+          // 매칭된 영상을 먼저, 나머지를 뒤에
+          const shuffledMatched = Utils.shuffleArray(matchedVideos);
+          const shuffledUnmatched = Utils.shuffleArray(unmatchedVideos);
+
+          STATE.cachedVideos = [...shuffledMatched, ...shuffledUnmatched];
+          return STATE.cachedVideos;
+        },
+
+        // 현재 페이지의 영상 목록 가져오기
+        getCurrentPageVideos() {
+          const sortedVideos = this.getFilteredAndSortedVideos();
+          const startIndex = STATE.currentPage * STATE.VIDEOS_PER_PAGE;
+          const endIndex = startIndex + STATE.VIDEOS_PER_PAGE;
+          return sortedVideos.slice(startIndex, endIndex);
+        },
+
+        // 전체 페이지 수 계산
+        getTotalPages() {
+          const sortedVideos = this.getFilteredAndSortedVideos();
+          return Math.ceil(sortedVideos.length / STATE.VIDEOS_PER_PAGE);
+        },
+
+        // 캐시 초기화 (키워드 변경 시 사용)
+        clearCache() {
+          STATE.cachedVideos = [];
+        },
+      };
+
+      // ============================================
+      // UI 렌더링
+      // ============================================
+      const VideoRenderer = {
+        // 비디오 카드 생성
+        createVideoCard(video) {
+          const card = document.createElement("div");
+          card.className = "video-card";
+
+          const keywordTags = video.keywords
+            .map((kw) => `<span class="key-badge">${kw}</span>`)
+            .join(" ");
+
+          const categoryClass = Utils.getCategoryClass(video.category);
+
+          card.innerHTML = `<div class="card">
+      <div class="thumbnail">
+        <img src="https://img.youtube.com/vi/${video.id}/sddefault.jpg" />
+      </div>
+      <div class="txt-box">
+        <div class="category ${categoryClass}">${video.category}</div>
+        <div class="title">${video.title}</div>
+        <div class="author">${keywordTags}</div>
+      </div></div>
+    `;
+
+          return card;
+        },
+
+        // 영상 목록 렌더링
+        renderVideos() {
+          const container = document.getElementById("videoCardsContainer");
+          const videos = VideoFilter.getCurrentPageVideos();
+
+          container.innerHTML = "";
+
+          videos.forEach((video, index) => {
+            const card = this.createVideoCard(video);
+            container.appendChild(card);
+
+            setTimeout(() => {
+              card.classList.add("show");
+            }, index * 100);
+          });
+
+          Pagination.update();
+        },
+      };
+
+      // ============================================
+      // 페이지네이션
+      // ============================================
+      const Pagination = {
+        // 버튼 상태 업데이트
+        updateButtons() {
+          const prevBtn = document.getElementById("prevBtn");
+          const nextBtn = document.getElementById("nextBtn");
+          const totalPages = VideoFilter.getTotalPages();
+
+          if (STATE.currentPage === 0) {
+            prevBtn.classList.add("disabled");
+          } else {
+            prevBtn.classList.remove("disabled");
+          }
+
+          if (STATE.currentPage >= totalPages - 1) {
+            nextBtn.classList.add("disabled");
+          } else {
+            nextBtn.classList.remove("disabled");
+          }
+        },
+
+        // 페이지네이션 정보 업데이트
+        update() {
+          const pagination = document.getElementById("pagination");
+          const totalPages = VideoFilter.getTotalPages();
+
+          pagination.innerHTML = `<span class="current">${STATE.currentPage + 1}</span> / ${totalPages}`;
+          this.updateButtons();
+        },
+
+        // 페이지 변경 (페이드 효과)
+        async changePage() {
+          const cardsContainer = document.getElementById("videoCardsContainer");
+
+          cardsContainer.classList.add("fade-out");
+          await new Promise((resolve) => setTimeout(resolve, 400));
+
+          VideoRenderer.renderVideos();
+          cardsContainer.classList.remove("fade-out");
+        },
+      };
+
+      // ============================================
+      // 키워드 관리
+      // ============================================
+      const KeywordManager = {
+        // 키워드 추가
+        addKeyword(keyword) {
+          if (!STATE.selectedKeywords.includes(keyword)) {
+            STATE.selectedKeywords.push(keyword);
+          }
+        },
+
+        // 키워드 제거
+        removeKeyword(keyword) {
+          STATE.selectedKeywords = STATE.selectedKeywords.filter(
+            (k) => k !== keyword
+          );
+        },
+
+        // 키워드 토글 (다중 선택)
+        toggleKeyword(keyword, isChecked) {
+          if (isChecked) {
+            this.addKeyword(keyword);
+          } else {
+            this.removeKeyword(keyword);
+          }
+        },
+
+        // 키워드 변경 후 페이지 리셋 및 렌더링
+        async updateVideosAfterKeywordChange() {
+          STATE.currentPage = 0;
+          VideoFilter.clearCache();
+          await Pagination.changePage();
+        },
+
+        // 체크박스 상태 동기화
+        syncCheckboxStates() {
+          document
+            .querySelectorAll("#myKeyword input[type='checkbox']")
+            .forEach((checkbox) => {
+              const label = checkbox.closest("label");
+              if (label) {
+                const keywordText = label.textContent.trim().replace("#", "");
+                checkbox.checked = STATE.selectedKeywords.includes(keywordText);
+              }
+            });
+        },
+
+        // 모달 닫힐 때 호출 - syncKeywordsToList 후 체크박스 상태 업데이트
+        async syncAfterModalClose() {
+          // kw_tag.js의 syncKeywordsToList가 실행된 후
+          // 새로 추가된 체크박스들의 상태를 동기화
+          this.syncCheckboxStates();
+
+          // 영상 목록도 갱신
+          await this.updateVideosAfterKeywordChange();
+        },
+      };
+
+      // ============================================
+      // 모달 관리
+      // ============================================
+      const ModalManager = {
+        modal: null,
+        settingsBtn: null,
+
+        init() {
+          this.modal = document.getElementById("keywordModal");
+          this.settingsBtn = document.getElementById("keywordSettingsBtn");
+
+          this.setupEventListeners();
+        },
+
+        setupEventListeners() {
+          // 모달 열기
+          this.settingsBtn.onclick = () => {
+            this.modal.style.display = "block";
+          };
+
+          // 모달 외부 클릭 시 닫기
+          this.modal.onclick = async (e) => {
+            if (e.target === this.modal) {
+              if (typeof syncKeywordsToList === "function") {
+                syncKeywordsToList();
+              }
+              this.modal.style.display = "none";
+
+              // 짧은 딜레이 후 동기화 (DOM 업데이트 대기)
+              setTimeout(async () => {
+                await KeywordManager.syncAfterModalClose();
+              }, 50);
+            }
+          };
+        },
+      };
+
+      // ============================================
+      // 이벤트 리스너 설정
+      // ============================================
+      const EventHandlers = {
+        initialized: false,
+
+        // 네비게이션 버튼 이벤트
+        setupNavigationButtons() {
+          const prevBtn = document.getElementById("prevBtn");
+          const nextBtn = document.getElementById("nextBtn");
+
+          if (!prevBtn || !nextBtn) {
+            console.error("버튼을 찾을 수 없습니다");
+            return;
+          }
+
+          // 이전 버튼
+          prevBtn.onclick = async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (STATE.currentPage > 0) {
+              STATE.currentPage--;
+              await Pagination.changePage();
+            }
+          };
+
+          // 다음 버튼
+          nextBtn.onclick = async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const totalPages = VideoFilter.getTotalPages();
+            if (STATE.currentPage < totalPages - 1) {
+              STATE.currentPage++;
+              await Pagination.changePage();
+            }
+          };
+        },
+
+        // 키워드 체크박스 이벤트 (이벤트 위임 방식)
+        setupKeywordCheckboxes() {
+          const keywordList = document.getElementById("myKeyword");
+
+          if (!keywordList) {
+            console.error("myKeyword 요소를 찾을 수 없습니다");
+            return;
+          }
+
+          // 부모 요소에 이벤트 리스너 등록 (이벤트 위임)
+          keywordList.onclick = async function (e) {
+            // 체크박스가 클릭된 경우
+            const checkbox = e.target;
+            if (checkbox.type === "checkbox") {
+              const label = checkbox.closest("label");
+              if (label) {
+                const keywordText = label.textContent.trim().replace("#", "");
+
+                // checked 상태는 클릭 직후이므로 현재 상태 사용
+                KeywordManager.toggleKeyword(keywordText, checkbox.checked);
+                await KeywordManager.updateVideosAfterKeywordChange();
+              }
+            }
+          };
+
+          console.log("키워드 체크박스 이벤트 등록 완료 (이벤트 위임)");
+        },
+
+        // 모달 내 키워드 태그 클릭 이벤트
+        setupModalKeywordTags() {
+          document.querySelectorAll(".keyword-tag > label").forEach((label) => {
+            const checkbox = label.querySelector("input[type='checkbox']");
+
+            if (checkbox) {
+              checkbox.onchange = function () {
+                const keywordText = label.textContent.trim().replace("#", "");
+
+                if (!this.disabled) {
+                  KeywordManager.toggleKeyword(keywordText, this.checked);
+                }
+              };
+            }
+          });
+        },
+
+        // 모든 이벤트 리스너 설정
+        init() {
+          if (this.initialized) {
+            return;
+          }
+
+          this.setupNavigationButtons();
+          this.setupKeywordCheckboxes();
+          this.setupModalKeywordTags();
+          this.initialized = true;
+        },
+      };
+
+      // ============================================
+      // 초기화
+      // ============================================
+      function initialize() {
+        VideoRenderer.renderVideos();
+        EventHandlers.init();
+        ModalManager.init();
+        KeywordManager.syncCheckboxStates();
+      }
+
+      // DOMContentLoaded 시 한 번만 초기화
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          initialize();
+
+          // 외부 함수 호출 (kw_tag.js)
+          if (typeof keywordChange === "function") {
+            keywordChange();
+          }
         });
-      });
+      } else {
+        initialize();
+
+        if (typeof keywordChange === "function") {
+          keywordChange();
+        }
+      }
     </script>
+    >
   </body>
 </html>

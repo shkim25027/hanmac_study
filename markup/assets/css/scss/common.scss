@@ -87,7 +87,107 @@
   }
 }
 
-input {
+/* 키워드 */
+[class^="keyword"] {
+  flex-wrap: wrap;
+  gap: 9px;
+  @include flex();
+
+  &[class*="list"] {
+    max-width: 470px;
+  }
+  &[class*="tag"] {
+    label {
+      &:has(:checked) {
+        color: var(--text-keyword-primary);
+        background: var(--bg-keyword-primary);
+        border: 1px solid var(--border-keyword-primary);
+      }
+    }
+  }
+
+  label {
+    position: relative;
+    display: block;
+    min-width: 52px;
+    padding: 12px 9px;
+    border-radius: 24px;
+    color: var(--text-keyword-base);
+    background: var(--bg-keyword-base);
+    border: 1px solid var(--border-keyword-base);
+    font-weight: 500;
+    line-height: 1;
+    //cursor: pointer;
+    &:has(+ [type="checkbox"]:checked) {
+      color: var(--text-keyword-secondary);
+      background: var(--bg-keyword-primary-hover);
+      border: 1px solid var(--border-keyword-primary-hover);
+      &:has(:checked) {
+        color: var(--text-keyword-primary);
+        background: var(--bg-keyword-primary);
+        border: 1px solid var(--border-keyword-primary);
+      }
+    }
+    input {
+      &[type="checkbox"] {
+        position: absolute;
+        width: 0;
+        height: 0;
+        opacity: 0;
+      }
+    }
+  }
+  .kw {
+    &-box {
+      position: relative;
+    }
+    &-allow {
+      color: var(--text-keyword-secondary);
+      background: var(--bg-keyword-primary-hover);
+      border: 1px solid var(--border-keyword-primary-hover);
+      &:has(:checked) {
+        color: var(--text-keyword-primary);
+        background: var(--bg-keyword-primary);
+        border: 1px solid var(--border-keyword-primary);
+      }
+    }
+    &-deny {
+      color: var(--text-keyword-secondary);
+      background: var(--bg-keyword-secondary-hover);
+      border: 1px solid var(--border-keyword-secondary-hover);
+      &:has(:checked) {
+        color: var(--text-keyword-primary);
+        background: var(--bg-keyword-secondary);
+        border: 1px solid var(--border-keyword-secondary);
+      }
+    }
+    &-add {
+      position: absolute;
+      top: -2px;
+      right: 0px;
+      width: 14px;
+      height: 14px;
+      -webkit-appearance: none;
+      border-radius: 50%;
+      background-image: url(../images/ico/ico_add.svg);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      &:checked {
+        background-image: url(../images/ico/ico_remove.svg);
+      }
+    }
+  }
+}
+
+/* 뱃지 */
+.badge {
+  &-danger {
+    border-radius: 4px;
+    color: var(--text-keyword-primary);
+    background: var(--bg-nav-alerts);
+    text-align: center;
+  }
 }
 
 /* 모달 */

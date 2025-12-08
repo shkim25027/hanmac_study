@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>상단 삼각형 툴팁</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .tooltip-wrapper {
+        position: relative;
+        margin-bottom: 30px;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .tooltip-wrapper.closing {
+        animation: slideOut 0.3s ease-out forwards;
+      }
+
+      @keyframes slideOut {
+        to {
+          transform: translateY(-20px);
+          opacity: 0;
+        }
+      }
+
+      /* 상단 삼각형 */
+      .triangle-top {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 25px;
+        z-index: 2;
+      }
+
+      /* 메인 박스 */
+      .tooltip-box {
+        background: white;
+        border-radius: 12px;
+        padding: 20px 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        margin-top: 15px;
+        position: relative;
+      }
+
+      .tooltip-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .tooltip-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        font-size: 16px;
+      }
+
+      .icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+      }
+
+      .close-btn:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      .tooltip-message {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #555;
+      }
+
+      .success .icon {
+        color: #10b981;
+      }
+      .info .icon {
+        color: #3b82f6;
+      }
+      .warning .icon {
+        color: #f59e0b;
+      }
+
+      .success .triangle-stroke {
+        stroke: #10b981;
+      }
+      .info .triangle-stroke {
+        stroke: #3b82f6;
+      }
+      .warning .triangle-stroke {
+        stroke: #f59e0b;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s;
+        flex: 1;
+        min-width: 100px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .btn-success {
+        background: #10b981;
+        color: white;
+      }
+
+      .btn-info {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .btn-warning {
+        background: #f59e0b;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="tooltips"></div>
+
+      <div class="controls">
+        <button class="btn btn-success" onclick="addTooltip('success')">
+          성공 알림
+        </button>
+        <button class="btn btn-info" onclick="addTooltip('info')">
+          정보 알림
+        </button>
+        <button class="btn btn-warning" onclick="addTooltip('warning')">
+          경고 알림
+        </button>
+      </div>
+    </div>
+
+    <script>
+      let tooltipId = 0;
+
+      const icons = {
+        success:
+          '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+        info: '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+        warning:
+          '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>',
+      };
+
+      const messages = {
+        success: "작업이 성공적으로 완료되었습니다.",
+        info: "새로운 업데이트가 있습니다. 확인해주세요.",
+        warning: "주의가 필요한 항목이 있습니다.",
+      };
+
+      const titles = {
+        success: "성공",
+        info: "알림",
+        warning: "경고",
+      };
+
+      function addTooltip(type) {
+        const id = ++tooltipId;
+        const container = document.getElementById("tooltips");
+
+        const tooltip = document.createElement("div");
+        tooltip.className = `tooltip-wrapper ${type}`;
+        tooltip.id = `tooltip-${id}`;
+
+        tooltip.innerHTML = `
+                <svg class="triangle-top" viewBox="0 0 50 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M23 3.5C24.0801 1.09349 27.5179 1.15238 28.5136 3.59473L30 7.5C30 7.5 32 10 35 10H45C46 10 47 11 47 12V20C47 21 46 22 45 22H5C4 22 3 21 3 20V12C3 11 4 10 5 10H15C18 10 20 7.5 20 7.5L23 3.5Z" 
+                          fill="white" 
+                          class="triangle-stroke"
+                          stroke-width="2"/>
+                </svg>
+                
+                <div class="tooltip-box">
+                    <div class="tooltip-header">
+                        <div class="tooltip-title">
+                            ${icons[type]}
+                            <span>${titles[type]}</span>
+                        </div>
+                        <button class="close-btn" onclick="closeTooltip(${id})">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="tooltip-message">
+                        ${messages[type]}
+                    </div>
+                </div>
+            `;
+
+        container.insertBefore(tooltip, container.firstChild);
+
+        setTimeout(() => {
+          //closeTooltip(id);
+        }, 5000);
+      }
+
+      function closeTooltip(id) {
+        const tooltip = document.getElementById(`tooltip-${id}`);
+        if (tooltip && !tooltip.classList.contains("closing")) {
+          tooltip.classList.add("closing");
+          setTimeout(() => {
+            tooltip.remove();
+          }, 300);
+        }
+      }
+
+      // 초기 툴팁 표시
+      addTooltip("success");
+      setTimeout(() => addTooltip("info"), 500);
+      setTimeout(() => addTooltip("warning"), 1000);
+    </script>
+  </body>
+</html>

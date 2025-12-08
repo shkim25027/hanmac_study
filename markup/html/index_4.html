@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>반원형 게이지 바</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background-color: #f5f5f5;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .gauge-container {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .control-panel {
+        margin-top: 30px;
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .control-panel label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #333;
+        font-weight: 500;
+      }
+
+      .control-panel input[type="range"] {
+        width: 100%;
+        height: 8px;
+        border-radius: 4px;
+        background: #ddd;
+        outline: none;
+        cursor: pointer;
+      }
+
+      .control-panel input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #e89555;
+        cursor: pointer;
+      }
+
+      .control-panel input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #e89555;
+        cursor: pointer;
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="gauge" width="800" height="450"></canvas>
+
+    <script>
+      drawGauge(100, "오늘 학습 · 100분");
+
+      function drawGauge(percent, label) {
+        const canvas = document.getElementById("gauge");
+        const ctx = canvas.getContext("2d");
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height * 0.9; // 아래쪽에 중심을 둬서 반원처럼 보이게
+        const radius = 300;
+        const lineWidth = 45;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // ---- 배경 아치 ----
+        ctx.beginPath();
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "rgba(114,69,31,0.15)";
+        ctx.arc(cx, cy, radius, Math.PI, 0, false);
+        ctx.stroke();
+
+        // ---- 진행 아치 ----
+        const endAngle = Math.PI + (Math.PI * percent) / 100;
+
+        ctx.beginPath();
+        ctx.strokeStyle = "#E6944F";
+        ctx.arc(cx, cy, radius, Math.PI, endAngle, false);
+        ctx.stroke();
+
+        // ---- 텍스트 아치 경로 ----
+        const textRadius = radius - lineWidth * 1.4; // SVG 느낌의 안쪽 배치
+        ctx.font = "22px Pretendard";
+        ctx.fillStyle = "#3D2E1F";
+
+        const txt = label;
+        const textLength = ctx.measureText(txt).width;
+        const totalAngle = textLength / textRadius;
+
+        const startAngleText = Math.PI + (Math.PI - totalAngle) / 2;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(startAngleText);
+
+        for (let i = 0; i < txt.length; i++) {
+          const char = txt[i];
+          const w = ctx.measureText(char).width;
+          const charAngle = w / textRadius;
+
+          ctx.save();
+          ctx.translate(textRadius, 0);
+          ctx.rotate(Math.PI / 2);
+          ctx.fillText(char, -w / 2, 0);
+          ctx.restore();
+
+          ctx.rotate(charAngle);
+        }
+
+        ctx.restore();
+      }
+    </script>
+  </body>
+</html>
