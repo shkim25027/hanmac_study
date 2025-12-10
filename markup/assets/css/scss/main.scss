@@ -359,7 +359,7 @@
           box-shadow: 0 8px 12px 0 rgba(217, 202, 190, 0.5);
         }
       }
-      .thumbnail {
+      .thumb {
         position: relative;
         min-width: 128px;
         max-width: 128px;
@@ -468,7 +468,7 @@
   .learning {
     &-area {
       position: absolute;
-      width: clamp(832px, 43.3333vw, 43.3333vw);
+      width: clamp(932px, 48.5416vw, 48.5416vw);
       //aspect-ratio: 1 / 1;
       left: 50%;
       top: 50%;

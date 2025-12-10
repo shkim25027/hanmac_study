@@ -1,5 +1,5 @@
 // ============================================
-// 비디오 관리 모듈
+// 비디오 관리 모듈 (Ajax 모달 버전)
 // ============================================
 
 export class VideoManager {
@@ -8,6 +8,7 @@ export class VideoManager {
     this.videos = config.videos || [];
     this.currentPage = 0;
     this.cachedVideos = [];
+    this.currentModal = null;
   }
 
   // 초기화
@@ -45,21 +46,19 @@ export class VideoManager {
 
   // 키워드로 영상 필터링
   filterVideos(keywords) {
-    // keywords가 객체 형태 {allow: [], deny: []}인 경우 처리
     const allowKeywords = Array.isArray(keywords)
       ? keywords
       : keywords.allow || [];
     const denyKeywords = Array.isArray(keywords) ? [] : keywords.deny || [];
 
-    // allow, deny 둘 다 없으면 전체 영상 랜덤 반환
     if (allowKeywords.length === 0 && denyKeywords.length === 0) {
       return this.shuffleArray([...this.videos]);
     }
 
-    let matchedPick = []; // 키워드 매칭 + Pick
-    let matchedNormal = []; // 키워드 매칭 (Pick 없음)
-    let unmatchedPick = []; // 키워드 미매칭 + Pick
-    let unmatchedNormal = []; // 키워드 미매칭 (Pick 없음)
+    let matchedPick = [];
+    let matchedNormal = [];
+    let unmatchedPick = [];
+    let unmatchedNormal = [];
 
     this.videos.forEach((video) => {
       const allowMatched =
@@ -67,12 +66,10 @@ export class VideoManager {
       const denyMatched =
         denyKeywords.length > 0 && this.isVideoMatched(video, denyKeywords);
 
-      // deny 키워드에 매칭되면 제외
       if (denyMatched) {
         return;
       }
 
-      // allow 키워드 매칭 여부로 분류
       const isMatched = allowMatched;
       const isPick = video.pick;
 
@@ -87,7 +84,6 @@ export class VideoManager {
       }
     });
 
-    // 우선순위: 1. 매칭+Pick → 2. 매칭 → 3. 미매칭+Pick → 4. 미매칭
     return [
       ...this.shuffleArray(matchedPick),
       ...this.shuffleArray(matchedNormal),
@@ -152,8 +148,8 @@ export class VideoManager {
       : "";
 
     card.innerHTML = `
-      <a href="#" class="card" data-video-url="${video.url}">
-        <div class="thumbnail">
+      <a href="#" class="card" data-video-id="${video.id}">
+        <div class="thumb">
           <img src="https://img.youtube.com/vi/${video.url || video.id}/sddefault.jpg" />
         </div>
         <div class="txt-box">
@@ -173,98 +169,240 @@ export class VideoManager {
     const cardLink = card.querySelector(".card");
     cardLink.addEventListener("click", (e) => {
       e.preventDefault();
-      this.openVideoModal(video.url);
+      this.loadVideoModal(video.id);
     });
 
     return card;
   }
 
-  // 비디오 모달 열기
-  openVideoModal(videoUrl) {
-    // 모달 생성 또는 기존 모달 찾기
-    let videoModal = document.getElementById("videoModal");
+  // Ajax로 비디오 모달 로드
+  async loadVideoModal(videoId) {
+    try {
+      // 기존 모달이 있으면 제거
+      this.destroyModal();
 
-    if (!videoModal) {
-      videoModal = document.createElement("div");
-      videoModal.id = "videoModal";
-      videoModal.className = "modal video";
-      videoModal.innerHTML = `
-        <div class="modal-content">
+      // Ajax로 모달 HTML 로드
+      const response = await fetch(`../_modal/video.html?id=${videoId}`);
+      if (!response.ok) {
+        throw new Error("모달 로드 실패");
+      }
 
-          <div class="modal-body">
-            <div class="video-contents">
-              <div class="video-box">
-                <iframe 
-                    id="videoFrame"
-                    width="100%" 
-                    height="100%" 
-                    src="" 
-                    frameborder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
-                  </iframe>
-              </div>
-              <div class="video-info">
-                <div class="tit-box">
-                  <div class="meta"> <span>인사이트</span> <em>경제와사회</em></div>
-                  <h3>회계를 조금이라도 이해하면 인생이 달라지는 이유 (회계사 이재용)</h3>
-                </div>
-                <div class="desc">
-                메타버스 시대가 열리며 우리의 삶과 정체성이 디지털 중심으로 재편되고 있습니다.<br>
-                이 변화는 새로운 기회와 동시에 사회적·윤리적 과제도 함께 가져옵니다.
-                </div>
-              </div>
-            </div>
-             <div class="video-list">
-                       <div class="list-header">
-           <span class="close">&times;</span>
-          </div>
-          <div>
-          </div>
-          <div class="comment-wrap">
-          <div class="comment-box">
-          <textarea placeholder="댓글을 작성해주세요"></textarea>
-             <div class="btn-area">
-          <button class="btn-cancel" >취소 </button>
-          <button class="btn-save" >작성</button>
-          </div>
-          </div>
-               </div>          
-             </div>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(videoModal);
+      const modalHTML = await response.text();
 
-      // 모달 닫기 이벤트
-      const closeBtn = videoModal.querySelector(".close");
-      closeBtn.onclick = () => {
-        this.closeVideoModal();
-      };
+      // 모달을 body에 추가
+      const modalContainer = document.createElement("div");
+      modalContainer.innerHTML = modalHTML;
+      const modal = modalContainer.firstElementChild;
 
-      // 모달 외부 클릭 시 닫기
-      videoModal.onclick = (e) => {
-        if (e.target === videoModal) {
-          this.closeVideoModal();
+      // 모달 ID 설정
+      modal.id = "videoModal";
+      document.body.appendChild(modal);
+      this.currentModal = modal;
+
+      // 비디오 데이터 찾기
+      const videoData = this.videos.find((v) => v.id === videoId);
+      if (videoData) {
+        // iframe에 비디오 URL 설정
+        const iframe = modal.querySelector("#videoFrame");
+        if (iframe) {
+          iframe.src = `https://www.youtube.com/embed/${videoData.url}?autoplay=1`;
         }
+
+        // 비디오 정보 업데이트
+        this.updateModalContent(modal, videoData);
+      }
+
+      // 모달 표시
+      setTimeout(() => {
+        modal.style.display = "block";
+
+        // 높이 조정 및 댓글 박스 이벤트 설정
+        setTimeout(() => {
+          this.adjustVideoListHeight();
+          this.setupCommentBox(); // 🔥 추가
+        }, 100);
+      }, 10);
+
+      // 닫기 이벤트 설정
+      this.setupModalCloseEvents(modal);
+    } catch (error) {
+      console.error("모달 로드 오류:", error);
+      alert("비디오를 로드하는 중 오류가 발생했습니다.");
+    }
+  }
+
+  // 🔥 이 메서드를 VideoManager 클래스에 추가
+  setupCommentBox() {
+    const textarea = this.currentModal?.querySelector(".comment-box textarea");
+    const btnCancel = this.currentModal?.querySelector(".btn-cancel");
+    const btnSave = this.currentModal?.querySelector(".btn-save");
+
+    console.log("댓글 박스 요소:", { textarea, btnCancel, btnSave }); // 디버깅용
+
+    if (!textarea || !btnCancel || !btnSave) {
+      console.warn("댓글 박스 요소를 찾을 수 없습니다");
+      return;
+    }
+
+    // textarea 입력 이벤트
+    textarea.addEventListener("input", (e) => {
+      const hasValue = e.target.value.trim().length > 0;
+
+      console.log("입력 감지:", hasValue); // 디버깅용
+
+      if (hasValue) {
+        btnCancel.removeAttribute("disabled");
+        btnSave.removeAttribute("disabled");
+        btnSave.classList.add("btn-active");
+      } else {
+        btnCancel.setAttribute("disabled", "disabled");
+        btnSave.setAttribute("disabled", "disabled");
+        btnSave.classList.remove("btn-active");
+      }
+    });
+
+    // 취소 버튼 클릭
+    btnCancel.addEventListener("click", (e) => {
+      e.preventDefault();
+      textarea.value = "";
+      btnCancel.setAttribute("disabled", "disabled");
+      btnSave.setAttribute("disabled", "disabled");
+      btnSave.classList.remove("btn-active");
+      textarea.focus();
+    });
+
+    // 작성 버튼 클릭
+    btnSave.addEventListener("click", (e) => {
+      e.preventDefault();
+      const comment = textarea.value.trim();
+      if (comment) {
+        console.log("댓글 작성:", comment);
+        // TODO: 댓글 저장 로직 추가
+        alert("댓글이 작성되었습니다: " + comment);
+
+        // 초기화
+        textarea.value = "";
+        btnCancel.setAttribute("disabled", "disabled");
+        btnSave.setAttribute("disabled", "disabled");
+        btnSave.classList.remove("btn-active");
+      }
+    });
+  }
+
+  // 리스트 높이 계산
+  adjustVideoListHeight() {
+    const videoSide = this.currentModal?.querySelector(".video-side");
+    const videoHeader = this.currentModal?.querySelector(".video-header");
+    const videoList = this.currentModal?.querySelector(".video-list");
+    const commentWrap = this.currentModal?.querySelector(".comment-wrap");
+
+    console.log("높이 조정 시작:", {
+      videoSide,
+      videoHeader,
+      videoList,
+      commentWrap,
+    });
+
+    if (!videoSide || !videoHeader || !videoList || !commentWrap) {
+      console.warn("필요한 요소를 찾을 수 없습니다");
+      return;
+    }
+
+    // 전체 높이
+    const totalHeight = videoSide.clientHeight;
+
+    // 헤더와 댓글박스 높이
+    const headerHeight = videoHeader.offsetHeight;
+    const commentHeight = commentWrap.offsetHeight;
+
+    // 리스트에 사용 가능한 최대 높이
+    const availableHeight = totalHeight - headerHeight - commentHeight - 20;
+
+    // 리스트의 실제 컨텐츠 높이
+    const listContentHeight = videoList.scrollHeight;
+
+    // 컨텐츠가 적으면 컨텐츠 높이만큼, 많으면 사용 가능한 높이만큼
+    const listHeight = Math.min(listContentHeight, availableHeight);
+
+    console.log("높이 계산:", {
+      totalHeight,
+      headerHeight,
+      commentHeight,
+      availableHeight,
+      listContentHeight,
+      listHeight,
+    });
+
+    videoList.style.height = listHeight + "px";
+    videoList.style.overflowY =
+      listContentHeight > availableHeight ? "auto" : "hidden";
+  }
+  // 모달 컨텐츠 업데이트
+  updateModalContent(modal, videoData) {
+    // 카테고리 업데이트
+    const categorySpan = modal.querySelector(".meta span");
+    if (categorySpan) {
+      categorySpan.textContent = videoData.category;
+    }
+
+    // 제목 업데이트
+    const titleH3 = modal.querySelector(".tit-box h3");
+    if (titleH3) {
+      titleH3.textContent = videoData.title;
+    }
+
+    // 키워드 태그 업데이트 (선택사항)
+    const metaEm = modal.querySelector(".meta em");
+    if (metaEm && videoData.keywords) {
+      metaEm.textContent = videoData.keywords.join(", ");
+    }
+  }
+
+  // 모달 닫기 이벤트 설정
+  setupModalCloseEvents(modal) {
+    // X 버튼 클릭
+    const closeBtn = modal.querySelector(".close");
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        this.destroyModal();
       };
     }
 
-    // 유튜브 iframe URL 설정
-    const iframe = videoModal.querySelector("#videoFrame");
-    iframe.src = `https://www.youtube.com/embed/${videoUrl}?autoplay=1`;
+    // 모달 배경 클릭
+    modal.onclick = (e) => {
+      if (e.target === modal) {
+        this.destroyModal();
+      }
+    };
 
-    // 모달 표시
-    videoModal.style.display = "block";
+    // ESC 키 이벤트
+    const escHandler = (e) => {
+      if (e.key === "Escape") {
+        this.destroyModal();
+        document.removeEventListener("keydown", escHandler);
+      }
+    };
+    document.addEventListener("keydown", escHandler);
   }
 
-  // 비디오 모달 닫기
-  closeVideoModal() {
-    const videoModal = document.getElementById("videoModal");
-    if (videoModal) {
-      const iframe = videoModal.querySelector("#videoFrame");
-      iframe.src = ""; // 비디오 중지
-      videoModal.style.display = "none";
+  // 모달 소멸
+  destroyModal() {
+    if (this.currentModal) {
+      // 비디오 중지
+      const iframe = this.currentModal.querySelector("#videoFrame");
+      if (iframe) {
+        iframe.src = "";
+      }
+
+      // 페이드아웃 효과
+      this.currentModal.style.opacity = "0";
+
+      setTimeout(() => {
+        if (this.currentModal && this.currentModal.parentNode) {
+          this.currentModal.parentNode.removeChild(this.currentModal);
+        }
+        this.currentModal = null;
+      }, 300);
     }
   }
 
@@ -276,7 +414,7 @@ export class VideoManager {
     return sortedVideos.slice(start, end);
   }
 
-  // 필터링된 영상 가져오기 (캐시 사용)
+  // 필터링된 영상 가져오기
   getFilteredVideos(forceRefresh = false) {
     if (this.cachedVideos.length > 0 && !forceRefresh) {
       return this.cachedVideos;
@@ -326,7 +464,7 @@ export class VideoManager {
     return Math.ceil(sortedVideos.length / this.config.videosPerPage);
   }
 
-  // 영상 목록 갱신 (키워드 변경 시)
+  // 영상 목록 갱신
   async refresh() {
     this.currentPage = 0;
     this.cachedVideos = [];
