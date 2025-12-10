@@ -4,9 +4,8 @@
     <script>
       // 페이지 로드 시 실행
       if (!localStorage.getItem("startVisit")) {
-        window.location.href = "./intro.html"; // intro 페이지 경로
+        window.location.href = "./intro.html";
       } else {
-        // 접속일 갱신
         localStorage.setItem("lastVisit", new Date().toISOString());
       }
     </script>
@@ -20,9 +19,7 @@
       <div class="container">
         <div class="bg-circle">
           <ul>
-            <li>
-              <div></div>
-            </li>
+            <li><div></div></li>
             <li></li>
             <li></li>
             <li></li>
@@ -55,6 +52,8 @@
                   <input type="checkbox" id="chk3" checked />
                   #협업
                 </label>
+              </div>
+              <div class="keyword-list">
                 <label class="kw-deny" for="chk4">
                   <input type="checkbox" id="chk4" checked />
                   #마인드셋
@@ -80,857 +79,198 @@
             </div>
           </div>
 
-          <!-- // keyword modal-->
+          <!-- keyword modal -->
           <div class="modal keyword" id="keywordModal">
-            <div class="modal-content">
-              <div class="modal-header">
-                나의 키워드 수정<i class="ico-check"></i>
-              </div>
-              <div class="modal-body" id="modalBody">
-                <ul class="keyword-tag">
-                  <li class="kw-box">
-                    <label for="kwtag_1">
-                      <input type="checkbox" id="kwtag_1" disabled /> #온보딩
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_2">
-                      <input type="checkbox" id="kwtag_2" disabled /> #성장
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_3">
-                      <input type="checkbox" id="kwtag_3" disabled /> #코칭
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_4">
-                      <input type="checkbox" id="kwtag_4" /> #인물
-                    </label>
-                    <input type="checkbox" class="kw-add" checked />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_5">
-                      <input type="checkbox" id="kwtag_5" checked /> #소통
-                    </label>
-                    <input type="checkbox" class="kw-add" checked />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_6">
-                      <input type="checkbox" id="kwtag_6" checked /> #협업
-                    </label>
-                    <input type="checkbox" class="kw-add" checked />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_7">
-                      <input type="checkbox" id="kwtag_7" disabled /> AI
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_8">
-                      <input type="checkbox" id="kwtag_8" disabled /> IT테크
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_9">
-                      <input type="checkbox" id="kwtag_9" disabled />
-                      #중간관리자
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_10">
-                      <input type="checkbox" id="kwtag_10" disabled /> #리더십
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_11">
-                      <input type="checkbox" id="kwtag_11" disabled /> #팔로우십
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_12">
-                      <input type="checkbox" id="kwtag_12" disabled /> #동기부여
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_13">
-                      <input type="checkbox" id="kwtag_13" disabled /> #인간관계
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_14">
-                      <input type="checkbox" id="kwtag_14" disabled /> #스킬업
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_15">
-                      <input type="checkbox" id="kwtag_15" disabled /> #피드백
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_16">
-                      <input type="checkbox" id="kwtag_16" disabled /> #커리어
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_17">
-                      <input type="checkbox" id="kwtag_17" disabled /> #경영
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_18">
-                      <input type="checkbox" id="kwtag_18" disabled /> #경제
-                    </label>
-                    <input type="checkbox" class="kw-add" />
-                  </li>
-                </ul>
-              </div>
-            </div>
+            @@include("_modal/keyword.html")
           </div>
-          <!-- // keyword modal-->
+          <!-- // keyword modal -->
         </div>
       </div>
+
       <!-- // container -->
     </div>
 
-    <script>
-      const svg = document.getElementById("gauge");
-      const size = 832;
-      const center = size / 2;
-      const strokeWidth = 31;
-      const maxValue = 140;
-
-      // 내부 좌표계는 고정!
-      // 실제 화면 크기와 관계 없음
-      svg.setAttribute("viewBox", `0 0 ${size} ${size}`);
-      svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-
-      // 여백 20 추가 → 튀어나가지 않음
-      const radius = size / 2 - strokeWidth / 2 - 20;
-
-      // 오프셋 40 제거
-      function ptc(cx, cy, r, angle) {
-        const rad = (angle * Math.PI) / 180;
-        return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-      }
-
-      function arc(r, start, end) {
-        const s = ptc(center, center, r, start);
-        const e = ptc(center, center, r, end);
-        return `M ${s.x} ${s.y} A ${r} ${r} 0 0 1 ${e.x} ${e.y}`;
-      }
-
-      function updateGauge(value) {
-        svg.innerHTML = "";
-
-        const percent = Math.min(value / maxValue, 1);
-        const angle = -180 + percent * 180;
-
-        // 배경 반원
-        const bg = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path"
-        );
-        bg.setAttribute("d", arc(radius, -180, 0));
-        bg.setAttribute("stroke", "#f2dfc7");
-        bg.setAttribute("stroke-width", strokeWidth);
-        bg.setAttribute("stroke-linecap", "square");
-        bg.setAttribute("fill", "none");
-        svg.appendChild(bg);
-
-        // 채워진 반원
-        const fg = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path"
-        );
-        fg.setAttribute("d", arc(radius, -180, angle));
-        fg.setAttribute("stroke", "#e89555");
-        fg.setAttribute("stroke-width", strokeWidth);
-        fg.setAttribute("stroke-linecap", "round");
-        fg.setAttribute("fill", "none");
-        svg.appendChild(fg);
-
-        // ─────────────────────────────────────────────
-        // 🔥 텍스트용 아크 2개 (겉/안쪽)
-        // ─────────────────────────────────────────────
-        const defs = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "defs"
-        );
-
-        // 외곽 텍스트: "나의 학습 : xx분"
-        const outerArc = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path"
-        );
-        outerArc.setAttribute("id", "outerArc");
-        outerArc.setAttribute("d", arc(radius - 6, -180, 0));
-        defs.appendChild(outerArc);
-
-        // 내부 텍스트: "전체 평균 학습 : xx분"
-        const innerArc = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path"
-        );
-        innerArc.setAttribute("id", "innerArc");
-        innerArc.setAttribute("d", arc(radius - 35, -180, 0)); // 안쪽으로 이동
-        defs.appendChild(innerArc);
-
-        svg.appendChild(defs);
-
-        // ─────────────────────────────────────────────
-        // 🔥 "나의 학습"
-        // ─────────────────────────────────────────────
-        if (percent > 0.15) {
-          const text = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "text"
-          );
-          text.setAttribute("font-size", "15");
-          text.setAttribute("font-weight", "600");
-          text.setAttribute("fill", "#000");
-
-          const tp = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "textPath"
-          );
-          tp.setAttributeNS(
-            "http://www.w3.org/1999/xlink",
-            "xlink:href",
-            "#outerArc"
-          );
-          tp.setAttribute("startOffset", `${Math.max(10, percent * 100 - 6)}%`);
-          tp.setAttribute("text-anchor", "middle");
-          tp.textContent = `나의 학습 : ${value}분`;
-
-          text.appendChild(tp);
-          svg.appendChild(text);
-        }
-
-        // 끝점 원
-        const p = ptc(center, center, radius, angle);
-        const dot = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "circle"
-        );
-        dot.setAttribute("cx", p.x);
-        dot.setAttribute("cy", p.y);
-        dot.setAttribute("r", 7);
-        dot.setAttribute("fill", "#804514");
-        svg.appendChild(dot);
-
-        // 끝점 아이콘
-        const ico = ptc(center, center, radius, angle);
-
-        const icon = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "g"
-        );
-        icon.setAttribute(
-          "transform",
-          `translate(${ico.x - 4}, ${ico.y - 3.5})`
-        );
-        icon.innerHTML = `
-        <path d="M7.25859 5.72241C7.45848 6.05134 7.22735 6.47331 6.84254 6.48196L0.511261 6.62427C-0.0386892 6.63663 -0.202465 5.88127 0.303221 5.66476L3.21705 4.41716C3.42672 4.32738 3.54907 4.10709 3.51446 3.88165L3.00742 0.578948C2.92444 0.0384521 3.64493 -0.223896 3.92892 0.243408L7.25859 5.72241Z" fill="#E28A41"/>
-      `;
-
-        svg.appendChild(icon);
-
-        // ─────────────────────────────────────────────
-        // 🔥 "전체 평균 학습" (게이지 안쪽)
-        // ─────────────────────────────────────────────
-        const maxText = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "text"
-        );
-        maxText.setAttribute("font-size", "15");
-        maxText.setAttribute("font-weight", "400");
-        maxText.setAttribute("fill", "#4A4947");
-
-        const maxLabel = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "textPath"
-        );
-        maxLabel.setAttributeNS(
-          "http://www.w3.org/1999/xlink",
-          "xlink:href",
-          "#innerArc"
-        );
-        maxLabel.setAttribute("startOffset", "100%"); // 위치 미세조정 가능
-        maxLabel.setAttribute("text-anchor", "end");
-        maxLabel.innerHTML = `전체 평균 학습 : <tspan font-weight="700">${maxValue}</tspan>분`;
-
-        maxText.appendChild(maxLabel);
-        svg.appendChild(maxText);
-      }
-
-      updateGauge(100);
-    </script>
-    <script src="../assets/js/kw_tag.js"></script>
-    <script>
-      // ============================================
-      // 데이터 정의
-      // ============================================
-      const allVideos = [
-        {
-          id: "IZm1m_FKmc0",
-          category: "리더십",
-          title: "정선근 교수가 알려주는 목디스크 지식",
-          keywords: ["소통", "전문가"],
-        },
-        {
-          id: "3CR-FmeOu2U",
-          category: "인사이트",
-          title: "기꺼이 '이 말'을 내 뱉을 줄 알아야 인정받는다",
-          keywords: ["마인드셋", "자기개발"],
-        },
-        {
-          id: "-X6GV6MvgSQ",
-          category: "인사이트",
-          title: "회계를 조금이라도 이해하면 인생이 달라집니다",
-          keywords: ["소통", "코칭"],
-        },
-        {
-          id: "-yRS3yGGnDU",
-          category: "리더십",
-          title: "성장하는 사람은 'OO 마인드'셋",
-          keywords: ["마인드셋", "중간관리자"],
-        },
-        {
-          id: "FUXT_m6nzhg",
-          category: "인사이트",
-          title: "정선근 교수가 알려주는 목디스크 지식",
-          keywords: ["소통", "전문"],
-        },
-        {
-          id: "nLL409se8sM",
-          category: "비즈트렌드",
-          title: "3/2 - 이대호의 별책부록 [1조 여행 꿀팁]",
-          keywords: ["동기부여", "AI"],
-        },
-        {
-          id: "XKqLz6WJSRA",
-          category: "리더십",
-          title: "효과적인 협업을 위한 5가지 원칙",
-          keywords: ["협업", "전문가"],
-        },
-        {
-          id: "3U0cbzmwSYc",
-          category: "인사이트",
-          title: "팀 생산성을 높이는 협업 도구",
-          keywords: ["성장", "코칭"],
-        },
-        {
-          id: "KE_MeQZgnPM",
-          category: "리더십",
-          title: "원격 근무 시대의 협업 전략",
-          keywords: ["IT테크", "리더십"],
-        },
-        {
-          id: "lnAo866WXgs",
-          category: "인사이트",
-          title: "갈등을 기회로 만드는 협업 기술",
-          keywords: ["협업", "스킬업"],
-        },
-        {
-          id: "wWcn4fRcVXI",
-          category: "비즈트렌드",
-          title: "애자일 방식으로 일하는 법",
-          keywords: ["성장", "코칭"],
-        },
-        {
-          id: "wWcn4fRcVXI",
-          category: "비즈트렌드",
-          title: "크로스펑셔널 팀 운영 노하우",
-          keywords: ["팔로우십", "온보딩"],
-        },
-        {
-          id: "2tKKgXcaXUg",
-          category: "리더십",
-          title: "2025년 리더가 갖춰야 할 역량",
-          keywords: ["경영", "경제"],
-        },
-      ];
+    <!-- 설정 및 초기화 -->
+    <script type="module">
+      import { KeywordManager } from "./assets/js/keyword.js";
+      import { VideoManager } from "./assets/js/video.js";
+      import { GaugeChart } from "./assets/js/gauge.js";
 
       // ============================================
-      // 상태 관리
+      // 📋 설정 (Config)
       // ============================================
-      const STATE = {
-        selectedKeywords: ["소통", "협업", "마인드셋"],
-        currentPage: 0,
-        VIDEOS_PER_PAGE: 6,
-        cachedVideos: [],
-      };
+      const CONFIG = {
+        // 비디오 데이터
+        videos: [
+          {
+            id: 1,
+            url: "IZm1m_FKmc0",
+            category: "리더십",
+            title: "정선근 교수가 알려주는 목디스크 지식",
+            pick: true,
+            person: "홍길동",
+            keywords: ["소통", "전문가"],
+            gauge: 80,
+          },
+          {
+            id: 2,
+            url: "3CR-FmeOu2U",
+            category: "인사이트",
+            title: "기꺼이 '이 말'을 내 뱉을 줄 알아야 인정받는다",
+            keywords: ["마인드셋", "자기개발"],
+            gauge: 30,
+          },
+          {
+            id: 3,
+            url: "-X6GV6MvgSQ",
+            category: "인사이트",
+            title: "회계를 조금이라도 이해하면 인생이 달라집니다",
+            keywords: ["소통", "코칭"],
+            gauge: 50,
+          },
+          {
+            id: 4,
+            url: "-yRS3yGGnDU",
+            category: "리더십",
+            title: "성장하는 사람은 'OO 마인드'셋",
+            keywords: ["마인드셋", "중간관리자"],
+          },
+          {
+            id: 5,
+            url: "FUXT_m6nzhg",
+            category: "인사이트",
+            title: "정선근 교수가 알려주는 목디스크 지식",
+            keywords: ["소통", "전문"],
+          },
+          {
+            id: 6,
+            url: "nLL409se8sM",
+            category: "비즈트렌드",
+            title: "3/2 - 이대호의 별책부록 [1조 여행 꿀팁]",
+            keywords: ["동기부여", "AI"],
+          },
+          {
+            id: 7,
+            url: "XKqLz6WJSRA",
+            category: "리더십",
+            title: "효과적인 협업을 위한 5가지 원칙",
+            keywords: ["협업", "전문가"],
+          },
+          {
+            id: 8,
+            url: "3U0cbzmwSYc",
+            category: "인사이트",
+            title: "팀 생산성을 높이는 협업 도구",
+            keywords: ["성장", "코칭"],
+          },
+          {
+            id: 9,
+            url: "KE_MeQZgnPM",
+            category: "리더십",
+            title: "원격 근무 시대의 협업 전략",
+            keywords: ["IT테크", "리더십"],
+          },
+          {
+            id: 10,
+            url: "lnAo866WXgs",
+            category: "인사이트",
+            title: "갈등을 기회로 만드는 협업 기술",
+            keywords: ["협업", "스킬업"],
+          },
+          {
+            id: 11,
+            url: "wWcn4fRcVXI",
+            category: "비즈트렌드",
+            title: "애자일 방식으로 일하는 법",
+            keywords: ["성장", "코칭"],
+          },
+          {
+            id: 12,
+            url: "wWcn4fRcVXI",
+            category: "비즈트렌드",
+            title: "크로스펑셔널 팀 운영 노하우",
+            keywords: ["팔로우십", "온보딩"],
+          },
+          {
+            id: 13,
+            url: "2tKKgXcaXUg",
+            category: "리더십",
+            title: "2025년 리더가 갖춰야 할 역량",
+            keywords: ["경영", "경제"],
+          },
+        ],
 
-      // ============================================
-      // 유틸리티 함수
-      // ============================================
-      const Utils = {
-        // Fisher-Yates 알고리즘을 이용한 배열 섞기
-        shuffleArray(array) {
-          const shuffled = [...array];
-          for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-          }
-          return shuffled;
-        },
+        // 최대 키워드 선택 개수
+        maxAllowKeywords: 5,
 
-        // 카테고리에 따른 CSS 클래스 반환
-        getCategoryClass(category) {
-          const categoryClassMap = {
-            리더십: "leader",
-            인사이트: "insight",
-            비즈트렌드: "biz",
-          };
-          return categoryClassMap[category] || "default";
-        },
+        // 초기 선택 키워드 (HTML과 일치시켜야 함)
+        initialAllowKeywords: ["소통", "협업"],
+        initialDenyKeywords: ["마인드셋"],
 
-        // 키워드 분리 (공백, 쉼표 등으로)
-        splitKeywords(input) {
-          return input
-            .split(/[\s,\/\-]+/)
-            .map((k) => k.trim())
-            .filter((k) => k.length > 0);
-        },
+        // 페이지당 영상 개수
+        videosPerPage: 6,
 
-        // 문자열 유사도 검사 (Levenshtein Distance)
-        isSimilar(a, b, maxDistance = 1) {
-          a = a.toLowerCase();
-          b = b.toLowerCase();
+        // 애니메이션 딜레이 (ms)
+        animationDelay: 100,
 
-          const dp = Array.from({ length: a.length + 1 }, () =>
-            Array(b.length + 1).fill(0)
-          );
-
-          for (let i = 0; i <= a.length; i++) dp[i][0] = i;
-          for (let j = 0; j <= b.length; j++) dp[0][j] = j;
-
-          for (let i = 1; i <= a.length; i++) {
-            for (let j = 1; j <= b.length; j++) {
-              if (a[i - 1] === b[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1];
-              } else {
-                dp[i][j] =
-                  1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
-              }
-            }
-          }
-
-          return dp[a.length][b.length] <= maxDistance;
+        // 게이지 설정
+        gauge: {
+          size: 832,
+          maxValue: 50, //전체 학습 시간
+          strokeWidth: 31,
+          padding: 20,
+          outerTextOffset: 6,
+          innerTextOffset: 35,
+          dotRadius: 7,
         },
       };
 
       // ============================================
-      // 비디오 필터링 및 정렬
+      // 🚀 앱 초기화
       // ============================================
-      const VideoFilter = {
-        // 키워드 매칭 검사 (유연한 매칭)
-        isVideoMatched(video, searchKeywords) {
-          const videoWords = video.keywords.map((k) => k.toLowerCase());
-
-          const searchWords = searchKeywords
-            .map((kw) => Utils.splitKeywords(kw))
-            .flat()
-            .map((w) => w.toLowerCase());
-
-          return searchWords.some((word) => {
-            return videoWords.some((tag) => {
-              // 완전일치
-              if (tag === word) return true;
-
-              // 최소 2글자 이상 부분 매칭만 허용
-              if (word.length > 1 && tag.includes(word)) return true;
-
-              // 유사도 검색은 3글자 이상일 때만
-              if (word.length > 2 && Utils.isSimilar(tag, word, 1)) return true;
-
-              return false;
-            });
-          });
-        },
-
-        // 키워드에 맞는 영상 필터링 및 정렬 (캐시 사용)
-        getFilteredAndSortedVideos(forceRefresh = false) {
-          // 캐시가 있고 강제 새로고침이 아니면 캐시 반환
-          if (STATE.cachedVideos.length > 0 && !forceRefresh) {
-            return STATE.cachedVideos;
-          }
-
-          let matchedVideos = [];
-          let unmatchedVideos = [];
-
-          if (STATE.selectedKeywords.length === 0) {
-            // 키워드 없으면 전체 랜덤
-            STATE.cachedVideos = Utils.shuffleArray(allVideos);
-            return STATE.cachedVideos;
-          }
-
-          // 매칭되는 영상과 매칭되지 않는 영상 분리
-          allVideos.forEach((video) => {
-            if (this.isVideoMatched(video, STATE.selectedKeywords)) {
-              matchedVideos.push(video);
-            } else {
-              unmatchedVideos.push(video);
-            }
-          });
-
-          // 매칭된 영상을 먼저, 나머지를 뒤에
-          const shuffledMatched = Utils.shuffleArray(matchedVideos);
-          const shuffledUnmatched = Utils.shuffleArray(unmatchedVideos);
-
-          STATE.cachedVideos = [...shuffledMatched, ...shuffledUnmatched];
-          return STATE.cachedVideos;
-        },
-
-        // 현재 페이지의 영상 목록 가져오기
-        getCurrentPageVideos() {
-          const sortedVideos = this.getFilteredAndSortedVideos();
-          const startIndex = STATE.currentPage * STATE.VIDEOS_PER_PAGE;
-          const endIndex = startIndex + STATE.VIDEOS_PER_PAGE;
-          return sortedVideos.slice(startIndex, endIndex);
-        },
-
-        // 전체 페이지 수 계산
-        getTotalPages() {
-          const sortedVideos = this.getFilteredAndSortedVideos();
-          return Math.ceil(sortedVideos.length / STATE.VIDEOS_PER_PAGE);
-        },
-
-        // 캐시 초기화 (키워드 변경 시 사용)
-        clearCache() {
-          STATE.cachedVideos = [];
-        },
-      };
-
-      // ============================================
-      // UI 렌더링
-      // ============================================
-      const VideoRenderer = {
-        // 비디오 카드 생성
-        createVideoCard(video) {
-          const card = document.createElement("div");
-          card.className = "video-card";
-
-          const keywordTags = video.keywords
-            .map((kw) => `<span class="key-badge">${kw}</span>`)
-            .join(" ");
-
-          const categoryClass = Utils.getCategoryClass(video.category);
-
-          card.innerHTML = `<div class="card">
-      <div class="thumbnail">
-        <img src="https://img.youtube.com/vi/${video.id}/sddefault.jpg" />
-      </div>
-      <div class="txt-box">
-        <div class="category ${categoryClass}">${video.category}</div>
-        <div class="title">${video.title}</div>
-        <div class="author">${keywordTags}</div>
-      </div></div>
-    `;
-
-          return card;
-        },
-
-        // 영상 목록 렌더링
-        renderVideos() {
-          const container = document.getElementById("videoCardsContainer");
-          const videos = VideoFilter.getCurrentPageVideos();
-
-          container.innerHTML = "";
-
-          videos.forEach((video, index) => {
-            const card = this.createVideoCard(video);
-            container.appendChild(card);
-
-            setTimeout(() => {
-              card.classList.add("show");
-            }, index * 100);
-          });
-
-          Pagination.update();
-        },
-      };
-
-      // ============================================
-      // 페이지네이션
-      // ============================================
-      const Pagination = {
-        // 버튼 상태 업데이트
-        updateButtons() {
-          const prevBtn = document.getElementById("prevBtn");
-          const nextBtn = document.getElementById("nextBtn");
-          const totalPages = VideoFilter.getTotalPages();
-
-          if (STATE.currentPage === 0) {
-            prevBtn.classList.add("disabled");
-          } else {
-            prevBtn.classList.remove("disabled");
-          }
-
-          if (STATE.currentPage >= totalPages - 1) {
-            nextBtn.classList.add("disabled");
-          } else {
-            nextBtn.classList.remove("disabled");
-          }
-        },
-
-        // 페이지네이션 정보 업데이트
-        update() {
-          const pagination = document.getElementById("pagination");
-          const totalPages = VideoFilter.getTotalPages();
-
-          pagination.innerHTML = `<span class="current">${STATE.currentPage + 1}</span> / ${totalPages}`;
-          this.updateButtons();
-        },
-
-        // 페이지 변경 (페이드 효과)
-        async changePage() {
-          const cardsContainer = document.getElementById("videoCardsContainer");
-
-          cardsContainer.classList.add("fade-out");
-          await new Promise((resolve) => setTimeout(resolve, 400));
-
-          VideoRenderer.renderVideos();
-          cardsContainer.classList.remove("fade-out");
-        },
-      };
-
-      // ============================================
-      // 키워드 관리
-      // ============================================
-      const KeywordManager = {
-        // 키워드 추가
-        addKeyword(keyword) {
-          if (!STATE.selectedKeywords.includes(keyword)) {
-            STATE.selectedKeywords.push(keyword);
-          }
-        },
-
-        // 키워드 제거
-        removeKeyword(keyword) {
-          STATE.selectedKeywords = STATE.selectedKeywords.filter(
-            (k) => k !== keyword
-          );
-        },
-
-        // 키워드 토글 (다중 선택)
-        toggleKeyword(keyword, isChecked) {
-          if (isChecked) {
-            this.addKeyword(keyword);
-          } else {
-            this.removeKeyword(keyword);
-          }
-        },
-
-        // 키워드 변경 후 페이지 리셋 및 렌더링
-        async updateVideosAfterKeywordChange() {
-          STATE.currentPage = 0;
-          VideoFilter.clearCache();
-          await Pagination.changePage();
-        },
-
-        // 체크박스 상태 동기화
-        syncCheckboxStates() {
-          document
-            .querySelectorAll("#myKeyword input[type='checkbox']")
-            .forEach((checkbox) => {
-              const label = checkbox.closest("label");
-              if (label) {
-                const keywordText = label.textContent.trim().replace("#", "");
-                checkbox.checked = STATE.selectedKeywords.includes(keywordText);
-              }
-            });
-        },
-
-        // 모달 닫힐 때 호출 - syncKeywordsToList 후 체크박스 상태 업데이트
-        async syncAfterModalClose() {
-          // kw_tag.js의 syncKeywordsToList가 실행된 후
-          // 새로 추가된 체크박스들의 상태를 동기화
-          this.syncCheckboxStates();
-
-          // 영상 목록도 갱신
-          await this.updateVideosAfterKeywordChange();
-        },
-      };
-
-      // ============================================
-      // 모달 관리
-      // ============================================
-      const ModalManager = {
-        modal: null,
-        settingsBtn: null,
-
-        init() {
-          this.modal = document.getElementById("keywordModal");
-          this.settingsBtn = document.getElementById("keywordSettingsBtn");
-
-          this.setupEventListeners();
-        },
-
-        setupEventListeners() {
-          // 모달 열기
-          this.settingsBtn.onclick = () => {
-            this.modal.style.display = "block";
-          };
-
-          // 모달 외부 클릭 시 닫기
-          this.modal.onclick = async (e) => {
-            if (e.target === this.modal) {
-              if (typeof syncKeywordsToList === "function") {
-                syncKeywordsToList();
-              }
-              this.modal.style.display = "none";
-
-              // 짧은 딜레이 후 동기화 (DOM 업데이트 대기)
-              setTimeout(async () => {
-                await KeywordManager.syncAfterModalClose();
-              }, 50);
-            }
-          };
-        },
-      };
-
-      // ============================================
-      // 이벤트 리스너 설정
-      // ============================================
-      const EventHandlers = {
-        initialized: false,
-
-        // 네비게이션 버튼 이벤트
-        setupNavigationButtons() {
-          const prevBtn = document.getElementById("prevBtn");
-          const nextBtn = document.getElementById("nextBtn");
-
-          if (!prevBtn || !nextBtn) {
-            console.error("버튼을 찾을 수 없습니다");
-            return;
-          }
-
-          // 이전 버튼
-          prevBtn.onclick = async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            if (STATE.currentPage > 0) {
-              STATE.currentPage--;
-              await Pagination.changePage();
-            }
-          };
-
-          // 다음 버튼
-          nextBtn.onclick = async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            const totalPages = VideoFilter.getTotalPages();
-            if (STATE.currentPage < totalPages - 1) {
-              STATE.currentPage++;
-              await Pagination.changePage();
-            }
-          };
-        },
-
-        // 키워드 체크박스 이벤트 (이벤트 위임 방식)
-        setupKeywordCheckboxes() {
-          const keywordList = document.getElementById("myKeyword");
-
-          if (!keywordList) {
-            console.error("myKeyword 요소를 찾을 수 없습니다");
-            return;
-          }
-
-          // 부모 요소에 이벤트 리스너 등록 (이벤트 위임)
-          keywordList.onclick = async function (e) {
-            // 체크박스가 클릭된 경우
-            const checkbox = e.target;
-            if (checkbox.type === "checkbox") {
-              const label = checkbox.closest("label");
-              if (label) {
-                const keywordText = label.textContent.trim().replace("#", "");
-
-                // checked 상태는 클릭 직후이므로 현재 상태 사용
-                KeywordManager.toggleKeyword(keywordText, checkbox.checked);
-                await KeywordManager.updateVideosAfterKeywordChange();
-              }
-            }
-          };
-
-          console.log("키워드 체크박스 이벤트 등록 완료 (이벤트 위임)");
-        },
-
-        // 모달 내 키워드 태그 클릭 이벤트
-        setupModalKeywordTags() {
-          document.querySelectorAll(".keyword-tag > label").forEach((label) => {
-            const checkbox = label.querySelector("input[type='checkbox']");
-
-            if (checkbox) {
-              checkbox.onchange = function () {
-                const keywordText = label.textContent.trim().replace("#", "");
-
-                if (!this.disabled) {
-                  KeywordManager.toggleKeyword(keywordText, this.checked);
-                }
-              };
-            }
-          });
-        },
-
-        // 모든 이벤트 리스너 설정
-        init() {
-          if (this.initialized) {
-            return;
-          }
-
-          this.setupNavigationButtons();
-          this.setupKeywordCheckboxes();
-          this.setupModalKeywordTags();
-          this.initialized = true;
-        },
-      };
-
-      // ============================================
-      // 초기화
-      // ============================================
-      function initialize() {
-        VideoRenderer.renderVideos();
-        EventHandlers.init();
-        ModalManager.init();
-        KeywordManager.syncCheckboxStates();
-      }
-
-      // DOMContentLoaded 시 한 번만 초기화
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", () => {
-          initialize();
-
-          // 외부 함수 호출 (kw_tag.js)
-          if (typeof keywordChange === "function") {
-            keywordChange();
-          }
+      let keywordManager, videoManager, gaugeChart;
+
+      function initApp() {
+        // 키워드 매니저 초기화
+        keywordManager = new KeywordManager({
+          initialAllowKeywords: CONFIG.initialAllowKeywords,
+          initialDenyKeywords: CONFIG.initialDenyKeywords,
+          maxAllowKeywords: CONFIG.maxAllowKeywords,
+          onKeywordChange: () => {
+            videoManager.refresh();
+          },
         });
-      } else {
-        initialize();
 
-        if (typeof keywordChange === "function") {
-          keywordChange();
+        // 비디오 매니저 초기화
+        videoManager = new VideoManager({
+          videos: CONFIG.videos,
+          videosPerPage: CONFIG.videosPerPage,
+          animationDelay: CONFIG.animationDelay,
+          getKeywords: () => keywordManager.getSelectedKeywords(),
+        });
+
+        // 게이지 차트 초기화
+        gaugeChart = new GaugeChart(CONFIG.gauge, CONFIG.maxValue);
+
+        // 초기화 실행
+        keywordManager.init();
+        videoManager.init();
+        gaugeChart.init();
+        gaugeChart.update(35); // 나의 학습 시간
+
+        if (typeof window.keywordChange === "function") {
+          window.keywordChange();
         }
+
+        console.log("초기화 완료!");
+      }
+
+      // DOM 로드 후 초기화
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initApp);
+      } else {
+        initApp();
       }
     </script>
-    >
   </body>
 </html>

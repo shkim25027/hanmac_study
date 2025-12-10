@@ -5,14 +5,18 @@
   --text-revers: #fff;
   --text-primary: #3c3321;
   --text-secondary: #747474;
-  --text-accent: #f5651d;
+  --text-accent: #ff5c00;
   --text-myclass: #ffdf60;
   --text-main-primary: #4a4040;
   --text-main-secondary: #3a200d;
 
+  --text-pick: #2b5045;
   --text-keyword-base: #c4c2c0;
   --text-keyword-primary: #fff;
   --text-keyword-secondary: #ac9f8f;
+
+  --text-video-primary: #b6d5a7;
+  --text-video-secondary: #ddd;
 
   /* 배경 */
   //--bg-base: #f6f1e9;
@@ -47,6 +51,7 @@
       )
       top / 100% 114px no-repeat,
     #ece3d2;
+  --bg-video: #1b1b1b;
   --bg-nav: linear-gradient(
     90deg,
     #0f3025 0%,
@@ -62,6 +67,9 @@
   --bg-cate-secondary: #d4decf;
   --bg-cate-tertiary: #e8cfe4;
 
+  --bg-pick: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, #d5ede6 100%);
+  --bg-gauge-base: #b4b4b4;
+  --bg-gauge-primary: #ff5c00;
   --bg-search: #e4dbc9;
 
   --bg-keyword-base: rgba(230, 205, 177, 0.3);
@@ -74,19 +82,26 @@
   --bg-lecture-progress-primary: rgba(3, 9, 7, 0.3);
   --bg-lecture-progress-secondary: #07855c;
 
+  --bg-btn-base: #000;
+  --bg-btn-primary: #ff5c00;
+  --bg-btn-secondary: #1f1f1f;
+
   /* border */
   --border-base: rgba(0, 0, 0, 0.05);
+  --border-primary: #fff;
+
+  //--border-search: ;
   --border-keyword-base: rgba(0, 0, 0, 0.05);
   --border-keyword-primary: rgba(255, 255, 255, 0.4);
   --border-keyword-primary-hover: rgba(0, 0, 0, 0.05);
   --border-keyword-secondary: rgba(255, 255, 255, 0.4);
   --border-keyword-secondary-hover: rgba(0, 0, 0, 0.1);
+  --border-pick: rgba(255, 255, 255, 0.5);
+  --border-video: rgba(255, 255, 255, 0.1);
 
-  /* border color*/
+  --border-btn: rgba(255, 255, 255, 0.05);
 
-  --border-primary: #fff;
-  --border-search:   ;
-
+  /* drop */
   --text-shadow:
     -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   --text-stroke: drop-shadow(0 0 0.5px #000);

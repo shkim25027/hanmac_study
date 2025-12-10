@@ -169,6 +169,8 @@
         text-align: center;
         flex-direction: column;
         gap: 12px;
+        width: max-content;
+        margin: auto;
         @include flex();
         button {
           font-size: 13px;
@@ -295,8 +297,9 @@
           );
           box-shadow: 8px 16px 24px 0 rgba(198, 187, 177, 0.5);
           backdrop-filter: blur(9.350000381469727px);
-          @include maskContents();
           padding: 15px;
+          @include maskContents();
+
           top: 50%;
           left: 50%;
           translate: -50% -50%;
@@ -313,6 +316,31 @@
             box-shadow: 0 0 7px 0 #000;
             z-index: -1;
           }
+        }
+      }
+      .pick {
+        position: absolute;
+        left: -110px;
+        top: -10px;
+        width: 144px;
+        height: 42px;
+        border-radius: 24px 24px 0 24px;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+
+        background: var(--bg-pick);
+        font-size: 16px;
+        color: var(--text-pick);
+        box-shadow: 0 4px 8px 0 rgba(166, 154, 97, 0.25);
+        backdrop-filter: blur(2px);
+        gap: 2px;
+        @include flex();
+
+        em {
+          margin-left: 2px;
+          font-weight: 700;
+        }
+        .ico-pick {
+          z-index: 1;
         }
       }
       .card {
@@ -346,8 +374,8 @@
           height: 100%;
           background: rgba(255, 255, 255, 0.3);
           box-sizing: border-box;
-          @include maskContents();
           padding: 4px;
+          @include maskContents();
         }
         img {
           width: 100%;
@@ -358,7 +386,20 @@
       .txt-box {
         flex-direction: column;
         @include flex(flex-start, center);
-
+        .checkbox {
+          position: absolute;
+          top: 10px;
+          right: 42px;
+          width: 24px;
+          height: 24px;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='18' viewBox='0 0 22 18' fill='none'%3E%3Cpath d='M15.95 0C14.036 0 12.199 0.79455 11 2.04033C9.801 0.79455 7.964 0 6.05 0C2.662 0 0 2.36403 0 5.39509C0 9.09319 3.74 12.1243 9.405 16.7052L11 18L12.595 16.7052C18.26 12.1243 22 9.09319 22 5.39509C22 2.36403 19.338 0 15.95 0Z' fill='white'/%3E%3Cpath d='M15.9502 0.75C19.0079 0.750089 21.25 2.85803 21.25 5.39551C21.2499 6.96829 20.4613 8.47481 18.8691 10.2119C17.2723 11.9541 14.9715 13.8187 12.123 16.1221L12.1221 16.123L11 17.0332L9.87793 16.123L9.87695 16.1221L7.8457 14.4717C5.92217 12.894 4.3285 11.5185 3.13086 10.2119C1.5387 8.47481 0.750138 6.96829 0.75 5.39551C0.75 2.85803 2.99208 0.75009 6.0498 0.75C7.76714 0.75 9.40728 1.4668 10.46 2.56055L11 3.12207L11.54 2.56055C12.5927 1.4668 14.2329 0.75 15.9502 0.75Z' stroke='%23060505' stroke-opacity='0.2' stroke-width='1.5'/%3E%3C/svg%3E");
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: contain;
+          &:has(:checked) {
+            background-image: url("data:image/svg+xml,%3Csvg width='22' height='18' viewBox='0 0 22 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.95 0C14.036 0 12.199 0.79455 11 2.04033C9.801 0.79455 7.964 0 6.05 0C2.662 0 0 2.36403 0 5.39509C0 9.09319 3.74 12.1243 9.405 16.7052L11 18L12.595 16.7052C18.26 12.1243 22 9.09319 22 5.39509C22 2.36403 19.338 0 15.95 0Z' fill='%23ff5c00'/%3E%3Cpath d='M15.9502 0.75C19.0079 0.750089 21.25 2.85803 21.25 5.39551C21.2499 6.96829 20.4613 8.47481 18.8691 10.2119C17.2723 11.9541 14.9715 13.8187 12.123 16.1221L12.1221 16.123L11 17.0332L9.87793 16.123L9.87695 16.1221L7.8457 14.4717C5.92217 12.894 4.3285 11.5185 3.13086 10.2119C1.5387 8.47481 0.750138 6.96829 0.75 5.39551C0.75 2.85803 2.99208 0.75009 6.0498 0.75C7.76714 0.75 9.40728 1.4668 10.46 2.56055L11 3.12207L11.54 2.56055C12.5927 1.4668 14.2329 0.75 15.9502 0.75Z' stroke='white' stroke-opacity='0.2' stroke-width='1.5'/%3E%3C/svg%3E%0A");
+          }
+        }
         .category {
           margin-bottom: 8px;
           font-size: 12px;
@@ -393,6 +434,25 @@
           gap: 4px;
           @include flex();
           @include ellipsis(1);
+        }
+      }
+      .gauge {
+        &-bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: var(--bg-gauge-base);
+          padding-bottom: 4px;
+          @include maskContents();
+        }
+        &-fill {
+          position: absolute;
+          left: 0;
+          top: 50%;
+          height: 50%;
+          background: var(--bg-gauge-primary);
         }
       }
     }

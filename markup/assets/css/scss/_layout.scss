@@ -269,11 +269,11 @@ html {
             var(--h) 0 0 0;
         }
         dl {
-          gap: 8px;
           flex-direction: column;
-          @include flex(flex-start, center);
+          @include flex();
         }
         dt {
+          margin-bottom: 4px;
           font-size: 14px;
           font-weight: 700;
           color: var(--text-base);

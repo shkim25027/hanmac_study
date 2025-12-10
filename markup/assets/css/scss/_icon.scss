@@ -7,4 +7,11 @@
     &-next {
     }
   }
+
+  &-pick {
+    @include svgIcon("../images/ico/ico_pick.svg", 24px);
+  }
+  &-like {
+    @include svgIconMask("../images/ico/ico_like.svg", var(--text-base), 24px);
+  }
 }

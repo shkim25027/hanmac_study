@@ -193,8 +193,8 @@
             transparent 100%
           )
           #ff8200;
-        @include maskContents();
         padding: 2px;
+        @include maskContents();
       }
 
       .ico-arrow {
