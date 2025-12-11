@@ -1,0 +1,173 @@
+<!-- 비디오 모달 템플릿 -->
+<div class="modal video">
+  <div class="modal-content">
+    <div class="modal-body">
+      <div class="video-contents">
+        <div class="video-box">
+          <iframe
+            id="videoFrame"
+            width="100%"
+            height="100%"
+            src=""
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+        <div class="video-info">
+          <div class="tit-box">
+            <div class="meta">
+              <span>법정교육</span>
+            </div>
+            <h3>산업재해예방 안전수칙</h3>
+          </div>
+          <div class="desc">
+            본 산업안전보건교육은 직무스트레스 관리부터 화재·폭발 대응, 산업재해
+            예방 안전수칙 등 근로자가 반드시 알아야 할 핵심 안전 지식을
+            다룹니다.<br />
+            또한 하절기 질병예방, 전기재해 유형 및 예방대책, 온습도·미세먼지 등
+            작업환경 관리 방법을 통해 안전하고 건강한 근무환경을 유지하도록
+            돕습니다.
+          </div>
+        </div>
+      </div>
+      <div class="video-side step">
+        <!-- 제목 -->
+        <div class="video-header">
+          <div class="tit-box">
+            <h5 class="tit">현재강의</h5>
+            <p class="sub-txt">
+              아동학대 신고의무자 및 공공부문 종사자 아동학대 예방교육(공통편)
+            </p>
+          </div>
+          <div class="gauge-container">
+            <div class="gauge-bar">
+              <div class="gauge-fill" id="gaugeFill" style="width: 50%"></div>
+              <img
+                class="gauge-ticks"
+                src="./assets/images/video/img_gauge_ticks.svg"
+              />
+            </div>
+
+            <div class="gauge-labels">
+              <span class="label"> <em>3</em> /6강</span>
+              <span class="label current" id="currentValue"
+                >진도율 <em>50</em>%</span
+              >
+            </div>
+          </div>
+
+          <span class="close">&times;</span>
+        </div>
+        <!-- // 제목 -->
+        <div class="video-list">
+          <h5 class="tit">학습목차</h5>
+          <ul class="learning-list">
+            <li class="complet">
+              <a href="#" class="list" data-video-id="">
+                <span class="seq">1차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_learning_thumb_01.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">직무스트레스의 예방과 관리</div>
+                    <spna class="state">학습완료</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li class="complet">
+              <a href="#" class="list" data-video-id="${video.id}">
+                <span class="seq">2차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_learning_thumb_02.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">직무스트레스의 예방과 관리</div>
+                    <spna class="state">학습완료</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li class="active">
+              <a href="#" class="list" data-video-id="${video.id}">
+                <span class="seq">3차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_learning_thumb_03.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">직무스트레스의 예방과 관리</div>
+                    <spna class="state">학습중</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="list" data-video-id="${video.id}">
+                <span class="seq">4차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_learning_thumb_04.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">하절기 질병예방 및 안전</div>
+                    <spna class="state">미진행</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="list" data-video-id="${video.id}">
+                <span class="seq">5차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_learning_thumb_05.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">직무스트레스의 예방과 관리</div>
+                    <spna class="state">미진행</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="list" data-video-id="${video.id}">
+                <span class="seq">6차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_learning_thumb_06.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">온도습도 및 미세먼지 안정</div>
+                    <spna class="state">미진행</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

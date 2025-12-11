@@ -22,6 +22,13 @@
   --text-cate-secondary: #b6d5a7;
   --text-cate-tertiary: #e8cfe4;
 
+  --text-comment-primary: #fff;
+  --text-comment-secondary: #8d8d8d;
+
+  --text-learning-base: #8d8888;
+  --text-learning-primary: #ff5c00;
+  --text-learning-secondary: #008c49;
+
   /* 배경 */
   //--bg-base: #f6f1e9;
   --bg-base: #e4ddcf;
@@ -56,6 +63,7 @@
       top / 100% 114px no-repeat,
     #ece3d2;
   --bg-video: #1b1b1b;
+  --bg-comment: #2a2a2a;
   --bg-nav: linear-gradient(
     90deg,
     #0f3025 0%,
@@ -103,7 +111,7 @@
   --border-pick: rgba(255, 255, 255, 0.5);
   --border-video: rgba(255, 255, 255, 0.1);
 
-  --border-btn: rgba(255, 255, 255, 0.05);
+  --border-btn: rgba(255, 255, 255, 0.2);
 
   /* drop */
   --text-shadow:

@@ -75,7 +75,30 @@ function fonts() {
 
 // Images
 function images() {
-  return src(paths.img.src).pipe(imagemin()).pipe(dest(paths.img.dest));
+  return src(paths.img.src, {
+    encoding: false,
+    buffer: true,
+  })
+    .pipe(
+      imagemin(
+        [
+          //0: 최적화 안 함 (빠름, 용량 큰 편)
+          //3: 적당한 최적화 (속도와 용량 균형) ✅ 권장
+          //5: 기본값 (더 작은 용량, 좀 더 느림)
+          //7: 최대 최적화 (가장 작은 용량, 매우 느림)
+          imagemin.optipng({ optimizationLevel: 3 }), // 5 대신 3으로 낮춤
+          imagemin.svgo({
+            plugins: [{ name: "removeViewBox", active: false }],
+          }),
+        ],
+
+        {
+          verbose: true, // 로그 출력
+        }
+      )
+    )
+    .pipe(dest(paths.img.dest));
+  //return src(paths.img.src).pipe(imagemin()).pipe(dest(paths.img.dest));
   // return src(paths.img.src).pipe(dest(paths.img.dest));
 }
 

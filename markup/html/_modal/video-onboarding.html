@@ -1,0 +1,153 @@
+<!-- 비디오 모달 템플릿 -->
+<div class="modal video">
+  <div class="modal-content">
+    <div class="modal-body">
+      <div class="video-contents">
+        <div class="video-box">
+          <iframe
+            id="videoFrame"
+            width="100%"
+            height="100%"
+            src=""
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+        <div class="video-info">
+          <div class="tit-box">
+            <div class="meta">
+              <span>인사이트 ＞</span>
+              <em>경제와사회</em>
+            </div>
+            <h3>회계를 조금이라도 이해하면 인생이 달라지는 이유</h3>
+            <label class="bookmark" for="chk">
+              <input id="chk" type="checkbox" value="" />
+              <span>북마크</span>
+            </label>
+          </div>
+          <div class="desc">
+            메타버스 시대가 열리며 우리의 삶과 정체성이 디지털 중심으로 재편되고
+            있습니다.<br />
+            이 변화는 새로운 기회와 동시에 사회적·윤리적 과제도 함께 가져옵니다.
+          </div>
+        </div>
+      </div>
+      <div class="video-side step">
+        <!-- 제목 -->
+        <div class="video-header">
+          <div class="tit-box">
+            <h5 class="tit">현재강의</h5>
+            <p class="sub-txt">
+              아동학대 신고의무자 및 공공부문 종사자 아동학대 예방교육(공통편)
+            </p>
+          </div>
+          <div class="gauge-container">
+            <div class="gauge-bar">
+              <div class="gauge-fill" id="gaugeFill" style="width: 20%"></div>
+              <img
+                class="gauge-ticks"
+                src="./assets/images/video/img_gauge_ticks.svg"
+              />
+            </div>
+
+            <div class="gauge-labels">
+              <span class="label"> <em>1</em> /4강</span>
+              <span class="label current" id="currentValue"
+                >진도율 <em>20</em>%</span
+              >
+            </div>
+          </div>
+
+          <span class="close">&times;</span>
+        </div>
+        <!-- // 제목 -->
+        <div class="video-list">
+          <h5 class="tit">학습목차</h5>
+          <ul class="learning-list">
+            <li class="active">
+              <a href="#" class="list" data-video-id="">
+                <span class="seq">1차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_essential_thumb_01.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">산업재해예방 안전수칙</div>
+                    <spna class="state">학습중</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li class="">
+              <a href="#" class="list" data-video-id="${video.id}">
+                <span class="seq">2차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_essential_thumb_02.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">축적에서 길을 찾다</div>
+                    <spna class="state">미진행</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li class="">
+              <a href="#" class="list" data-video-id="${video.id}">
+                <span class="seq">3차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_essential_thumb_03.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">천재는 잊어라</div>
+                    <spna class="state">학습중</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="list" data-video-id="${video.id}">
+                <span class="seq">4차시</span>
+                <div class="learning-box">
+                  <div class="thumb">
+                    <img
+                      src="./assets/images/video/img_essential_thumb_03.png"
+                    />
+                  </div>
+                  <div class="txt-box">
+                    <div class="title">유령이 된 리더들</div>
+                    <spna class="state">미진행</spna>
+                  </div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="comment-wrap">
+          <!-- 댓글 입력 -->
+          <div class="comment-box">
+            <textarea placeholder="댓글을 작성해주세요"></textarea>
+            <div class="btn-area">
+              <button class="btn-cancel" disabled>취소</button>
+              <button class="btn-save" disabled>작성</button>
+            </div>
+          </div>
+          <!-- // 댓글 입력 -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
