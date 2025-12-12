@@ -1,13 +1,6 @@
 <!doctype html>
 <html lang="ko">
   <head>
-    <script>
-      // 최초 접속일 등록
-      if (!localStorage.getItem("startVisit")) {
-        localStorage.setItem("startVisit", new Date().toISOString());
-        localStorage.setItem("lastVisit", new Date().toISOString());
-      }
-    </script>
     @@include("_include/_head.html")
     <link rel="stylesheet" type="text/css" href="./assets/css/intro.css" />
   </head>

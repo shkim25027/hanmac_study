@@ -5,7 +5,6 @@
 @forward "import/lib-fonts";
 @forward "import/reset-css";
 @forward "_icon";
-@forward "_animation";
 
 /* 스크롤바 스타일 */
 ::-webkit-scrollbar {
@@ -354,9 +353,8 @@ h5 {
           position: relative;
           width: 100%;
           height: 80px;
-          flex-direction: column;
           border-bottom: 1px solid var(--border-video);
-          @include flex(flex-start, center);
+          @include flex(column, flex-start, center);
           h3 {
             font-size: 20px;
             font-weight: 700;
@@ -412,9 +410,8 @@ h5 {
               #1b1b1b;
             height: max-content;
             .tit-box {
-              flex-direction: column;
               gap: 12px;
-              @include flex(flex-start, flex-start);
+              @include flex(column, flex-start, flex-start);
             }
             .sub-txt {
               font-size: 20px;
@@ -477,7 +474,7 @@ h5 {
               }
               &-labels {
                 font-size: 14px;
-                @include flex(center, space-between);
+                @include flex(row, center, space-between);
                 em {
                   font-weight: 700;
                   margin: 0 2px;
@@ -495,7 +492,7 @@ h5 {
         min-height: 80px;
         color: var(--text-revers);
         gap: 16px;
-        @include flex(flex-start, flex-start);
+        @include flex(row, flex-start, flex-start);
         .tit {
           line-height: 26px;
         }
@@ -549,7 +546,7 @@ h5 {
           position: relative;
           gap: 12px;
           padding: 8px 20px;
-          @include flex(center, flex-start);
+          @include flex(row, center, flex-start);
           &::before {
             left: 0;
             width: 20px;
@@ -710,9 +707,8 @@ h5 {
       }
     }
     .txt-box {
-      flex-direction: column;
       gap: 4px;
-      @include flex(flex-start, center);
+      @include flex(column, flex-start, center);
       .checkbox {
         position: absolute;
         top: 10px;
@@ -835,7 +831,7 @@ h5 {
   &-info {
     padding: 0 20px;
     gap: 12px;
-    @include flex(flex-start, flex-start);
+    @include flex(row, flex-start, flex-start);
     .photo {
       width: 20px;
       height: 32px;
@@ -869,14 +865,7 @@ h5 {
     }
   }
 }
-.guide-wrap {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: var(--window-inner-height);
-  z-index: 999;
-}
+
 /* media query */
 // 3840px 초과: 4K 이상
 @media all and (min-width: 3841px) {

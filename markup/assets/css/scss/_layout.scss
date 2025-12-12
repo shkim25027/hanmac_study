@@ -76,7 +76,7 @@ html {
       height: 64px;
       padding: 0 140px;
       margin: auto;
-      @include flex(center, space-between);
+      @include flex(row, center, space-between);
     }
     .item {
       &-area {
@@ -159,10 +159,7 @@ html {
       top: 12px;
       width: 16px;
       height: 16px;
-      background-image: url(../images/ico/ico_search.svg);
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: contain;
+      @include bgImg("../images/ico/ico_search.svg", contain);
     }
 
     .alerts,
@@ -205,7 +202,6 @@ html {
         border: 1px solid #188f6b;
         background: var(--bg-nav-depth);
         gap: 24px;
-        flex-direction: column;
         filter: drop-shadow(4px 4px 8px rgba(0, 0, 0, 0.25));
         z-index: 1;
         /* triangle dimension */
@@ -235,7 +231,7 @@ html {
         border-image: conic-gradient(var(--c1) 0 0) fill 0/ 0
           max(0%, 100% - var(--p) - var(--h) * tan(var(--a) / 2)) var(--r)
           max(0%, var(--p) - var(--h) * tan(var(--a) / 2)) / var(--h) 0 0 0;
-        @include flex();
+        @include flex(column);
         &:before {
           content: "";
           position: absolute;
@@ -269,8 +265,7 @@ html {
             var(--h) 0 0 0;
         }
         dl {
-          flex-direction: column;
-          @include flex();
+          @include flex(column);
         }
         dt {
           margin-bottom: 4px;
@@ -351,7 +346,7 @@ html {
         }
         &:hover {
           .depth02 {
-            @include flex(center, center);
+            @include flex();
           }
         }
         > a {
@@ -424,9 +419,8 @@ html {
         }
 
         a {
-          flex-direction: column;
           gap: 8px;
-          @include flex();
+          @include flex(column);
         }
         .ico-box {
           width: 60px;

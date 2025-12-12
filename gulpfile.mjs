@@ -57,6 +57,16 @@ const paths = {
     ],
     dest: "./dist",
   },
+  cdl: {
+    index: {
+      src: "./markup/coding_list.html",
+      dest: "./dist",
+    },
+    folder: {
+      src: "./markup/_coding_list/**/*",
+      dest: "./dist/_coding_list",
+    },
+  },
 };
 
 // ------------------------------------
@@ -161,9 +171,19 @@ function cache() {
     .pipe(dest(paths.html.dest));
 }
 
+function cdlindex() {
+  return src(paths.cdl.index.src).pipe(dest(paths.cdl.index.dest));
+}
+
+function cdlfolder() {
+  return src(paths.cdl.folder.src).pipe(dest(paths.cdl.folder.dest));
+}
 // BrowserSync
 function serve() {
-  browserSync.init({ server: { baseDir: paths.build }, port: 3000 });
+  browserSync.init({
+    server: { baseDir: paths.build, index: "/coding_list.html" },
+    port: 3000,
+  });
   watch(paths.scss.src, scss);
   watch(paths.csscopy.src, csscopy);
   watch(paths.js.src, scripts);
@@ -171,20 +191,43 @@ function serve() {
   watch(paths.img.src, images);
   watch(paths.fonts.src, fonts);
   watch(paths.html.src, html);
+  watch(paths.cdl.index.src, cdlindex);
+  watch(paths.cdl.folder.src, cdlfolder);
 }
 
 // ------------------------------------
 // Series / Parallel Tasks
 // ------------------------------------
+
 const build = series(
   clean,
-  parallel(fonts, images, scss, csscopy, scripts, jscopy, html),
+  parallel(
+    fonts,
+    images,
+    scss,
+    csscopy,
+    scripts,
+    jscopy,
+    html,
+    cdlindex,
+    cdlfolder
+  ),
   cache
 );
 
 const dev = series(
   clean,
-  parallel(fonts, images, scss, csscopy, scripts, jscopy, html),
+  parallel(
+    fonts,
+    images,
+    scss,
+    csscopy,
+    scripts,
+    jscopy,
+    html,
+    cdlindex,
+    cdlfolder
+  ),
   parallel(serve)
 );
 

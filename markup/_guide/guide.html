@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" type="text/css" href="/assets/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/plugin/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+    <script type="text/javascript" src="/assets/js/plugin/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="/assets/js/plugin/swiper.min.js"></script>
+    <script type="text/javascript" src="/assets/js/common.js"></script>
+    <script src="./jquery.highlight.js"></script>
+    <title>퍼블리싱 가이드</title>
+    <style>
+        html { font-size: 10px!important; scroll-behavior: smooth;}
+        .wrap { padding-top:0; background:transparent; }
+        .guide_h1 { margin-bottom:30px; padding:25px 0; background:#000; color:#fff; font-weight:700; font-size:40px; text-align:center;}
+        .guide_h2 { font-size:20px; font-weight:bold;}
+        .guide_h2:before { content:'※ '; }
+        .guide_h3 { padding:20px 0 10px 0; font-size:18px; color:#000; font-weight:bold;}
+        .guide_h4 { padding:15px 0 8px 0; font-size:15px; font-weight:bold;}
+        .guide_h4:before { content:'＊'}
+        .guide_txt { padding-left:15px; line-height:22px;}
+
+        .guide_wrap { position:relative; margin:20px 0; width:100%; min-width:1200px; }
+        .guide_wrap:after { content:''; clear:both; display:block; }
+        .guide_left_wrap { position:fixed; top:106px; left:0; width:200px; font-size: 14px;}
+        .guide_left_wrap ul { border-right:1px solid #dddddd; border-bottom:1px solid #dddddd; }
+        .guide_left_wrap ul li { border-top:1px solid #dddddd;}
+        .guide_left_wrap ul li a { display:block; padding:15px 10px; }
+        .guide_left_wrap ul li.on a { color:#ef3f3e; font-weight:bold;}
+        .guide_left_wrap ul li:hover a { font-weight:bold;}
+
+        .guide_right_wrap { float:left; margin-left:260px; padding-bottom:50px; width:80%; }
+        .guide_right_wrap .guide_tit_area { margin-bottom:20px; padding:10px 0 20px 0; border-bottom:1px solid #dddddd;}
+        .guide_right_wrap .guide_tit_area .guide_h2 { font-size: 30px;}
+        .guide-section + .guide-section { margin-top:50px; }
+
+        .guide_box { position:relative; padding:15px; box-sizing:border-box; -webkit-box-sizing:border-box; -moz-box-sizing:border-box; border-radius:5px; background:#eee;}
+        .guide_box .layout { position:relative; width:360px; padding:20px; background-color:#fff; }
+
+        .guide_list { padding-left:20px; margin-top:10px; font-size: 14px; }
+        .guide_list > li {line-height:1.4em;}
+        .guide_list > li:before { content:'·'; }
+
+        div.highlight { margin:15px 0; background:#FFFFFF;	border:1px solid #E0E0E0;	overflow: hidden; border-radius: 4px 4px 4px 4px;}
+        div.highlight pre{ width:100%;  max-height:350px; overflow: auto; padding:0;	margin:0;	font-size:14px;	clear: both;	border-radius: 0;	border: none;}
+
+        /* tabs */
+        div.highlight ul.tabs {	overflow: hidden;	padding: 5px 0 5px 0;	margin: 0;	list-style: none;	border-bottom: 1px solid #E0E0E0;	width: 100%;	position: relative;}
+        div.highlight ul.tabs li {	padding: 0;	margin: 0 5px;	float: left;	background: none;	border-bottom: 1px dashed #CCC;	line-height:1.0em;	color: #CCC;	cursor: pointer;}
+        div.highlight ul.tabs li.active {	border-bottom: none;	cursor: default;}
+
+        /* pre */
+        div.highlight pre.code ol {	margin: 0;	padding:0 0 0 45px;	background:#e7e5dc; }
+        div.highlight pre.code ul {	margin: 0;	padding:0;	}
+        div.highlight pre.code ol li,
+        div.highlight pre.code ul li { padding:0 0 0 5px;	border-left:3px solid #CCC;	background:#F8F8F8;}
+        div.highlight pre.code ul li { border-left:none;}
+        div.highlight pre.code ol li.even,
+        div.highlight pre.code ul li.even {	background-color:#FFFFFF;}
+        div.highlight pre.source {	display: none;	padding:0 0 0 5px;}
+
+        /* highligting */
+        pre { font-family:'맑은 고딕','malgun gothic';}
+        pre.code .str { color: #0d0; }
+        pre.code .var { color: #d00; }
+
+        pre.code .kwd,
+        pre.code .kwd span { color: #070;}
+        pre.code .com,
+        pre.code .com span { color:#008; font-style: italic;	font-weight: normal; }
+        pre.code .typ { color: #606;}
+        pre.code .lit { color: #066;}
+        pre.code .pun { color: #660;}
+        pre.code .pln { color: #000;}
+        pre.code .tag { color: #008; font-weight: bold;}
+        pre.code .atn { color: #606;}
+        pre.code .atv { color: #080;}
+        pre.code .dec {	color: #606;}
+        pre.code .fnc, pre.code .fnc span {color: #00b; }
+
+        /* css */
+        .css pre.code .kwd,
+        .css pre.code .kwd span { color: #008; font-weight: bold; }
+
+        /* php */
+        .php pre.code .str,
+        .php pre.code .str span { color: #0d0; }
+        .php pre.code .var,
+        .php pre.code .var span { color: #b00; };
+        .php pre.code .com,
+        .php pre.code .com span { color:#008;	font-style: italic;	font-weight: normal; }
+    </style>
+    <script>
+        $(document).ready(function(){
+            $('pre.code').highlight({source:1, zebra:1, indent:'space', list:'ol'});
+
+            $(".guide_left_wrap > ul > li").click(function(){
+                $(this).addClass("on").siblings().removeClass("on");
+            });
+
+            var sectionCount = $(".guide-section").length;
+            var sectionAry = new Array();
+            for (var i = 0; i < sectionCount; i++) {
+                sectionAry[i] = $(".guide-section").eq(i).offset().top;
+            };
+
+            // $(window).scroll(function(){
+            //     for (let i = 0; i < sectionCount; i++) {
+            //         if ($(window).scrollTop() >= sectionAry[i] && $(window).scrollTop() < sectionAry[i + 1]) {
+            //             $(".guide_left_wrap > ul > li").eq(i).addClass("on").siblings().removeClass("on");
+            //         }
+            //     }
+            // });
+        });
+    </script>
+</head>
+<body>
+    <div class="wrap">
+        <h1 class="guide_h1">퍼블리싱 가이드</h1>
+
+        <div class="guide_wrap">
+            <div class="guide_left_wrap">
+                <ul>
+                    <li class="on"><a href="#guide-default">기본가이드</a></li>
+                    <li><a href="#guide-font">폰트</a></li>
+                    <li><a href="#guide-layout">레이아웃</a></li>
+                    <li><a href="#guide-button">버튼</a></li>
+                    <li><a href="#guide-input">입력폼서식</a></li>
+                    <li><a href="#guide-table">테이블</a></li>
+                    <li><a href="#guide-pop">팝업</a></li>
+                    <li><a href="#guide-loader">페이지 로더</a></li>
+                    <li><a href="#guide-lang">다국어 관련</a></li>
+                    <li><a href="/coding_list.html" target="_blank">코딩리스트 바로가기</a></li>
+                </ul>
+            </div>
+
+            <div class="guide_right_wrap">
+                <div class="guide-section" id="guide-default">
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">기본 가이드</h2>
+                    </div>
+
+                    <h3 class="guide_h3">1. 언어코드</h3>
+                    <h4 class="guide_h4">각 언어별로 폴더를 구분</h4>
+                    <ul class="guide_list">
+                        <li>한국어 : /ko_KR/</li>
+                        <li>영어 : /en_US/</li>
+                        <li>중국어 : /zh_CN/</li>
+                        <li>베트남어 : /vi_VN/</li>
+                        <li>몽골어 : /mn_MN/</li>
+                        <li>우즈베크어 : /uz_UZ/</li>
+                        <li>태국어 : /th_TH/</li>
+                        <li>캄보디아(크메르어) : /km_KH/</li>
+                        <li>네팔어 : /ne_NP/</li>
+                        <li>미얀마(버마어) : /my_MM/</li>
+                    </ul>
+
+                    <h3 class="guide_h3">2. 폴더구조</h3>
+                    <ul class="guide_list">
+                        <li>HTML : /언어코드/*.html</li>
+                        <li>CSS : /언어코드/css/*.css</li>
+                        <li>JS : /언어코드/js/*.js</li>
+                        <li>image : /언어코드/img/*.jpg|png|gif</li>
+                    </ul>
+
+                    <h3 class="guide_h3">3. HTML</h3>
+                    <h4 class="guide_h4">charset="UTF-8"</h4>
+                    <h4 class="guide_h4">상대경로 사용</h4>
+                    <h4 class="guide_h4">각 언어별 html태그에 Language Attribute를 반드시 표기</h4>
+                    <div class="guide_box">
+                        <pre class="code" lang="html">
+
+    < html lang="ko-KR"> <!-- 한국어 -->
+    < html lang="en-US"> <!-- 영어 -->
+    < html lang="zh-CN"> <!-- 중국어 -->
+    < html lang="vi-VN"> <!-- 베트남어 -->
+    < html lang="mn_MN"> <!-- 몽골어 -->
+    < html lang="uz-UZ"> <!-- 우즈베크어 -->
+    < html lang="th-TH"> <!-- 태국어 -->
+    < html lang="km-KH"> <!-- 캄보디아(크메르어) -->
+    < html lang="ne-NP"> <!-- 네팔어 -->
+    < html lang="my-MM"> <!-- 미얀마(버마어) -->
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">4. CSS</h3>
+                    <h4 class="guide_h4">charset="UTF-8"</h4>
+                    <h4 class="guide_h4">상대경로 사용</h4>
+                    <h4 class="guide_h4">html 기본 폰트 사이즈 - font-size:10px</h4>
+                    <h4 class="guide_h4">단위는 %로 적용하는 요소 외에 rem만 사용 (line-height에 사용되는 em 제외)</h4>
+                    <ul class="guide_list">
+                        <li>./css/common.css : 공통요소</li>
+                        <li>./css/swiper.min.css : 슬라이더 관련</li>
+                        <li>./css/style.css : 공통요소 외 모든 스타일</li>
+                    </ul>
+
+                    <h3 class="guide_h3">5. JS</h3>
+                    <h4 class="guide_h4">공통기능 외 페이지별 기능은 해당 페이지 html 내에 script로 삽입</h4>
+                    <ul class="guide_list">
+                        <li>./js/jquery-3.4.1.min.js : jQuery</li>
+                        <li>./js/swiper.min.js : 슬라이더 플러그인</li>
+                        <li>./js/common.js : 공통기능</li>
+                    </ul>
+
+                    <h3 class="guide_h3">6. 이미지</h3>
+                    <h4 class="guide_h4">네이밍</h4>
+                    <ul class="guide_list">
+                        <li>버튼 : btn_</li>
+                        <li>배경 : bg_</li>
+                        <li>아이콘 : icon_</li>
+                        <li>화살표 : arrow_</li>
+                    </ul>
+                </div>
+
+                <div class="guide-section" id="guide-font">
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">폰트</h2>
+                    </div>
+
+                    <h3 class="guide_h3">1. 기본 폰트 (html font-size:10px)</h3>
+                    <div class="guide_box">
+                        <pre class="code" lang="CSS">
+
+    html { font-size: 10px; }
+
+    html:lang(ko-KR) { font-family: "Noto Sans KR", sans-serif; }
+
+    html:lang(en-US) { font-family: "Noto Sans KR", sans-serif; }
+
+    html:lang(zh-CN) { font-family: "Noto Sans SC", "Noto Sans TC", "Noto Sans", sans-serif; }
+
+    html:lang(vi-VN) { font-family: "Noto Sans SC", "Noto Sans", sans-serif; }
+
+    html:lang(mn-MN) { font-family: "Noto Sans Mongolian", "Noto Sans", sans-serif; }
+
+    html:lang(uz-UZ) { font-family: "Noto Sans", sans-serif; }
+
+    html:lang(th-TH) { font-family: "Noto Sans Thai", "Noto Sans", sans-serif; }
+
+    html:lang(km-KH) { font-family: "Noto Sans Khmer", "Noto Sans", sans-serif; }
+
+    html:lang(ne-NP) { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+
+    html:lang(my-MM) { font-family: "Noto Sans", sans-serif; }
+
+    html *:lang(ko-KR) { font-family: "Noto Sans KR", sans-serif; }
+
+    html *:lang(en-US) { font-family: "Noto Sans KR", sans-serif; }
+
+    html *:lang(zh-CN) { font-family: "Noto Sans SC", "Noto Sans TC", "Noto Sans", sans-serif; }
+
+    html *:lang(vi-VN) { font-family: "Noto Sans SC", "Noto Sans", sans-serif; }
+
+    html *:lang(mn-MN) { font-family: "Noto Sans Mongolian", "Noto Sans", sans-serif; }
+
+    html *:lang(uz-UZ) { font-family: "Noto Sans", sans-serif; }
+
+    html *:lang(th-TH) { font-family: "Noto Sans Thai", "Noto Sans", sans-serif; }
+
+    html *:lang(km-KH) { font-family: "Noto Sans Khmer", "Noto Sans", sans-serif; }
+
+    html *:lang(ne-NP) { font-family: "Noto Sans Devanagari", "Noto Sans", sans-serif; }
+
+    html *:lang(my-MM) { font-family: "Noto Sans", sans-serif; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">2. font-face import</h3>
+                    <div class="guide_box">
+                        <pre class="code" lang="CSS">
+
+    @import url("//fonts.googleapis.com/css?family=Noto+Sans");
+    @import url("//fonts.googleapis.com/earlyaccess/notosanskr.css");
+    @import url("//fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900&display=swap&subset=chinese-simplified,vietnamese");
+    @import url("//fonts.googleapis.com/css?family=Noto+Sans+TC:100,300,400,500,700,900&display=swap&subset=chinese-traditional");
+    @import url("//fonts.googleapis.com/earlyaccess/notosansmongolian.css");
+    @import url("//fonts.googleapis.com/earlyaccess/notosansthai.css");
+    @import url("//fonts.googleapis.com/earlyaccess/notosanskhmer.css");
+    @import url("//fonts.googleapis.com/earlyaccess/notosansdevanagari.css");
+    @import url("//fonts.googleapis.com/earlyaccess/notosansmyanmar.css");
+
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="guide-section" id="guide-layout">
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">레이아웃</h2>
+                    </div>
+
+                    <h3 class="guide_h3">1. 기본 레이아웃 (홈 메인)</h3>
+
+                    <div class="guide_box">
+                        <pre class="code" lang="html">
+
+    <div class="wrap">
+            <div class="header-wrap">
+                    <div class="top-banner">
+                        top banner
+                    </div>
+
+                    <div class="header">
+                        header
+                    </div>
+            </div>
+
+            <div class="menu-wrap">
+                메뉴
+            </div>
+
+            <div>
+                contents (.main, .charge-main, .setting, .cs, .guide)
+            </div>
+
+            <div class="footer">
+                footer(메인에만 적용)
+            </div>
+    </div>
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">2. 미디어쿼리</h3>
+
+                    <div class="guide_box">
+                            <pre class="code" lang="CSS"">
+
+    @media all and (min-width: 1081px) { html { font-size: 16px; } }
+
+    @media all and (max-width: 1080px) { html { font-size: 14px; } }
+
+    @media all and (max-width: 768px) { html { font-size: 13px; } }
+
+    @media all and (max-width: 640px) { html { font-size: 12px; } }
+
+    @media all and (max-width: 480px) { html { font-size: 10px; } }
+
+    @media all and (max-width: 359px) { html { font-size: 9px; } }
+
+    @media all and (max-width: 320px) { html { font-size: 8px; } }
+
+                            </pre>
+                        </div>
+                </div>
+
+                <div class="guide-section" id="guide-button">
+                    <style>
+                        #guide-button .layout button + button {margin-top:10px}
+                    </style>
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">버튼</h2>
+                    </div>
+
+                    <h3 class="guide_h3">1. 기본버튼</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <button class="btn-new purple">기본버튼(purple)</button>
+                            <button class="btn-new violet">기본버튼(violet)</button>
+                            <button class="btn-new white">기본버튼(white)</button>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <button class="btn-new purple">기본버튼(purple)</button>
+    <button class="btn-new violet">기본버튼(violet)</button>
+    <button class="btn-new white">기본버튼(white)</button>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .btn-new { display: inline-block; vertical-align: top; width: 100%; padding: 1.1rem 1rem; text-align: center; font-size: 1.6rem; font-weight: 500; color: #fff; border-radius: 0.2rem; }
+
+    .btn-new.purple { background-color: #7031a5; }
+
+    .btn-new.violet { background-color: #ff2e76; }
+
+    .btn-new.white { font-size: 1.2rem; font-weight: 400; color: #222; background-color: #fff; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">2. shadow 버튼</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <button class="btn-new purple shadow">shadow 버튼(purple)</button>
+                            <button class="btn-new violet shadow">shadow 버튼(violet)</button>
+                            <button class="btn-new white shadow">shadow 버튼(white)</button>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <button class="btn-new purple shadow">shadow 버튼(purple)</button>
+    <button class="btn-new violet shadow">shadow 버튼(violet)</button>
+    <button class="btn-new white shadow">shadow 버튼(white)</button>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .btn-new.shadow { -webkit-box-shadow: 0 0.3rem 1rem 0 rgba(0, 0, 0, 0.2); box-shadow: 0 0.3rem 1rem 0 rgba(0, 0, 0, 0.2); }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">3. 테두리 버튼</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <button class="btn-border purple">테두리 버튼(purple)</button>
+                            <button class="btn-border violet">테두리 버튼(violet)</button>
+                            <button class="btn-border violet">테두리 버튼(violet)<span class="icon-arrow"></span></button>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <button class="btn-border purple">테두리 버튼(purple)</button>
+    <button class="btn-border violet">테두리 버튼(violet)</button>
+    <button class="btn-border violet">테두리 버튼(violet)<span class="icon-arrow"></span></button>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .btn-border { position: relative; display: inline-block; vertical-align: top; width: 100%; padding: 0.9rem 1rem; text-align: center; font-size: 1.6rem; font-weight: 500; border-width: 0.2rem; border-style: solid; border-radius: 0.2rem; }
+
+    .btn-border.purple { border-color: #7031a5; color: #7031a5; }
+
+    .btn-border.violet { border-color: #ff2e76; color: #ff2e76; }
+
+    .btn-border > span { position: absolute; top: 50%; right: 1.4rem; -webkit-transform: translateY(-50%); -ms-transform: translateY(-50%); transform: translateY(-50%); }
+
+    .btn-border > span.icon-arrow { width: 1.4rem; height: 1.4rem; background: url("../img/btn_arrow_wholelife.png") no-repeat; background-size: 100%; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">4. 밑줄 버튼</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <button class="btn-line purple">밑줄 버튼(purple)</button>
+                            <button class="btn-line violet">밑줄 버튼(violet)</button>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <button class="btn-line purple">밑줄 버튼(purple)</button>
+    <button class="btn-line violet">밑줄 버튼(violet)</button>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .btn-line { position: relative; display: inline-block; font-size: 1.2rem; font-weight: 500; }
+
+    .btn-line:after { display: block; position: absolute; content: ''; width: 100%; height: 0.1rem; bottom: -0.2rem; left: 0; }
+
+    .btn-line.purple { color: #8863e6; }
+
+    .btn-line.purple:after { background-color: #8863e6; }
+
+    .btn-line.violet { color: #ff2e76; }
+
+    .btn-line.violet:after { background-color: #ff2e76; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">5. 2개 겹침 버튼</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <div class="btn-wrap two-btn shadow">
+                                <button class="btn-new white">취소</button>
+                                <button class="btn-new white" style="margin-top:0;">확인</button>
+                            </div>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <div class="btn-wrap two-btn shadow">
+        <button class="btn-new white">취소</button>
+        <button class="btn-new white">확인</button>
+    </div>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .btn-wrap.two-btn { font-size: 0; }
+
+    .btn-wrap.two-btn .btn-new { width: 50%; padding: 1.3rem 1rem; vertical-align: middle; }
+
+    .btn-wrap.two-btn .btn-new:first-child { border-radius: 0.2rem 0 0 0.2rem; }
+
+    .btn-wrap.two-btn .btn-new:last-child { border-radius: 0 0.2rem 0.2rem 0; }
+
+    .btn-wrap.shadow { border-radius: 0.2rem; -webkit-box-shadow: 0 0.3rem 1rem 0 rgba(0, 0, 0, 0.1); box-shadow: 0 0.3rem 1rem 0 rgba(0, 0, 0, 0.1); }
+
+    .btn-wrap.shadow .btn-new { -webkit-box-shadow: none; box-shadow: none; }
+
+    .btn-wrap.shadow.two-btn { position: relative; background: #fff; }
+
+    .btn-wrap.shadow.two-btn:after { content: ""; display: block; width: 0.1rem; height: 100%; background: #eee; position: absolute; top: 0; left: 50%; -webkit-transform: translateX(-50%); -ms-transform: translateX(-50%); transform: translateX(-50%); }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">6. 비활성화 버튼</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <button class="btn-new purple" disabled="disabled">비활성화 버튼(purple)</button>
+                            <button class="btn-new violet" disabled="disabled">비활성화 버튼(violet)</button>
+                            <button class="btn-new white" disabled="disabled">비활성화 버튼(white)</button>
+                            <button class="btn-border purple" disabled="disabled">비활성화 버튼(purple)</button>
+                            <button class="btn-border violet" disabled="disabled">비활성화 버튼(violet)</button>
+                            <button class="btn-line purple" disabled="disabled">비활성화 버튼(purple)</button>
+                            <button class="btn-line violet" disabled="disabled">비활성화 버튼(violet)</button>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <button class="btn-new purple" disabled="disabled">비활성화 버튼(purple)</button>
+    <button class="btn-new violet" disabled="disabled">비활성화 버튼(violet)</button>
+    <button class="btn-new white" disabled="disabled">비활성화 버튼(white)</button>
+    <button class="btn-border purple" disabled="disabled">비활성화 버튼(purple)</button>
+    <button class="btn-border violet" disabled="disabled">비활성화 버튼(violet)</button>
+    <button class="btn-line purple" disabled="disabled">비활성화 버튼(purple)</button>
+    <button class="btn-line violet" disabled="disabled">비활성화 버튼(violet)</button>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .btn-new.white:disabled, .btn-new.white.disabled { background-color: #fff; color: #ddd; pointer-events: none; -webkit-box-shadow: none; box-shadow: none; }
+
+    .btn-new:disabled, .btn-new.disabled { background-color: #e7e7e7; color: #fff; pointer-events: none; -webkit-box-shadow: none; box-shadow: none; }
+
+    .btn-border:disabled, .btn-border.disabled { border-color: #e7e7e7; color: #e7e7e7; pointer-events: none; -webkit-box-shadow: none; box-shadow: none; }
+
+    .btn-line:disabled, .btn-line.disabled { color: #e7e7e7; pointer-events: none; }
+
+    .btn-line:disabled:after, .btn-line.disabled:after { background-color: #e7e7e7; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">7. 토글 버튼</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <div class="btn-toggle">
+                                <input type="checkbox" id="autoPay" name="autoPay" checked>
+                                <label for="autoPay">자동결제 on/off</label>
+                            </div>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <div class="btn-toggle">
+        <input type="checkbox" id="autoPay" name="autoPay" checked>
+        <label for="autoPay">자동결제 on/off</label>
+    </div>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .btn-toggle { display: inline-block; vertical-align: top; }
+
+    .btn-toggle > input[type="checkbox"] + label { position: relative; display: inline-block; width: 3.5rem; height: 2rem; border-radius: 1rem; background-image: none !important; background-color: #ddd; text-indent: -9999px; }
+
+    .btn-toggle > input[type="checkbox"] + label:after { position: absolute; display: block; content: ''; width: 1.6rem; height: 1.6rem; background-color: #fff; border-radius: 100%; top: 0.2rem; left: 0.2rem; -webkit-transition: 0.2s ease all; transition: 0.2s ease all; -webkit-box-shadow: 0 0.1rem 0.2rem 0.1rem rgba(0, 0, 0, 0.3); box-shadow: 0 0.1rem 0.2rem 0.1rem rgba(0, 0, 0, 0.3); }
+
+    .btn-toggle > input[type="checkbox"]:checked + label { background-color: #8863e6; }
+
+    .btn-toggle > input[type="checkbox"]:checked + label:after { left: 1.7rem; }
+
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="guide-section" id="guide-input">
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">입력 폼 서식</h2>
+                    </div>
+
+                    <h3 class="guide_h3">1. 체크박스</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <span style="margin-right:20px">
+                                <input type="checkbox" name="guideCheck" id="guideCheck01" checked>
+                                <label for="guideCheck01">체크박스</label>
+                            </span>
+                            <span>
+                                <input type="checkbox" name="guideCheck" id="guideCheck02">
+                                <label for="guideCheck02">체크박스</label>
+                            </span>
+                            <span style="display:block; margin-top:10px">
+                                <input type="checkbox" name="guideCheck" id="guideCheck03" disabled="disabled">
+                                <label for="guideCheck03">체크박스(비활성)</label>
+                            </span>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <span>
+        <input type="checkbox" name="guideCheck" id="guideCheck01">
+        <label for="guideCheck01">체크박스</label>
+    </span>
+    <span>
+        <input type="checkbox" name="guideCheck" id="guideCheck02">
+        <label for="guideCheck02">체크박스</label>
+    </span>
+    <span>
+        <input type="checkbox" name="guideCheck" id="guideCheck03" disabled="disabled">
+        <label for="guideCheck03">체크박스</label>
+    </span>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    input[type="checkbox"] { display: none; position: absolute; top: 0; left: 0; width: 0; height: 0; }
+
+    input[type="checkbox"] + label { display: inline-block; vertical-align: top; font-size: 1.4rem; font-weight: 300; color: #000; line-height: 2rem; padding-left: 3rem; background: url("../img/btn_checkbox_off.png") left center no-repeat; background-size: 2rem 2rem; }
+
+    input[type="checkbox"]:checked + label { background: url("../img/btn_checkbox_on.png") left center no-repeat; background-size: 2rem 2rem; }
+
+    input[type="checkbox"]:disabled + label, input[type="checkbox"].disabled + label { color: #e7e7e7; background: url("../img/btn_checkbox_off.png") left center no-repeat; background-size: 2rem 2rem; pointer-events: none; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">2. 라디오 버튼</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <span style="margin-right:20px">
+                                <input type="radio" name="guideRadio" id="guideRadio01" checked>
+                                <label for="guideRadio01">라디오버튼</label>
+                            </span>
+                            <span>
+                                <input type="radio" name="guideRadio" id="guideRadio02" class="violet">
+                                <label for="guideRadio02">라디오버튼(violet)</label>
+                            </span>
+                            <span style="display:block; margin-top:10px">
+                                <input type="radio" name="guideRadio" id="guideRadio03" disabled="disabled">
+                                <label for="guideRadio03">라디오버튼(비활성)</label>
+                            </span>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <span>
+        <input type="radio" name="guideRadio" id="guideRadio01">
+        <label for="guideRadio01">라디오버튼</label>
+    </span>
+    <span>
+        <input type="radio" name="guideRadio" id="guideRadio02" class="violet">
+        <label for="guideRadio02">라디오버튼</label>
+    </span>
+    <span>
+        <input type="radio" name="guideRadio" id="guideRadio03" disabled="disabled">
+        <label for="guideRadio03">라디오버튼(비활성)</label>
+    </span>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    input[type="radio"] { display: none; position: absolute; top: 0; left: 0; width: 0; height: 0; }
+
+    input[type="radio"] + label { display: inline-block; vertical-align: top; font-size: 1.4rem; font-weight: 300; color: #000; line-height: 2rem; padding-left: 2.6rem; background: url("../img/btn_radio_off.png") left center no-repeat; background-size: 2rem 2rem; }
+
+    input[type="radio"]:checked + label { background: url("../img/btn_radio_on.png") left center no-repeat; background-size: 2rem 2rem; }
+
+    input[type="radio"]:disabled + label, input[type="radio"].disabled + label { color: #e7e7e7; background: url("../img/btn_radio_off.png") left center no-repeat; background-size: 2rem 2rem; pointer-events: none; }
+
+    input[type="radio"].violet:checked + label { background: url("../img/btn_radio_on_violet.png") left center no-repeat; background-size: 2rem 2rem; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">3. 셀렉트박스</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <select name="" id="">
+                                <option value="">전체</option>
+                                <option value="">가입</option>
+                                <option value="">요금제</option>
+                            </select>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <select name="" id="">
+        <option value="">전체</option>
+        <option value="">가입</option>
+        <option value="">요금제</option>
+    </select>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    select { width: 100%; height: 3rem; line-height: 2.8rem; border: 0.1rem solid #f4f4f4; border-radius: 0.1rem; padding: 0 1rem; font-size: 1.2rem; font-weight: 400; color: #222; -webkit-appearance: none; -moz-appearance: none; appearance: none; background: url("../img/arrow_select_down.png") right center no-repeat; background-size: 1.5rem 0.3rem; background-color: #fff; }
+
+    select:disabled, select.disabled { color: #e7e7e7; background: url("../img/arrow_select_down_disabled.png") right center no-repeat; background-size: 1.5rem 0.3rem; background-color: #fff; pointer-events: none; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">4. input(text,number) type 01</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <div class="input-set">
+                                <input type="number" name="" id="" value="1234" maxlength="4" oninput="maxLengthCheck(this)" min="0" inputmode="numeric" pattern="[0-9]*">
+                                <button class="input-del">지우기</button>
+                            </div>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <div class="input-set">
+        <input type="number" name="" id="" value="1234" maxlength="4" oninput="maxLengthCheck(this)" min="0" inputmode="numeric" pattern="[0-9]*">
+        <button class="input-del">지우기</button>
+    </div>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    input[type="number"] { height: 3rem; line-height: 2.8rem; background-color: #fff; border: 0.1rem solid #f4f4f4; border-radius: 0.1rem; padding: 0 1rem; font-size: 1.2rem; font-weight: 400; color: #222; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">5. input(text,number) type 02</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <div class="cs notice-list" style="margin:0; padding:0;">
+                                <div class="cs-top" style="margin:0; padding:0;">
+                                    <div class="search-unit" style="margin:0; padding:0;">
+                                        <div class="input-set">
+                                            <input type="text" name="" id="" placeholder="제목/내용으로 검색하세요.">
+                                            <button class="input-del">지우기</button>
+                                        </div>
+                                        <button class="btn-search">검색</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <div class="search-unit">
+        <div class="input-set">
+            <input type="text" name="" id="" placeholder="제목/내용으로 검색하세요.">
+            <button class="input-del">지우기</button>
+        </div>
+        <button class="btn-search">검색</button>
+    </div>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .search-unit { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; border-bottom: 0.1rem solid #eee; }
+
+    .search-unit .input-set { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; }
+
+    .search-unit .input-set > input { height: 3.9rem; line-height: 3.9rem; border: 0; border-radius: 0; padding: 0 1.5rem; font-size: 1.4rem; }
+
+    .search-unit .btn-search { width: 3.5rem; height: 3.9rem; text-indent: -9999px; background: url("../img/btn_search.png") center center no-repeat; background-size: 1.7rem 1.7rem; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">6. textarea</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <textarea name="" id="" cols="30" rows="10" placeholder="문의 내용 입력"></textarea>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <textarea name="" id="" cols="30" rows="10" placeholder="문의 내용 입력"></textarea>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    textarea { display: inline-block; width: 100%; border-radius: 0.2rem; border: 0.1rem solid #f4f4f4; background-color: #fff; padding: 1rem; font-size: 1.2rem; font-weight: 400; color: #222; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="guide-section" id="guide-table">
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">테이블</h2>
+                    </div>
+
+                    <h3 class="guide_h3">1. 기본 테이블</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <table class="tbl-basic">
+                                <caption>충전내역</caption>
+                                <colgroup>
+                                    <col style="width:auto">
+                                    <col style="width:20%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>충전기간<span>(충전일)</span></th>
+                                        <th>결제상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2020.12.12 ~ 2021.12.11<br>(2020.12.12)</td>
+                                        <td>결제대기</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2020.12.12 ~ 2021.12.11<br>(2020.12.12)</td>
+                                        <td>결제완료</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2020.12.12 ~ 2021.12.11<br>(2020.12.12)</td>
+                                        <td>결제대기</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2020.12.12 ~ 2021.12.11<br>(2020.12.12)</td>
+                                        <td>결제완료</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <table class="tbl-basic">
+        <caption>충전내역</caption>
+        <colgroup>
+            <col style="width:auto">
+            <col style="width:20%">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>충전기간<span>(충전일)</span></th>
+                <th>결제상태</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>2020.12.12 ~ 2021.12.11<br>(2020.12.12)</td>
+                <td>결제대기</td>
+            </tr>
+            <tr>
+                <td>2020.12.12 ~ 2021.12.11<br>(2020.12.12)</td>
+                <td>결제완료</td>
+            </tr>
+            <tr>
+                <td>2020.12.12 ~ 2021.12.11<br>(2020.12.12)</td>
+                <td>결제대기</td>
+            </tr>
+            <tr>
+                <td>2020.12.12 ~ 2021.12.11<br>(2020.12.12)</td>
+                <td>결제완료</td>
+            </tr>
+        </tbody>
+    </table>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    table { width: 100%; }
+
+    table.tbl-basic > thead > tr > th { font-size: 1.2rem; font-weight: 700; color: #222; padding: 1.1rem 0; background-color: #f4f4f4; }
+
+    table.tbl-basic > thead > tr > th > span { font-weight: 500; }
+
+    table.tbl-basic > tbody > tr > td { font-size: 1.2rem; font-weight: 400; color: #000; padding: 1rem 0; text-align: center; border-bottom: 0.1rem solid #eee; }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">2. 세로형 테이블</h3>
+
+                    <div class="guide_box">
+                        <div class="layout">
+                            <table class="tbl-vertical">
+                                <caption>충전완료 내역</caption>
+                                <colgroup>
+                                    <col style="width:25.5%">
+                                    <col style="width:auto">
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th>고객명</th>
+                                        <td>유알모</td>
+                                    </tr>
+                                    <tr>
+                                        <th>요금제명</th>
+                                        <td>선불11 + (국제전화 매일 20분)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>충전기간</th>
+                                        <td>2019.09.24 ~ 2019.10.24<br><span class="txt-gray">(보너스 : 2019.09.24 ~ 2019.10.24)</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>결제금액</th>
+                                        <td><span class="commaNum">123000</span>원 <span class="txt-sm">(부가세 포함)</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th>사용가능<br>편의점</th>
+                                        <td>편의점A, 편의점B</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <table class="tbl-vertical">
+        <caption>충전완료 내역</caption>
+        <colgroup>
+            <col style="width:25.5%">
+            <col style="width:auto">
+        </colgroup>
+        <tbody>
+            <tr>
+                <th>고객명</th>
+                <td>유알모</td>
+            </tr>
+            <tr>
+                <th>요금제명</th>
+                <td>선불11 + (국제전화 매일 20분)</td>
+            </tr>
+            <tr>
+                <th>충전기간</th>
+                <td>2019.09.24 ~ 2019.10.24<br><span class="txt-gray">(보너스 : 2019.09.24 ~ 2019.10.24)</span></td>
+            </tr>
+            <tr>
+                <th>결제금액</th>
+                <td><span class="commaNum">123000</span>원 <span class="txt-sm">(부가세 포함)</span></td>
+            </tr>
+            <tr>
+                <th>사용가능<br>편의점</th>
+                <td>편의점A, 편의점B</td>
+            </tr>
+        </tbody>
+    </table>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    table.tbl-vertical > tbody > tr { border-bottom: 0.1rem solid #eee; }
+
+    table.tbl-vertical > tbody > tr:first-child { border-top: 0.1rem solid #eee; }
+
+    table.tbl-vertical > tbody > tr > th { font-size: 1.2rem; font-weight: 700; color: #222; background-color: #f4f4f4; padding: 1.3rem 0; }
+
+    table.tbl-vertical > tbody > tr > td { font-size: 1.3rem; font-weight: 400; color: #222; padding: 1.3rem; padding-right: 0; letter-spacing: -0.1rem; }
+
+    table.tbl-vertical > tbody > tr > td.with-input { padding-top: 0.7rem; padding-bottom: 0.7rem; }
+
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="guide-section" id="guide-pop">
+                    <style>
+                        #guide-pop .layout > button + button {margin-top:10px}
+                    </style>
+
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">팝업</h2>
+                    </div>
+
+                    <h3 class="guide_h3">1. 팝업 기본 구조</h3>
+
+                    <h4 class="guide_h4">.popup-wrap에 팝업 ID 부여</h4>
+
+                    <h4 class="guide_h4">팝업 열기 스크립트 : popOpen('ID');</h4>
+
+                    <h4 class="guide_h4">팝업 닫기 스크립트 : popClose(this);</h4>
+
+                    <h4 class="guide_h4">팝업 길이가 디바이스 디스플레이 길이보다 클 경우 팝업 길이를 디바이스 디스플레이 길이의 80%로 조정하고 팝업 body 영역에 스크롤 생성</h4>
+
+                    <div class="guide_box">
+                        <pre class="code" lang="html">
+
+    <div class="popup-wrap" id="ID">
+            <div class="popup">
+                    <div class="popup-inner">
+                            <div class="popup-header">
+                                    <p>팝업 타이틀</p>
+                            </div>
+
+                            <div class="popup-body">
+
+                            </div>
+
+                            <div class="popup-footer">
+                                    <div class="btn-wrap">
+                                            <button class="btn-new">버튼</button>
+                                    </div>
+                            </div>
+                    </div>
+                    <button class="btn-pop-close" onclick="popClose(this)">닫기</button>
+            </div>
+    </div>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .popup-wrap { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 20; }
+
+    .popup-wrap .popup { position: absolute; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); transform: translate(-50%, -50%); width: calc(100% - 3.6rem); }
+
+    .popup-wrap .popup .popup-inner { position: relative; background-color: #fff; border-radius: 0.3rem; overflow: hidden; height: 100%; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-orient: vertical; -webkit-box-direction: normal; -ms-flex-direction: column; flex-direction: column; }
+
+    .popup-wrap .popup .popup-inner .popup-header { padding: 3rem 1.5rem 2.5rem; }
+
+    .popup-wrap .popup .popup-inner .popup-header > p { font-size: 2.5rem; font-weight: 500; color: #333; text-align: center; }
+
+    .popup-wrap .popup .popup-inner .popup-body { padding: 0 1.5rem; }
+
+    .popup-wrap .popup .popup-inner .popup-body .pop-cont { padding-bottom: 3rem; }
+
+    .popup-wrap .popup .popup-inner .popup-body .popup-txt { font-size: 1.4rem; font-weight: 400; color: #333; word-break: keep-all; line-height: 1.4em; }
+
+    .popup-wrap .popup .popup-inner .popup-body .popup-txt.big { font-size: 2.5rem; font-weight: 500; color: #333; }
+
+    .popup-wrap .popup .popup-inner .popup-body .title { font-size: 1.6rem; font-weight: 700; color: #222; }
+
+    .popup-wrap .popup .popup-inner .popup-footer { padding: 2.5rem 1.5rem 3rem; margin-top: auto; }
+
+    .popup-wrap .popup .popup-inner .popup-footer .btn-wrap.two-btn > button { width: calc((100% - 0.8rem) / 2); border-radius: 0.2rem; }
+
+    .popup-wrap .popup .popup-inner .popup-footer .btn-wrap.two-btn > button:first-child { background-color: #666666; color: #fff; margin-right: 0.8rem; }
+
+    .popup-wrap .popup .btn-pop-close { position: absolute; top: -4.5rem; right: 0; width: 3rem; height: 3rem; text-indent: -9999px; background: url("../img/btn_pop_close.png"); background-size: 100%; }
+
+    .popup-wrap .popup.alert .popup-inner .popup-body { padding: 3rem 1.5rem 0; }
+
+    .popup-wrap .popup.alert .popup-inner .popup-body .popup-txt { font-size: 1.4rem; font-weight: 400; color: #333; text-align: center; }
+
+    .popup-wrap .popup.alert .popup-inner .popup-footer .btn-wrap.two-btn > button { width: calc((100% - 0.8rem) / 2); border-radius: 0.2rem; }
+
+    .popup-wrap .popup.alert .popup-inner .popup-footer .btn-wrap.two-btn > button:first-child { background-color: #666666; color: #fff; margin-right: 0.8rem; }
+
+    .popup-wrap .popup.tooltip .popup-body { padding: 3rem 1.5rem; }
+
+    .popup-wrap .popup.tooltip .popup-body .tooltip-title { padding-left: 2.1rem; font-size: 2rem; font-weight: 700; color: #222; background: url("../img/btn_tooltip.png") left center no-repeat; background-size: 1.6rem; }
+
+    .popup-wrap .popup.tooltip .popup-body .tooltip-txt { font-size: 1.4rem; font-weight: 400; color: #222; margin-top: 1rem; line-height: 1.4em; }
+
+    .popup-wrap .popup.tooltip .popup-body .tooltip-txt + .tooltip-title { margin-top: 2.5rem; }
+
+    .popup-wrap .popup.agent { text-align: center; }
+
+    .popup-wrap .popup.agent .agent-head img { width: 100%; }
+
+    .popup-wrap .popup.agent .agent-body { padding: 2.2rem 2rem; }
+
+    .popup-wrap .popup.agent .agent-body .agent-tit { margin-bottom: 1.6rem; font-size: 1.8rem; font-weight: bold; }
+
+    .popup-wrap .popup.agent .agent-body .agent-txt { font-size: 1.2rem; line-height: 1.5; }
+
+    .popup-wrap .popup.agent .agent-footer { border-top: 0.1rem solid #eee; position: relative; font-size: 0; }
+
+    .popup-wrap .popup.agent .agent-footer .agent-btn { display: inline-block; width: 100%; font-size: 1.2rem; padding: 1.4rem 1rem; }
+
+    .popup-wrap .popup.agent .agent-footer .agent-btn.txt-violet { font-weight: bold; }
+
+    .popup-wrap .popup.agent .agent-footer.two-btn:after { content: ""; display: block; width: 0.1rem; height: 100%; background: #eee; position: absolute; top: 0; left: 50%; -webkit-transform: translateX(-50%); -ms-transform: translateX(-50%); transform: translateX(-50%); }
+
+    .popup-wrap .popup.agent .agent-footer.two-btn .agent-btn { width: 50%; }
+
+    .popup-wrap.show { display: block; }
+
+    .popup-wrap.overflow { overflow-y: auto; }
+
+    .popup-wrap.overflow .popup { position: static; margin: 5rem auto 5rem; -webkit-transform: translate(0, 0); -ms-transform: translate(0, 0); transform: translate(0, 0); }
+
+                        </pre>
+                    </div>
+
+                    <h3 class="guide_h3">2. 팝업 보기</h3>
+
+                    <div class="guide_box">
+                        <div class="layout" style="height:640px">
+                            <button class="btn-new purple" onclick="popOpen('alert')">alert 팝업 보기</button>
+                            <button class="btn-new purple" onclick="popOpen('confirm')">confirm 팝업 보기</button>
+                            <button class="btn-new purple" onclick="popOpen('wholeLife')">tooltip 팝업 보기</button>
+                            <button class="btn-new purple" onclick="popOpen('inquiryPrivacy')">타이틀 팝업 보기</button>
+                            <button class="btn-new purple" onclick="popOpen('agent')">에이전트 팝업 보기</button>
+                            <!-- 알럿 팝업 -->
+                            <div class="popup-wrap" id="alert" style="position:absolute">
+                                <div class="popup alert">
+                                    <div class="popup-inner">
+                                        <div class="popup-body">
+                                            <p class="popup-txt">알럿 메세지<br>알럿 메세지</p>
+                                        </div>
+                                        <div class="popup-footer">
+                                            <div class="btn-wrap">
+                                                <button class="btn-new violet" onclick="popClose(this)">확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn-pop-close" onclick="popClose(this)">닫기</button>
+                                </div>
+                            </div>
+                            <!--// 알럿 팝업 -->
+
+                            <!-- 컨펌 팝업 -->
+                            <div class="popup-wrap" id="confirm" style="position:absolute">
+                                <div class="popup alert">
+                                    <div class="popup-inner">
+                                        <div class="popup-body">
+                                            <p class="popup-txt">컨펌 메세지<br>컨펌 메세지</p>
+                                        </div>
+                                        <div class="popup-footer">
+                                            <div class="btn-wrap two-btn">
+                                                <button class="btn-new violet btn-cancel" onclick="popClose(this)">취소</button>
+                                                <button class="btn-new violet btn-confirm">확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--// 컨펌 팝업 -->
+
+                            <!-- 평생계좌 툴팁 -->
+                            <div class="popup-wrap" id="wholeLife" style="position:absolute">
+                                <div class="popup tooltip">
+                                    <div class="popup-inner">
+                                        <div class="popup-body">
+                                            <p class="tooltip-title">평생계좌</p>
+                                            <p class="tooltip-txt">평생계좌는 휴대폰 번호 별로 지정된 전용계좌로 해당 계좌 입금 시 바로 충전 처리됩니다.</p>
+                                        </div>
+                                    </div>
+                                    <button class="btn-pop-close" onclick="popClose(this)">닫기</button>
+                                </div>
+                            </div>
+                            <!--// 평생계좌 툴팁 -->
+
+                            <!-- 1:1문의 개인정보 수집 및 이용 동의 -->
+                            <div class="popup-wrap" id="inquiryPrivacy" style="position:absolute">
+                                <div class="popup">
+                                    <div class="popup-inner">
+                                        <div class="popup-header">
+                                            <p style="letter-spacing: -2px;">개인정보 수집 및 이용 동의</p>
+                                        </div>
+                                        <div class="popup-body">
+                                            <p class="popup-txt">
+                                                <strong>상담을 위한 개인 정보 수집/이용 동의</strong><br>
+                                                1. 수집 항목 : 이름, 이메일 주소, 휴대폰 번호<br>
+                                                2. 수집, 이용 목적 : 상담을 위한 정보 제공<br>
+                                                3. 고객정보 제공업체 : CS 리더<br>
+                                                4. 보유, 이용기간 및 파기 : 답변 3개월 후 지체 없이 파기<br>
+                                            </p>
+                                        </div>
+                                        <div class="popup-footer">
+                                            <div class="btn-wrap">
+                                                <button class="btn-new violet" onclick="popClose(this)">확인</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--// 1:1문의 개인정보 수집 및 이용 동의 -->
+
+                            <!-- 에이전트 팝업 -->
+                            <div class="popup-wrap" id="agent" style="position:absolute">
+                                <div class="popup agent">
+                                    <div class="popup-inner">
+                                        <div class="agent-head">
+                                            <img src="/assets/img/agent_img.png" alt="U+ 알뜰 모바일">
+                                        </div>
+                                        <div class="agent-body">
+                                            <h1 class="agent-tit">충전알림</h1>
+                                            <p class="agent-txt">선불 사용기간 {diff}일 남았습니다.<br />만료일 : <span class="txt-violet">{diffymd}</span></p>
+                                        </div>
+                                        <div class="agent-footer two-btn">
+                                            <button class="agent-btn txt-gray" onclick="popClose(this)">닫기</button>
+                                            <button class="agent-btn txt-violet">충전하기</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--// 에이전트 팝업 -->
+
+                        </div>
+
+                        <pre class="code" lang="html">
+
+    <!-- 알럿 팝업 -->
+    <div class="popup-wrap" id="alert">
+        <div class="popup alert">
+            <div class="popup-inner">
+                <div class="popup-body">
+                    <p class="popup-txt">알럿 메세지<br>알럿 메세지</p>
+                </div>
+                <div class="popup-footer">
+                    <div class="btn-wrap">
+                        <button class="btn-new violet" onclick="popClose(this)">확인</button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-pop-close" onclick="popClose(this)">닫기</button>
+        </div>
+    </div>
+    <!--// 알럿 팝업 -->
+
+    <!-- 컨펌 팝업 -->
+    <div class="popup-wrap" id="confirm">
+        <div class="popup alert">
+            <div class="popup-inner">
+                <div class="popup-body">
+                    <p class="popup-txt">컨펌 메세지<br>컨펌 메세지</p>
+                </div>
+                <div class="popup-footer">
+                    <div class="btn-wrap two-btn">
+                        <button class="btn-new violet btn-cancel" onclick="popClose(this)">취소</button>
+                        <button class="btn-new violet btn-confirm">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--// 컨펌 팝업 -->
+
+    <!-- 평생계좌 툴팁 -->
+    <div class="popup-wrap" id="wholeLife">
+        <div class="popup tooltip">
+            <div class="popup-inner">
+                <div class="popup-body">
+                    <p class="tooltip-title">평생계좌</p>
+                    <p class="tooltip-txt">평생계좌는 휴대폰 번호 별로 지정된 전용계좌로 해당 계좌 입금 시 바로 충전 처리됩니다.</p>
+                </div>
+            </div>
+            <button class="btn-pop-close" onclick="popClose(this)">닫기</button>
+        </div>
+    </div>
+    <!--// 평생계좌 툴팁 -->
+
+    <!-- 1:1문의 개인정보 수집 및 이용 동의 -->
+    <div class="popup-wrap" id="inquiryPrivacy">
+        <div class="popup">
+            <div class="popup-inner">
+                <div class="popup-header">
+                    <p>개인정보 수집 및 이용 동의</p>
+                </div>
+                <div class="popup-body">
+                    <p class="popup-txt">
+                        <strong>상담을 위한 개인 정보 수집/이용 동의</strong><br>
+                        1. 수집 항목 : 이름, 이메일 주소, 휴대폰 번호<br>
+                        2. 수집, 이용 목적 : 상담을 위한 정보 제공<br>
+                        3. 고객정보 제공업체 : CS 리더<br>
+                        4. 보유, 이용기간 및 파기 : 답변 3개월 후 지체 없이 파기<br>
+                    </p>
+                </div>
+                <div class="popup-footer">
+                    <div class="btn-wrap">
+                        <button class="btn-new violet" onclick="popClose(this)">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--// 1:1문의 개인정보 수집 및 이용 동의 -->
+
+    <!-- 에이전트 팝업 -->
+    <div class="popup-wrap" id="agent">
+        <div class="popup agent">
+            <div class="popup-inner">
+                <div class="agent-head">
+                    <img src="/assets/img/agent_img.png" alt="U+ 알뜰 모바일">
+                </div>
+                <div class="agent-body">
+                    <h1 class="agent-tit">충전알림</h1>
+                    <p class="agent-txt">선불 사용기간 {diff}일 남았습니다.<br />만료일 : <span class="txt-violet">{diffymd}</span></p>
+                </div>
+                <div class="agent-footer two-btn">
+                    <button class="agent-btn txt-gray">닫기</button>
+                    <button class="agent-btn txt-violet">충전하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--// 에이전트 팝업 -->
+
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="guide-section" id="guide-loader">
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">페이지 로더</h2>
+                    </div>
+
+                    <div class="guide_box">
+                        <div class="layout" style="height:100px;">
+                            <div class="pageloader on" style="position:relative;">
+                                <div class="loaders" style="position:absolute"></div>
+                            </div>
+                        </div>
+                        <pre class="code" lang="html">
+
+    <div class="pageloader on"> <!-- 로딩 완료시 on 클래스 제거 -->
+        <div class="loaders"></div>
+    </div>
+
+                        </pre>
+                        <pre class="code" lang="CSS">
+
+    .pageloader { display: none; position: fixed; width: 100%; height: 100%; z-index: 100000; background: rgba(255, 255, 255, 0.9); }
+
+    .pageloader.on { display: block; }
+
+    .loaders { position: fixed; top: 50%; left: 50%; z-index: 100001; width: 4rem; height: 4rem; border: 0.5rem solid #ffb2cc; border-top-color: #ff2e76; border-radius: 50%; margin-top: -2rem; margin-left: -2rem; -webkit-animation: spin .8s linear infinite; animation: spin .8s linear infinite; }
+
+    @-webkit-keyframes spin { 0% { -webkit-transform: rotate(0); transform: rotate(0); }
+        100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+
+    @keyframes spin { 0% { -webkit-transform: rotate(0); transform: rotate(0); }
+        100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
+
+                        </pre>
+                    </div>
+                </div>
+
+                <div class="guide-section" id="guide-lang">
+                    <div class="guide_tit_area">
+                        <h2 class="guide_h2">다국어 처리 관련</h2>
+                    </div>
+
+                    <h3 class="guide_h3">1. HTML</h3>
+                    <h4 class="guide_h4">html의 lang 어트리뷰트와 강제 줄바꿈을 위한 br태그를 제외하고 10개국어의 html 태그와 사용된 클래스는 모두 동일</h4>
+
+                    <div class="guide_box">
+                        <pre class="code" lang="html">
+
+    < html lang="ko-KR"> <!-- 한국어 -->
+    < html lang="en-US"> <!-- 영어 -->
+    < html lang="zh-CN"> <!-- 중국어 -->
+    < html lang="vi-VN"> <!-- 베트남어 -->
+    < html lang="mn_MN"> <!-- 몽골어 -->
+    < html lang="uz-UZ"> <!-- 우즈베크어 -->
+    < html lang="th-TH"> <!-- 태국어 -->
+    < html lang="km-KH"> <!-- 캄보디아(크메르어) -->
+    < html lang="ne-NP"> <!-- 네팔어 -->
+    < html lang="my-MM"> <!-- 미얀마(버마어) -->
+
+                        </pre>
+                    </div>
+
+                    <h4 class="guide_h4">향후 추가될 언어에서 번역본 적용 후 틀어지는 레이아웃을 CSS만으로 처리가 불가능할 경우 부득이 html 수정을 최소화하는 방법(ex. 더블클래스 적용)으로 작업 후 개발측에 분기처리 요청</h4>
+
+                    <h3 class="guide_h3">2. CSS</h3>
+
+                    <h4 class="guide_h4">CSS는 언어별로 조금씩 상이하며, 새로운 언어가 추가될 경우 비슷한 길이의 문자열을 가진 언어의 CSS를 기본 베이스로 하고, 세세한 수정이 필요한 경우 커스터마이징 함.</h4>
+
+                    <h3 class="guide_h3">3. 다국어 유형 샘플</h3>
+
+                    <style>
+                        .layout > img { width:100%; margin-top:10px; }
+                        .layout > img + p { margin-top:20px; }
+                    </style>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">버거메뉴</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_010.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_011.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .menu-wrap .menu .util { height: 5.6rem; border-bottom: 0.1rem solid #ececec; background-color: #f7f7f7; }
+
+    .menu-wrap .menu .util > li { position: relative; width: 33.33%; height: 100%; float: left; }
+
+    .menu-wrap .menu .util > li:after { position: absolute; display: block; content: ''; top: 50%; right: 0; -webkit-transform: translateY(-50%); -ms-transform: translateY(-50%); transform: translateY(-50%); width: 0.1rem; height: 0.8rem; background-color: #e5e5e5; }
+
+    .menu-wrap .menu .util > li:last-child:after { display: none; }
+
+    .menu-wrap .menu .util > li > a { display: inline-block; width: 100%; height: 100%; line-height: 5.5rem; text-align: center; font-size: 1.4rem; font-weight: 500; color: #333; }
+
+    .menu-wrap .menu .util > li > button { width: 100%; height: 100%; line-height: 5.5rem; text-align: center; font-size: 1.4rem; font-weight: 500; color: #333; }
+
+    .menu-wrap .menu .util > li span { display: inline-block; vertical-align: top; width: 2.3rem; height: 100%; margin-right: 0.5rem; }
+
+    .menu-wrap .menu .util > li span.util01 { background: url("../img/icon_home.png") center center no-repeat; background-size: 2.3rem 2.3rem; }
+
+    .menu-wrap .menu .util > li span.util02 { background: url("../img/icon_setting.png") center center no-repeat; background-size: 2.3rem 2.3rem; }
+
+    .menu-wrap .menu .util > li span.util03 { background: url("../img/icon_logout.png") center center no-repeat; background-size: 2.3rem 2.3rem; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    .menu-wrap .menu .util { height: 5.6rem; border-bottom: 0.1rem solid #ececec; background-color: #f7f7f7; }
+
+    .menu-wrap .menu .util > li { position: relative; width: 33.33%; height: 100%; float: left; }
+
+    .menu-wrap .menu .util > li:after { position: absolute; display: block; content: ''; top: 50%; right: 0; -webkit-transform: translateY(-50%); -ms-transform: translateY(-50%); transform: translateY(-50%); width: 0.1rem; height: 0.8rem; background-color: #e5e5e5; }
+
+    .menu-wrap .menu .util > li:first-child { width: 22%; }
+
+    .menu-wrap .menu .util > li:nth-child(2) { width: 34%; }
+
+    .menu-wrap .menu .util > li:last-child { width: 44%; }
+
+    .menu-wrap .menu .util > li:last-child:after { display: none; }
+
+    .menu-wrap .menu .util > li > a { display: inline-block; width: 100%; height: 100%; line-height: 5.5rem; text-align: center; font-size: 1.4rem; font-weight: 500; color: #333; }
+
+    .menu-wrap .menu .util > li > button { width: 100%; height: 100%; line-height: 5.5rem; text-align: center; font-size: 1.4rem; font-weight: 500; color: #333; }
+
+    .menu-wrap .menu .util > li span { display: inline-block; vertical-align: top; width: 2.3rem; height: 100%; margin-right: 0.5rem; }
+
+    .menu-wrap .menu .util > li span.util01 { background: url("../img/icon_home.png") center center no-repeat; background-size: 2.3rem 2.3rem; }
+
+    .menu-wrap .menu .util > li span.util02 { background: url("../img/icon_setting.png") center center no-repeat; background-size: 2.3rem 2.3rem; }
+
+    .menu-wrap .menu .util > li span.util03 { background: url("../img/icon_logout.png") center center no-repeat; background-size: 2.3rem 2.3rem; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">홈메인 > 평생계좌 정보 (hom_010.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_020.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_021.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .main .visual .whole-life { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; margin-top: 1.5rem; }
+
+    .main .visual .whole-life > div { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-flex: 1; -ms-flex: 1; flex: 1; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: start; -ms-flex-pack: start; justify-content: flex-start; }
+
+    .main .visual .whole-life > div > p { font-size: 1.4rem; font-weight: 700; color: #222; }
+
+    .main .visual .whole-life > div .btn-tooltip { margin-left: 0.2rem; width: 1.6rem; height: 1.6rem; }
+
+    .main .visual .whole-life > div > span { -webkit-box-flex: 1; -ms-flex: 1; flex: 1; margin-left: 7px; font-size: 1.4rem; font-weight: 400; color: #222; }
+
+    .main .visual .whole-life > div > span > span { position: relative; margin-left: 1.2rem; }
+
+    .main .visual .whole-life > div > span > span:before { position: absolute; display: block; content: ''; top: 0.5rem; left: -0.6rem; width: 0.1rem; height: 1.2rem; background-color: #ddd; }
+
+    .main .visual .whole-life .btn-share { width: 1.6rem; height: 1.7rem; text-indent: -9999px; background: url("../img/btn_share.png") no-repeat; background-size: 100%; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    .main .visual .whole-life { position: relative; margin-top: 1.5rem; }
+
+    .main .visual .whole-life > div > p { display: inline-block; font-size: 1.4rem; font-weight: 700; color: #222; }
+
+    .main .visual .whole-life > div .btn-tooltip { margin-left: 0.2rem; width: 1.6rem; height: 1.6rem; }
+
+    .main .visual .whole-life > div > span { display: block; width: 100%; margin-top: 7px; font-size: 1.4rem; font-weight: 400; color: #222; }
+
+    .main .visual .whole-life > div > span > span { position: relative; margin-left: 1.2rem; }
+
+    .main .visual .whole-life > div > span > span:before { position: absolute; display: block; content: ''; top: 0.5rem; left: -0.6rem; width: 0.1rem; height: 1.2rem; background-color: #ddd; }
+
+    .main .visual .whole-life .btn-share { width: 1.6rem; height: 1.7rem; text-indent: -9999px; background: url("../img/btn_share.png") no-repeat; background-size: 100%; position: absolute; bottom: 0; right: 0; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">홈메인 > 즉시충전/자동결제 (hom_010.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_030.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_031.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .main .contents .charge-case.autopay > div { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; }
+
+    .main .contents .charge-case.autopay > div > div { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
+
+    .main .contents .charge-case.autopay > div > div .btn-tooltip { margin-left: 0.6rem; }
+
+    .main .contents .charge-case.autopay > div > div.auto-pay-toggle > p { font-size: 1.3rem; font-weight: 500; color: #666; margin-right: 0.4rem; }
+
+    .main .contents .charge-case.autopay > p { font-size: 1.6rem; font-weight: 400; color: #000; margin-top: 1.2rem; }
+
+    .main .contents .charge-case.autopay > p > span { position: relative; margin-left: 1.4rem; }
+
+    .main .contents .charge-case.autopay > p > span:before { position: absolute; display: block; content: ''; top: 0.7rem; left: -0.7rem; width: 0.1rem; height: 1.2rem; background-color: #ddd; }
+
+    .main .contents .charge-case.autopay .btn-wrap { margin-top: 1.8rem; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    .main .contents .charge-case.autopay > div > div { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
+
+    .main .contents .charge-case.autopay > div > div .btn-tooltip { margin-left: 0.6rem; }
+
+    .main .contents .charge-case.autopay > div > div.auto-pay-toggle { margin-top: 1.2rem; -webkit-box-flex: 0; -ms-flex: none; flex: none; position: relative; }
+
+    .main .contents .charge-case.autopay > div > div.auto-pay-toggle > p { width: calc(100% - 4rem); font-size: 1.3rem; font-weight: 500; color: #666; position: absolute; top: 50%; left: 4rem; -webkit-transform: translateY(-50%); -ms-transform: translateY(-50%); transform: translateY(-50%); }
+
+    .main .contents .charge-case.autopay > p { font-size: 1.6rem; font-weight: 400; color: #000; margin-top: 1.2rem; }
+
+    .main .contents .charge-case.autopay > p > span { position: relative; margin-left: 1.4rem; }
+
+    .main .contents .charge-case.autopay > p > span:before { position: absolute; display: block; content: ''; top: 0.7rem; left: -0.7rem; width: 0.1rem; height: 1.2rem; background-color: #ddd; }
+
+    .main .contents .charge-case.autopay .btn-wrap { margin-top: 1.8rem; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">충전메인 > 자동결제/신청정보변경 (cha_010.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_040.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_041.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .charge-main .visual .charge-util { margin-top: 2rem; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; }
+
+    .charge-main .visual .charge-util .auto-pay-toggle { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
+
+    .charge-main .visual .charge-util .auto-pay-toggle > p { font-size: 1.3rem; font-weight: 500; color: #666; margin-left: 0.5rem; }
+
+    .charge-main .visual .charge-util .btn-info-edit { position: relative; font-size: 1.4rem; font-weight: 500; color: #8863e6; padding-right: 1.5rem; background: url("../img/arrow_down_purple.png") right center no-repeat; background-size: 0.9rem 0.5rem; }
+
+    .charge-main .visual .charge-util .btn-info-edit.open { background: url("../img/arrow_up_purple.png") right center no-repeat; background-size: 0.9rem 0.5rem; }
+
+    .charge-main .visual .charge-util .btn-info-edit:after { display: block; position: absolute; content: ''; width: 100%; height: 0.1rem; bottom: -0.2rem; left: 0; background-color: #8863e6; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    .charge-main .visual .charge-util { margin-top: 2rem; overflow: hidden; }
+
+    .charge-main .visual .charge-util .auto-pay-toggle { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
+
+    .charge-main .visual .charge-util .auto-pay-toggle > p { font-size: 1.3rem; font-weight: 500; color: #666; margin-left: 0.5rem; }
+
+    .charge-main .visual .charge-util .btn-info-edit { position: relative; font-size: 1.4rem; font-weight: 500; color: #8863e6; text-align: right; margin: 1rem -2rem 0 0; padding-left: 2rem; background: url("../img/arrow_down_purple.png") left center no-repeat; background-size: 0.9rem 0.5rem; }
+
+    .charge-main .visual .charge-util .btn-info-edit.open { background: url("../img/arrow_up_purple.png") left center no-repeat; background-size: 0.9rem 0.5rem; }
+
+    .charge-main .visual .charge-util .btn-info-edit:after { height: 0; background-color: transparent; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">충전메인 > 신청정보변경 > 결제방법 (cha_010.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_050.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_051.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .charge-main .visual .subscription-info table > tbody > tr > td > span:first-child { margin-right: 2rem; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    .charge-main .visual .subscription-info table > tbody > tr > td > span { display: block; margin-bottom: 0.5rem; }
+
+    .charge-main .visual .subscription-info table > tbody > tr > td > span:last-child { margin-bottom: 0; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">충전메인 > 탭 (cha_010.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_060.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_061.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    #chargeTab { position: relative; padding-top: 6rem; background-color: #fff; border-radius: 0.2rem; -webkit-box-shadow: 0 0 0.8rem 0.1rem rgba(0, 0, 0, 0.2); box-shadow: 0 0 0.8rem 0.1rem rgba(0, 0, 0, 0.2); }
+
+    #chargeTab .swiper-pagination { position: absolute; top: 0; left: 0; height: 6rem; margin: 0; padding: 0 2.2rem; }
+
+    #chargeTab .swiper-pagination-bullet { border: 0 !important; outline: 0 !important; border-radius: 0; width: 33.33%; height: 6rem; text-align: center; line-height: 6rem; font-size: 1.8rem; font-weight: 400; color: #999; opacity: 1; background: transparent; margin: 0 !important; }
+
+    #chargeTab .swiper-pagination-bullet-active { position: relative; font-weight: 500; color: #222; }
+
+    #chargeTab .swiper-pagination-bullet-active:after { position: absolute; display: block; content: ''; top: 0; left: 50%; -webkit-transform: translateX(-50%); -ms-transform: translateX(-50%); transform: translateX(-50%); width: calc(100% - 1.5rem); height: 0.5rem; border-radius: 0.1rem; background-color: #ff2e76; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    #chargeTab { position: relative; padding-top: 8.5rem; background-color: #fff; border-radius: 0.2rem; -webkit-box-shadow: 0 0 0.8rem 0.1rem rgba(0, 0, 0, 0.2); box-shadow: 0 0 0.8rem 0.1rem rgba(0, 0, 0, 0.2); }
+
+    #chargeTab .swiper-pagination { position: absolute; top: 0; left: 0; height: 8.5rem; margin: 0; padding: 0 2.2rem; }
+
+    #chargeTab .swiper-pagination-bullet { border: 0 !important; outline: 0 !important; border-radius: 0; width: 33.33%; height: 8.5rem; text-align: center; line-height: 8.5rem; font-size: 1.6rem; font-weight: 400; color: #999; opacity: 1; background: transparent; margin: 0 !important; padding: 0 1rem; }
+
+    #chargeTab .swiper-pagination-bullet span { display: inline-block; vertical-align: middle; line-height: 1.3; }
+
+    #chargeTab .swiper-pagination-bullet-active { position: relative; font-weight: 500; color: #222; }
+
+    #chargeTab .swiper-pagination-bullet-active:after { position: absolute; display: block; content: ''; top: 0; left: 50%; -webkit-transform: translateX(-50%); -ms-transform: translateX(-50%); transform: translateX(-50%); width: calc(100% - 1.5rem); height: 0.5rem; border-radius: 0.1rem; background-color: #ff2e76; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">충전메인 > 충전하기 > 평생계좌정보 (cha_010.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_070.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_071.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info { margin-top: 1rem; display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p { font-size: 1.4rem; color: #000; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:first-child { font-weight: 400; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:first-child > span { position: relative; display: inline-block; margin-left: 1.2rem; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:first-child > span:before { position: absolute; display: block; content: ''; top: 0.4rem; left: -0.6rem; width: 0.1rem; height: 1.2rem; background-color: #ddd; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:last-child { font-weight: 500; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:last-child > span { font-size: 1.6rem; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info { margin-top: 1rem; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p { font-size: 1.4rem; color: #000; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:first-child { font-weight: 400; margin-bottom: 0.5rem; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:first-child > span { position: relative; display: inline-block; margin-left: 1.2rem; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:first-child > span:before { position: absolute; display: block; content: ''; top: 0.4rem; left: -0.6rem; width: 0.1rem; height: 1.2rem; background-color: #ddd; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:last-child { font-weight: 500; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.whole-life .wholelife-info > p:last-child > span { font-size: 1.6rem; padding-left: 1rem; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">충전메인 > 충전하기 > 결제방법 (cha_010.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_080.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_081.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.charging > dl.method > dd > span { display: inline-block; margin-right: 2rem; margin-bottom: 1.4rem; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.charging > dl.method > dd > span { display: block; margin-bottom: 1.4rem; }
+
+    .charge-main .charge-tab-wrap #chargeTab .charge-box.charging > dl.method > dd > span #payMethod06 + label > button { vertical-align: middle; width: 1.5rem; height: 1.5rem; margin-left: 0.5rem; margin-top: -0.2rem; opacity: 0.8; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">설정 > 알림기한 (se_010.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_090.jpg" alt="">
+                            <p>태국어</p>
+                            <img src="./guide_091.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .setting > ul > li > ul > li.se-period { display: block; }
+
+    .setting > ul > li > ul > li.se-period > div { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; margin-top: 1.2rem; }
+
+                        </pre>
+
+                        <p>태국어</p>
+                        <pre class="code" lang="CSS">
+
+    .setting > ul > li > ul > li.se-period { display: block; }
+
+    .setting > ul > li > ul > li.se-period > div { font-size: 0; margin-top: 1.2rem; }
+
+    .setting > ul > li > ul > li.se-period > div > span { display: inline-block; width: 50%; margin-bottom: 1rem; }
+
+    .setting > ul > li > ul > li.se-period > div > span:nth-child(3), .setting > ul > li > ul > li.se-period > div > span:nth-child(4) { margin-bottom: 0; }
+
+                        </pre>
+                    </div>
+
+                    <div class="guide_box">
+                        <h4 class="guide_h4">나의 상담내역 (cs_030.html)</h4>
+                        <div class="layout">
+                            <p>한국어</p>
+                            <img src="./guide_100.jpg" alt="">
+                            <p>버마어</p>
+                            <img src="./guide_101.jpg" alt="">
+                        </div>
+
+                        <p>한국어</p>
+                        <pre class="code" lang="CSS">
+
+    .cs.inquiry-history .accordion > li .accordion-title > div { display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; }
+
+    .cs.inquiry-history .accordion > li .accordion-title > div > p { font-size: 1.6rem; font-weight: 400; color: #222; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; -webkit-box-flex: 1; -ms-flex: 1; flex: 1; }
+
+    .cs.inquiry-history .accordion > li .accordion-title > div .badge { display: inline-block; width: 3rem; height: 2rem; line-height: 2rem; text-align: center; border-radius: 0.2rem; font-size: 1.1rem; font-weight: 500; color: #fff; background-color: #8863e6; }
+
+    .cs.inquiry-history .accordion > li .accordion-title > div .badge.complete { line-height: 1.8rem; border: 0.1rem solid #999; background-color: #fff; color: #999; }
+
+                        </pre>
+
+                        <p>버마어</p>
+                        <pre class="code" lang="CSS">
+
+    .cs.inquiry-history .accordion > li .accordion-title > div { position: relative; padding-top: 2.5rem; }
+
+    .cs.inquiry-history .accordion > li .accordion-title > div > p { font-size: 1.6rem; font-weight: 400; color: #222; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+
+    .cs.inquiry-history .accordion > li .accordion-title > div .badge { display: inline-block; width: auto; height: 2rem; line-height: 2rem; padding: 0 0.5rem; text-align: center; border-radius: 0.2rem; font-size: 1.1rem; font-weight: 500; color: #fff; background-color: #8863e6; position: absolute; top: 0; left: 0; }
+
+    .cs.inquiry-history .accordion > li .accordion-title > div .badge.complete { line-height: 1.8rem; border: 0.1rem solid #999; background-color: #fff; color: #999; }
+
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>

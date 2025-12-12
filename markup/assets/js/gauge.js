@@ -139,6 +139,7 @@ export class GaugeChart {
     const bg = document.createElementNS("http://www.w3.org/2000/svg", "path");
     bg.setAttribute("d", this.createArcPath(this.radius, -180, 0));
     if (value <= this.config.maxValue) {
+      bg.setAttribute("class", "bg-arc");
       bg.setAttribute("stroke", "#72451F");
       bg.setAttribute("stroke-opacity", "0.1");
     } else {

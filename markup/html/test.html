@@ -1,0 +1,704 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>배움터 - 멀티 가이드</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR",
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+      }
+
+      /* 기존 스타일들 */
+      .nav-wrap {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-wrap .inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+      }
+
+      .header h1 {
+        color: #667eea;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+
+      .nav ul {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+
+      .nav a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .item-area {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 1rem;
+      }
+
+      .input-group {
+        flex: 1;
+        max-width: 400px;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        font-size: 1rem;
+      }
+
+      .item-box {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .alerts,
+      .mypage {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 50%;
+        background: #667eea;
+        cursor: pointer;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      .main-contents {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+      }
+
+      .keyword-area {
+        margin: 2rem 0;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 16px;
+      }
+
+      .video-wrap {
+        margin-top: 3rem;
+      }
+
+      .video-cards-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+      }
+
+      .video-card {
+        background: #f8f9fa;
+        border-radius: 16px;
+        padding: 1.5rem;
+      }
+
+      .btn-next {
+        background: #667eea;
+        color: white;
+        padding: 0.8rem 2rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        margin-top: 1rem;
+      }
+
+      .bg-arc {
+        width: 200px;
+        height: 100px;
+        background: rgba(102, 126, 234, 0.3);
+        border-radius: 16px;
+        margin: 2rem auto;
+      }
+
+      .key-badge {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        margin: 0.5rem;
+      }
+
+      /* ============================================
+           가이드 시스템 - 한 번에 여러 구멍 + 점선 테두리
+           ============================================ */
+
+      .guide-wrap {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 9999;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        display: none;
+      }
+
+      .guide-wrap.active {
+        opacity: 1;
+        pointer-events: auto;
+        display: block;
+      }
+
+      /* SVG 마스크 */
+      .guide-svg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: auto;
+      }
+
+      /* 점선 테두리 컨테이너 */
+      .guide-borders {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10000;
+      }
+
+      .guide-border {
+        position: absolute;
+        border: 3px dashed #ff8c42;
+        border-radius: 12px;
+        opacity: 0;
+        animation:
+          borderFadeIn 0.6s ease-out forwards,
+          borderPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes borderFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes borderPulse {
+        0%,
+        100% {
+          border-color: #ff8c42;
+          box-shadow: 0 0 20px rgba(255, 140, 66, 0.4);
+        }
+        50% {
+          border-color: #ffb89d;
+          box-shadow: 0 0 40px rgba(255, 140, 66, 0.6);
+        }
+      }
+
+      /* 툴팁 */
+      .guide-tooltip {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        max-width: 600px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+        z-index: 10001;
+        pointer-events: auto;
+        opacity: 0;
+        animation: tooltipShow 0.6s ease-out 0.3s forwards;
+      }
+
+      @keyframes tooltipShow {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+
+      .guide-tooltip-title {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: #2d2d34;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .guide-tooltip-description {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #666;
+        margin-bottom: 2.5rem;
+        text-align: center;
+      }
+
+      .guide-tooltip-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+      }
+
+      .guide-btn {
+        padding: 1rem 2.5rem;
+        border: none;
+        border-radius: 16px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+      }
+
+      .guide-btn-close {
+        background: #f0f0f0;
+        color: #666;
+      }
+
+      .guide-btn-close:hover {
+        background: #e0e0e0;
+        transform: translateY(-2px);
+      }
+
+      .guide-btn-start {
+        background: #ff8c42;
+        color: white;
+        box-shadow: 0 6px 20px rgba(255, 140, 66, 0.4);
+      }
+
+      .guide-btn-start:hover {
+        background: #ff7a2e;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(255, 140, 66, 0.5);
+      }
+
+      /* 시작 버튼 */
+      .guide-start-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: #ff8c42;
+        color: white;
+        padding: 1.2rem 2.5rem;
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(255, 140, 66, 0.4);
+        z-index: 10002;
+        transition: all 0.3s ease;
+      }
+
+      .guide-start-btn:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 12px 32px rgba(255, 140, 66, 0.5);
+      }
+
+      /* 강조 레이블 */
+      .guide-label {
+        position: absolute;
+        background: #ff8c42;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        pointer-events: none;
+        opacity: 0;
+        animation: labelShow 0.6s ease-out forwards;
+        box-shadow: 0 4px 12px rgba(255, 140, 66, 0.4);
+        white-space: nowrap;
+      }
+
+      @keyframes labelShow {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap main">
+      <div class="nav-wrap">
+        <div class="inner">
+          <header class="header">
+            <h1>배움터</h1>
+          </header>
+          <nav class="nav">
+            <ul>
+              <li><a href="#">마이클래스</a></li>
+              <li><a href="#">온보딩</a></li>
+              <li><a href="#">법정교육</a></li>
+              <li><a href="#">리더십</a></li>
+              <li><a href="#">인사이트</a></li>
+              <li><a href="#">비즈트렌드</a></li>
+            </ul>
+          </nav>
+          <div class="item-area">
+            <div class="input-group">
+              <input type="text" placeholder="검색" />
+            </div>
+            <div class="item-box">
+              <button class="alerts">🔔</button>
+              <button class="mypage">👤</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="bg-arc">배경 아크</div>
+
+        <div class="main-contents">
+          <div class="keyword-area">
+            <h3>나의 키워드</h3>
+            <div>
+              <span class="key-badge">#인문</span>
+              <span class="key-badge">#소통</span>
+              <span class="key-badge">#협업</span>
+            </div>
+          </div>
+
+          <div class="video-wrap">
+            <div class="video-cards-container">
+              <div class="video-card">
+                <div class="key-badge">리더십</div>
+                <h4>영상 1</h4>
+              </div>
+              <div class="video-card">
+                <div class="key-badge">인사이트</div>
+                <h4>영상 2</h4>
+              </div>
+              <div class="video-card">
+                <div class="key-badge">협업</div>
+                <h4>영상 3</h4>
+              </div>
+              <div class="video-card">
+                <h4>영상 4</h4>
+              </div>
+              <div class="video-card">
+                <div class="key-badge">성장</div>
+                <h4>영상 5</h4>
+              </div>
+              <div class="video-card">
+                <h4>영상 6</h4>
+              </div>
+            </div>
+            <button class="btn-next">다음 ›</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="guide-start-btn">💡 가이드 보기</button>
+    </div>
+
+    <!-- 가이드 오버레이 -->
+    <div class="guide-wrap">
+      <svg class="guide-svg" width="100%" height="100%">
+        <defs>
+          <mask id="guide-mask">
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            <path id="guide-cutout-path" fill="black" />
+          </mask>
+        </defs>
+        <rect
+          x="0"
+          y="0"
+          width="100%"
+          height="100%"
+          fill="rgba(0, 0, 0, 0.85)"
+          mask="url(#guide-mask)"
+        />
+      </svg>
+
+      <!-- 점선 테두리들 -->
+      <div class="guide-borders" id="guideBorders"></div>
+
+      <!-- 레이블들 -->
+      <div class="guide-labels" id="guideLabels"></div>
+
+      <div class="guide-tooltip">
+        <h2 class="guide-tooltip-title">✨ 주요 기능 안내</h2>
+        <p class="guide-tooltip-description">
+          강조된 영역들이 배움터의 핵심 기능들입니다.<br />
+          각 영역을 클릭하여 자세한 내용을 확인하세요!
+        </p>
+        <div class="guide-tooltip-actions">
+          <button class="guide-btn guide-btn-close" id="guideClose">
+            닫기
+          </button>
+          <button class="guide-btn guide-btn-start" id="guideStart">
+            시작하기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      class MultiGuide {
+        constructor(targets) {
+          this.targets = targets;
+          this.isActive = false;
+          this.init();
+        }
+
+        init() {
+          this.guideWrap = document.querySelector(".guide-wrap");
+          this.cutoutPath = document.getElementById("guide-cutout-path");
+          this.bordersContainer = document.getElementById("guideBorders");
+          this.labelsContainer = document.getElementById("guideLabels");
+
+          // 컨테이너가 없으면 생성
+          if (!this.bordersContainer) {
+            this.bordersContainer = document.createElement("div");
+            this.bordersContainer.id = "guideBorders";
+            this.bordersContainer.className = "guide-borders";
+            this.guideWrap.appendChild(this.bordersContainer);
+          }
+
+          if (!this.labelsContainer) {
+            this.labelsContainer = document.createElement("div");
+            this.labelsContainer.id = "guideLabels";
+            this.labelsContainer.className = "guide-labels";
+            this.labelsContainer.style.cssText =
+              "position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10000;";
+            this.guideWrap.appendChild(this.labelsContainer);
+          }
+
+          this.attachEvents();
+        }
+
+        attachEvents() {
+          const startBtn = document.querySelector(".guide-start-btn");
+          const closeBtn = document.getElementById("guideClose");
+          const startGuideBtn = document.getElementById("guideStart");
+          const svg = document.querySelector(".guide-svg");
+
+          startBtn?.addEventListener("click", () => this.show());
+          closeBtn?.addEventListener("click", () => this.hide());
+          startGuideBtn?.addEventListener("click", () => this.hide());
+
+          svg?.addEventListener("click", (e) => {
+            if (e.target === svg || e.target.tagName === "rect") {
+              this.hide();
+            }
+          });
+
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && this.isActive) {
+              this.hide();
+            }
+          });
+        }
+
+        show() {
+          this.isActive = true;
+          this.guideWrap.classList.add("active");
+          const startBtn = document.querySelector(".guide-start-btn");
+          if (startBtn) startBtn.style.display = "none";
+          document.body.style.overflow = "hidden";
+
+          this.createCutouts();
+          this.createBorders();
+          this.createLabels();
+        }
+
+        hide() {
+          this.isActive = false;
+          this.guideWrap.classList.remove("active");
+          const startBtn = document.querySelector(".guide-start-btn");
+          if (startBtn) startBtn.style.display = "block";
+          document.body.style.overflow = "";
+
+          if (this.bordersContainer) this.bordersContainer.innerHTML = "";
+          if (this.labelsContainer) this.labelsContainer.innerHTML = "";
+        }
+
+        createCutouts() {
+          let pathData = "";
+
+          this.targets.forEach((target) => {
+            const element = document.querySelector(target.selector);
+            if (!element) return;
+
+            const rect = element.getBoundingClientRect();
+            const padding = target.padding || 15;
+            const radius = target.borderRadius || 12;
+
+            pathData +=
+              this.createRoundedRectPath(
+                rect.left - padding,
+                rect.top - padding,
+                rect.width + padding * 2,
+                rect.height + padding * 2,
+                radius
+              ) + " ";
+          });
+
+          this.cutoutPath.setAttribute("d", pathData.trim());
+        }
+
+        createRoundedRectPath(x, y, width, height, radius) {
+          return `
+                    M ${x + radius},${y}
+                    L ${x + width - radius},${y}
+                    Q ${x + width},${y} ${x + width},${y + radius}
+                    L ${x + width},${y + height - radius}
+                    Q ${x + width},${y + height} ${x + width - radius},${y + height}
+                    L ${x + radius},${y + height}
+                    Q ${x},${y + height} ${x},${y + height - radius}
+                    L ${x},${y + radius}
+                    Q ${x},${y} ${x + radius},${y}
+                    Z
+                `;
+        }
+
+        createBorders() {
+          this.targets.forEach((target, index) => {
+            const element = document.querySelector(target.selector);
+            if (!element) return;
+
+            const rect = element.getBoundingClientRect();
+            const padding = target.padding || 15;
+
+            const border = document.createElement("div");
+            border.className = "guide-border";
+            border.style.cssText = `
+                        left: ${rect.left - padding}px;
+                        top: ${rect.top - padding}px;
+                        width: ${rect.width + padding * 2}px;
+                        height: ${rect.height + padding * 2}px;
+                        animation-delay: ${index * 0.1}s;
+                    `;
+
+            this.bordersContainer.appendChild(border);
+          });
+        }
+
+        createLabels() {
+          this.targets.forEach((target, index) => {
+            if (!target.label) return;
+
+            const element = document.querySelector(target.selector);
+            if (!element) return;
+
+            const rect = element.getBoundingClientRect();
+
+            const label = document.createElement("div");
+            label.className = "guide-label";
+            label.textContent = target.label;
+            label.style.cssText = `
+                        left: ${rect.left}px;
+                        top: ${rect.top - 40}px;
+                        animation-delay: ${index * 0.1 + 0.3}s;
+                    `;
+
+            this.labelsContainer.appendChild(label);
+          });
+        }
+      }
+
+      // 타겟 설정
+      const guideTargets = [
+        {
+          selector: ".nav",
+          padding: 20,
+          borderRadius: 16,
+          label: "학습 메뉴",
+        },
+        {
+          selector: ".input-group",
+          padding: 15,
+          borderRadius: 12,
+          label: "검색",
+        },
+        {
+          selector: ".item-box",
+          padding: 15,
+          borderRadius: 12,
+          label: "알림",
+        },
+        {
+          selector: ".bg-arc",
+          padding: 20,
+          borderRadius: 16,
+          label: "학습 현황",
+        },
+        {
+          selector: ".keyword-area",
+          padding: 20,
+          borderRadius: 16,
+          label: "키워드 설정",
+        },
+        {
+          selector: ".btn-next",
+          padding: 12,
+          borderRadius: 12,
+          label: "다음 페이지",
+        },
+        {
+          selector: ".video-card:nth-child(3) .key-badge:first-child",
+          padding: 10,
+          borderRadius: 20,
+          label: "추천 태그",
+        },
+        {
+          selector: ".video-card:nth-child(5) .key-badge:first-child",
+          padding: 10,
+          borderRadius: 20,
+          label: "추천 태그",
+        },
+      ];
+
+      // 초기화
+      document.addEventListener("DOMContentLoaded", () => {
+        const multiGuide = new MultiGuide(guideTargets);
+        console.log("멀티 가이드 초기화 완료!");
+      });
+    </script>
+  </body>
+</html>
