@@ -67,6 +67,10 @@ const paths = {
       dest: "./dist/_coding_list",
     },
   },
+  guide: {
+    src: "./markup/_guide/**/*",
+    dest: "./dist/_guide",
+  },
 };
 
 // ------------------------------------
@@ -178,6 +182,11 @@ function cdlindex() {
 function cdlfolder() {
   return src(paths.cdl.folder.src).pipe(dest(paths.cdl.folder.dest));
 }
+
+function guide() {
+  return src(paths.guide.src).pipe(dest(paths.guide.dest));
+}
+
 // BrowserSync
 function serve() {
   browserSync.init({
@@ -210,7 +219,8 @@ const build = series(
     jscopy,
     html,
     cdlindex,
-    cdlfolder
+    cdlfolder,
+    guide
   ),
   cache
 );
@@ -226,7 +236,8 @@ const dev = series(
     jscopy,
     html,
     cdlindex,
-    cdlfolder
+    cdlfolder,
+    guide
   ),
   parallel(serve)
 );

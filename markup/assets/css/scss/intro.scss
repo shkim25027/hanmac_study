@@ -25,12 +25,11 @@
     height: var(--window-inner-height);
     background: var(--bg-intro);
     overflow: hidden;
-    flex-direction: column;
     margin-top: 0;
     color: var(--text-intro-base);
     border-radius: 0;
     border: none;
-    @include flex();
+    @include flex(column);
   }
   /* Text Area - 고정 위치 */
   .text-area {
@@ -105,8 +104,7 @@
       > div {
         width: 100vw;
         height: var(--window-inner-height);
-        flex-direction: column;
-        @include flex();
+        @include flex(column);
         &:not(.mask) {
           position: relative;
           z-index: 1;
@@ -261,11 +259,8 @@
 
   /* 콘텐츠 영역 */
   .content-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     margin-top: 34px;
+    @include flex(column);
   }
   /* Cards */
   .card {
@@ -278,9 +273,8 @@
     opacity: 0;
     transform: translateY(60px);
     transition: all 0.6s ease;
-    flex-direction: column;
     text-align: center;
-    @include flex();
+    @include flex(column);
     &-list {
       display: flex;
       flex-wrap: wrap;

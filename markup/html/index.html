@@ -1,14 +1,6 @@
 <!doctype html>
 <html lang="ko">
   <head>
-    <script>
-      // 페이지 로드 시 실행
-      if (!localStorage.getItem("startVisit")) {
-        window.location.href = "./intro.html";
-      } else {
-        localStorage.setItem("lastVisit", new Date().toISOString());
-      }
-    </script>
     @@include("_include/_head.html")
     <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
   </head>
@@ -91,160 +83,156 @@
       @@include("guide.html")
     </div>
 
-    <!-- 설정 및 초기화 -->
     <script type="module">
-      import { KeywordManager } from "./assets/js/keyword.js";
-      import { VideoManager } from "./assets/js/video.js";
-      import { GaugeChart } from "./assets/js/gauge.js";
+      import { VideoCardRenderer } from "./assets/js/main/VideoCardRenderer.js";
+      import { VideoSlider } from "./assets/js/main/VideoSlider.js"; // 파일명 오타 수정
 
-      // ============================================
-      // 📋 설정 (Config)
-      // ============================================
-      const CONFIG = {
-        // 비디오 데이터
-        videos: [
-          {
-            id: 1,
-            url: "IZm1m_FKmc0",
-            category: "리더십",
-            title: "정선근 교수가 알려주는 목디스크 지식",
-            pick: true,
-            person: "홍길동",
-            type: "main",
-            keywords: ["소통", "전문가"],
-            gauge: 80,
-          },
-          {
-            id: 2,
-            url: "3CR-FmeOu2U",
-            category: "인사이트",
-            title: "기꺼이 '이 말'을 내 뱉을 줄 알아야 인정받는다",
-            type: "comment",
-            keywords: ["마인드셋", "자기개발"],
-            gauge: 30,
-          },
-          {
-            id: 3,
-            url: "-X6GV6MvgSQ",
-            category: "인사이트",
-            type: "onboarding",
-            title: "회계를 조금이라도 이해하면 인생이 달라집니다",
-            keywords: ["소통", "코칭"],
-            gauge: 50,
-          },
-          {
-            id: 4,
-            url: "-yRS3yGGnDU",
-            category: "리더십",
-            type: "learning",
-            title: "산업재해예방 안전수칙",
-            keywords: ["소통", "중간관리자"],
-          },
-          {
-            id: 5,
-            url: "FUXT_m6nzhg",
-            category: "인사이트",
-            type: "main",
-            title: "정선근 교수가 알려주는 목디스크 지식",
-            keywords: ["소통", "전문"],
-          },
-          {
-            id: 6,
-            url: "nLL409se8sM",
-            category: "비즈트렌드",
-            type: "comment",
-            title: "3/2 - 이대호의 별책부록 [1조 여행 꿀팁]",
-            keywords: ["동기부여", "AI"],
-          },
-          {
-            id: 7,
-            url: "XKqLz6WJSRA",
-            category: "리더십",
-            type: "learning",
-            title: "효과적인 협업을 위한 5가지 원칙",
-            keywords: ["협업", "전문가"],
-          },
-          {
-            id: 8,
-            url: "3U0cbzmwSYc",
-            category: "인사이트",
-            type: "onboarding",
-            title: "팀 생산성을 높이는 협업 도구",
-            keywords: ["성장", "코칭"],
-          },
-        ],
-
-        // 최대 키워드 선택 개수
-        maxAllowKeywords: 5,
-
-        // 초기 선택 키워드 (HTML과 일치시켜야 함)
-        initialAllowKeywords: ["소통", "협업"],
-        initialDenyKeywords: ["마인드셋"],
-
-        // 페이지당 영상 개수
-        videosPerPage: 6,
-
-        // 애니메이션 딜레이 (ms)
-        animationDelay: 100,
-
-        // 게이지 설정
-        gauge: {
-          size: 832,
-          maxValue: 50, //전체 학습 시간
-          strokeWidth: 31,
-          padding: 20,
-          outerTextOffset: 6,
-          innerTextOffset: 35,
-          dotRadius: 7,
+      const videos = [
+        {
+          id: 1,
+          url: "KE_MeQZgnPM",
+          category: "리더십",
+          subcate: "행복과 건강",
+          bookmark: true,
+          title: "정선근 교수가 알려주는 목디스크 지식",
+          picker: "홍길동",
+          type: "main",
+          keywords: ["소통", "건강"],
+          gauge: 8,
         },
-      };
+        {
+          id: 2,
+          url: "a2l1uZfsRi0",
+          category: "인사이트",
+          subcate: "행복과 건강",
+          bookmark: false,
+          title: "회계를 조금이라도 이해하면 인생이 달라지는 이유",
+          picker: "",
+          type: "main",
+          keywords: ["소통", "코칭"],
+          gauge: 80,
+        },
 
-      // ============================================
-      // 🚀 앱 초기화
-      // ============================================
-      let keywordManager, videoManager, gaugeChart;
+        {
+          id: 3,
+          url: "IeF8r0ycgVg",
+          category: "리더십",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "꼰대가 되지 않고 건설적인 피드백을 하는 법",
+          picker: "",
+          type: "main",
+          keywords: ["마인드셋", "자기개발"],
+          gauge: 35,
+        },
 
-      function initApp() {
-        // 키워드 매니저 초기화
-        keywordManager = new KeywordManager({
-          initialAllowKeywords: CONFIG.initialAllowKeywords,
-          initialDenyKeywords: CONFIG.initialDenyKeywords,
-          maxAllowKeywords: CONFIG.maxAllowKeywords,
-          onKeywordChange: () => {
-            videoManager.refresh();
-          },
+        {
+          id: 4,
+          url: "KMZXMI0QPoA",
+          category: "리더십",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "[경영 추천도서] 팀장이 처음이신가요? | 팀장 리더십 수업",
+          picker: "",
+          type: "main",
+          keywords: ["마인드셋", "중간관리자"],
+          gauge: 0,
+        },
+        {
+          id: 5,
+          url: "CRKwszz6l2M",
+          category: "인사이트",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "프로와 아마추어를 가르는 차이점!",
+          picker: "",
+          type: "main",
+          keywords: ["소통", "건강"],
+          gauge: 0,
+        },
+
+        {
+          id: 6,
+          url: "IZm1m_FKmc0",
+          category: "인사이트",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "창의적인 캠페인의 시작",
+          picker: "",
+          type: "main",
+          keywords: ["팔로우십", "AI"],
+          gauge: 0,
+        },
+        {
+          id: 7,
+          url: "KE_MeQZgnPM",
+          category: "리더십",
+          subcate: "행복과 건강",
+          bookmark: false,
+          title: "정선근 교수가 알려주는 목디스크 지식",
+          picker: "홍길동",
+          type: "main",
+          keywords: ["소통", "건강"],
+          gauge: 8,
+        },
+        {
+          id: 8,
+          url: "a2l1uZfsRi0",
+          category: "인사이트",
+          subcate: "행복과 건강",
+          bookmark: false,
+          title: "회계를 조금이라도 이해하면 인생이 달라지는 이유",
+          picker: "",
+          type: "main",
+          keywords: ["소통", "코칭"],
+          gauge: 80,
+        },
+
+        {
+          id: 9,
+          url: "IeF8r0ycgVg",
+          category: "리더십",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "꼰대가 되지 않고 건설적인 피드백을 하는 법",
+          picker: "",
+          type: "main",
+          keywords: ["마인드셋", "자기개발"],
+          gauge: 35,
+        },
+      ];
+
+      // 렌더러 초기화
+      const renderer = new VideoCardRenderer({
+        animationDelay: 50,
+      });
+
+      // 슬라이더 초기화
+      const slider = new VideoSlider({
+        videos: videos, // videoArray가 아닌 videos
+        videosPerPage: 6,
+        onPageChange: (pageVideos) => {
+          // 페이지가 변경될 때마다 해당 페이지의 비디오 렌더링
+          renderer.renderCards(pageVideos);
+        },
+      });
+
+      // 슬라이더 초기화 (첫 페이지 렌더링 포함)
+      slider.init();
+      renderer.renderCards(slider.getCurrentPageVideos());
+
+      // 카드 클릭 이벤트 처리
+      document
+        .getElementById("videoCardsContainer")
+        .addEventListener("click", (e) => {
+          const card = e.target.closest(".card");
+          if (card) {
+            e.preventDefault();
+            const videoId = card.getAttribute("data-video-id");
+            console.log("비디오 클릭:", videoId);
+            // 여기서 비디오 모달 열기 등 처리
+          }
         });
-
-        // 비디오 매니저 초기화
-        videoManager = new VideoManager({
-          videos: CONFIG.videos,
-          videosPerPage: CONFIG.videosPerPage,
-          animationDelay: CONFIG.animationDelay,
-          getKeywords: () => keywordManager.getSelectedKeywords(),
-        });
-
-        // 게이지 차트 초기화
-        gaugeChart = new GaugeChart(CONFIG.gauge, CONFIG.maxValue);
-
-        // 초기화 실행
-        keywordManager.init();
-        videoManager.init();
-        gaugeChart.init();
-        gaugeChart.update(30); // 나의 학습 시간
-
-        if (typeof window.keywordChange === "function") {
-          window.keywordChange();
-        }
-
-        console.log("초기화 완료!");
-      }
-
-      // DOM 로드 후 초기화
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initApp);
-      } else {
-        initApp();
-      }
     </script>
   </body>
 </html>

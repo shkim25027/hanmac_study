@@ -205,6 +205,23 @@
   }
 }
 
+$icon-registry: (
+  "bookmark": "../images/ico/ico_bookmark_off.svg",
+  // 주황색 버전
+  "bookmark-on": "../images/ico/ico_bookmark_on.svg", // 흰색 버전
+);
+@function icon($name) {
+  @return map-get($icon-registry, $name);
+}
+
+@mixin useIcon($name, $size: 24px) {
+  @include svgIcon(icon($name), $size);
+}
+
+@mixin useIconMask($name, $color: currentColor, $size: 24px) {
+  @include svgIconMask(icon($name), $color, $size);
+}
+
 // --------------------------------------------
 // Responsive Mixins
 // --------------------------------------------
