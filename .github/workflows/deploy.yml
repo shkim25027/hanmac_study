@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 전체 히스토리 가져오기 (미러링용)
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -43,19 +43,32 @@ jobs:
             echo "❌ ERROR: index.html not found in dist! Gulp build failed."
             exit 1
           fi
-        shell: bash
 
-      # 👇 GitLab 미러링 추가
       - name: Mirror to GitLab
         if: success()
         run: |
+          # Secret 검증
+          if [ -z "$GITLAB_REPO" ]; then
+            echo "❌ ERROR: GITLAB_REPO is not set!"
+            exit 1
+          fi
+          
+          if [ -z "$GITLAB_TOKEN" ]; then
+            echo "❌ ERROR: GITLAB_TOKEN is not set!"
+            exit 1
+          fi
+          
+          echo "✅ Mirroring to: gitlab.com/$GITLAB_REPO"
+          
+          # Git 설정
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # GitLab URL 형식 수정
-          GITLAB_URL="https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git"
-
-          git remote add gitlab "$GITLAB_URL" || git remote set-url gitlab "$GITLAB_URL"
+          
+          # GitLab remote 추가
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git" || \
+          git remote set-url gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git"
+          
+          # 푸시
           git push gitlab HEAD:main --force --tags
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
