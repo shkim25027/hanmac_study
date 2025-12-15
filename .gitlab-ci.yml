@@ -1,38 +1,48 @@
-image: node:20
+name: Deploy to GitLab Pages
 
-stages:
-  - build
-  - deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
-# 빌드 단계
-build:
-  stage: build
-  script:
-    - echo "📦 Installing dependencies..."
-    - npm ci
-    - echo "🔨 Building with Gulp..."
-    - npx gulp build
-    - echo "✅ Build completed"
-  artifacts:
-    paths:
-      - dist/
-    expire_in: 1 hour
-  only:
-    - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-# GitLab Pages 배포
-pages:
-  stage: deploy
-  dependencies:
-    - build
-  script:
-    - echo "📂 Preparing public directory..."
-    - mkdir -p public
-    - cp -r dist/* public/
-    - echo "✅ Files ready for deployment"
-    - ls -la public/
-  artifacts:
-    paths:
-      - public
-  only:
-    - main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Build
+        run: |
+          npm ci
+          npx gulp build
+
+      - name: Deploy to GitLab
+        run: |
+          git config user.name "Bot"
+          git config user.email "bot@github.com"
+
+          # 새 브랜치 생성
+          git checkout --orphan temp-deploy
+
+          # 불필요한 파일 제거
+          git rm -rf .
+
+          # 빌드 결과만 복사
+          cp -r dist/* .
+
+          # .nojekyll 추가 (GitLab Pages용)
+          touch .nojekyll
+
+          git add .
+          git commit -m "Deploy $(date)"
+
+          # 강제 푸시
+          git push -f https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/${{ secrets.GITLAB_REPO }}.git temp-deploy:main
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
