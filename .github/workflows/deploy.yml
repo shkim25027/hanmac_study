@@ -1,50 +1,4 @@
-name: Deploy to GitHub Pages and Mirror to GitLab
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build with Gulp
-        run: npx gulp build
-
-      - name: Verify dist folder contents
-        run: |
-          echo "=== Dist folder structure ==="
-          ls -la dist/
-          echo "=== HTML files ==="
-          find dist/ -name "*.html" -type f
-          echo "=== Total files in dist ==="
-          find dist/ | wc -l
-          if [ ! -f "dist/index.html" ]; then
-            echo "❌ ERROR: index.html not found in dist! Gulp build failed."
-            exit 1
-          fi
-
-      - name: Mirror to GitLab
+name: Mirror to GitLab
 
 on:
   push:
@@ -69,35 +23,24 @@ jobs:
             echo "❌ ERROR: GITLAB_REPO is not set!"
             exit 1
           fi
-          
+
           if [ -z "$GITLAB_TOKEN" ]; then
             echo "❌ ERROR: GITLAB_TOKEN is not set!"
             exit 1
           fi
-          
+
           echo "✅ Mirroring to: gitlab.com/$GITLAB_REPO"
-          
+
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
+
           git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git" || \
           git remote set-url gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git"
-          
+
           git push gitlab HEAD:main --tags || git push gitlab HEAD:main --force --tags
-          
+
           echo "✅ Successfully mirrored to GitLab"
           echo "📦 GitLab will build and deploy via .gitlab-ci.yml"
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
