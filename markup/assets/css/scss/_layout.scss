@@ -77,6 +77,9 @@ html {
       padding: 0 140px;
       margin: auto;
       @include flex(row, center, space-between);
+      @include mq("desktop-hd", max) {
+        padding: 0 7.2916%;
+      }
     }
     .item {
       &-area {
@@ -87,7 +90,7 @@ html {
           color: var(--text-myclass);
           margin-right: 10px;
           gap: 10px;
-          display: inline-flex;
+          white-space: nowrap;
           span {
             &:has(.frequency) {
               filter: var(--text-stroke);
