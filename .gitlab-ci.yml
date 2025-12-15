@@ -9,9 +9,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: "npm"
@@ -20,29 +22,42 @@ jobs:
         run: |
           npm ci
           npx gulp build
+          echo "✅ Build completed"
 
       - name: Deploy to GitLab
         run: |
-          git config user.name "Bot"
-          git config user.email "bot@github.com"
+          echo "🚀 Deploying to GitLab..."
 
-          # 새 브랜치 생성
-          git checkout --orphan temp-deploy
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
 
-          # 불필요한 파일 제거
-          git rm -rf .
+          # 새 임시 브랜치 생성
+          git checkout --orphan gitlab-pages
 
-          # 빌드 결과만 복사
+          # 모든 파일 제거
+          git rm -rf . 2>/dev/null || true
+
+          # 빌드 결과물만 복사
           cp -r dist/* .
 
-          # .nojekyll 추가 (GitLab Pages용)
+          # index.html 확인
+          if [ ! -f "index.html" ]; then
+            echo "❌ index.html not found!"
+            exit 1
+          fi
+
+          # .nojekyll 파일 생성 (중요!)
           touch .nojekyll
 
+          # 커밋
           git add .
-          git commit -m "Deploy $(date)"
+          git commit -m "Deploy from GitHub Actions - $(date +'%Y-%m-%d %H:%M:%S')"
 
-          # 강제 푸시
-          git push -f https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/${{ secrets.GITLAB_REPO }}.git temp-deploy:main
+          # GitLab으로 강제 푸시
+          git push -f "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git" gitlab-pages:main
+
+          echo "✅ Deployed successfully!"
+          echo "🌐 URL: https://${GITLAB_REPO%/*}.gitlab.io/${GITLAB_REPO#*/}/"
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
