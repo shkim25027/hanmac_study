@@ -235,8 +235,6 @@ $breakpoints: (
   "desktop": 1200px,
   "desktop-wide": 1400px,
   "desktop-hd": 1920px,
-  "desktop-2k": 2560px,
-  "desktop-4k": 3840px,
 );
 
 @mixin mq($width, $type: min) {

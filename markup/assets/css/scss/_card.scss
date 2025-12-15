@@ -6,12 +6,7 @@
   &-card {
     position: relative;
     border-radius: 120px;
-    &:nth-child(3) {
-      margin-left: -30%;
-    }
-    &:nth-child(4) {
-      margin-right: -30%;
-    }
+
     &::before {
       content: " ";
       position: absolute;
