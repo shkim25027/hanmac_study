@@ -551,11 +551,11 @@ export class VideoModalManager {
   // 모달 컨텐츠 업데이트
   updateModalContent(modal, videoData) {
     const metaEm = modal.querySelector(".meta em");
-    const hasKeywords = metaEm && videoData.keywords;
+    const hasSubcate = videoData.subcate && videoData.subcate.trim() !== "";
 
     const categorySpan = modal.querySelector(".meta span");
     if (categorySpan) {
-      categorySpan.textContent = hasKeywords
+      categorySpan.textContent = hasSubcate
         ? videoData.category + " ＞ "
         : videoData.category;
     }
@@ -565,8 +565,14 @@ export class VideoModalManager {
       titleH3.textContent = videoData.title;
     }
 
-    if (hasKeywords) {
-      metaEm.textContent = videoData.keywords.join(", ");
+    if (metaEm) {
+      if (hasSubcate) {
+        metaEm.textContent = videoData.subcate;
+        metaEm.style.display = "";
+      } else {
+        metaEm.textContent = "";
+        metaEm.style.display = "none";
+      }
     }
   }
 

@@ -185,6 +185,7 @@
       import { VideoCardRenderer } from "./assets/js/main/VideoCardRenderer.js";
       import { VideoSlider } from "./assets/js/main/VideoSlider.js";
       import { VideoModalManager } from "./assets/js/main/VideoModalManager.js";
+      import { GaugeChart } from "./assets/js/main/GaugeChart.js";
 
       const videos = [
         {
@@ -239,7 +240,7 @@
           id: 5,
           url: "CRKwszz6l2M",
           category: "인사이트",
-          subcate: "피플스토리",
+          subcate: "",
           bookmark: false,
           title: "프로와 아마추어를 가르는 차이점!",
           picker: "",
@@ -250,7 +251,7 @@
         {
           id: 6,
           url: "IZm1m_FKmc0",
-          category: "비즈트렌드",
+          category: "인사이트",
           subcate: "피플스토리",
           bookmark: false,
           title: "창의적인 캠페인의 시작",
@@ -322,6 +323,26 @@
 
       // 모달 매니저 초기화 (카드 클릭 이벤트 등록)
       modalManager.init();
+
+      // ========================================
+      // 게이지 차트 초기화
+      // ========================================
+
+      const gauge = new GaugeChart({
+        size: 832,
+        strokeWidth: 31,
+        maxValue: 50,
+        padding: 20,
+        outerTextOffset: 6,
+        innerTextOffset: 35,
+        dotRadius: 7,
+      });
+
+      // 게이지 초기화
+      gauge.init();
+
+      // 예시: 학습 시간 업데이트 (35분)
+      gauge.update(20);
 
       // ========================================
       // 키워드 모달 기능
