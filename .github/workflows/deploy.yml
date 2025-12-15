@@ -51,10 +51,15 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add gitlab https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/${{ secrets.GITLAB_REPO }}.git
+
+          # GitLab URL 형식 수정
+          GITLAB_URL="https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git"
+
+          git remote add gitlab "$GITLAB_URL" || git remote set-url gitlab "$GITLAB_URL"
           git push gitlab HEAD:main --force --tags
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
