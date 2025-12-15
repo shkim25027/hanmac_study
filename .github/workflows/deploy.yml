@@ -45,9 +45,26 @@ jobs:
           fi
 
       - name: Mirror to GitLab
-        if: success()
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Mirror to GitLab
         run: |
-          # Secret 검증
           if [ -z "$GITLAB_REPO" ]; then
             echo "❌ ERROR: GITLAB_REPO is not set!"
             exit 1
@@ -60,24 +77,19 @@ jobs:
           
           echo "✅ Mirroring to: gitlab.com/$GITLAB_REPO"
           
-          # Git 설정
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # GitLab remote 추가
           git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git" || \
           git remote set-url gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git"
           
-          # force 없이 푸시 (첫 푸시는 강제 필요할 수 있음)
           git push gitlab HEAD:main --tags || git push gitlab HEAD:main --force --tags
+          
+          echo "✅ Successfully mirrored to GitLab"
+          echo "📦 GitLab will build and deploy via .gitlab-ci.yml"
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: ./dist/
 
   deploy:
     needs: build

@@ -1,28 +1,38 @@
+image: node:20
+
 stages:
   - build
   - deploy
 
+# 빌드 단계
 build:
   stage: build
-  image: node:20
   script:
+    - echo "📦 Installing dependencies..."
     - npm ci
+    - echo "🔨 Building with Gulp..."
     - npx gulp build
+    - echo "✅ Build completed"
   artifacts:
     paths:
       - dist/
     expire_in: 1 hour
+  only:
+    - main
 
+# GitLab Pages 배포
 pages:
   stage: deploy
-  image: alpine:latest
+  dependencies:
+    - build
   script:
+    - echo "📂 Preparing public directory..."
     - mkdir -p public
     - cp -r dist/* public/
+    - echo "✅ Files ready for deployment"
+    - ls -la public/
   artifacts:
     paths:
       - public
-  dependencies:
-    - build
   only:
     - main
