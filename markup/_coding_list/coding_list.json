@@ -15,7 +15,22 @@
         "인트로": ["../intro.html", "mainframe", "컨펌대기", ""]
       },
       "메인": {
-        "메인": ["../index.html", "mainframe", "컨펌대기", ""]
+        "메인": ["../index.html", "mainframe", "컨펌대기", ""],
+        "팝업_키워드": [
+          "../modal.html?keyword=true",
+          "mainframe",
+          "컨펌대기",
+          ""
+        ],
+        "팝업_교육": ["../modal.html?video=1", "mainframe", "컨펌대기", ""],
+        "팝업_교육 댓글": [
+          "../modal.html?video=2",
+          "mainframe",
+          "컨펌대기",
+          ""
+        ],
+        "팝업_온보딩": ["../modal.html?video=3", "mainframe", "컨펌대기", ""],
+        "팝업_법정교육": ["../modal.html?video=4", "mainframe", "컨펌대기", ""]
       }
     }
   }

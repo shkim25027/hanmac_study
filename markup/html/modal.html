@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
+  </head>
+  <body>
+    <div class="wrap"></div>
+
+    <script type="module">
+      import { VideoModalManager } from "./assets/js/main/VideoModalManager.js";
+
+      const videos = [
+        {
+          id: 1,
+          url: "KE_MeQZgnPM",
+          category: "리더십",
+          subcate: "행복과 건강",
+          bookmark: true,
+          title: "정선근 교수가 알려주는 목디스크 지식",
+          picker: "홍길동",
+          type: "main",
+          keywords: ["소통", "건강"],
+          gauge: 8,
+        },
+        {
+          id: 2,
+          url: "a2l1uZfsRi0",
+          category: "인사이트",
+          subcate: "행복과 건강",
+          bookmark: false,
+          title: "회계를 조금이라도 이해하면 인생이 달라지는 이유",
+          picker: "",
+          type: "comment",
+          keywords: ["소통", "코칭"],
+          gauge: 80,
+        },
+        {
+          id: 3,
+          url: "IeF8r0ycgVg",
+          category: "리더십",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "꼰대가 되지 않고 건설적인 피드백을 하는 법",
+          picker: "",
+          type: "onboarding",
+          keywords: ["마인드셋", "자기개발"],
+          gauge: 35,
+        },
+        {
+          id: 4,
+          url: "-yRS3yGGnDU",
+          category: "리더십",
+          subcate: "",
+          title: "산업재해예방 안전수칙",
+          type: "learning",
+          keywords: ["안전", "중간관리자"],
+        },
+      ];
+
+      // 비디오 모달 매니저 초기화
+      const modalManager = new VideoModalManager({
+        videos: videos,
+      });
+
+      // 모달 매니저 초기화
+      modalManager.init();
+
+      // ========================================
+      // URL 파라미터로 모달 자동 오픈
+      // ========================================
+
+      // VideoModalManager는 각 비디오의 type에 따라 자동으로 다른 모달 HTML을 로드합니다:
+      // ?video=1 (type: "main")       → ./_modal/video.html
+      // ?video=2 (type: "comment")    → ./_modal/video-comment.html
+      // ?video=3 (type: "onboarding") → ./_modal/video-onboarding.html
+      // ?video=4 (type: "learning")   → ./_modal/video-learning.html
+      // ?keyword=true                 → ./_modal/keyword.html
+
+      // 키워드 모달 Ajax 로드 함수
+      async function loadKeywordModal() {
+        try {
+          const response = await fetch("./_modal/keyword.html");
+          if (!response.ok) {
+            throw new Error("키워드 모달 로드 실패");
+          }
+
+          const modalHTML = await response.text();
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(modalHTML, "text/html");
+          const modalElement = doc.querySelector(".modal.keyword");
+
+          if (!modalElement) {
+            throw new Error("키워드 모달 요소를 찾을 수 없습니다");
+          }
+
+          // DOM에 추가
+          document.body.appendChild(modalElement);
+
+          // 모달 표시
+          setTimeout(() => {
+            modalElement.style.display = "block";
+          }, 50);
+
+          // 닫기 이벤트 설정
+          setupKeywordModalCloseEvents(modalElement);
+        } catch (error) {
+          console.error("키워드 모달 로드 오류:", error);
+          alert("키워드 모달을 로드하는 중 오류가 발생했습니다.");
+        }
+      }
+
+      // 키워드 모달 닫기 이벤트
+      function setupKeywordModalCloseEvents(modal) {
+        const closeIcon = modal.querySelector(".ico-check");
+        if (closeIcon) {
+          closeIcon.onclick = () => {
+            modal.style.opacity = "0";
+            setTimeout(() => {
+              if (modal && modal.parentNode) {
+                modal.parentNode.removeChild(modal);
+              }
+            }, 300);
+          };
+        }
+
+        // 배경 클릭으로 닫기
+        modal.onclick = (e) => {
+          if (e.target === modal) {
+            modal.style.opacity = "0";
+            setTimeout(() => {
+              if (modal && modal.parentNode) {
+                modal.parentNode.removeChild(modal);
+              }
+            }, 300);
+          }
+        };
+
+        // ESC 키로 닫기
+        const escHandler = (e) => {
+          if (e.key === "Escape") {
+            modal.style.opacity = "0";
+            setTimeout(() => {
+              if (modal && modal.parentNode) {
+                modal.parentNode.removeChild(modal);
+              }
+            }, 300);
+            document.removeEventListener("keydown", escHandler);
+          }
+        };
+        document.addEventListener("keydown", escHandler);
+      }
+
+      function checkURLParamsAndOpenModal() {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // 비디오 모달 오픈: ?video=1
+        const videoId = urlParams.get("video");
+        if (videoId) {
+          const id = parseInt(videoId);
+          if (!isNaN(id)) {
+            const video = videos.find((v) => v.id === id);
+            if (video) {
+              console.log(
+                `비디오 모달 자동 오픈: ID ${id}, Type: ${video.type}`
+              );
+              setTimeout(() => {
+                modalManager.loadVideoModal(id);
+              }, 500);
+            } else {
+              console.error(`비디오 ID ${id}를 찾을 수 없습니다.`);
+            }
+            return; // 비디오 모달 열면 종료
+          }
+        }
+
+        // 키워드 모달 오픈: ?keyword=true
+        const openKeyword = urlParams.get("keyword");
+        if (openKeyword === "true") {
+          console.log("키워드 모달 자동 오픈 (Ajax 로드)");
+          setTimeout(() => {
+            loadKeywordModal();
+          }, 500);
+          return; // 키워드 모달 열면 종료
+        }
+      }
+
+      // 페이지 로드 완료 후 URL 파라미터 체크
+      window.addEventListener("DOMContentLoaded", checkURLParamsAndOpenModal);
+    </script>
+  </body>
+</html>

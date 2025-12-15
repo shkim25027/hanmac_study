@@ -72,108 +72,7 @@
           </div>
 
           <!-- keyword modal -->
-          <div class="modal keyword" id="keywordModal">
-            <div class="modal-content">
-              <div class="modal-header">
-                나의 키워드 수정<i class="ico-check"></i>
-              </div>
-              <div class="modal-body" id="modalBody">
-                <ul class="keyword-tag">
-                  <li class="kw-box">
-                    <label for="kwtag_1">
-                      <input type="checkbox" id="kwtag_1" /> #온보딩
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_2">
-                      <input type="checkbox" id="kwtag_2" /> #성장
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_3">
-                      <input type="checkbox" id="kwtag_3" /> #코칭
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_4">
-                      <input type="checkbox" id="kwtag_4" checked /> #인물
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_5">
-                      <input type="checkbox" id="kwtag_5" checked /> #소통
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_6">
-                      <input type="checkbox" id="kwtag_6" checked /> #협업
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_7">
-                      <input type="checkbox" id="kwtag_7" /> #AI
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_8">
-                      <input type="checkbox" id="kwtag_8" /> #IT테크
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_9">
-                      <input type="checkbox" id="kwtag_9" />
-                      #중간관리자
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_10">
-                      <input type="checkbox" id="kwtag_10" /> #리더십
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_11">
-                      <input type="checkbox" id="kwtag_11" /> #팔로우십
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_12">
-                      <input type="checkbox" id="kwtag_12" /> #동기부여
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_13">
-                      <input type="checkbox" id="kwtag_13" /> #인간관계
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_14">
-                      <input type="checkbox" id="kwtag_14" /> #스킬업
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_15">
-                      <input type="checkbox" id="kwtag_15" /> #피드백
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_16">
-                      <input type="checkbox" id="kwtag_16" /> #커리어
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_17">
-                      <input type="checkbox" id="kwtag_17" /> #경영
-                    </label>
-                  </li>
-                  <li class="kw-box">
-                    <label for="kwtag_18">
-                      <input type="checkbox" id="kwtag_18" /> #경제
-                    </label>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          @@include("_modal/keyword.html")
           <!-- // keyword modal -->
         </div>
       </div>
@@ -240,7 +139,7 @@
           id: 5,
           url: "CRKwszz6l2M",
           category: "인사이트",
-          subcate: "",
+          subcate: "피플스토리",
           bookmark: false,
           title: "프로와 아마추어를 가르는 차이점!",
           picker: "",
@@ -325,6 +224,42 @@
       modalManager.init();
 
       // ========================================
+      // URL 파라미터로 모달 자동 오픈 (1개만)
+      // ========================================
+
+      function checkURLParamsAndOpenModal() {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // 비디오 모달 오픈: ?video=1
+        const videoId = urlParams.get("video");
+        if (videoId) {
+          const id = parseInt(videoId);
+          if (!isNaN(id)) {
+            console.log(`비디오 모달 자동 오픈: ID ${id}`);
+            setTimeout(() => {
+              modalManager.loadVideoModal(id);
+            }, 500);
+            return; // 비디오 모달 열면 종료
+          }
+        }
+
+        // 키워드 모달 오픈: ?keyword=true
+        const openKeyword = urlParams.get("keyword");
+        if (openKeyword === "true") {
+          console.log("키워드 모달 자동 오픈");
+          setTimeout(() => {
+            syncModalCheckboxes();
+            updateCheckboxStates();
+            modal.style.display = "block";
+          }, 500);
+          return; // 키워드 모달 열면 종료
+        }
+      }
+
+      // 페이지 로드 완료 후 URL 파라미터 체크
+      window.addEventListener("DOMContentLoaded", checkURLParamsAndOpenModal);
+
+      // ========================================
       // 게이지 차트 초기화
       // ========================================
 
@@ -342,7 +277,7 @@
       gauge.init();
 
       // 예시: 학습 시간 업데이트 (35분)
-      gauge.update(20);
+      gauge.update(25);
 
       // ========================================
       // 키워드 모달 기능
