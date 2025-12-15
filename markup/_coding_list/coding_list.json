@@ -11,10 +11,10 @@
   },
   "links": {
     "공통": {
-      "인트로": ["/intro.html", "mainframe", "컨펌대기", ""],
-      "메인": ["/index.html", "mainframe", "컨펌대기", ""],
+      "인트로": ["./intro.html", "mainframe", "컨펌대기", ""],
+      "메인": ["./index.html", "mainframe", "컨펌대기", ""],
       "서브": {
-        "서브01": ["/sub/sub.html", "mainframe", "컨펌대기", ""]
+        "서브01": ["./sub/sub.html", "mainframe", "컨펌대기", ""]
       }
     }
   }
