@@ -1,0 +1,39 @@
+@charset "UTF-8";
+
+@use "base" as *;
+
+.learning {
+  .container {
+    background:
+      radial-gradient(
+        93.89% 93.89% at 49.32% 6.11%,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.11) 86.06%,
+        rgba(134, 114, 77, 0.2) 88.94%
+      ),
+      linear-gradient(180deg, #f9f6f0 0%, #e6ddcc 100%);
+
+    box-shadow: 0 -2px 3px 0 rgba(0, 0, 0, 0.5);
+  }
+  .page-title {
+    padding-top: 74px;
+    text-align: center;
+  }
+
+  .puzzle {
+    &-grid {
+      min-height: 656px;
+      height: 60.7407vh;
+      grid-template-columns: 220fr 126fr 268fr 450fr 450fr 228fr;
+      grid-template-rows: 182fr 182fr 42fr 140fr;
+      .board {
+        &:nth-child(1) {
+          grid-column-start: 1;
+          grid-row-start: 1;
+          background: linear-gradient(15deg, #2a5338 40.03%, #306843 89.47%);
+          box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.25) inset;
+        }
+      }
+    }
+  }
+}

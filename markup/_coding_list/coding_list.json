@@ -31,6 +31,10 @@
         ],
         "팝업_온보딩": ["../modal.html?video=3", "mainframe", "컨펌대기", ""],
         "팝업_법정교육": ["../modal.html?video=4", "mainframe", "컨펌대기", ""]
+      },
+      "교육": {
+        "온보딩": ["../onboarding.html", "mainframe", "컨펌대기", ""],
+        "법정교육": ["../learning.html", "mainframe", "컨펌대기", ""]
       }
     }
   }

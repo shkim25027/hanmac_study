@@ -195,6 +195,31 @@
   }
 }
 
+.page-title {
+  h3 {
+    font-size: 40px;
+    font-weight: 400;
+
+    em {
+      font-weight: 700;
+      color: var(--text-title-accent);
+    }
+    small {
+      font-size: 32px;
+      font-weight: 400;
+    }
+  }
+  p {
+    font-size: 32px;
+    font-weight: 300;
+    span {
+      font-weight: 400;
+    }
+    em {
+      font-weight: 500;
+    }
+  }
+}
 h5 {
   font-size: 16px;
   font-weight: 700;

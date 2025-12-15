@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to GitHub Pages and Mirror to GitLab
 
 on:
   push:
@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 전체 히스토리 가져오기 (미러링용)
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -29,7 +31,6 @@ jobs:
       - name: Build with Gulp
         run: npx gulp build
 
-      # 디버깅: dist 폴더 상세 확인 (여기서 문제 원인 파악!)
       - name: Verify dist folder contents
         run: |
           echo "=== Dist folder structure ==="
@@ -44,14 +45,24 @@ jobs:
           fi
         shell: bash
 
-      # Artifact 업로드 (v4, 이름 자동 "github-pages")
+      # 👇 GitLab 미러링 추가
+      - name: Mirror to GitLab
+        if: success()
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add gitlab https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.com/${{ secrets.GITLAB_REPO }}.git
+          git push gitlab HEAD:main --force --tags
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
           path: ./dist/
 
   deploy:
-    needs: build # build 성공해야 실행
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
