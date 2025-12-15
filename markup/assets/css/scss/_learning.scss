@@ -21,18 +21,129 @@
   }
 
   .puzzle {
-    &-grid {
-      min-height: 656px;
-      height: 60.7407vh;
-      grid-template-columns: 220fr 126fr 268fr 450fr 450fr 228fr;
-      grid-template-rows: 182fr 182fr 42fr 140fr;
-      .board {
-        &:nth-child(1) {
-          grid-column-start: 1;
-          grid-row-start: 1;
-          background: linear-gradient(15deg, #2a5338 40.03%, #306843 89.47%);
-          box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.25) inset;
+    &-container {
+      position: relative;
+      width: 100%;
+    }
+    &-board {
+      position: relative;
+      width: 100%;
+      /* 각 퍼즐 조각 배경색 - SVG fill 속성에 적용 */
+      .piece-01 {
+        fill: url(#gradient-01);
+      }
+
+      .piece-02 {
+        fill: url(#gradient-02);
+      }
+
+      .piece-03 {
+        fill: url(#gradient-03);
+      }
+
+      .piece-04 {
+        fill: url(#gradient-04);
+      }
+
+      .piece-05 {
+        fill: url(#gradient-05);
+      }
+
+      .piece-06 {
+        fill: url(#gradient-06);
+      }
+
+      .piece-07 {
+        fill: url(#gradient-07);
+      }
+
+      .piece-08 {
+        fill: url(#gradient-08);
+      }
+
+      .piece-09 {
+        fill: url(#gradient-09);
+      }
+
+      .piece-10 {
+        fill: url(#gradient-10);
+      }
+    }
+
+    &-piece {
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      &:hover {
+        filter: brightness(1.2) drop-shadow(0 8px 20px rgba(52, 152, 219, 0.6));
+      }
+      &.incomplete {
+        opacity: 0.5;
+        filter: grayscale(0.5);
+      }
+      &.complete {
+        opacity: 1;
+        filter: grayscale(0);
+        &:hover {
+          filter: brightness(1.15)
+            drop-shadow(0 8px 20px rgba(46, 204, 113, 0.6));
         }
+        .play-icon {
+          opacity: 0;
+        }
+        .checkmark {
+          opacity: 1;
+        }
+      }
+    }
+    &-label {
+      pointer-events: none;
+      user-select: none;
+    }
+
+    &-title {
+      font-weight: 700;
+      font-size: 20px;
+      fill: white;
+      text-anchor: middle;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    &-subtitle {
+      font-weight: 500;
+      font-size: 16px;
+      fill: rgba(255, 255, 255, 0.9);
+      text-anchor: middle;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    /* 플레이 아이콘 */
+    .play {
+      &-icon {
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      &-circle {
+        fill: rgba(255, 255, 255, 0.9);
+      }
+      &-triangle {
+        fill: #e74c3c;
+      }
+    }
+    .checkmark {
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      pointer-events: none;
+      &-circle {
+        fill: #27ae60;
+      }
+      &-path {
+        stroke: white;
+        stroke-width: 8;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
     }
   }

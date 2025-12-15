@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>인터랙티브 퍼즐 보드</title>
+    <title>눌림 효과 퍼즐</title>
     <style>
       * {
         margin: 0;
@@ -84,70 +84,73 @@
         display: block;
       }
 
-      /* SVG 퍼즐 조각 스타일 */
+      /* SVG 퍼즐 조각 기본 스타일 */
       .puzzle-piece {
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
       }
 
       /* 미완료 상태 */
       .puzzle-piece.incomplete {
-        opacity: 0.5;
-        filter: grayscale(0.5);
+        opacity: 0.7;
+        filter: brightness(0.95) drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
       }
 
       /* 완료 상태 */
       .puzzle-piece.complete {
         opacity: 1;
-        filter: grayscale(0);
+        filter: brightness(1) drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.2));
       }
 
-      /* 호버 효과 */
+      /* 호버 효과 - 살짝 밝아지고 그림자 증가 */
       .puzzle-piece:hover {
-        filter: brightness(1.2) drop-shadow(0 8px 20px rgba(52, 152, 219, 0.6));
+        filter: brightness(1.15)
+          drop-shadow(3px 6px 10px rgba(52, 152, 219, 0.5));
       }
 
+      /* 클릭(활성) 효과 - 안쪽으로 눌림 */
+      .puzzle-piece:active,
+      .puzzle-piece.pressed {
+        transform: scale(0.97);
+        filter: brightness(0.85) drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.4)) !important;
+        transition: all 0.05s ease-out;
+      }
+
+      /* 완료된 조각 호버 */
       .puzzle-piece.complete:hover {
-        filter: brightness(1.15) drop-shadow(0 8px 20px rgba(46, 204, 113, 0.6));
+        filter: brightness(1.1)
+          drop-shadow(3px 6px 10px rgba(46, 204, 113, 0.5));
       }
 
-      /* 각 퍼즐 조각 배경색 - SVG fill 속성에 적용 */
+      /* 각 퍼즐 조각 배경색 */
       .piece-01 {
         fill: url(#gradient-01);
       }
-
       .piece-02 {
         fill: url(#gradient-02);
       }
-
       .piece-03 {
         fill: url(#gradient-03);
       }
-
       .piece-04 {
         fill: url(#gradient-04);
       }
-
       .piece-05 {
         fill: url(#gradient-05);
       }
-
       .piece-06 {
         fill: url(#gradient-06);
       }
-
       .piece-07 {
         fill: url(#gradient-07);
       }
-
       .piece-08 {
         fill: url(#gradient-08);
       }
-
       .piece-09 {
         fill: url(#gradient-09);
       }
-
       .piece-10 {
         fill: url(#gradient-10);
       }
@@ -163,7 +166,7 @@
         font-size: 20px;
         fill: white;
         text-anchor: middle;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
       }
 
       .piece-subtitle {
@@ -180,11 +183,16 @@
       }
 
       .play-circle {
-        fill: rgba(255, 255, 255, 0.9);
+        fill: rgba(255, 255, 255, 0.95);
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
       }
 
       .play-triangle {
         fill: #e74c3c;
+      }
+
+      .puzzle-piece:hover .play-circle {
+        fill: rgba(255, 255, 255, 1);
       }
 
       .puzzle-piece.complete .play-icon {
@@ -204,6 +212,7 @@
 
       .checkmark-circle {
         fill: #27ae60;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
       }
 
       .checkmark-path {
@@ -303,6 +312,19 @@
         opacity: 1;
         pointer-events: auto;
       }
+
+      /* 눌림 효과 강조용 애니메이션 */
+      @keyframes pressEffect {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(0.95);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
     </style>
   </head>
   <body>
@@ -319,7 +341,6 @@
       <div class="puzzle-board">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
           viewBox="0 0 1914 877"
           fill="none"
         >
@@ -370,7 +391,7 @@
               <stop offset="1" stop-color="#795711" />
             </linearGradient>
 
-            <!-- 퍼즐 조각 그라디언트 -->
+            <!-- 퍼즐 조각 그라디언트 (골드 톤) -->
             <linearGradient
               id="gradient-01"
               x1="0%"
@@ -378,8 +399,8 @@
               x2="100%"
               y2="100%"
             >
-              <stop offset="0%" style="stop-color: #d4f1e8" />
-              <stop offset="100%" style="stop-color: #a8e6cf" />
+              <stop offset="0%" style="stop-color: #ffd700" />
+              <stop offset="100%" style="stop-color: #ffa500" />
             </linearGradient>
             <linearGradient
               id="gradient-02"
@@ -506,11 +527,7 @@
                 type="matrix"
                 values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
               />
-              <feBlend
-                mode="normal"
-                in2="shape"
-                result="effect1_innerShadow_2357_30431"
-              />
+              <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
             </filter>
             <filter
               id="board_filter_2"
@@ -545,11 +562,7 @@
                 type="matrix"
                 values="0 0 0 0 0.646635 0 0 0 0 0.327793 0 0 0 0 0.170985 0 0 0 1 0"
               />
-              <feBlend
-                mode="normal"
-                in2="shape"
-                result="effect1_innerShadow_2357_30431"
-              />
+              <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
               <feColorMatrix
                 in="SourceAlpha"
                 type="matrix"
@@ -569,8 +582,8 @@
               />
               <feBlend
                 mode="normal"
-                in2="effect1_innerShadow_2357_30431"
-                result="effect2_innerShadow_2357_30431"
+                in2="effect1_innerShadow"
+                result="effect2_innerShadow"
               />
             </filter>
             <filter
@@ -599,12 +612,12 @@
               <feBlend
                 mode="normal"
                 in2="BackgroundImageFix"
-                result="effect1_dropShadow_2357_30431"
+                result="effect1_dropShadow"
               />
               <feBlend
                 mode="normal"
                 in="SourceGraphic"
-                in2="effect1_dropShadow_2357_30431"
+                in2="effect1_dropShadow"
                 result="shape"
               />
               <feColorMatrix
@@ -624,11 +637,7 @@
                 type="matrix"
                 values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
               />
-              <feBlend
-                mode="normal"
-                in2="shape"
-                result="effect2_innerShadow_2357_30431"
-              />
+              <feBlend mode="normal" in2="shape" result="effect2_innerShadow" />
             </filter>
             <filter
               id="board_filter_4"
@@ -656,12 +665,12 @@
               <feBlend
                 mode="normal"
                 in2="BackgroundImageFix"
-                result="effect1_dropShadow_2357_30431"
+                result="effect1_dropShadow"
               />
               <feBlend
                 mode="normal"
                 in="SourceGraphic"
-                in2="effect1_dropShadow_2357_30431"
+                in2="effect1_dropShadow"
                 result="shape"
               />
               <feColorMatrix
@@ -681,123 +690,7 @@
                 type="matrix"
                 values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
               />
-              <feBlend
-                mode="normal"
-                in2="shape"
-                result="effect2_innerShadow_2357_30431"
-              />
-            </filter>
-
-            <!-- 퍼즐 조각 필터 (그림자 효과) -->
-            <filter id="filter4_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter5_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter6_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter7_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter8_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter9_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter10_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter11_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter12_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="filter13_dii_2357_30431">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
-              <feOffset dx="2" dy="2" result="offsetblur" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.5" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
+              <feBlend mode="normal" in2="shape" result="effect2_innerShadow" />
             </filter>
           </defs>
 
@@ -828,90 +721,79 @@
           </g>
 
           <!-- 퍼즐 조각들 -->
-          <g filter="url(#filter4_dii_2357_30431)">
-            <path
-              class="piece-01 puzzle-piece incomplete"
-              data-title="삼안 소개"
-              data-piece="1"
-              d="M90 738L118 605.5L733 603.5L719 852.5H300.5L321.5 738H90Z"
-            />
-          </g>
-          <g filter="url(#filter5_dii_2357_30431)">
-            <path
-              class="piece-02 puzzle-piece incomplete"
-              data-title="상용 S/W 소개"
-              data-piece="2"
-              d="M744.5 409.5L753.5 228.5L1141.5 228.5L1149.5 409.5H744.5Z"
-            />
-          </g>
-          <g filter="url(#filter6_dii_2357_30431)">
-            <path
-              class="piece-03 puzzle-piece incomplete"
-              data-title="새로운 시대 준비된 우리"
-              data-piece="3"
-              d="M1150 409.5L1141.5 228.5H1540.5L1562.5 407.49L1150 409.5Z"
-            />
-          </g>
-          <g filter="url(#filter7_dii_2357_30431)">
-            <path
-              class="piece-04 puzzle-piece incomplete"
-              data-title="기술개발센터 소개"
-              data-piece="4"
-              d="M1157.5 600L1149.5 410L1563 406.5L1590 600H1157.5Z"
-            />
-          </g>
-          <g filter="url(#filter8_dii_2357_30431)">
-            <path
-              class="piece-05 puzzle-piece incomplete"
-              data-title="한맥가족 소개 및 경영이념"
-              data-piece="5"
-              d="M735 600L745 410L1149.5 410.376L1157.5 600H735Z"
-            />
-          </g>
-          <g filter="url(#filter9_dii_2357_30431)">
-            <path
-              class="piece-06 puzzle-piece incomplete"
-              data-title="축적의 시간"
-              data-piece="6"
-              d="M721 852.5L734.5 603.5L1157.5 602L1168 852.5H721Z"
-            />
-          </g>
-          <g filter="url(#filter10_dii_2357_30431)">
-            <path
-              class="piece-07 puzzle-piece incomplete"
-              data-title="건설산업의 디지털 전환"
-              data-piece="7"
-              d="M1167.5 852.5L1157.5 602H1589L1629 852.5H1167.5Z"
-            />
-          </g>
-          <g filter="url(#filter11_dii_2357_30431)">
-            <path
-              class="piece-08 puzzle-piece incomplete"
-              data-title="회사생활 (경력)"
-              data-piece="8"
-              d="M1598.5 667.5L1563 407H1781.5L1829.5 662L1598.5 667.5Z"
-            />
-          </g>
-          <g filter="url(#filter12_dii_2357_30431)">
-            <path
-              class="piece-09 puzzle-piece incomplete"
-              data-title="가족사소개"
-              data-piece="9"
-              d="M388.5 230L365 405H456L431 601.5H731.5L752.5 230H388.5Z"
-            />
-          </g>
-          <g filter="url(#filter13_dii_2357_30431)">
-            <path
-              class="piece-10 puzzle-piece incomplete"
-              data-title="왜 다워인인가"
-              data-piece="10"
-              d="M118 602.5L153.5 405.5H455.5L432 601.5L118 602.5Z"
-            />
-          </g>
+          <path
+            class="piece-01 puzzle-piece incomplete"
+            data-title="축적의 시간"
+            data-piece="1"
+            d="M90 738L118 605.5L733 603.5L719 852.5H300.5L321.5 738H90Z"
+          />
+
+          <path
+            class="piece-02 puzzle-piece incomplete"
+            data-title="상용 S/W 소개"
+            data-piece="2"
+            d="M744.5 409.5L753.5 228.5L1141.5 228.5L1149.5 409.5H744.5Z"
+          />
+
+          <path
+            class="piece-03 puzzle-piece incomplete"
+            data-title="새로운 시대 준비된 우리"
+            data-piece="3"
+            d="M1150 409.5L1141.5 228.5H1540.5L1562.5 407.49L1150 409.5Z"
+          />
+
+          <path
+            class="piece-04 puzzle-piece incomplete"
+            data-title="기술개발센터 소개"
+            data-piece="4"
+            d="M1157.5 600L1149.5 410L1563 406.5L1590 600H1157.5Z"
+          />
+
+          <path
+            class="piece-05 puzzle-piece incomplete"
+            data-title="한맥가족 소개 및 경영이념"
+            data-piece="5"
+            d="M735 600L745 410L1149.5 410.376L1157.5 600H735Z"
+          />
+
+          <path
+            class="piece-06 puzzle-piece incomplete"
+            data-title="건설산업의 디지털 전환"
+            data-piece="6"
+            d="M721 852.5L734.5 603.5L1157.5 602L1168 852.5H721Z"
+          />
+
+          <path
+            class="piece-07 puzzle-piece incomplete"
+            data-title="회사생활 (신규입사자편)"
+            data-piece="7"
+            d="M1167.5 852.5L1157.5 602H1589L1629 852.5H1167.5Z"
+          />
+
+          <path
+            class="piece-08 puzzle-piece incomplete"
+            data-title="회사생활 (경력)"
+            data-piece="8"
+            d="M1598.5 667.5L1563 407H1781.5L1829.5 662L1598.5 667.5Z"
+          />
+
+          <path
+            class="piece-09 puzzle-piece incomplete"
+            data-title="가족사소개"
+            data-piece="9"
+            d="M388.5 230L365 405H456L431 601.5H731.5L752.5 230H388.5Z"
+          />
+
+          <path
+            class="piece-10 puzzle-piece incomplete"
+            data-title="왜 다워인인가"
+            data-piece="10"
+            d="M118 602.5L153.5 405.5H455.5L432 601.5L118 602.5Z"
+          />
 
           <!-- 텍스트 레이블 -->
           <g class="piece-label">
-            <text class="piece-title" x="420" y="730">삼안 소개</text>
+            <text class="piece-title" x="420" y="730">축적의 시간</text>
           </g>
           <g class="piece-label">
             <text class="piece-title" x="945" y="320">상용 S/W 소개</text>
@@ -921,18 +803,20 @@
             <text class="piece-title" x="1345" y="335">준비된 우리</text>
           </g>
           <g class="piece-label">
-            <text class="piece-title" x="1375" y="500">기술개발센터 소개</text>
+            <text class="piece-title" x="1375" y="500">기술개발센터</text>
+            <text class="piece-title" x="1375" y="525">소개</text>
           </g>
           <g class="piece-label">
             <text class="piece-title" x="945" y="500">한맥가족 소개 및</text>
             <text class="piece-title" x="945" y="525">경영이념</text>
           </g>
           <g class="piece-label">
-            <text class="piece-title" x="945" y="730">축적의 시간</text>
+            <text class="piece-title" x="945" y="730">건설산업의</text>
+            <text class="piece-title" x="945" y="755">디지털 전환</text>
           </g>
           <g class="piece-label">
-            <text class="piece-title" x="1400" y="730">건설산업의</text>
-            <text class="piece-title" x="1400" y="755">디지털 전환</text>
+            <text class="piece-title" x="1400" y="730">회사생활</text>
+            <text class="piece-subtitle" x="1400" y="755">(신규입사자편)</text>
           </g>
           <g class="piece-label">
             <text class="piece-title" x="1690" y="540">회사생활</text>
@@ -963,10 +847,10 @@
             />
           </g>
           <g class="play-icon" data-piece="4">
-            <circle class="play-circle" cx="1375" cy="530" r="28" />
+            <circle class="play-circle" cx="1375" cy="555" r="28" />
             <polygon
               class="play-triangle"
-              points="1365,520 1365,540 1387,530"
+              points="1365,545 1365,565 1387,555"
             />
           </g>
           <g class="play-icon" data-piece="5">
@@ -974,8 +858,8 @@
             <polygon class="play-triangle" points="935,545 935,565 957,555" />
           </g>
           <g class="play-icon" data-piece="6">
-            <circle class="play-circle" cx="945" cy="760" r="28" />
-            <polygon class="play-triangle" points="935,750 935,770 957,760" />
+            <circle class="play-circle" cx="945" cy="785" r="28" />
+            <polygon class="play-triangle" points="935,775 935,795 957,785" />
           </g>
           <g class="play-icon" data-piece="7">
             <circle class="play-circle" cx="1400" cy="785" r="28" />
@@ -1017,10 +901,10 @@
             />
           </g>
           <g class="checkmark" data-piece="4">
-            <circle class="checkmark-circle" cx="1375" cy="530" r="32" />
+            <circle class="checkmark-circle" cx="1375" cy="555" r="32" />
             <polyline
               class="checkmark-path"
-              points="1357,530 1370,543 1393,517"
+              points="1357,555 1370,568 1393,542"
             />
           </g>
           <g class="checkmark" data-piece="5">
@@ -1028,8 +912,8 @@
             <polyline class="checkmark-path" points="927,555 940,568 963,542" />
           </g>
           <g class="checkmark" data-piece="6">
-            <circle class="checkmark-circle" cx="945" cy="760" r="32" />
-            <polyline class="checkmark-path" points="927,760 940,773 963,747" />
+            <circle class="checkmark-circle" cx="945" cy="785" r="32" />
+            <polyline class="checkmark-path" points="927,785 940,798 963,772" />
           </g>
           <g class="checkmark" data-piece="7">
             <circle class="checkmark-circle" cx="1400" cy="785" r="32" />
@@ -1080,37 +964,61 @@
 
       // 퍼즐 조각 클릭 이벤트
       pieces.forEach((piece) => {
+        // 클릭 시작 (눌림 효과)
+        piece.addEventListener("mousedown", function (e) {
+          if (!this.classList.contains("complete")) {
+            this.classList.add("pressed");
+          }
+        });
+
+        // 클릭 끝 (눌림 해제)
+        piece.addEventListener("mouseup", function (e) {
+          this.classList.remove("pressed");
+        });
+
+        // 마우스가 벗어났을 때 눌림 해제
+        piece.addEventListener("mouseleave", function (e) {
+          this.classList.remove("pressed");
+        });
+
+        // 실제 클릭 처리
         piece.addEventListener("click", function (e) {
           e.stopPropagation();
 
           if (!this.classList.contains("complete")) {
-            // 완료 처리
-            this.classList.remove("incomplete");
-            this.classList.add("complete");
-            completed++;
+            // 눌림 효과 애니메이션
+            this.style.animation = "pressEffect 0.3s ease-out";
 
-            // 프로그레스 업데이트
-            updateProgress();
+            setTimeout(() => {
+              // 완료 처리
+              this.classList.remove("incomplete");
+              this.classList.add("complete");
+              this.style.animation = "";
+              completed++;
 
-            // 해당 체크마크 표시
-            const pieceNum = this.dataset.piece;
-            const checkmark = document.querySelector(
-              `.checkmark[data-piece="${pieceNum}"]`
-            );
-            if (checkmark) {
-              setTimeout(() => {
-                checkmark.style.opacity = "1";
-              }, 100);
-            }
+              // 프로그레스 업데이트
+              updateProgress();
 
-            // 모든 조각 완료 시 축하 메시지
-            if (completed === totalPieces) {
-              setTimeout(() => {
-                showCelebration();
-              }, 600);
-            }
+              // 해당 체크마크 표시
+              const pieceNum = this.dataset.piece;
+              const checkmark = document.querySelector(
+                `.checkmark[data-piece="${pieceNum}"]`
+              );
+              if (checkmark) {
+                setTimeout(() => {
+                  checkmark.style.opacity = "1";
+                }, 100);
+              }
 
-            console.log(`${this.dataset.title} 완료!`);
+              // 모든 조각 완료 시 축하 메시지
+              if (completed === totalPieces) {
+                setTimeout(() => {
+                  showCelebration();
+                }, 600);
+              }
+
+              console.log(`${this.dataset.title} 완료!`);
+            }, 150);
           }
         });
       });
@@ -1152,8 +1060,8 @@
         updateProgress();
       }
 
-      // 예시: 1, 3, 5번 조각을 완료 상태로 초기화 (테스트용)
-      // initializeProgress([1, 3, 5]);
+      // 예시: 1번 조각을 완료 상태로 초기화 (테스트용)
+      // initializeProgress([1]);
     </script>
   </body>
 </html>

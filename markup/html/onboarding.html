@@ -18,16 +18,761 @@
             완료해주세요.
           </h3>
         </div>
-        <div class="puzzle-wrap">
-          <div class="puzzle-grid">
-            <div class="board"></div>
-            <div class="board"></div>
-            <div class="board"></div>
-            <div class="board"></div>
+        <div class="puzzle-container">
+          <div class="puzzle-board">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 1914 877"
+              fill="none"
+            >
+              <defs>
+                <!-- 보드 배경 그라디언트 -->
+                <linearGradient
+                  id="board_fill_1"
+                  x1="384"
+                  y1="451.5"
+                  x2="421.5"
+                  y2="212.5"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#2A5338" />
+                  <stop offset="1" stop-color="#306843" />
+                </linearGradient>
+                <linearGradient
+                  id="board_fill_2"
+                  x1="1271.75"
+                  y1="408.5"
+                  x2="1271.75"
+                  y2="212.5"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#662A0D" />
+                  <stop offset="1" stop-color="#8E2F00" />
+                </linearGradient>
+                <linearGradient
+                  id="board_fill_3"
+                  x1="612"
+                  y1="734.5"
+                  x2="600.5"
+                  y2="868.5"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#1D375D" />
+                  <stop offset="1" stop-color="#385888" />
+                </linearGradient>
+                <linearGradient
+                  id="board_fill_4"
+                  x1="1520"
+                  y1="409.5"
+                  x2="1642"
+                  y2="868.5"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#5B4822" />
+                  <stop offset="1" stop-color="#795711" />
+                </linearGradient>
+
+                <!-- 퍼즐 조각 그라디언트 (골드 톤) -->
+                <linearGradient
+                  id="gradient-01"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #ffd700" />
+                  <stop offset="100%" style="stop-color: #ffa500" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-02"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #ffe5cc" />
+                  <stop offset="100%" style="stop-color: #ffd9b3" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-03"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #f8d5e0" />
+                  <stop offset="100%" style="stop-color: #ffc1d5" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-04"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #e8d4f1" />
+                  <stop offset="100%" style="stop-color: #dcc4e8" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-05"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #d4e4f7" />
+                  <stop offset="100%" style="stop-color: #b3d4f7" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-06"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #c2e7ff" />
+                  <stop offset="100%" style="stop-color: #a3d9ff" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-07"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #ffedc2" />
+                  <stop offset="100%" style="stop-color: #ffe4a3" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-08"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #e8ccf8" />
+                  <stop offset="100%" style="stop-color: #ddb8f5" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-09"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #ffd4d4" />
+                  <stop offset="100%" style="stop-color: #ffc4c4" />
+                </linearGradient>
+                <linearGradient
+                  id="gradient-10"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" style="stop-color: #d4e4cc" />
+                  <stop offset="100%" style="stop-color: #c4dbba" />
+                </linearGradient>
+
+                <!-- 보드 필터 -->
+                <filter
+                  id="board_filter_1"
+                  x="91.5195"
+                  y="212.5"
+                  width="661.93"
+                  height="391"
+                  filterUnits="userSpaceOnUse"
+                  color-interpolation-filters="sRGB"
+                >
+                  <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                  <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="BackgroundImageFix"
+                    result="shape"
+                  />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                  />
+                  <feOffset dy="-4" />
+                  <feComposite
+                    in2="hardAlpha"
+                    operator="arithmetic"
+                    k2="-1"
+                    k3="1"
+                  />
+                  <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in2="shape"
+                    result="effect1_innerShadow"
+                  />
+                </filter>
+                <filter
+                  id="board_filter_2"
+                  x="744.967"
+                  y="212.5"
+                  width="1051.85"
+                  height="196"
+                  filterUnits="userSpaceOnUse"
+                  color-interpolation-filters="sRGB"
+                >
+                  <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                  <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="BackgroundImageFix"
+                    result="shape"
+                  />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                  />
+                  <feOffset dy="3" />
+                  <feComposite
+                    in2="hardAlpha"
+                    operator="arithmetic"
+                    k2="-1"
+                    k3="1"
+                  />
+                  <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0.646635 0 0 0 0 0.327793 0 0 0 0 0.170985 0 0 0 1 0"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in2="shape"
+                    result="effect1_innerShadow"
+                  />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                  />
+                  <feOffset dy="-4" />
+                  <feComposite
+                    in2="hardAlpha"
+                    operator="arithmetic"
+                    k2="-1"
+                    k3="1"
+                  />
+                  <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in2="effect1_innerShadow"
+                    result="effect2_innerShadow"
+                  />
+                </filter>
+                <filter
+                  id="board_filter_3"
+                  x="29.5156"
+                  y="600.5"
+                  width="1143.75"
+                  height="276"
+                  filterUnits="userSpaceOnUse"
+                  color-interpolation-filters="sRGB"
+                >
+                  <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                  />
+                  <feOffset dy="4" />
+                  <feGaussianBlur stdDeviation="2" />
+                  <feComposite in2="hardAlpha" operator="out" />
+                  <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in2="BackgroundImageFix"
+                    result="effect1_dropShadow"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="effect1_dropShadow"
+                    result="shape"
+                  />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                  />
+                  <feOffset dy="-4" />
+                  <feComposite
+                    in2="hardAlpha"
+                    operator="arithmetic"
+                    k2="-1"
+                    k3="1"
+                  />
+                  <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in2="shape"
+                    result="effect2_innerShadow"
+                  />
+                </filter>
+                <filter
+                  id="board_filter_4"
+                  x="1147.41"
+                  y="409.5"
+                  width="743.447"
+                  height="467"
+                  filterUnits="userSpaceOnUse"
+                  color-interpolation-filters="sRGB"
+                >
+                  <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                  />
+                  <feOffset dy="4" />
+                  <feGaussianBlur stdDeviation="2" />
+                  <feComposite in2="hardAlpha" operator="out" />
+                  <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in2="BackgroundImageFix"
+                    result="effect1_dropShadow"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in="SourceGraphic"
+                    in2="effect1_dropShadow"
+                    result="shape"
+                  />
+                  <feColorMatrix
+                    in="SourceAlpha"
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                    result="hardAlpha"
+                  />
+                  <feOffset dy="-4" />
+                  <feComposite
+                    in2="hardAlpha"
+                    operator="arithmetic"
+                    k2="-1"
+                    k3="1"
+                  />
+                  <feColorMatrix
+                    type="matrix"
+                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+                  />
+                  <feBlend
+                    mode="normal"
+                    in2="shape"
+                    result="effect2_innerShadow"
+                  />
+                </filter>
+              </defs>
+
+              <!-- 보드 배경 -->
+              <g filter="url(#board_filter_1)">
+                <path
+                  d="M733.508 594.036L753.434 223.039C753.742 217.314 749.182 212.503 743.449 212.503L185.698 212.5C181.028 212.5 176.979 215.733 175.946 220.287L91.7709 591.287C90.3513 597.544 95.1073 603.5 101.523 603.5H235.544H723.523C728.837 603.5 733.223 599.343 733.508 594.036Z"
+                  fill="url(#board_fill_1)"
+                />
+              </g>
+              <g filter="url(#board_filter_2)">
+                <path
+                  d="M744.978 398.041L753.061 222.041C753.307 216.702 757.706 212.5 763.051 212.5H1751.79C1756.56 212.5 1760.67 215.87 1761.6 220.549L1796.62 396.549C1797.85 402.734 1793.12 408.5 1786.81 408.5H1563.87H754.968C749.265 408.5 744.717 403.738 744.978 398.041Z"
+                  fill="url(#board_fill_2)"
+                />
+              </g>
+              <g filter="url(#board_filter_3)">
+                <path
+                  d="M1169.24 857.793L1151.66 609.793C1151.29 604.558 1146.93 600.5 1141.68 600.5H99.7216C95.0503 600.5 91.0013 603.734 89.9689 608.29L33.7671 856.29C32.3493 862.546 37.1051 868.5 43.5198 868.5H116.165H1159.27C1165.07 868.5 1169.65 863.58 1169.24 857.793Z"
+                  fill="url(#board_fill_3)"
+                />
+              </g>
+              <g filter="url(#board_filter_4)">
+                <path
+                  d="M1169.11 858.905L1151.42 419.903C1151.19 414.227 1155.73 409.5 1161.41 409.5H1790.95C1795.73 409.5 1799.85 412.886 1800.76 417.58L1886.67 856.582C1887.88 862.758 1883.15 868.502 1876.85 868.502H1656.65H1179.11C1173.74 868.502 1169.33 864.267 1169.11 858.905Z"
+                  fill="url(#board_fill_4)"
+                />
+              </g>
+
+              <!-- 퍼즐 조각들 -->
+              <path
+                class="piece-01 puzzle-piece incomplete"
+                data-title="축적의 시간"
+                data-piece="1"
+                d="M90 738L118 605.5L733 603.5L719 852.5H300.5L321.5 738H90Z"
+              />
+
+              <path
+                class="piece-02 puzzle-piece incomplete"
+                data-title="상용 S/W 소개"
+                data-piece="2"
+                d="M744.5 409.5L753.5 228.5L1141.5 228.5L1149.5 409.5H744.5Z"
+              />
+
+              <path
+                class="piece-03 puzzle-piece incomplete"
+                data-title="새로운 시대 준비된 우리"
+                data-piece="3"
+                d="M1150 409.5L1141.5 228.5H1540.5L1562.5 407.49L1150 409.5Z"
+              />
+
+              <path
+                class="piece-04 puzzle-piece incomplete"
+                data-title="기술개발센터 소개"
+                data-piece="4"
+                d="M1157.5 600L1149.5 410L1563 406.5L1590 600H1157.5Z"
+              />
+
+              <path
+                class="piece-05 puzzle-piece incomplete"
+                data-title="한맥가족 소개 및 경영이념"
+                data-piece="5"
+                d="M735 600L745 410L1149.5 410.376L1157.5 600H735Z"
+              />
+
+              <path
+                class="piece-06 puzzle-piece incomplete"
+                data-title="건설산업의 디지털 전환"
+                data-piece="6"
+                d="M721 852.5L734.5 603.5L1157.5 602L1168 852.5H721Z"
+              />
+
+              <path
+                class="piece-07 puzzle-piece incomplete"
+                data-title="회사생활 (신규입사자편)"
+                data-piece="7"
+                d="M1167.5 852.5L1157.5 602H1589L1629 852.5H1167.5Z"
+              />
+
+              <path
+                class="piece-08 puzzle-piece incomplete"
+                data-title="회사생활 (경력)"
+                data-piece="8"
+                d="M1598.5 667.5L1563 407H1781.5L1829.5 662L1598.5 667.5Z"
+              />
+
+              <path
+                class="piece-09 puzzle-piece incomplete"
+                data-title="가족사소개"
+                data-piece="9"
+                d="M388.5 230L365 405H456L431 601.5H731.5L752.5 230H388.5Z"
+              />
+
+              <path
+                class="piece-10 puzzle-piece incomplete"
+                data-title="왜 다워인인가"
+                data-piece="10"
+                d="M118 602.5L153.5 405.5H455.5L432 601.5L118 602.5Z"
+              />
+
+              <!-- 텍스트 레이블 -->
+              <g class="piece-label">
+                <text class="piece-title" x="420" y="730">축적의 시간</text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="945" y="320">상용 S/W 소개</text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="1345" y="310">새로운 시대</text>
+                <text class="piece-title" x="1345" y="335">준비된 우리</text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="1375" y="500">기술개발센터</text>
+                <text class="piece-title" x="1375" y="525">소개</text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="945" y="500">
+                  한맥가족 소개 및
+                </text>
+                <text class="piece-title" x="945" y="525">경영이념</text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="945" y="730">건설산업의</text>
+                <text class="piece-title" x="945" y="755">디지털 전환</text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="1400" y="730">회사생활</text>
+                <text class="piece-subtitle" x="1400" y="755">
+                  (신규입사자편)
+                </text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="1690" y="540">회사생활</text>
+                <text class="piece-subtitle" x="1690" y="565">(경력)</text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="570" y="320">가족사소개</text>
+              </g>
+              <g class="piece-label">
+                <text class="piece-title" x="285" y="500">왜 다워인인가</text>
+                <text class="piece-subtitle" x="285" y="525">(최재천교수)</text>
+              </g>
+
+              <!-- 플레이 아이콘 -->
+              <g class="play-icon" data-piece="1">
+                <circle class="play-circle" cx="420" cy="760" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="410,750 410,770 432,760"
+                />
+              </g>
+              <g class="play-icon" data-piece="2">
+                <circle class="play-circle" cx="945" cy="350" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="935,340 935,360 957,350"
+                />
+              </g>
+              <g class="play-icon" data-piece="3">
+                <circle class="play-circle" cx="1345" cy="365" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="1335,355 1335,375 1357,365"
+                />
+              </g>
+              <g class="play-icon" data-piece="4">
+                <circle class="play-circle" cx="1375" cy="555" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="1365,545 1365,565 1387,555"
+                />
+              </g>
+              <g class="play-icon" data-piece="5">
+                <circle class="play-circle" cx="945" cy="555" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="935,545 935,565 957,555"
+                />
+              </g>
+              <g class="play-icon" data-piece="6">
+                <circle class="play-circle" cx="945" cy="785" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="935,775 935,795 957,785"
+                />
+              </g>
+              <g class="play-icon" data-piece="7">
+                <circle class="play-circle" cx="1400" cy="785" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="1390,775 1390,795 1412,785"
+                />
+              </g>
+              <g class="play-icon" data-piece="8">
+                <circle class="play-circle" cx="1690" cy="595" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="1680,585 1680,605 1702,595"
+                />
+              </g>
+              <g class="play-icon" data-piece="9">
+                <circle class="play-circle" cx="570" cy="350" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="560,340 560,360 582,350"
+                />
+              </g>
+              <g class="play-icon" data-piece="10">
+                <circle class="play-circle" cx="285" cy="555" r="28" />
+                <polygon
+                  class="play-triangle"
+                  points="275,545 275,565 297,555"
+                />
+              </g>
+
+              <!-- 체크마크 -->
+              <g class="checkmark" data-piece="1">
+                <circle class="checkmark-circle" cx="420" cy="760" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="402,760 415,773 438,747"
+                />
+              </g>
+              <g class="checkmark" data-piece="2">
+                <circle class="checkmark-circle" cx="945" cy="350" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="927,350 940,363 963,337"
+                />
+              </g>
+              <g class="checkmark" data-piece="3">
+                <circle class="checkmark-circle" cx="1345" cy="365" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="1327,365 1340,378 1363,352"
+                />
+              </g>
+              <g class="checkmark" data-piece="4">
+                <circle class="checkmark-circle" cx="1375" cy="555" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="1357,555 1370,568 1393,542"
+                />
+              </g>
+              <g class="checkmark" data-piece="5">
+                <circle class="checkmark-circle" cx="945" cy="555" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="927,555 940,568 963,542"
+                />
+              </g>
+              <g class="checkmark" data-piece="6">
+                <circle class="checkmark-circle" cx="945" cy="785" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="927,785 940,798 963,772"
+                />
+              </g>
+              <g class="checkmark" data-piece="7">
+                <circle class="checkmark-circle" cx="1400" cy="785" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="1382,785 1395,798 1418,772"
+                />
+              </g>
+              <g class="checkmark" data-piece="8">
+                <circle class="checkmark-circle" cx="1690" cy="595" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="1672,595 1685,608 1708,582"
+                />
+              </g>
+              <g class="checkmark" data-piece="9">
+                <circle class="checkmark-circle" cx="570" cy="350" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="552,350 565,363 588,337"
+                />
+              </g>
+              <g class="checkmark" data-piece="10">
+                <circle class="checkmark-circle" cx="285" cy="555" r="32" />
+                <polyline
+                  class="checkmark-path"
+                  points="267,555 280,568 303,542"
+                />
+              </g>
+            </svg>
           </div>
         </div>
       </div>
       <!-- // container -->
     </div>
+    <script>
+      const pieces = document.querySelectorAll(".puzzle-piece");
+      const progressFill = document.getElementById("progressFill");
+      const completedCount = document.getElementById("completedCount");
+      const celebration = document.getElementById("celebration");
+      const overlay = document.getElementById("overlay");
+      const totalPieces = pieces.length;
+      let completed = 0;
+
+      // 퍼즐 조각 클릭 이벤트
+      pieces.forEach((piece) => {
+        // 클릭 시작 (눌림 효과)
+        piece.addEventListener("mousedown", function (e) {
+          if (!this.classList.contains("complete")) {
+            this.classList.add("pressed");
+          }
+        });
+
+        // 클릭 끝 (눌림 해제)
+        piece.addEventListener("mouseup", function (e) {
+          this.classList.remove("pressed");
+        });
+
+        // 마우스가 벗어났을 때 눌림 해제
+        piece.addEventListener("mouseleave", function (e) {
+          this.classList.remove("pressed");
+        });
+
+        // 실제 클릭 처리
+        piece.addEventListener("click", function (e) {
+          e.stopPropagation();
+
+          if (!this.classList.contains("complete")) {
+            // 눌림 효과 애니메이션
+            this.style.animation = "pressEffect 0.3s ease-out";
+
+            setTimeout(() => {
+              // 완료 처리
+              this.classList.remove("incomplete");
+              this.classList.add("complete");
+              this.style.animation = "";
+              completed++;
+
+              // 해당 체크마크 표시
+              const pieceNum = this.dataset.piece;
+              const checkmark = document.querySelector(
+                `.checkmark[data-piece="${pieceNum}"]`
+              );
+              if (checkmark) {
+                setTimeout(() => {
+                  checkmark.style.opacity = "1";
+                }, 100);
+              }
+
+              // 모든 조각 완료 시 축하 메시지
+              if (completed === totalPieces) {
+                setTimeout(() => {
+                  showCelebration();
+                }, 600);
+              }
+
+              console.log(`${this.dataset.title} 완료!`);
+            }, 150);
+          }
+        });
+      });
+
+      function showCelebration() {
+        overlay.classList.add("show");
+        celebration.classList.add("show");
+      }
+
+      // 테스트용: 일부 조각을 자동으로 완료 상태로 설정
+      function initializeProgress(completedPieces) {
+        completedPieces.forEach((pieceNum) => {
+          const piece = document.querySelector(`[data-piece="${pieceNum}"]`);
+          if (piece) {
+            piece.classList.remove("incomplete");
+            piece.classList.add("complete");
+            completed++;
+
+            const checkmark = document.querySelector(
+              `.checkmark[data-piece="${pieceNum}"]`
+            );
+            if (checkmark) {
+              checkmark.style.opacity = "1";
+            }
+          }
+        });
+      }
+
+      // 예시: 1번 조각을 완료 상태로 초기화 (테스트용)
+      initializeProgress([1]);
+    </script>
   </body>
 </html>
