@@ -68,8 +68,8 @@ jobs:
           git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git" || \
           git remote set-url gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git"
           
-          # 푸시
-          git push gitlab HEAD:main --force --tags
+          # force 없이 푸시 (첫 푸시는 강제 필요할 수 있음)
+          git push gitlab HEAD:main --tags || git push gitlab HEAD:main --force --tags
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
           GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
