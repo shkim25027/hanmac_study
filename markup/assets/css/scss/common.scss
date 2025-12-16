@@ -240,16 +240,15 @@ h5 {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid var(--border-btn);
-  gap: 4px;
+  gap: 6px;
   font-size: 12px;
   @include flex();
   input[type="checkbox"] {
-    width: 12px;
     height: 10px;
     -webkit-appearance: none;
-    @include useIcon("bookmark_off");
+    @include useIcon("bookmark", 12px);
     &:checked {
-      @include useIcon("bookmark_on");
+      @include useIcon("bookmark-on", 12px);
     }
   }
 }
