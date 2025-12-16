@@ -21,129 +21,145 @@
   }
 
   .puzzle {
-    &-container {
+    &-wrap {
       position: relative;
       width: 100%;
+      height: calc(var(--window-inner-height) - 64px);
+      padding: 0 32px;
+      @include flex(column, center, flex-start);
+    }
+    &-area {
+      position: relative;
+      width: 100%;
+      max-width: 1862px;
+      flex-grow: 1;
+      @include flex(row, center, center);
     }
     &-board {
       position: relative;
       width: 100%;
-      /* 각 퍼즐 조각 배경색 - SVG fill 속성에 적용 */
-      .piece-01 {
-        fill: url(#gradient-01);
+      svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        text {
+        }
       }
 
-      .piece-02 {
-        fill: url(#gradient-02);
-      }
+      .img-box {
+        position: absolute;
+        &.family {
+          width: 11.9226%;
+          left: 3.9742%;
+          top: -3.35365%;
+        }
 
-      .piece-03 {
-        fill: url(#gradient-03);
+        &.hanmac {
+          width: 13.4264%;
+          top: -8.2317%;
+          right: 3.54457%;
+        }
+        &.value {
+          width: 9.23737%;
+          left: -1.61117%;
+          bottom: -4.87804%;
+        }
+        &.company {
+          width: 16.86358%;
+          right: -4.7261%;
+          bottom: -8.07926%;
+        }
       }
+      .tit-box {
+        position: absolute;
+        font-size: 27px;
+        font-weight: 700;
+        &.family {
+          color: #7ed29b;
+          left: 9.66702%;
+          top: 22.10365%;
+        }
 
-      .piece-04 {
-        fill: url(#gradient-04);
-      }
-
-      .piece-05 {
-        fill: url(#gradient-05);
-      }
-
-      .piece-06 {
-        fill: url(#gradient-06);
-      }
-
-      .piece-07 {
-        fill: url(#gradient-07);
-      }
-
-      .piece-08 {
-        fill: url(#gradient-08);
-      }
-
-      .piece-09 {
-        fill: url(#gradient-09);
-      }
-
-      .piece-10 {
-        fill: url(#gradient-10);
+        &.hanmac {
+          color: #ffccca;
+          top: 22.10365%;
+          right: 7.41138%;
+        }
+        &.value {
+          color: #87a7d6;
+          left: 8.05585%;
+          bottom: 10.51829%;
+        }
+        &.company {
+          color: #b49a65;
+          right: 8.05585%;
+          bottom: 21.3414%;
+        }
       }
     }
 
     &-piece {
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      &:hover {
-        filter: brightness(1.2) drop-shadow(0 8px 20px rgba(52, 152, 219, 0.6));
-      }
-      &.incomplete {
-        opacity: 0.5;
-        filter: grayscale(0.5);
-      }
-      &.complete {
-        opacity: 1;
-        filter: grayscale(0);
+      &-group {
+        cursor: pointer;
         &:hover {
-          filter: brightness(1.15)
-            drop-shadow(0 8px 20px rgba(46, 204, 113, 0.6));
+          .piece-overlay-hover {
+            fill-opacity: 0.3;
+          }
         }
-        .play-icon {
-          opacity: 0;
+        &.completed {
+          .piece-overlay-base {
+            fill: white;
+            fill-opacity: 0.6;
+          }
         }
-        .checkmark {
-          opacity: 1;
-        }
-      }
-    }
-    &-label {
-      pointer-events: none;
-      user-select: none;
-    }
+        &:not(.completed) {
+          &[data-piece="1"],
+          &[data-piece="6"] {
+            .piece-overlay-base {
+              fill: #1d375d;
+              fill-opacity: 0.2;
+            }
+          }
 
-    &-title {
-      font-weight: 700;
-      font-size: 20px;
-      fill: white;
-      text-anchor: middle;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    &-subtitle {
-      font-weight: 500;
-      font-size: 16px;
-      fill: rgba(255, 255, 255, 0.9);
-      text-anchor: middle;
-    }
-    svg {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    /* 플레이 아이콘 */
-    .play {
-      &-icon {
-        pointer-events: none;
-        transition: opacity 0.3s ease;
+          &[data-piece="2"],
+          &[data-piece="3"],
+          &[data-piece="4"],
+          &[data-piece="5"] {
+            .piece-overlay-base {
+              fill: #662a0d;
+              fill-opacity: 0.2;
+            }
+          }
+
+          &[data-piece="7"],
+          &[data-piece="8"] {
+            .piece-overlay-base {
+              fill: #5b4822;
+              fill-opacity: 0.2;
+            }
+          }
+
+          &[data-piece="9"],
+          &[data-piece="10"] {
+            .piece-overlay-base {
+              fill: #2a5338;
+              fill-opacity: 0.2;
+            }
+          }
+        }
       }
-      &-circle {
-        fill: rgba(255, 255, 255, 0.9);
-      }
-      &-triangle {
-        fill: #e74c3c;
-      }
-    }
-    .checkmark {
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      pointer-events: none;
-      &-circle {
-        fill: #27ae60;
-      }
-      &-path {
-        stroke: white;
-        stroke-width: 8;
-        fill: none;
-        stroke-linecap: round;
-        stroke-linejoin: round;
+      &-overlay {
+        &-base {
+          fill: white;
+          fill-opacity: 0;
+          transition: all 0.3s ease;
+        }
+        &-hover {
+          fill: black;
+          fill-opacity: 0;
+          transition: all 0.3s ease;
+          pointer-events: none;
+        }
       }
     }
   }

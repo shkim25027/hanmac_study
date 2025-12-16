@@ -1,0 +1,958 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>퍼즐 온보딩 - 조각별 상태 제어</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          "Noto Sans KR",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: white;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .header .subtitle {
+        font-size: 20px;
+        color: #ffd700;
+        font-weight: bold;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .progress-bar {
+        width: 100%;
+        max-width: 1500px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        margin-bottom: 30px;
+        overflow: hidden;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4caf50, #8bc34a);
+        width: 0%;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.6);
+      }
+
+      .puzzle-container {
+        position: relative;
+        width: 100%;
+        max-width: 1500px;
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .puzzle-board {
+        position: relative;
+        width: 100%;
+      }
+
+      svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* 각 퍼즐 조각 그룹 */
+      .puzzle-piece-group {
+        cursor: pointer;
+      }
+
+      /* 기본 상태: 투명 오버레이 */
+      .piece-overlay-base {
+        fill: white;
+        fill-opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      /* 호버 상태: 어두운 오버레이 */
+      .piece-overlay-hover {
+        fill: black;
+        fill-opacity: 0;
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+
+      .puzzle-piece-group:hover .piece-overlay-hover {
+        fill-opacity: 0.3;
+      }
+
+      /* 완료 상태: 밝은 오버레이 */
+      .puzzle-piece-group:not(.completed) .piece-overlay-base {
+        fill: white;
+        fill-opacity: 0.6;
+      }
+
+      .puzzle-piece-group:not(.completed)[data-piece="1"] .piece-overlay-base,
+      .puzzle-piece-group:not(.completed)[data-piece="6"] .piece-overlay-base {
+        fill: #1d375d;
+        fill-opacity: 0.2;
+      }
+      .puzzle-piece-group:not(.completed)[data-piece="2"] .piece-overlay-base,
+      .puzzle-piece-group:not(.completed)[data-piece="3"] .piece-overlay-base,
+      .puzzle-piece-group:not(.completed)[data-piece="4"] .piece-overlay-base,
+      .puzzle-piece-group:not(.completed)[data-piece="5"] .piece-overlay-base {
+        fill: #662a0d;
+        fill-opacity: 0.2;
+      }
+      .puzzle-piece-group:not(.completed)[data-piece="8"] .piece-overlay-base,
+      .puzzle-piece-group:not(.completed)[data-piece="7"] .piece-overlay-base {
+        fill: #5b4822;
+        fill-opacity: 0.2;
+      }
+      .puzzle-piece-group:not(.completed)[data-piece="9"] .piece-overlay-base,
+      .puzzle-piece-group:not(.completed)[data-piece="10"] .piece-overlay-base {
+        fill: #2a5338;
+        fill-opacity: 0.2;
+      }
+      .puzzle-piece-group.completed:hover .piece-overlay-hover {
+        fill-opacity: 0;
+      }
+
+      /* 축하 메시지 */
+      .celebration {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        text-align: center;
+        background: white;
+        padding: 60px 80px;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        opacity: 0;
+        z-index: 100;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      }
+
+      .celebration.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .celebration h2 {
+        font-size: 36px;
+        color: #27ae60;
+        margin-bottom: 20px;
+      }
+
+      .celebration p {
+        font-size: 20px;
+        color: #7f8c8d;
+        line-height: 1.6;
+      }
+
+      .celebration-emoji {
+        font-size: 64px;
+        margin-bottom: 20px;
+        display: block;
+        animation: bounce 1s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      /* 통계 */
+      .stats {
+        margin-top: 30px;
+        text-align: center;
+        background: white;
+        padding: 20px 40px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      }
+
+      .stats p {
+        font-size: 16px;
+        color: #2c3e50;
+        font-weight: 600;
+      }
+
+      .stats span {
+        color: #3498db;
+        font-size: 20px;
+      }
+
+      /* 배경 오버레이 */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 99;
+        transition: opacity 0.3s ease;
+      }
+
+      .overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* 안내 메시지 */
+      .info-box {
+        max-width: 1500px;
+        width: 100%;
+        background: #d1ecf1;
+        border: 1px solid #bee5eb;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        color: #0c5460;
+      }
+
+      .info-box strong {
+        color: #0c5460;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>홍길동 선임연구원님, 수고하셨습니다.</h1>
+      <p class="subtitle">온보딩 필수 콘텐츠 시청을 완료하였습니다.</p>
+    </div>
+
+    <div class="info-box">
+      <strong>💡 조각별 상태 제어:</strong> 각 퍼즐 조각을 개별적으로
+      클릭하세요! 기본 → 호버(마우스) → 완료(클릭) |
+      <strong>🖼️ 배경 이미지:</strong> 각 조각에 이미지가 적용됩니다 (경로:
+      ./images/piece1.jpg ~ piece10.jpg)
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="puzzle-container">
+      <div class="puzzle-board" id="puzzleBoard">
+        <!-- SVG가 여기에 동적으로 삽입됩니다 -->
+      </div>
+    </div>
+
+    <div class="stats">
+      <p>완료된 콘텐츠: <span id="completedCount">0</span> / 10</p>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="celebration" id="celebration">
+      <span class="celebration-emoji">🎉</span>
+      <h2>축하합니다!</h2>
+      <p>모든 온보딩 콘텐츠를<br />성공적으로 완료하셨습니다!</p>
+    </div>
+
+    <script>
+      // 퍼즐 조각 정보 (10개)
+      const pieces = [
+        {
+          id: 1,
+          title: "축적의 시간",
+          path: "M60.5 525.5L88.5 393L703.5 391L689.5 640H271L292 525.5H60.5Z",
+        },
+        {
+          id: 2,
+          title: "상용 S/W 소개",
+          path: "M715 197L724 16L1112 16L1120 197H715Z",
+        },
+        {
+          id: 3,
+          title: "새로운 시대 준비된 우리",
+          path: "M1120.5 197L1112 16H1511L1533 195L1120.5 197Z",
+        },
+        {
+          id: 4,
+          title: "기술개발센터 소개",
+          path: "M1128 387.5L1120 197.5L1533.5 194L1560.5 387.5H1128Z",
+        },
+        {
+          id: 5,
+          title: "한맥가족 소개 및 경영이념",
+          path: "M705.5 387.5L715.5 197.5L1120 197.876L1128 387.5H705.5Z",
+        },
+        {
+          id: 6,
+          title: "건설산업의 디지털 전환",
+          path: "M691.5 640L705 391L1128 389.5L1138.5 640H691.5Z",
+        },
+        {
+          id: 7,
+          title: "회사생활 (신규입사자편)",
+          path: "M1138 640L1128 389.5H1559.5L1599.5 640H1138Z",
+        },
+        {
+          id: 8,
+          title: "회사생활 (경력)",
+          path: "M1569 455L1533.5 194.5H1752L1800 449.5L1569 455Z",
+        },
+        {
+          id: 9,
+          title: "가족사소개",
+          path: "M359 17.5L335.5 192.5H426.5L401.5 389H702L723 17.5H359Z",
+        },
+        {
+          id: 10,
+          title: "왜 다워인인가 (최재천교수)",
+          path: "M88.5 390L124 193H426L402.5 389L88.5 390Z",
+        },
+      ];
+
+      let completed = 0;
+      const totalPieces = pieces.length;
+
+      // SVG 생성
+      function initializePuzzle() {
+        const puzzleBoard = document.getElementById("puzzleBoard");
+
+        // SVG 컨테이너 생성
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(svgNS, "svg");
+        svg.setAttribute("viewBox", "0 0 1862 664");
+        svg.setAttribute("fill", "none");
+
+        // defs 추가 (그라디언트)
+        const defs = document.createElementNS(svgNS, "defs");
+
+        // 보드 배경 그라디언트
+        const gradients = [
+          {
+            id: "board_fill_1",
+            stops: [
+              { offset: "0%", color: "#2A5338" },
+              { offset: "100%", color: "#306843" },
+            ],
+          },
+          {
+            id: "board_fill_2",
+            stops: [
+              { offset: "0%", color: "#662A0D" },
+              { offset: "100%", color: "#8E2F00" },
+            ],
+          },
+          {
+            id: "board_fill_3",
+            stops: [
+              { offset: "0%", color: "#1D375D" },
+              { offset: "100%", color: "#385888" },
+            ],
+          },
+          {
+            id: "board_fill_4",
+            stops: [
+              { offset: "0%", color: "#5B4822" },
+              { offset: "100%", color: "#795711" },
+            ],
+          },
+        ];
+
+        gradients.forEach((grad) => {
+          const gradient = document.createElementNS(svgNS, "linearGradient");
+          gradient.setAttribute("id", grad.id);
+          grad.stops.forEach((stop) => {
+            const stopEl = document.createElementNS(svgNS, "stop");
+            stopEl.setAttribute("offset", stop.offset);
+            stopEl.setAttribute("stop-color", stop.color);
+            gradient.appendChild(stopEl);
+          });
+          defs.appendChild(gradient);
+        });
+
+        svg.appendChild(defs);
+
+        // ⭐ 전체 이미지를 조각별로 나누기 (3가지 상태)
+        // 전체 퍼즐 크기: viewBox 0 0 1862 664
+        // 이미지 크기: 1750x625 (자동으로 퍼즐 크기에 맞춰짐)
+
+        // 3가지 배경 이미지
+        const images = {
+          base: "./assets/images/bg_piece.png", // 기본 상태
+          completed: "./assets/images/bg_piece_completed.png", // 개별 완료 상태
+          allCompleted: "./assets/images/bg_piece_all_completed.png", // 전체 완료 상태
+        };
+
+        pieces.forEach((piece, index) => {
+          // 1. 기본 상태 패턴
+          const patternBase = document.createElementNS(svgNS, "pattern");
+          patternBase.setAttribute("id", `bg-image-${piece.id}`);
+          patternBase.setAttribute("patternUnits", "userSpaceOnUse");
+          patternBase.setAttribute("patternContentUnits", "userSpaceOnUse");
+          patternBase.setAttribute("x", "0");
+          patternBase.setAttribute("y", "0");
+          patternBase.setAttribute("width", "1862");
+          patternBase.setAttribute("height", "664");
+
+          const imageBase = document.createElementNS(svgNS, "image");
+          imageBase.setAttributeNS(
+            "http://www.w3.org/1999/xlink",
+            "xlink:href",
+            images.base
+          );
+          imageBase.setAttribute("href", images.base);
+          imageBase.setAttribute("x", "0");
+          imageBase.setAttribute("y", "0");
+          imageBase.setAttribute("width", "1862");
+          imageBase.setAttribute("height", "664");
+          imageBase.setAttribute("preserveAspectRatio", "none");
+
+          patternBase.appendChild(imageBase);
+          defs.appendChild(patternBase);
+
+          // 2. 개별 완료 상태 패턴
+          const patternCompleted = document.createElementNS(svgNS, "pattern");
+          patternCompleted.setAttribute("id", `bg-image-completed-${piece.id}`);
+          patternCompleted.setAttribute("patternUnits", "userSpaceOnUse");
+          patternCompleted.setAttribute(
+            "patternContentUnits",
+            "userSpaceOnUse"
+          );
+          patternCompleted.setAttribute("x", "0");
+          patternCompleted.setAttribute("y", "0");
+          patternCompleted.setAttribute("width", "1862");
+          patternCompleted.setAttribute("height", "664");
+
+          const imageCompleted = document.createElementNS(svgNS, "image");
+          imageCompleted.setAttributeNS(
+            "http://www.w3.org/1999/xlink",
+            "xlink:href",
+            images.completed
+          );
+          imageCompleted.setAttribute("href", images.completed);
+          imageCompleted.setAttribute("x", "0");
+          imageCompleted.setAttribute("y", "0");
+          imageCompleted.setAttribute("width", "1862");
+          imageCompleted.setAttribute("height", "664");
+          imageCompleted.setAttribute("preserveAspectRatio", "none");
+
+          patternCompleted.appendChild(imageCompleted);
+          defs.appendChild(patternCompleted);
+
+          // 3. 전체 완료 상태 패턴
+          const patternAllCompleted = document.createElementNS(
+            svgNS,
+            "pattern"
+          );
+          patternAllCompleted.setAttribute(
+            "id",
+            `bg-image-all-completed-${piece.id}`
+          );
+          patternAllCompleted.setAttribute("patternUnits", "userSpaceOnUse");
+          patternAllCompleted.setAttribute(
+            "patternContentUnits",
+            "userSpaceOnUse"
+          );
+          patternAllCompleted.setAttribute("x", "0");
+          patternAllCompleted.setAttribute("y", "0");
+          patternAllCompleted.setAttribute("width", "1862");
+          patternAllCompleted.setAttribute("height", "664");
+
+          const imageAllCompleted = document.createElementNS(svgNS, "image");
+          imageAllCompleted.setAttributeNS(
+            "http://www.w3.org/1999/xlink",
+            "xlink:href",
+            images.allCompleted
+          );
+          imageAllCompleted.setAttribute("href", images.allCompleted);
+          imageAllCompleted.setAttribute("x", "0");
+          imageAllCompleted.setAttribute("y", "0");
+          imageAllCompleted.setAttribute("width", "1862");
+          imageAllCompleted.setAttribute("height", "664");
+          imageAllCompleted.setAttribute("preserveAspectRatio", "none");
+
+          patternAllCompleted.appendChild(imageAllCompleted);
+          defs.appendChild(patternAllCompleted);
+
+          console.log(`조각 ${piece.id}: 3가지 상태 패턴 생성됨`);
+        });
+
+        // 보드 배경 (4개의 색상 영역)
+        const boardPaths = [
+          {
+            d: "M703.993 381.536L723.919 10.5389C724.226 4.81364 719.667 0.00266044 713.933 0.00263375L156.183 3.71752e-05C151.512 1.54325e-05 147.464 3.23277 146.43 7.78739L62.2553 378.787C60.8358 385.044 65.5917 391 72.0074 391H206.029H694.007C699.322 391 703.708 386.843 703.993 381.536Z",
+            fill: "url(#board_fill_1)",
+          },
+          {
+            d: "M715.463 185.541L723.546 9.54123C723.791 4.20239 728.191 0 733.535 0H1722.28C1727.05 0 1731.15 3.36972 1732.09 8.04852L1767.1 184.049C1768.34 190.234 1763.6 196 1757.3 196H1534.35H725.452C719.749 196 715.201 191.238 715.463 185.541Z",
+            fill: "url(#board_fill_2)",
+          },
+          {
+            d: "M1139.73 645.293L1122.14 397.293C1121.77 392.058 1117.42 388 1112.17 388H70.206C65.5347 388 61.4858 391.234 60.4533 395.79L4.25149 643.79C2.83375 650.046 7.58954 656 14.0042 656H86.649H1129.75C1135.55 656 1140.14 651.08 1139.73 645.293Z",
+            fill: "url(#board_fill_3)",
+          },
+          {
+            d: "M1139.6 646.401L1121.9 207.399C1121.67 201.723 1126.21 196.996 1131.9 196.996H1761.43C1766.22 196.996 1770.33 200.382 1771.25 205.076L1857.15 644.078C1858.36 650.254 1853.63 655.998 1847.34 655.998H1627.13H1149.59C1144.22 655.998 1139.81 651.763 1139.6 646.401Z",
+            fill: "url(#board_fill_4)",
+          },
+        ];
+
+        boardPaths.forEach((board) => {
+          const path = document.createElementNS(svgNS, "path");
+          path.setAttribute("d", board.d);
+          path.setAttribute("fill", board.fill);
+          svg.appendChild(path);
+        });
+
+        // 퍼즐 조각들 생성
+        pieces.forEach((piece, index) => {
+          const group = document.createElementNS(svgNS, "g");
+          group.classList.add("puzzle-piece-group");
+          group.setAttribute("data-piece", piece.id);
+          group.setAttribute("data-title", piece.title);
+
+          // 배경색 레이어 (미완료 상태에만 표시)
+          const bgColorPath = document.createElementNS(svgNS, "path");
+          bgColorPath.setAttribute("d", piece.path);
+          bgColorPath.setAttribute("class", "piece-bg-color");
+          bgColorPath.setAttribute("fill", "#fff"); // 조각별 색상
+          bgColorPath.setAttribute("fill-opacity", "0. "); // 투명도 조절
+          group.appendChild(bgColorPath);
+
+          // 이미지 레이어 (3개 - 기본, 완료, 전체완료)
+          const currentUrl = window.location.href.split("#")[0];
+
+          // 1. 기본 상태 이미지
+          const baseImagePath = document.createElementNS(svgNS, "path");
+          baseImagePath.setAttribute("d", piece.path);
+          baseImagePath.setAttribute("class", "piece-base-image");
+          baseImagePath.setAttribute(
+            "fill",
+            `url(${currentUrl}#bg-image-${piece.id})`
+          );
+          baseImagePath.setAttribute("fill-opacity", "0.8"); // 배경색이 살짝 비치도록
+          group.appendChild(baseImagePath);
+
+          // 2. 개별 완료 상태 이미지
+          const completedImagePath = document.createElementNS(svgNS, "path");
+          completedImagePath.setAttribute("d", piece.path);
+          completedImagePath.setAttribute("class", "piece-completed-image");
+          completedImagePath.setAttribute(
+            "fill",
+            `url(${currentUrl}#bg-image-completed-${piece.id})`
+          );
+          completedImagePath.setAttribute("fill-opacity", "1.0"); // 완료 시 불투명
+          completedImagePath.style.display = "none";
+          group.appendChild(completedImagePath);
+
+          // 3. 전체 완료 상태 이미지
+          const allCompletedImagePath = document.createElementNS(svgNS, "path");
+          allCompletedImagePath.setAttribute("d", piece.path);
+          allCompletedImagePath.setAttribute(
+            "class",
+            "piece-all-completed-image"
+          );
+          allCompletedImagePath.setAttribute(
+            "fill",
+            `url(${currentUrl}#bg-image-all-completed-${piece.id})`
+          );
+          allCompletedImagePath.setAttribute("fill-opacity", "1.0"); // 전체 완료 시 불투명
+          allCompletedImagePath.style.display = "none";
+          group.appendChild(allCompletedImagePath);
+
+          console.log(
+            `조각 ${piece.id}: 배경색 + 3가지 상태 이미지 레이어 생성`
+          );
+
+          // 기본 오버레이 (완료 시 밝게)
+          const overlayBase = document.createElementNS(svgNS, "path");
+          overlayBase.setAttribute("d", piece.path);
+          overlayBase.classList.add("piece-overlay-base");
+          group.appendChild(overlayBase);
+
+          // 호버 오버레이 (어두운 효과)
+          const overlayHover = document.createElementNS(svgNS, "path");
+          overlayHover.setAttribute("d", piece.path);
+          overlayHover.classList.add("piece-overlay-hover");
+          group.appendChild(overlayHover);
+
+          // 클릭 이벤트
+          group.addEventListener("click", function () {
+            const pieceId = this.getAttribute("data-piece");
+            const pieceTitle = this.getAttribute("data-title");
+
+            // AJAX로 모달 데이터 가져오기
+            openModalWithAjax(pieceId, pieceTitle, this);
+          });
+
+          svg.appendChild(group);
+        });
+
+        puzzleBoard.appendChild(svg);
+      }
+
+      // AJAX 모달 호출 함수
+      function openModalWithAjax(pieceId, pieceTitle, pieceElement) {
+        console.log(`조각 ${pieceId} (${pieceTitle}) 클릭됨`);
+
+        // AJAX 요청
+        fetch(`/api/content/${pieceId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // 모달에 데이터 표시
+            showContentModal(data, pieceId, pieceTitle, pieceElement);
+          })
+          .catch((error) => {
+            console.error("Error fetching content:", error);
+            // 에러 발생 시 기본 모달 표시
+            showContentModal(
+              {
+                title: pieceTitle,
+                description: "콘텐츠를 불러오는 중 오류가 발생했습니다.",
+                videoUrl: null,
+              },
+              pieceId,
+              pieceTitle,
+              pieceElement
+            );
+          });
+      }
+
+      // 콘텐츠 모달 표시 함수
+      function showContentModal(data, pieceId, pieceTitle, pieceElement) {
+        // 기존 모달이 있으면 제거
+        const existingModal = document.getElementById("contentModal");
+        if (existingModal) {
+          existingModal.remove();
+        }
+
+        // 모달 생성
+        const modal = document.createElement("div");
+        modal.id = "contentModal";
+        modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            `;
+
+        // 모달 내용
+        modal.innerHTML = `
+                <div style="
+                    background: white;
+                    border-radius: 20px;
+                    padding: 40px;
+                    max-width: 800px;
+                    width: 90%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    position: relative;
+                    animation: slideUp 0.3s ease;
+                ">
+                    <button id="closeModal" style="
+                        position: absolute;
+                        top: 20px;
+                        right: 20px;
+                        background: #e74c3c;
+                        color: white;
+                        border: none;
+                        border-radius: 50%;
+                        width: 40px;
+                        height: 40px;
+                        font-size: 24px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.2s ease;
+                    " onmouseover="this.style.background='#c0392b'" onmouseout="this.style.background='#e74c3c'">
+                        ×
+                    </button>
+                    
+                    <h2 style="
+                        color: #2c3e50;
+                        font-size: 28px;
+                        margin-bottom: 20px;
+                        padding-right: 40px;
+                    ">${data.title || pieceTitle}</h2>
+                    
+                    <div style="
+                        color: #7f8c8d;
+                        font-size: 16px;
+                        line-height: 1.8;
+                        margin-bottom: 30px;
+                    ">
+                        ${data.description || "콘텐츠 설명이 여기에 표시됩니다."}
+                    </div>
+                    
+                    ${
+                      data.videoUrl
+                        ? `
+                        <div style="
+                            width: 100%;
+                            aspect-ratio: 16/9;
+                            background: #000;
+                            border-radius: 12px;
+                            margin-bottom: 30px;
+                            overflow: hidden;
+                        ">
+                            <iframe 
+                                src="${data.videoUrl}" 
+                                style="width: 100%; height: 100%; border: none;"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    `
+                        : `
+                        <div style="
+                            width: 100%;
+                            height: 300px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            border-radius: 12px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: white;
+                            font-size: 20px;
+                            margin-bottom: 30px;
+                        ">
+                            🎬 비디오 콘텐츠
+                        </div>
+                    `
+                    }
+                    
+                    <div style="display: flex; gap: 15px; justify-content: flex-end;">
+                        <button id="markCompleteBtn" style="
+                            background: #27ae60;
+                            color: white;
+                            border: none;
+                            padding: 12px 30px;
+                            border-radius: 8px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                        " onmouseover="this.style.background='#229954'" onmouseout="this.style.background='#27ae60'">
+                            ✓ 완료 처리
+                        </button>
+                        
+                        <button id="closeModalBtn" style="
+                            background: #95a5a6;
+                            color: white;
+                            border: none;
+                            padding: 12px 30px;
+                            border-radius: 8px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                        " onmouseover="this.style.background='#7f8c8d'" onmouseout="this.style.background='#95a5a6'">
+                            닫기
+                        </button>
+                    </div>
+                </div>
+            `;
+
+        // 애니메이션 스타일 추가
+        const style = document.createElement("style");
+        style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideUp {
+                    from { transform: translateY(50px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+            `;
+        document.head.appendChild(style);
+
+        document.body.appendChild(modal);
+
+        // 닫기 버튼 이벤트
+        const closeButtons = [
+          document.getElementById("closeModal"),
+          document.getElementById("closeModalBtn"),
+        ];
+
+        closeButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            modal.style.animation = "fadeOut 0.3s ease";
+            setTimeout(() => modal.remove(), 300);
+          });
+        });
+
+        // 배경 클릭 시 닫기
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.style.animation = "fadeOut 0.3s ease";
+            setTimeout(() => modal.remove(), 300);
+          }
+        });
+
+        // 완료 처리 버튼
+        document
+          .getElementById("markCompleteBtn")
+          .addEventListener("click", () => {
+            markPieceComplete(pieceId, pieceElement);
+            modal.style.animation = "fadeOut 0.3s ease";
+            setTimeout(() => modal.remove(), 300);
+          });
+      }
+
+      // 퍼즐 조각 완료 처리
+      function markPieceComplete(pieceId, pieceElement) {
+        if (!pieceElement.classList.contains("completed")) {
+          // AJAX로 서버에 완료 상태 전송
+          fetch(`/api/content/${pieceId}/complete`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              pieceId: pieceId,
+              completedAt: new Date().toISOString(),
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("완료 상태 저장됨:", data);
+            })
+            .catch((error) => {
+              console.error("완료 상태 저장 실패:", error);
+            });
+
+          // UI 업데이트: 개별 완료 이미지로 전환
+          pieceElement.classList.add("completed");
+
+          // 배경색 숨기기, 완료 이미지 표시
+          const bgColor = pieceElement.querySelector(".piece-bg-color");
+          const baseImage = pieceElement.querySelector(".piece-base-image");
+          const completedImage = pieceElement.querySelector(
+            ".piece-completed-image"
+          );
+
+          if (bgColor) bgColor.style.display = "none";
+          if (baseImage) baseImage.style.display = "none";
+          if (completedImage) completedImage.style.display = "block";
+
+          completed++;
+          updateProgress();
+
+          if (completed === totalPieces) {
+            // 전체 완료 시: 모든 조각을 전체 완료 이미지로 전환
+            puzzleBoard.classList.add("all-completed");
+            document
+              .querySelectorAll(".puzzle-piece-group")
+              .forEach((group) => {
+                const bgCol = group.querySelector(".piece-bg-color");
+                const baseImg = group.querySelector(".piece-base-image");
+                const completedImg = group.querySelector(
+                  ".piece-completed-image"
+                );
+                const allCompletedImg = group.querySelector(
+                  ".piece-all-completed-image"
+                );
+
+                if (bgCol) bgCol.style.display = "none";
+                if (baseImg) baseImg.style.display = "none";
+                if (completedImg) completedImg.style.display = "none";
+                if (allCompletedImg) allCompletedImg.style.display = "block";
+              });
+
+            setTimeout(showCelebration, 600);
+          }
+
+          console.log(`조각 ${pieceId} 완료 처리됨`);
+        }
+      }
+
+      function updateProgress() {
+        const percentage = (completed / totalPieces) * 100;
+        document.getElementById("progressFill").style.width = percentage + "%";
+        document.getElementById("completedCount").textContent = completed;
+      }
+
+      function showCelebration() {
+        document.getElementById("overlay").classList.add("show");
+        document.getElementById("celebration").classList.add("show");
+      }
+
+      document.getElementById("overlay").addEventListener("click", function () {
+        this.classList.remove("show");
+        document.getElementById("celebration").classList.remove("show");
+      });
+
+      // 초기화 함수 - 이미 완료된 콘텐츠 설정
+      function initializeProgress(completedPieces) {
+        completedPieces.forEach((pieceNum) => {
+          const group = document.querySelector(`[data-piece="${pieceNum}"]`);
+          if (group) {
+            group.classList.add("completed");
+            completed++;
+          }
+        });
+        updateProgress();
+      }
+
+      // 페이지 로드 시 퍼즐 초기화
+      initializePuzzle();
+
+      // 테스트: 일부 조각을 완료 상태로 초기화
+      // initializeProgress([1, 3, 5]);
+    </script>
+  </body>
+</html>

@@ -224,42 +224,6 @@
       modalManager.init();
 
       // ========================================
-      // URL 파라미터로 모달 자동 오픈 (1개만)
-      // ========================================
-
-      function checkURLParamsAndOpenModal() {
-        const urlParams = new URLSearchParams(window.location.search);
-
-        // 비디오 모달 오픈: ?video=1
-        const videoId = urlParams.get("video");
-        if (videoId) {
-          const id = parseInt(videoId);
-          if (!isNaN(id)) {
-            console.log(`비디오 모달 자동 오픈: ID ${id}`);
-            setTimeout(() => {
-              modalManager.loadVideoModal(id);
-            }, 500);
-            return; // 비디오 모달 열면 종료
-          }
-        }
-
-        // 키워드 모달 오픈: ?keyword=true
-        const openKeyword = urlParams.get("keyword");
-        if (openKeyword === "true") {
-          console.log("키워드 모달 자동 오픈");
-          setTimeout(() => {
-            syncModalCheckboxes();
-            updateCheckboxStates();
-            modal.style.display = "block";
-          }, 500);
-          return; // 키워드 모달 열면 종료
-        }
-      }
-
-      // 페이지 로드 완료 후 URL 파라미터 체크
-      window.addEventListener("DOMContentLoaded", checkURLParamsAndOpenModal);
-
-      // ========================================
       // 게이지 차트 초기화
       // ========================================
 
