@@ -2,7 +2,15 @@
 
 @use "base" as *;
 
-.learning {
+.learning,
+.onboarding {
+  .page-title {
+    padding-top: 74px;
+    text-align: center;
+  }
+}
+
+.onboarding {
   .container {
     background:
       radial-gradient(
@@ -15,10 +23,6 @@
 
     box-shadow: 0 -2px 3px 0 rgba(0, 0, 0, 0.5);
   }
-  .page-title {
-    padding-top: 74px;
-    text-align: center;
-  }
 
   .puzzle {
     &-wrap {
@@ -26,38 +30,44 @@
       width: 100%;
       height: calc(var(--window-inner-height) - 64px);
       padding: 0 32px;
+      overflow: hidden;
       @include flex(column, center, flex-start);
     }
     &-area {
       position: relative;
       width: 100%;
-      max-width: 1862px;
       flex-grow: 1;
       @include flex(row, center, center);
     }
     &-board {
       position: relative;
-      width: 100%;
+      width: 90%;
+      margin-top: -4%;
       svg {
         width: 100%;
         height: auto;
         display: block;
+        transform: perspective(794px) rotateX(6deg);
+        transform-origin: bottom;
         text {
         }
       }
 
       .img-box {
         position: absolute;
+        z-index: 1;
+        pointer-events: none;
+
         &.family {
-          width: 11.9226%;
-          left: 3.9742%;
-          top: -3.35365%;
+          width: 14.07089%;
+          left: 0.75187%;
+          top: 5.03778%;
         }
 
         &.hanmac {
           width: 13.4264%;
-          top: -8.2317%;
-          right: 3.54457%;
+          top: 3.77833%;
+          right: 2.68528%;
         }
         &.value {
           width: 9.23737%;
@@ -65,8 +75,8 @@
           bottom: -4.87804%;
         }
         &.company {
-          width: 16.86358%;
-          right: -4.7261%;
+          width: 12.88936%;
+          right: -2.68528%;
           bottom: -8.07926%;
         }
       }
@@ -74,16 +84,18 @@
         position: absolute;
         font-size: 27px;
         font-weight: 700;
+        z-index: 1;
         &.family {
           color: #7ed29b;
-          left: 9.66702%;
-          top: 22.10365%;
+          left: 8.2706%;
+          top: 31.1083%;
         }
 
         &.hanmac {
           color: #ffccca;
-          top: 22.10365%;
-          right: 7.41138%;
+          top: 31.1083%;
+          right: 6.44468%;
+          opacity: 0.45;
         }
         &.value {
           color: #87a7d6;
@@ -93,7 +105,7 @@
         &.company {
           color: #b49a65;
           right: 8.05585%;
-          bottom: 21.3414%;
+          bottom: 15.1133%;
         }
       }
     }
@@ -160,6 +172,17 @@
           transition: all 0.3s ease;
           pointer-events: none;
         }
+      }
+    }
+  }
+}
+
+.completion {
+  &-animation {
+    &-container {
+      svg {
+        transform: perspective(794px) rotateX(6deg);
+        transform-origin: bottom;
       }
     }
   }

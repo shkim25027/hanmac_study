@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
   </head>
   <body>
-    <div class="wrap learning">
+    <div class="wrap onboarding">
       @@include("_include/_header.html")
       <!-- container -->
       <div class="container">
@@ -24,28 +24,136 @@
               <!-- SVG가 여기에 동적으로 삽입됩니다 -->
 
               <p class="img-box family">
-                <img src="../assets/images/onboarding/img_obj_01.png" />
+                <img src="./assets/images/onboarding/img_obj_01.png" />
               </p>
               <p class="tit-box family">가족사 소개</p>
 
               <p class="img-box hanmac">
-                <img src="../assets/images/onboarding/img_obj_02.png" />
+                <img src="./assets/images/onboarding/img_obj_02.png" />
               </p>
               <p class="tit-box hanmac">한맥가족의 DX</p>
+
               <p class="img-box value">
-                <img src="../assets/images/onboarding/img_obj_03.png" />
+                <img src="./assets/images/onboarding/img_obj_03.png" />
               </p>
               <p class="tit-box value">가치공유</p>
+
               <p class="img-box company">
-                <img src="../assets/images/onboarding/img_obj_04.png" />
+                <img src="./assets/images/onboarding/img_obj_04.png" />
               </p>
-              <p class="tit-box company">회사 생활</p>
+              <p class="tit-box company">회사생활</p>
             </div>
           </div>
         </div>
       </div>
       <!-- // container -->
     </div>
+
+    <!-- 리팩토링된 JavaScript -->
     <script src="./assets/js/puzzle-onboarding.js"></script>
+
+    <script>
+      // ============================================
+      // 퍼즐 콘텐츠 설정 (⭐ DOMContentLoaded 전에 설정)
+      // ============================================
+
+      // 전역 변수로 콘텐츠 데이터 설정 (PuzzleManager가 자동으로 읽음)
+
+      window.puzzleContentData = {
+        1: {
+          title: "왜 다윈인인가 (최재천 교수)",
+          url: "OXTYn3JkkCQ",
+          type: "youtube",
+          group: 3,
+          completed: false,
+
+          // 완료 여부
+        },
+        2: {
+          title: "새로운 시대를 준비하는 우리",
+          url: "",
+          type: "file",
+          group: 2,
+          completed: true,
+        },
+        3: {
+          title: "기술개발센터 소개",
+          url: "T3pkeUl5fT4",
+          type: "youtube",
+          group: 2,
+          completed: true,
+
+          // ✅ 완료된 조각
+        },
+        4: {
+          title: "건설산업의 디지털 전환",
+          url: "T3pkeUl5fT4",
+          type: "youtube",
+          group: 2,
+          completed: true,
+        },
+        5: {
+          title: "상용 소프트웨어 소개",
+          url: "T3pkeUl5fT4",
+          type: "youtube",
+          group: 2,
+          completed: true,
+        },
+        6: {
+          title: "축적의 시간",
+          url: "8MugD6Cwhl8",
+          type: "youtube",
+          group: 3,
+          completed: true,
+
+          // ✅ 완료된 조각
+        },
+        7: {
+          title: "회사생활 안내 (경력사원)",
+          url: "Py7nutVN53s",
+          type: "youtube",
+          group: 4,
+          completed: true,
+        },
+        8: {
+          title: "회사생활 안내 (신규입사자)",
+          url: "Py7nutVN53s",
+          type: "youtube",
+          group: 4,
+          completed: true,
+        },
+        9: {
+          title: "한맥가족 소개 및 경영이념",
+          url: "KWKJbTgtkrk",
+          type: "youtube",
+          group: 1,
+          completed: true,
+
+          // ✅ 완료된 조각
+        },
+        10: {
+          title: "삼안 회사 소개",
+          url: "HugaMHZRBC8",
+          type: "youtube",
+          group: 1,
+          completed: true,
+        },
+      };
+
+      // ============================================
+      // 초기 게이지 설정 (예시)
+      // ============================================
+
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+          // 예시: 각 조각의 시청 진행률 설정
+
+          updatePieceGauge(1, 25); // 조각 1: 25% 진행
+          updatePieceGauge(5, 50); // 조각 5: 50% 진행
+          updatePieceGauge(6, 100); // 조각 6: 100% 완료
+          updatePieceGauge(9, 25); // 조각 1: 25% 진행
+        }, 100);
+      });
+    </script>
   </body>
 </html>
