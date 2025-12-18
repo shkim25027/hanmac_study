@@ -1,28 +1,29 @@
+image: node:20
+
 stages:
   - build
   - deploy
 
+cache:
+  paths:
+    - node_modules/
+
 build:
   stage: build
-  image: node:20
   script:
     - npm ci
     - npx gulp build
   artifacts:
     paths:
       - dist/
-    expire_in: 1 hour
 
 pages:
   stage: deploy
-  image: alpine:latest
   script:
-    - mkdir -p public
+    - mkdir public
     - cp -r dist/* public/
   artifacts:
     paths:
       - public
-  dependencies:
-    - build
   only:
     - main

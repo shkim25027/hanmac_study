@@ -19,28 +19,16 @@ jobs:
 
       - name: Mirror to GitLab
         run: |
-          if [ -z "$GITLAB_REPO" ]; then
-            echo "❌ ERROR: GITLAB_REPO is not set!"
-            exit 1
-          fi
+          set -e
 
-          if [ -z "$GITLAB_TOKEN" ]; then
-            echo "❌ ERROR: GITLAB_TOKEN is not set!"
-            exit 1
-          fi
-
-          echo "✅ Mirroring to: gitlab.com/$GITLAB_REPO"
+          echo "Mirroring to gitlab.com/$GITLAB_REPO"
 
           git config user.name "GitHub Actions Bot"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git" || \
-          git remote set-url gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git"
+          git checkout main
 
-          git push gitlab HEAD:main --tags || git push gitlab HEAD:main --force --tags
+          git remote remove gitlab 2>/dev/null || true
+          git remote add gitlab "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git"
 
-          echo "✅ Successfully mirrored to GitLab"
-          echo "📦 GitLab will build and deploy via .gitlab-ci.yml"
-        env:
-          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-          GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
+          git push gitlab main:main --force-with-lease
