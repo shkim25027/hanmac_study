@@ -5,7 +5,8 @@
 // ============================================================================
 // 설정 및 상수
 // ============================================================================
-const CONFIG = {
+// CONFIG 정의 부분을 이렇게 수정 (파일 맨 위)
+const DEFAULT_CONFIG = {
   SVG: {
     NAMESPACE: "http://www.w3.org/2000/svg",
     XLINK_NAMESPACE: "http://www.w3.org/1999/xlink",
@@ -37,7 +38,10 @@ const CONFIG = {
     BASE: "./assets/images/onboarding/bg_piece.png",
     COMPLETED: "./assets/images/onboarding/bg_piece_completed.png",
     ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png",
+    FINISH: "./assets/images/onboarding/bg_piece_finish.png",
   },
+
+  COMPLETION_MODE: "FINISH", // 기본값
 
   PLAY_BUTTON: {
     RADIUS: 28,
@@ -68,6 +72,12 @@ const CONFIG = {
     BG_OPACITY: 0.4,
     FILL_COLOR: "#D74800",
   },
+};
+
+// ⭐ window.puzzleConfig와 병합
+const CONFIG = {
+  ...DEFAULT_CONFIG,
+  ...(window.puzzleConfig || {}),
 };
 
 // CONFIG에 완성된 퍼즐 보드 경로 추가
@@ -928,6 +938,14 @@ class PuzzlePiece {
       true
     );
 
+    this._createImageLayer(
+      "piece-finish-image",
+      `bg-image-finish-${this.data.id}`,
+      currentUrl,
+      "1.0",
+      true
+    );
+
     this._createOverlay("piece-overlay-base");
     this._createOverlay("piece-overlay-hover");
 
@@ -997,19 +1015,27 @@ class PuzzlePiece {
       overlayBase.style.display = isHovering ? "none" : "block";
     }
 
-    // 완료된 조각의 경우 completed 이미지를 임시로 숨김
+    // ⭐ 완료된 조각의 경우 현재 보이는 이미지를 임시로 숨김
     if (this.isCompleted) {
       const completedImg = this.group.querySelector(".piece-completed-image");
       const allCompletedImg = this.group.querySelector(
         ".piece-all-completed-image"
       );
+      const finishImg = this.group.querySelector(".piece-finish-image");
 
+      // COMPLETED 이미지가 보이는 경우
       if (completedImg && completedImg.style.display !== "none") {
         completedImg.style.opacity = isHovering ? "0" : "1";
       }
 
+      // ALL_COMPLETED 이미지가 보이는 경우
       if (allCompletedImg && allCompletedImg.style.display !== "none") {
         allCompletedImg.style.opacity = isHovering ? "0" : "1";
+      }
+
+      // ⭐ FINISH 이미지가 보이는 경우도 추가
+      if (finishImg && finishImg.style.display !== "none") {
+        finishImg.style.opacity = isHovering ? "0" : "1";
       }
     }
   }
@@ -1072,12 +1098,29 @@ class PuzzlePiece {
     );
 
     if (baseImg) baseImg.style.display = "none";
-    // ⭐ hover 이미지는 숨기지 않음 (호버 시 계속 사용)
-    // if (hoverImg) hoverImg.style.display = "none";
     if (completedImg) completedImg.style.display = "none";
     if (allCompletedImg) {
       allCompletedImg.style.display = "block";
       allCompletedImg.setAttribute(
+        "filter",
+        `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
+      );
+    }
+  }
+  showFinish() {
+    const baseImg = this.group.querySelector(".piece-base-image");
+    const completedImg = this.group.querySelector(".piece-completed-image");
+    const allCompletedImg = this.group.querySelector(
+      ".piece-all-completed-image"
+    );
+    const finishImg = this.group.querySelector(".piece-finish-image");
+
+    if (baseImg) baseImg.style.display = "none";
+    if (completedImg) completedImg.style.display = "none";
+    if (allCompletedImg) allCompletedImg.style.display = "none";
+    if (finishImg) {
+      finishImg.style.display = "block";
+      finishImg.setAttribute(
         "filter",
         `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
       );
@@ -1522,7 +1565,7 @@ class PuzzleManager {
       fill: "none",
     });
   }
-
+  // 1. _setupDefs 메서드에 FINISH 패턴 추가
   _setupDefs() {
     const defs = SVGHelper.createElement("defs");
 
@@ -1575,11 +1618,19 @@ class PuzzleManager {
           false
         )
       );
+
+      // ⭐ FINISH 패턴 추가
+      defs.appendChild(
+        SVGHelper.createPattern(
+          `bg-image-finish-${piece.id}`,
+          CONFIG.IMAGE_PATHS.FINISH,
+          false
+        )
+      );
     });
 
     this.svg.appendChild(defs);
   }
-
   _createBoardBackground() {
     BOARD_PATHS.forEach((boardData) => {
       const path = SVGHelper.createElement("path", {
@@ -1642,7 +1693,7 @@ class PuzzleManager {
     if (progressPercent) progressPercent.textContent = Math.round(percentage);
   }
 
-  // _handleAllComplete 메서드 수정
+  //  _handleAllComplete 메서드도 수정
   _handleAllComplete() {
     // 완료 애니메이션 표시
     this._showCompletionAnimation();
@@ -1652,21 +1703,16 @@ class PuzzleManager {
       this._showRibbonAnimation();
     }, 500);
 
-    // 애니메이션 후 all-completed 처리
+    // 애니메이션 후 all-completed 클래스만 추가
     setTimeout(() => {
       this.boardElement.classList.add("all-completed");
+    }, 3100);
 
-      this.pieces.forEach((piece) => {
-        piece.showAllCompleted();
-      });
-    }, 1500);
-
-    // 축하 메시지는 애니메이션 완료 후
-    setTimeout(() => this._showCelebration(), 4000);
+    // 축하 메시지
+    this._showCelebration();
   }
-
   // 리본 애니메이션 메서드
-  _showRibbonAnimation() {
+  async _showRibbonAnimation() {
     // 2번 피스 조각의 위치 찾기
     const piece2 = this.pieces.find((p) => p.data.id === 2);
     if (!piece2) return;
@@ -1679,557 +1725,125 @@ class PuzzleManager {
     const svgRect = this.svg.getBoundingClientRect();
 
     // SVG 좌표계에서의 2번 피스 하단 중앙 위치
-    const piece2CenterX = piece2Bbox.x + piece2Bbox.width / 2;
-    const piece2BottomY = piece2Bbox.y + piece2Bbox.height / 2;
+    const piece2CenterX = piece2Bbox.x + piece2Bbox.width / 2.1;
+    const piece2BottomY = piece2Bbox.y + piece2Bbox.height / 2.2;
 
-    // 리본 고정 사이즈
-    const ribbonWidth = 377;
-    const ribbonHeight = 336;
+    // ⭐ 리본 원본 크기 (SVG viewBox 기준)
+    const ribbonOriginalWidth = 377;
+    const ribbonOriginalHeight = 336;
+    const ribbonAspectRatio = ribbonOriginalWidth / ribbonOriginalHeight;
 
-    // 리본 컨테이너 생성
-    const ribbonContainer = document.createElement("div");
-    ribbonContainer.className = "ribbon-animation-container";
-    ribbonContainer.style.cssText = `
-    position: fixed;
-    top: ${svgRect.top}px;
-    left: ${svgRect.left}px;
-    width: ${svgRect.width}px;
-    height: ${svgRect.height}px;
-    pointer-events: none;
-    z-index: 10000;
-    overflow: visible;
-  `;
+    // ⭐ 2번 피스 크기 기준으로 리본 크기 계산 (피스 너비의 80% 정도)
+    const ribbonWidthInSVG = piece2Bbox.width * 0.9; // 피스 너비의 80%
+    const ribbonHeightInSVG = ribbonWidthInSVG / ribbonAspectRatio; // 비율 유지
 
-    // SVG 생성
-    const svg = document.createElementNS(CONFIG.SVG.NAMESPACE, "svg");
-    svg.setAttribute("viewBox", CONFIG.SVG.VIEWBOX);
-    svg.style.cssText = `
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-  `;
+    // 또는 피스 높이 기준으로 계산하려면:
+    // const ribbonHeightInSVG = piece2Bbox.height * 0.9; // 피스 높이의 90%
+    // const ribbonWidthInSVG = ribbonHeightInSVG * ribbonAspectRatio; // 비율 유지
 
-    // 리본 그룹 생성 (2번 피스 하단 중앙 위치)
-    const ribbonGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
+    // 리본 SVG 파일 로드
+    try {
+      const response = await fetch("./assets/images/onboarding/img_ribbon.svg");
+      const svgText = await response.text();
 
-    // SVG 좌표계에서의 실제 픽셀 변환 계산
-    const svgWidthRatio = CONFIG.SVG.DIMENSIONS.width / svgRect.width;
-    const ribbonWidthInSVG = ribbonWidth * svgWidthRatio;
-    const ribbonHeightInSVG = ribbonHeight * svgWidthRatio;
+      // 리본 컨테이너 생성
+      const ribbonContainer = document.createElement("div");
+      ribbonContainer.className = "ribbon-animation-container";
+      ribbonContainer.style.cssText = `
+      position: fixed;
+      top: ${svgRect.top}px;
+      left: ${svgRect.left}px;
+      width: ${svgRect.width}px;
+      height: ${svgRect.height}px;
+      pointer-events: none;
+      z-index: 10000;
+      overflow: visible;
+    `;
 
-    // 원본 SVG viewBox 377x336 기준으로 스케일 계산
-    const ribbonScale = ribbonWidthInSVG / 377;
+      // SVG 생성
+      const svg = document.createElementNS(CONFIG.SVG.NAMESPACE, "svg");
+      svg.setAttribute("viewBox", CONFIG.SVG.VIEWBOX);
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("height", "100%");
+      svg.style.cssText = `
+      overflow: visible;
+    `;
 
-    // 리본의 중앙이 2번 피스 하단 중앙에 오도록 위치 조정
-    ribbonGroup.setAttribute(
-      "transform",
-      `translate(${piece2CenterX - ribbonWidthInSVG / 2}, ${piece2BottomY - ribbonHeightInSVG / 2})`
-    );
+      // 리본 그룹 생성
+      const ribbonGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
 
-    // 리본 SVG 내용 추가
-    this._createRibbonPaths(ribbonGroup, ribbonScale);
+      // ⭐ 비율 기반 스케일 계산
+      const ribbonScale = ribbonWidthInSVG / ribbonOriginalWidth;
 
-    svg.appendChild(ribbonGroup);
-    ribbonContainer.appendChild(svg);
-    document.body.appendChild(ribbonContainer);
+      ribbonGroup.setAttribute(
+        "transform",
+        `translate(${piece2CenterX - ribbonWidthInSVG / 2}, ${piece2BottomY - ribbonHeightInSVG / 2}) scale(${ribbonScale})`
+      );
 
-    // ⭐ circle 요소는 고정 위치에서 페이드인
-    const circles = ribbonGroup.querySelectorAll("circle");
-    circles.forEach((circle) => {
-      circle.style.opacity = "0";
-      circle.style.transition = "opacity 1s ease";
+      // SVG 파일 내용을 파싱
+      const parser = new DOMParser();
+      const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+      const ribbonSvg = svgDoc.documentElement;
+
+      // SVG의 모든 자식 요소를 ribbonGroup에 추가
+      Array.from(ribbonSvg.children).forEach((child) => {
+        const importedNode = document.importNode(child, true);
+        ribbonGroup.appendChild(importedNode);
+      });
+
+      svg.appendChild(ribbonGroup);
+      ribbonContainer.appendChild(svg);
+      document.body.appendChild(ribbonContainer);
+
+      // ⭐ circle 요소는 고정 위치에서 페이드인
+      const circles = ribbonGroup.querySelectorAll("circle");
+      circles.forEach((circle) => {
+        circle.style.opacity = "0";
+        circle.style.transition = "opacity 0.8s ease";
+        circle.style.mixBlendMode = "overlay";
+        setTimeout(() => {
+          circle.style.opacity = "1";
+        }, 100);
+      });
+
+      // ⭐ 각 path가 개별로 하늘에서 떨어짐
+      const pathGroups = ribbonGroup.querySelectorAll("g[filter]");
+
+      pathGroups.forEach((pathGroup, index) => {
+        // 하늘에서 떨어지는 시작 높이 (랜덤)
+        const startY = -300 - Math.random() * 200;
+
+        // 랜덤한 delay와 duration
+        const delay = index * 100 + Math.random() * 100;
+        const duration = 800 + Math.random() * 400;
+
+        // 초기 상태: 위쪽에서 시작, 투명
+        pathGroup.style.opacity = "0";
+        pathGroup.style.transform = `translateY(${startY}px)`;
+        pathGroup.style.transition = `all ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
+        pathGroup.style.transitionDelay = `${delay}ms`;
+
+        // 애니메이션 시작: 원래 위치로 떨어짐
+        setTimeout(() => {
+          pathGroup.style.opacity = "1";
+          pathGroup.style.transform = `translateY(0)`;
+        }, 50);
+      });
+
+      // ⭐ 애니메이션 완료 후 서서히 사라짐
+      setTimeout(() => {
+        ribbonContainer.style.transition = "opacity 0.5s ease";
+        ribbonContainer.style.opacity = "0";
+      }, 2500);
 
       setTimeout(() => {
-        circle.style.opacity = "1";
-      }, 100);
-    });
-
-    // ⭐ 모든 path들을 하나의 그룹으로 떨어지게
-    const pathGroups = ribbonGroup.querySelectorAll("g[data-ribbon-path]");
-    const pathContainer = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
-    pathContainer.setAttribute("class", "ribbon-paths-container");
-
-    // 기존 path 그룹들을 새 컨테이너로 이동
-    pathGroups.forEach((g) => {
-      const clone = g.cloneNode(true);
-      pathContainer.appendChild(clone);
-      g.remove();
-    });
-
-    ribbonGroup.appendChild(pathContainer);
-
-    // 전체 path 그룹에 떨어지는 애니메이션 적용
-    const startY = -500;
-    pathContainer.style.opacity = "0";
-    pathContainer.style.transform = `translateY(${startY}px)`;
-    pathContainer.style.transition = `all 1200ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
-
-    setTimeout(() => {
-      pathContainer.style.opacity = "1";
-      pathContainer.style.transform = "translateY(0)";
-    }, 100);
-
-    // 애니메이션 완료 후 서서히 사라짐
-    setTimeout(() => {
-      ribbonContainer.style.transition = "opacity 1s ease";
-      ribbonContainer.style.opacity = "0";
-    }, 3000);
-
-    setTimeout(() => {
-      ribbonContainer.remove();
-    }, 4000);
+        ribbonContainer.remove();
+      }, 3000);
+    } catch (error) {
+      console.error("리본 SVG 로드 실패:", error);
+    }
   }
 
-  // _createRibbonPaths 메서드도 수정
-  _createRibbonPaths(parentGroup, scale) {
-    // defs 생성
-    const defs = document.createElementNS(CONFIG.SVG.NAMESPACE, "defs");
-
-    // 필터들 생성 (동일)
-    const filters = [
-      { id: "filter0_d_2000_114120", dy: "8" },
-      { id: "filter1_d_2000_114120", dy: "8" },
-      { id: "filter2_d_2000_114120", dy: "11" },
-      { id: "filter3_d_2000_114120", dy: "11" },
-      { id: "filter4_d_2000_114120", dy: "9" },
-      { id: "filter5_d_2000_114120", dy: "11" },
-      { id: "filter6_d_2000_114120", dy: "9" },
-      { id: "filter7_d_2000_114120", dy: "11" },
-      { id: "filter8_d_2000_114120", dy: "11" },
-      { id: "filter9_d_2000_114120", dy: "11" },
-    ];
-
-    filters.forEach((filterData) => {
-      const filter = document.createElementNS(CONFIG.SVG.NAMESPACE, "filter");
-      filter.setAttribute("id", filterData.id);
-      filter.setAttribute("filterUnits", "userSpaceOnUse");
-      filter.setAttribute("color-interpolation-filters", "sRGB");
-
-      const feFlood = document.createElementNS(CONFIG.SVG.NAMESPACE, "feFlood");
-      feFlood.setAttribute("flood-opacity", "0");
-      feFlood.setAttribute("result", "BackgroundImageFix");
-
-      const feColorMatrix = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feColorMatrix"
-      );
-      feColorMatrix.setAttribute("in", "SourceAlpha");
-      feColorMatrix.setAttribute("type", "matrix");
-      feColorMatrix.setAttribute(
-        "values",
-        "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-      );
-      feColorMatrix.setAttribute("result", "hardAlpha");
-
-      const feOffset = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feOffset"
-      );
-      feOffset.setAttribute("dy", filterData.dy);
-
-      const feComposite = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feComposite"
-      );
-      feComposite.setAttribute("in2", "hardAlpha");
-      feComposite.setAttribute("operator", "out");
-
-      const feColorMatrix2 = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feColorMatrix"
-      );
-      feColorMatrix2.setAttribute("type", "matrix");
-      feColorMatrix2.setAttribute(
-        "values",
-        "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-      );
-
-      const feBlend1 = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feBlend"
-      );
-      feBlend1.setAttribute("mode", "normal");
-      feBlend1.setAttribute("in2", "BackgroundImageFix");
-      feBlend1.setAttribute("result", "effect1_dropShadow_2000_114120");
-
-      const feBlend2 = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feBlend"
-      );
-      feBlend2.setAttribute("mode", "normal");
-      feBlend2.setAttribute("in", "SourceGraphic");
-      feBlend2.setAttribute("in2", "effect1_dropShadow_2000_114120");
-      feBlend2.setAttribute("result", "shape");
-
-      filter.appendChild(feFlood);
-      filter.appendChild(feColorMatrix);
-      filter.appendChild(feOffset);
-      filter.appendChild(feComposite);
-      filter.appendChild(feColorMatrix2);
-      filter.appendChild(feBlend1);
-      filter.appendChild(feBlend2);
-
-      defs.appendChild(filter);
-    });
-
-    // ⭐ Radial Gradient 삭제 (CSS로 처리)
-
-    parentGroup.appendChild(defs);
-
-    // 스케일 적용을 위한 그룹
-    const scaledGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
-    scaledGroup.setAttribute("transform", `scale(${scale})`);
-
-    // ⭐ 배경 원 (CSS gradient 사용)
-    const bgGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
-    const circle = document.createElementNS(CONFIG.SVG.NAMESPACE, "circle");
-    circle.setAttribute("cx", "188");
-    circle.setAttribute("cy", "168");
-    circle.setAttribute("r", "168");
-    circle.style.fill = "#ffffff"; // 기본 색상
-    circle.style.mixBlendMode = "overlay";
-
-    // ⭐ radial gradient를 CSS로 표현하기 위해 foreignObject 사용
-    const foreignObject = document.createElementNS(
-      CONFIG.SVG.NAMESPACE,
-      "foreignObject"
-    );
-    foreignObject.setAttribute("x", "20");
-    foreignObject.setAttribute("y", "0");
-    foreignObject.setAttribute("width", "336");
-    foreignObject.setAttribute("height", "336");
-
-    const div = document.createElement("div");
-    div.style.cssText = `
-    width: 336px;
-    height: 336px;
-    border-radius: 50%;
-    background: radial-gradient(44.49% 44.49% at 50% 50%, #ffffff 0%, rgba(255, 236, 96, 0.00) 100%);
-    mix-blend-mode: overlay;
-  `;
-
-    foreignObject.appendChild(div);
-    bgGroup.appendChild(foreignObject);
-    scaledGroup.appendChild(bgGroup);
-
-    // ⭐ 리본 path들 (data-ribbon-path 속성 추가)
-    const ribbon1 = this._createPathElement(
-      "M104.035 195C104.035 195 107.621 197.217 110.932 204.704C114.243 212.19 112.585 223 112.585 223H100.172C100.172 223 97.4133 214.958 93.0012 209C88.5892 203.038 85 200.821 85 200.821L104.035 195Z",
-      "#0D4D8A",
-      "filter0_d_2000_114120"
-    );
-    ribbon1.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(ribbon1);
-
-    const ribbon2 = this._createPathElement(
-      "M342.965 125C342.965 125 339.379 127.217 336.068 134.704C332.757 142.19 334.415 153 334.415 153H346.828C346.828 153 349.587 144.958 353.999 139C358.411 133.038 362 130.821 362 130.821L342.965 125Z",
-      "#0D4D8A",
-      "filter1_d_2000_114120"
-    );
-    ribbon2.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(ribbon2);
-
-    const yellowRibbon1 = this._createPathElement(
-      "M261.389 191L266 217.278C266 217.278 260.577 218.902 260.034 217.278C259.491 215.654 250 196.691 250 196.691L261.389 191Z",
-      "#FBAD36",
-      "filter2_d_2000_114120"
-    );
-    yellowRibbon1.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(yellowRibbon1);
-
-    const yellowRibbon2 = this._createPathElement(
-      "M69.1234 113C69.1234 113 60.4463 119.897 69.1234 131.207C77.8006 142.517 82 145.828 82 145.828L68.002 153C68.002 153 53.7256 139.758 54.004 131.481C54.2824 123.205 56.2429 116.86 56.2429 116.86L69.1234 113Z",
-      "#FBAD36",
-      "filter3_d_2000_114120"
-    );
-    yellowRibbon2.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(yellowRibbon2);
-
-    const yellowRibbon3 = this._createPathElement(
-      "M249.745 51.7921C249.745 51.7921 256.287 62.08 249.49 73.0272C242.693 83.9743 231.488 89.6545 231.488 89.6545L224.628 77.2586C224.628 77.2586 235.605 79.2244 237.129 66.4402C238.653 53.6561 239.945 48.5151 239.945 48.5151L249.745 51.7921Z",
-      "#FBAD36",
-      "filter9_d_2000_114120"
-    );
-    yellowRibbon3.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(yellowRibbon3);
-
-    const greenRibbon1 = this._createPathElement(
-      "M122.427 35.3809C122.427 35.3809 116.655 55.2661 118.576 63.8258C120.501 72.3856 126 80.3962 126 80.3962C126 80.3962 108.68 84.2642 107.856 83.9856C107.032 83.711 91.3609 67.4153 94.3875 55.8153C97.4101 44.2153 107.033 34 107.033 34L122.427 35.3809Z",
-      "#008B86",
-      "filter4_d_2000_114120"
-    );
-    greenRibbon1.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(greenRibbon1);
-
-    const greenRibbon2 = this._createPathElement(
-      "M358.345 45.9114C358.345 45.9114 362.132 59.0356 360.871 64.6851C359.608 70.3345 356 75.6215 356 75.6215C356 75.6215 367.365 78.1744 367.906 77.9905C368.446 77.8093 378.73 67.0541 376.746 59.3981C374.763 51.7421 368.449 45 368.449 45L358.345 45.9114Z",
-      "#008B86",
-      "filter6_d_2000_114120"
-    );
-    greenRibbon2.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(greenRibbon2);
-
-    const oliveRibbon = this._createPathElement(
-      "M17 65.6289C15.9044 65.6289 1.37076 64 1.37076 64L0 105.781C0 105.781 15.8992 110.934 15.6292 109.85C15.3592 108.766 17 65.6289 17 65.6289Z",
-      "#928D39",
-      "filter5_d_2000_114120"
-    );
-    oliveRibbon.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(oliveRibbon);
-
-    const redRibbon1 = this._createPathElement(
-      "M297.511 109.44C297.511 109.44 302.172 116.277 295 132.823C287.829 149.369 295 162.68 295 162.68C295 162.68 284.961 163.4 282.807 162.68C280.657 161.959 272.05 141.816 278.147 133.543C284.243 125.27 286.754 112.68 285.318 109.44C283.887 106.2 297.511 109.44 297.511 109.44Z",
-      "#C62E2D",
-      "filter7_d_2000_114120"
-    );
-    redRibbon1.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(redRibbon1);
-
-    const redRibbon2 = this._createPathElement(
-      "M167.992 25C167.873 26.0831 197.257 45.8869 195.958 63.1589C194.66 80.4308 171.155 93 171.155 93L167.435 79.0627C167.435 79.0627 188.447 78.507 185.317 61.4535C182.187 44.3953 160 39.3173 160 39.3173L167.992 25Z",
-      "#C62E2D",
-      "filter8_d_2000_114120"
-    );
-    redRibbon2.setAttribute("data-ribbon-path", "true");
-    scaledGroup.appendChild(redRibbon2);
-
-    parentGroup.appendChild(scaledGroup);
-  }
-
-  // 리본 SVG path들 생성
-  _createRibbonPaths(parentGroup, scale) {
-    // defs 생성
-    const defs = document.createElementNS(CONFIG.SVG.NAMESPACE, "defs");
-
-    // 필터들 생성
-    const filters = [
-      { id: "filter0_d_2000_114120", dy: "8" },
-      { id: "filter1_d_2000_114120", dy: "8" },
-      { id: "filter2_d_2000_114120", dy: "11" },
-      { id: "filter3_d_2000_114120", dy: "11" },
-      { id: "filter4_d_2000_114120", dy: "9" },
-      { id: "filter5_d_2000_114120", dy: "11" },
-      { id: "filter6_d_2000_114120", dy: "9" },
-      { id: "filter7_d_2000_114120", dy: "11" },
-      { id: "filter8_d_2000_114120", dy: "11" },
-      { id: "filter9_d_2000_114120", dy: "11" },
-    ];
-
-    filters.forEach((filterData) => {
-      const filter = document.createElementNS(CONFIG.SVG.NAMESPACE, "filter");
-      filter.setAttribute("id", filterData.id);
-      filter.setAttribute("filterUnits", "userSpaceOnUse");
-      filter.setAttribute("color-interpolation-filters", "sRGB");
-
-      const feFlood = document.createElementNS(CONFIG.SVG.NAMESPACE, "feFlood");
-      feFlood.setAttribute("flood-opacity", "0");
-      feFlood.setAttribute("result", "BackgroundImageFix");
-
-      const feColorMatrix = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feColorMatrix"
-      );
-      feColorMatrix.setAttribute("in", "SourceAlpha");
-      feColorMatrix.setAttribute("type", "matrix");
-      feColorMatrix.setAttribute(
-        "values",
-        "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-      );
-      feColorMatrix.setAttribute("result", "hardAlpha");
-
-      const feOffset = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feOffset"
-      );
-      feOffset.setAttribute("dy", filterData.dy);
-
-      const feComposite = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feComposite"
-      );
-      feComposite.setAttribute("in2", "hardAlpha");
-      feComposite.setAttribute("operator", "out");
-
-      const feColorMatrix2 = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feColorMatrix"
-      );
-      feColorMatrix2.setAttribute("type", "matrix");
-      feColorMatrix2.setAttribute(
-        "values",
-        "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-      );
-
-      const feBlend1 = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feBlend"
-      );
-      feBlend1.setAttribute("mode", "normal");
-      feBlend1.setAttribute("in2", "BackgroundImageFix");
-      feBlend1.setAttribute("result", "effect1_dropShadow_2000_114120");
-
-      const feBlend2 = document.createElementNS(
-        CONFIG.SVG.NAMESPACE,
-        "feBlend"
-      );
-      feBlend2.setAttribute("mode", "normal");
-      feBlend2.setAttribute("in", "SourceGraphic");
-      feBlend2.setAttribute("in2", "effect1_dropShadow_2000_114120");
-      feBlend2.setAttribute("result", "shape");
-
-      filter.appendChild(feFlood);
-      filter.appendChild(feColorMatrix);
-      filter.appendChild(feOffset);
-      filter.appendChild(feComposite);
-      filter.appendChild(feColorMatrix2);
-      filter.appendChild(feBlend1);
-      filter.appendChild(feBlend2);
-
-      defs.appendChild(filter);
-    });
-
-    // Radial Gradient
-    const radialGradient = document.createElementNS(
-      CONFIG.SVG.NAMESPACE,
-      "radialGradient"
-    );
-    radialGradient.setAttribute("id", "paint0_radial_2000_114120");
-    radialGradient.setAttribute("cx", "0");
-    radialGradient.setAttribute("cy", "0");
-    radialGradient.setAttribute("r", "1");
-    radialGradient.setAttribute("gradientUnits", "userSpaceOnUse");
-    radialGradient.setAttribute(
-      "gradientTransform",
-      "translate(188 168) rotate(90) scale(149.492)"
-    );
-
-    const stop1 = document.createElementNS(CONFIG.SVG.NAMESPACE, "stop");
-    stop1.setAttribute("stop-color", "#ffffff");
-
-    const stop2 = document.createElementNS(CONFIG.SVG.NAMESPACE, "stop");
-    stop2.setAttribute("offset", "1");
-    stop2.setAttribute("stop-color", "#ffffff");
-    stop2.setAttribute("stop-opacity", "0");
-
-    radialGradient.appendChild(stop1);
-    radialGradient.appendChild(stop2);
-    defs.appendChild(radialGradient);
-
-    parentGroup.appendChild(defs);
-
-    // 스케일 적용을 위한 그룹
-    const scaledGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
-    scaledGroup.setAttribute("transform", `scale(${scale})`);
-
-    // 배경 원 (노란색 빛)
-    const bgGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
-    bgGroup.style.mixBlendMode = "overlay";
-    const circle = document.createElementNS(CONFIG.SVG.NAMESPACE, "circle");
-    circle.setAttribute("cx", "188");
-    circle.setAttribute("cy", "168");
-    circle.setAttribute("r", "168");
-    circle.setAttribute("fill", "url(#paint0_radial_2000_114120)");
-    bgGroup.appendChild(circle);
-    scaledGroup.appendChild(bgGroup);
-
-    // 리본 path들 (왼쪽 파란 리본)
-    const ribbon1 = this._createPathElement(
-      "M104.035 195C104.035 195 107.621 197.217 110.932 204.704C114.243 212.19 112.585 223 112.585 223H100.172C100.172 223 97.4133 214.958 93.0012 209C88.5892 203.038 85 200.821 85 200.821L104.035 195Z",
-      "#0D4D8A",
-      "filter0_d_2000_114120"
-    );
-    scaledGroup.appendChild(ribbon1);
-
-    // 오른쪽 파란 리본
-    const ribbon2 = this._createPathElement(
-      "M342.965 125C342.965 125 339.379 127.217 336.068 134.704C332.757 142.19 334.415 153 334.415 153H346.828C346.828 153 349.587 144.958 353.999 139C358.411 133.038 362 130.821 362 130.821L342.965 125Z",
-      "#0D4D8A",
-      "filter1_d_2000_114120"
-    );
-    scaledGroup.appendChild(ribbon2);
-
-    // 노란 리본들
-    const yellowRibbon1 = this._createPathElement(
-      "M261.389 191L266 217.278C266 217.278 260.577 218.902 260.034 217.278C259.491 215.654 250 196.691 250 196.691L261.389 191Z",
-      "#FBAD36",
-      "filter2_d_2000_114120"
-    );
-    scaledGroup.appendChild(yellowRibbon1);
-
-    const yellowRibbon2 = this._createPathElement(
-      "M69.1234 113C69.1234 113 60.4463 119.897 69.1234 131.207C77.8006 142.517 82 145.828 82 145.828L68.002 153C68.002 153 53.7256 139.758 54.004 131.481C54.2824 123.205 56.2429 116.86 56.2429 116.86L69.1234 113Z",
-      "#FBAD36",
-      "filter3_d_2000_114120"
-    );
-    scaledGroup.appendChild(yellowRibbon2);
-
-    const yellowRibbon3 = this._createPathElement(
-      "M249.745 51.7921C249.745 51.7921 256.287 62.08 249.49 73.0272C242.693 83.9743 231.488 89.6545 231.488 89.6545L224.628 77.2586C224.628 77.2586 235.605 79.2244 237.129 66.4402C238.653 53.6561 239.945 48.5151 239.945 48.5151L249.745 51.7921Z",
-      "#FBAD36",
-      "filter9_d_2000_114120"
-    );
-    scaledGroup.appendChild(yellowRibbon3);
-
-    // 초록 리본들
-    const greenRibbon1 = this._createPathElement(
-      "M122.427 35.3809C122.427 35.3809 116.655 55.2661 118.576 63.8258C120.501 72.3856 126 80.3962 126 80.3962C126 80.3962 108.68 84.2642 107.856 83.9856C107.032 83.711 91.3609 67.4153 94.3875 55.8153C97.4101 44.2153 107.033 34 107.033 34L122.427 35.3809Z",
-      "#008B86",
-      "filter4_d_2000_114120"
-    );
-    scaledGroup.appendChild(greenRibbon1);
-
-    const greenRibbon2 = this._createPathElement(
-      "M358.345 45.9114C358.345 45.9114 362.132 59.0356 360.871 64.6851C359.608 70.3345 356 75.6215 356 75.6215C356 75.6215 367.365 78.1744 367.906 77.9905C368.446 77.8093 378.73 67.0541 376.746 59.3981C374.763 51.7421 368.449 45 368.449 45L358.345 45.9114Z",
-      "#008B86",
-      "filter6_d_2000_114120"
-    );
-    scaledGroup.appendChild(greenRibbon2);
-
-    // 올리브 리본
-    const oliveRibbon = this._createPathElement(
-      "M17 65.6289C15.9044 65.6289 1.37076 64 1.37076 64L0 105.781C0 105.781 15.8992 110.934 15.6292 109.85C15.3592 108.766 17 65.6289 17 65.6289Z",
-      "#928D39",
-      "filter5_d_2000_114120"
-    );
-    scaledGroup.appendChild(oliveRibbon);
-
-    // 빨간 리본들
-    const redRibbon1 = this._createPathElement(
-      "M297.511 109.44C297.511 109.44 302.172 116.277 295 132.823C287.829 149.369 295 162.68 295 162.68C295 162.68 284.961 163.4 282.807 162.68C280.657 161.959 272.05 141.816 278.147 133.543C284.243 125.27 286.754 112.68 285.318 109.44C283.887 106.2 297.511 109.44 297.511 109.44Z",
-      "#C62E2D",
-      "filter7_d_2000_114120"
-    );
-    scaledGroup.appendChild(redRibbon1);
-
-    const redRibbon2 = this._createPathElement(
-      "M167.992 25C167.873 26.0831 197.257 45.8869 195.958 63.1589C194.66 80.4308 171.155 93 171.155 93L167.435 79.0627C167.435 79.0627 188.447 78.507 185.317 61.4535C182.187 44.3953 160 39.3173 160 39.3173L167.992 25Z",
-      "#C62E2D",
-      "filter8_d_2000_114120"
-    );
-    scaledGroup.appendChild(redRibbon2);
-
-    parentGroup.appendChild(scaledGroup);
-  }
-
-  _createPathElement(d, fill, filterId) {
-    const g = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
-    g.setAttribute("filter", `url(#${filterId})`);
-
-    const path = document.createElementNS(CONFIG.SVG.NAMESPACE, "path");
-    path.setAttribute("d", d);
-    path.setAttribute("fill", fill);
-
-    const strokePath = document.createElementNS(CONFIG.SVG.NAMESPACE, "path");
-    strokePath.setAttribute("d", d);
-    strokePath.setAttribute("stroke", "black");
-    strokePath.setAttribute("stroke-width", "2");
-    strokePath.setAttribute("fill", "none");
-
-    g.appendChild(path);
-    g.appendChild(strokePath);
-
-    return g;
-  }
   // 완료 이미지 애니메이션 메서드 추가
   _showCompletionAnimation() {
     // 퍼즐 보드의 위치와 크기 가져오기
@@ -2296,22 +1910,62 @@ class PuzzleManager {
     }, 100);
 
     // 페이드 아웃
-
     setTimeout(() => {
       animationContainer.style.opacity = "0";
-    }, 2000);
+    }, 3000);
 
-    // 제거
+    // 제거 및 이미지 교체
     setTimeout(() => {
       animationContainer.remove();
+
+      // ⭐ COMPLETION_MODE에 따라 이미지 선택
+      if (CONFIG.COMPLETION_MODE === "FINISH") {
+        this._switchToFinishImage();
+      } else {
+        // COMPLETED 이미지 유지
+        this.pieces.forEach((piece) => {
+          piece.showCompleted(); // ALL_COMPLETED 대신 일반 completed 유지
+        });
+      }
     }, 3100);
   }
 
+  // 6. _switchToFinishImage 메서드 추가
+  _switchToFinishImage() {
+    this.pieces.forEach((piece) => {
+      piece.showFinish();
+    });
+  }
+
   _showCelebration() {
+    const pageTitle = document.querySelector(".page-title");
+    const p = pageTitle.querySelector("p");
+    // 기존 em 값 가져오기
+    const emText = pageTitle.querySelector("h3 em").textContent;
+    if (CONFIG.COMPLETION_MODE === "FINISH") {
+      // h3, p 변경
+      pageTitle.querySelector("h3").innerHTML = `
+    <em>온보딩 필수 콘텐츠</em> 시청을 완료하셨습니다.
+  `;
+      p.classList.add("fw-b");
+      p.innerHTML = `
+    필요할 땐 <em>언제든</em> 다시 볼 수 있어요.
+  `;
+    } else {
+      // h3, p 변경
+      pageTitle.querySelector("h3").innerHTML = `
+    <span><em>${emText}</em>님,</span> 수고하셨습니다.
+  `;
+
+      pageTitle.querySelector("p").innerHTML = `
+    <em>온보딩 필수 콘텐츠 </em> 시청을 완료하셨습니다.
+  `;
+    }
+    /*
     const overlay = document.getElementById("overlay");
     const celebration = document.getElementById("celebration");
     if (overlay) overlay.classList.add("show");
-    if (celebration) celebration.classList.add("show");
+    if (celebration) celebration.classList.add("show");*/
   }
 
   initializeWithCompletedPieces(completedPieceIds) {
@@ -2325,6 +1979,7 @@ class PuzzleManager {
     this._updateProgress();
   }
 
+  // 2. PuzzleManager의 _initializeCompletedPieces 메서드 수정
   _initializeCompletedPieces() {
     // contentManager에서 completed: true인 조각들을 찾아서 자동으로 완료 처리
     const completedPieces = [];
@@ -2337,6 +1992,21 @@ class PuzzleManager {
 
     if (completedPieces.length > 0) {
       this.initializeWithCompletedPieces(completedPieces);
+
+      // ⭐ 모든 조각이 완료된 경우
+      if (this.completedCount === PUZZLE_PIECES.length) {
+        // 전체 완료 상태로 설정
+        this.boardElement.classList.add("all-completed");
+
+        // ⭐ COMPLETION_MODE에 따라 이미지 선택
+        if (CONFIG.COMPLETION_MODE === "FINISH") {
+          // FINISH 이미지로 전환
+          this._switchToFinishImage();
+        } else {
+          // COMPLETED 이미지 유지 (아무것도 하지 않음)
+          // 각 조각은 이미 markComplete()로 COMPLETED 이미지를 표시 중
+        }
+      }
     }
   }
 }

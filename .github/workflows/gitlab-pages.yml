@@ -1,0 +1,65 @@
+name: Deploy to GitLab Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Build (Gulp)
+        run: |
+          npm ci
+          npx gulp build
+
+          echo "📁 project root"
+          ls -la
+          echo "📁 dist"
+          ls -la dist || exit 1
+
+      - name: Deploy to GitLab Pages
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_REPO: ${{ secrets.GITLAB_REPO }}
+        run: |
+          echo "🚀 Deploying to GitLab Pages"
+
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+          # orphan 브랜치 생성
+          git checkout --orphan gitlab-pages
+          git reset --hard
+
+          # Pages 규칙: public 폴더 필수
+          mkdir public
+          cp -r dist/* public/
+
+          # Jekyll 비활성화
+          touch public/.nojekyll
+
+          # index.html 검증
+          if [ ! -f "public/index.html" ]; then
+            echo "❌ public/index.html not found"
+            exit 1
+          fi
+
+          git add .
+          git commit -m "Deploy to GitLab Pages ($(date '+%Y-%m-%d %H:%M:%S'))"
+
+          git push -f "https://oauth2:${GITLAB_TOKEN}@gitlab.com/${GITLAB_REPO}.git" gitlab-pages:main
+
+          echo "✅ Deploy complete"
+          echo "🌐 https://${GITLAB_REPO%/*}.gitlab.io/${GITLAB_REPO#*/}/"

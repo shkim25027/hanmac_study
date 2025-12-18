@@ -34,6 +34,18 @@
       },
       "교육": {
         "온보딩": ["../onboarding.html", "mainframe", "컨펌대기", ""],
+        "온보딩_신규입사": [
+          "../onboarding_completed.html",
+          "mainframe",
+          "컨펌대기",
+          ""
+        ],
+        "온보딩_임직원": [
+          "../onboarding_finish.html",
+          "mainframe",
+          "컨펌대기",
+          ""
+        ],
         "법정교육": ["../learning.html", "mainframe", "컨펌대기", ""]
       }
     }
