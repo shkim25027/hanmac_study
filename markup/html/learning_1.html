@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>학습 진행률 게이지</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 1400px;
+        width: 100%;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 2rem;
+      }
+
+      .gauge-wrapper {
+        position: relative;
+        width: 100%;
+        height: 500px;
+        margin: 40px 0;
+      }
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* 배경 경로 스타일 */
+      #path-bg {
+        /* filter는 SVG에 적용됨 */
+      }
+
+      /* 진행 중인 경로 스타일 */
+      #path-fill {
+        /* mask는 SVG에 적용됨 */
+      }
+
+      /* 블렛(원) 스타일 */
+      #bullet {
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 40px;
+      }
+
+      .slider-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .slider-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1rem;
+        color: #555;
+      }
+
+      .progress-value {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #667eea;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        height: 8px;
+        border-radius: 5px;
+        background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        border: 3px solid #667eea;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        border: 3px solid #667eea;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+      }
+
+      .info-text {
+        text-align: center;
+        color: #777;
+        margin-top: 20px;
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📚 학습 진행률 게이지</h1>
+
+      <div class="gauge-wrapper">
+        <svg viewBox="0 0 1920 980" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <!-- 필터 정의 -->
+            <filter
+              id="filter2_i"
+              x="-191"
+              y="419"
+              width="1834"
+              height="522"
+              filterUnits="userSpaceOnUse"
+              color-interpolation-filters="sRGB"
+            >
+              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feBlend
+                mode="normal"
+                in="SourceGraphic"
+                in2="BackgroundImageFix"
+                result="shape"
+              />
+              <feColorMatrix
+                in="SourceAlpha"
+                type="matrix"
+                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                result="hardAlpha"
+              />
+              <feOffset dx="1" dy="1" />
+              <feGaussianBlur stdDeviation="0.5" />
+              <feComposite
+                in2="hardAlpha"
+                operator="arithmetic"
+                k2="-1"
+                k3="1"
+              />
+              <feColorMatrix
+                type="matrix"
+                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+              />
+              <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+            </filter>
+
+            <filter
+              id="filter3_i"
+              x="-192"
+              y="418"
+              width="1834"
+              height="522"
+              filterUnits="userSpaceOnUse"
+              color-interpolation-filters="sRGB"
+            >
+              <feFlood flood-opacity="0" result="BackgroundImageFix" />
+              <feBlend
+                mode="normal"
+                in="SourceGraphic"
+                in2="BackgroundImageFix"
+                result="shape"
+              />
+              <feColorMatrix
+                in="SourceAlpha"
+                type="matrix"
+                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                result="hardAlpha"
+              />
+              <feOffset dx="1" dy="2" />
+              <feGaussianBlur stdDeviation="0.5" />
+              <feComposite
+                in2="hardAlpha"
+                operator="arithmetic"
+                k2="-1"
+                k3="1"
+              />
+              <feColorMatrix
+                type="matrix"
+                values="0 0 0 0 0.786859 0 0 0 0 0.601696 0 0 0 0 0.467828 0 0 0 0.2 0"
+              />
+              <feBlend
+                mode="multiply"
+                in2="shape"
+                result="effect1_innerShadow"
+              />
+            </filter>
+
+            <linearGradient
+              id="paint3_linear"
+              x1="6.98964"
+              y1="681.027"
+              x2="1642"
+              y2="681.027"
+              gradientUnits="userSpaceOnUse"
+            >
+              <stop stop-color="white" stop-opacity="0" />
+              <stop offset="0.55" stop-color="#FF5C00" />
+              <stop offset="1" stop-color="white" stop-opacity="0" />
+            </linearGradient>
+
+            <!-- 블렛 그라디언트 -->
+            <radialGradient id="bulletGradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" style="stop-color: #ffffff; stop-opacity: 1" />
+              <stop offset="60%" style="stop-color: #ff8c42; stop-opacity: 1" />
+              <stop
+                offset="100%"
+                style="stop-color: #ff5c00; stop-opacity: 1"
+              />
+            </radialGradient>
+          </defs>
+
+          <!-- 배경 경로 (회색 stroke) - 단방향: 아래에서 위로 -->
+          <path
+            id="path-bg"
+            d="M -189.319 921.202 C 100 950 1623.67 971.271 1623.67 848.038 C 1623.67 660.02 338.5 746.029 338.5 638.558 C 338.5 528.087 1438.84 608.759 1438.84 533.164 C 1438.84 465.004 543.838 490.816 543.838 454.078 C 543.838 425.326 950.914 419 950.914 419"
+            fill="none"
+            stroke="#CCBDA1"
+            stroke-width="40"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            opacity="0.5"
+          />
+
+          <!-- 진행 중인 경로 (컬러 stroke) - 단방향: 아래에서 위로 -->
+          <path
+            id="path-fill"
+            d="M -189.319 921.202 C 100 950 1623.67 971.271 1623.67 848.038 C 1623.67 660.02 338.5 746.029 338.5 638.558 C 338.5 528.087 1438.84 608.759 1438.84 533.164 C 1438.84 465.004 543.838 490.816 543.838 454.078 C 543.838 425.326 950.914 419 950.914 419"
+            fill="none"
+            stroke="#FFC176"
+            stroke-width="40"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            style="filter: drop-shadow(0 3px 10px rgba(255, 92, 0, 0.5))"
+          />
+
+          <!-- 블렛 (움직이는 원) -->
+          <g id="bullet">
+            <circle
+              cx="0"
+              cy="0"
+              r="24"
+              fill="url(#bulletGradient)"
+              stroke="white"
+              stroke-width="5"
+            />
+            <circle cx="0" cy="0" r="8" fill="white" opacity="0.9" />
+          </g>
+        </svg>
+      </div>
+
+      <div class="controls">
+        <div class="slider-container">
+          <div class="slider-label">
+            <span>진행률 조절</span>
+            <span class="progress-value" id="progressText">0%</span>
+          </div>
+          <input
+            type="range"
+            id="progressSlider"
+            min="0"
+            max="100"
+            value="0"
+            step="1"
+          />
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="animateProgress(0)">
+            처음으로
+          </button>
+          <button class="btn-success" onclick="animateProgress(50)">50%</button>
+          <button class="btn-success" onclick="animateProgress(100)">
+            완료!
+          </button>
+          <button class="btn-danger" onclick="autoAnimate()">자동 재생</button>
+        </div>
+      </div>
+
+      <p class="info-text">
+        슬라이더를 드래그하거나 버튼을 클릭하여 학습 진행률을 확인해보세요! 🎯
+      </p>
+    </div>
+
+    <!-- GSAP 및 MotionPath 플러그인 로드 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
+
+    <script>
+      // GSAP MotionPath 플러그인 등록
+      gsap.registerPlugin(MotionPathPlugin);
+
+      // 요소 선택
+      const pathBg = document.querySelector("#path-bg");
+      const pathFill = document.querySelector("#path-fill");
+      const bullet = document.querySelector("#bullet");
+      const slider = document.querySelector("#progressSlider");
+      const progressText = document.querySelector("#progressText");
+
+      // 경로의 전체 길이 계산
+      const length = pathFill.getTotalLength();
+
+      // 초기 설정: 게이지를 비어있는 상태로 설정
+      pathFill.style.strokeDasharray = length;
+      pathFill.style.strokeDashoffset = length;
+
+      // 블렛 시작 위치 설정 (아래에서 시작)
+      gsap.set(bullet, {
+        motionPath: {
+          path: pathBg,
+          align: pathBg,
+          alignOrigin: [0.5, 0.5],
+          start: 0,
+          end: 0,
+        },
+      });
+
+      // 진행률 설정 함수
+      function setProgress(percent) {
+        const p = percent / 100;
+
+        // 라인 채우기 (stroke-dashoffset을 이용한 애니메이션)
+        pathFill.style.strokeDashoffset = length * (1 - p);
+
+        // 블렛 위치 이동 (아래에서 위로)
+        gsap.set(bullet, {
+          motionPath: {
+            path: pathBg,
+            align: pathBg,
+            alignOrigin: [0.5, 0.5],
+            start: p,
+            end: p,
+          },
+        });
+
+        // 텍스트 업데이트
+        progressText.textContent = Math.round(percent) + "%";
+      }
+
+      // 부드러운 애니메이션과 함께 진행률 설정
+      function animateProgress(targetPercent) {
+        const currentPercent = parseFloat(slider.value);
+        const duration = (Math.abs(targetPercent - currentPercent) / 100) * 2; // 최대 2초
+
+        gsap.to(slider, {
+          value: targetPercent,
+          duration: duration,
+          ease: "power2.inOut",
+          onUpdate: function () {
+            setProgress(slider.value);
+          },
+        });
+      }
+
+      // 자동 재생 함수
+      function autoAnimate() {
+        animateProgress(0); // 먼저 0으로
+
+        setTimeout(() => {
+          gsap.to(slider, {
+            value: 100,
+            duration: 5,
+            ease: "power1.inOut",
+            onUpdate: function () {
+              setProgress(slider.value);
+            },
+          });
+        }, 500);
+      }
+
+      // 슬라이더 입력 이벤트
+      slider.addEventListener("input", function () {
+        setProgress(this.value);
+      });
+
+      // 초기 설정
+      setProgress(0);
+    </script>
+  </body>
+</html>

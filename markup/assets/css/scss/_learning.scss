@@ -212,3 +212,22 @@
     }
   }
 }
+
+.learning {
+  &-area {
+    position: relative;
+    width: 100%;
+    flex-grow: 1;
+    text-align: center;
+  }
+  &-gauge {
+    text-align: center;
+    width: 82.5%;
+    margin: auto;
+    translate: 4% 0;
+    svg {
+      width: 100%;
+      height: auto;
+    }
+  }
+}

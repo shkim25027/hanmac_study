@@ -1,12 +1,24 @@
 <!doctype html>
 <html lang="ko">
   <head>
-    @@include("_include/_head.html")
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>학습 진행률 게이지 - 최종 (핀 포함)</title>
     <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
+    <style>
+      .learning-gauge {
+        width: 100%;
+        overflow: hidden;
+      }
+      .learning-gauge svg {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+    </style>
   </head>
   <body>
     <div class="wrap learning">
-      @@include("_include/_header.html")
       <!-- container -->
       <div class="container">
         <div class="page-title">
@@ -121,7 +133,7 @@
 
           // 초기 설정
           console.log("SVG loaded and ready");
-          setProgress(10); // 30%로 시작
+          setProgress(30); // 30%로 시작
         })
         .catch((error) => {
           console.error("Error loading SVG:", error);
