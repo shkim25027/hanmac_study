@@ -214,11 +214,19 @@
 }
 
 .learning {
+  &-wrap {
+    position: relative;
+    width: 100%;
+    height: calc(var(--window-inner-height) - 64px);
+    padding: 0 32px;
+    overflow: hidden;
+    @include flex(column, center, flex-start);
+  }
   &-area {
     position: relative;
     width: 100%;
     flex-grow: 1;
-    text-align: center;
+    @include flex();
   }
   &-gauge {
     text-align: center;
@@ -228,6 +236,26 @@
     svg {
       width: 100%;
       height: auto;
+    }
+  }
+  .start-line {
+    position: absolute;
+    bottom: 0;
+    left: -10px;
+  }
+  #markers-container {
+    translate: none;
+  }
+  .marker {
+    position: absolute;
+    cursor: pointer;
+    &[data-type="chapter"] {
+      width: 2.4676%;
+    }
+    &[data-type="normal"] {
+      width: 2.3442%;
+    }
+    &:nth-child(1) {
     }
   }
 }
