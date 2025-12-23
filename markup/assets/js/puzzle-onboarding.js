@@ -1076,16 +1076,30 @@ class PuzzlePiece {
     // ⭐ hoverImage는 숨기지 않음 (호버 시 계속 사용)
     // const hoverImage = this.group.querySelector(".piece-hover-image");
     const completedImage = this.group.querySelector(".piece-completed-image");
+    const finishImage = this.group.querySelector(".piece-finish-image");
 
     if (baseImage) baseImage.style.display = "none";
     // ⭐ 이 줄 제거 - hover 이미지는 계속 사용
     // if (hoverImage) hoverImage.style.display = "none";
-    if (completedImage) {
-      completedImage.style.display = "block";
-      completedImage.setAttribute(
-        "filter",
-        `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
-      );
+    // ⭐ COMPLETION_MODE에 따라 이미지 선택
+    if (CONFIG.COMPLETION_MODE === "FINISH") {
+      // FINISH 모드일 때는 finish 이미지 사용
+      if (finishImage) {
+        finishImage.style.display = "block";
+        finishImage.setAttribute(
+          "filter",
+          `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
+        );
+      }
+    } else {
+      // COMPLETED 모드일 때는 completed 이미지 사용
+      if (completedImage) {
+        completedImage.style.display = "block";
+        completedImage.setAttribute(
+          "filter",
+          `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
+        );
+      }
     }
   }
 

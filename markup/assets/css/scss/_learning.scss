@@ -241,7 +241,9 @@
   .start-line {
     position: absolute;
     bottom: 0;
-    left: -10px;
+    left: -0;
+    width: 3.91304%;
+    translate: -8% -32%;
   }
   #markers-container {
     translate: none;
@@ -251,11 +253,102 @@
     cursor: pointer;
     &[data-type="chapter"] {
       width: 2.4676%;
+      transform: scale(1.4);
     }
     &[data-type="normal"] {
       width: 2.3442%;
+      translate: 0 -40%;
+      &.current {
+        transform: scale(1.6) !important;
+      }
     }
-    &:nth-child(1) {
+    &:first-child {
+      translate: 0 -60%;
     }
+    &:nth-child(n + 2):nth-child(-n + 9) {
+      translate: 0 -90%;
+      transform: scale(1.2);
+    }
+    &:nth-child(n + 11):nth-child(-n + 12),
+    &:nth-child(n + 14):nth-child(-n + 15) {
+      transform: scale(1.2);
+    }
+    &:nth-child(10),
+    &:nth-child(13) {
+      translate: 0 -20%;
+    }
+    &:nth-child(16),
+    &:nth-child(19) {
+      translate: 0 -40%;
+    }
+    &:nth-child(n + 17):nth-child(-n + 18) {
+      translate: 0 -60%;
+      transform: scale(1.1);
+    }
+    &:nth-child(n + 20):nth-child(-n + 25) {
+      translate: 0 -60%;
+    }
+    &:nth-child(n + 22):nth-child(-n + 24) {
+      transform: scale(0.9);
+    }
+    &:nth-child(25) {
+      transform: scale(0.8);
+    }
+  }
+  .chapter {
+    &-list {
+      pointer-events: none;
+      li {
+        position: absolute;
+        transition: all 0.3s ease;
+        pointer-events: auto;
+        &:not(.completed, .current) {
+          filter: grayscale(100%);
+          &:nth-child(1) {
+            width: calc((180px / 1610px) * 100%);
+          }
+          &:nth-child(2) {
+            width: calc((170px / 1610px) * 100%);
+          }
+          &:nth-child(3) {
+            width: calc((160px / 1610px) * 100%);
+          }
+          &:nth-child(4) {
+            width: calc((150px / 1610px) * 100%);
+          }
+          &:nth-child(5) {
+            width: calc((140px / 1610px) * 100%);
+          }
+        }
+        &.completed {
+          width: calc((200px / 1610px) * 100%);
+          svg {
+            animation: bounce 0.5s ease;
+          }
+        }
+        &.current {
+          width: calc((328px / 1610px) * 100%);
+          svg {
+            animation: bounce 0.5s ease;
+          }
+        }
+        svg {
+          width: 100%;
+          height: auto;
+          display: block;
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+      }
+    }
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
   }
 }

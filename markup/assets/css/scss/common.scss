@@ -535,7 +535,8 @@ h5 {
 
       .list {
         gap: 12px;
-        padding: 0 0 5px 0;
+        padding: 0;
+        margin-bottom: 5px;
         grid-template-columns: 44px 1fr;
         .learning-box {
           position: relative;
