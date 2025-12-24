@@ -16,6 +16,7 @@
       },
       "메인": {
         "메인": ["../index.html", "mainframe", "컨펌대기", ""],
+        "메인_초과": ["../index_over.html", "mainframe", "컨펌대기", ""],
         "팝업_키워드": [
           "../modal.html?keyword=true",
           "mainframe",
