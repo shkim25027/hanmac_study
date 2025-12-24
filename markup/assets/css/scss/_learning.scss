@@ -321,7 +321,7 @@
           }
         }
         &.completed {
-          width: calc((203px / 1610px) * 100%);
+          width: calc((200px / 1610px) * 100%);
           svg {
             animation: bounce 0.5s ease;
           }
@@ -339,6 +339,21 @@
           filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
         }
       }
+    }
+  }
+  .progress {
+    &-indicator {
+      /* 크기 조정 */
+      width: calc((131px / 1610px) * 100%);
+      height: auto;
+      &.completed {
+        width: calc((140px / 1610px) * 100%);
+      }
+      svg {
+        overflow: visible;
+      }
+    }
+    &-percent {
     }
   }
 }

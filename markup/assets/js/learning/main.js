@@ -12,6 +12,7 @@ class LearningApp {
       LEARNING_CONFIG,
       this.gauge
     );
+    this.progressIndicator = new ProgressIndicator(LEARNING_CONFIG, this.gauge);
     this.modal = new VideoModal(LEARNING_CONFIG, this.markerManager);
 
     // 마커 매니저와 챕터 카드 매니저에 모달 인스턴스 전달
@@ -62,21 +63,30 @@ class LearningApp {
       // 챕터 카드 생성
       this.chapterCardManager.createChapterCards();
 
+      // 진행률 표시 생성
+      this.progressIndicator.createIndicator();
+
       // 초기 진행률 설정
       const initialProgress = this.gauge.calculateInitialProgress(
         this.markerManager.allMarkers,
         LEARNING_CONFIG
       );
       this.gauge.setProgress(initialProgress);
+
+      // 진행률 표시 업데이트
+      this.progressIndicator.updateProgress(this.markerManager.allMarkers);
     });
   }
 
   /**
-   * 학습 완료 후 챕터 카드 업데이트
+   * 학습 완료 후 챕터 카드 및 진행률 표시 업데이트
    */
   updateChapterCards() {
     if (this.chapterCardManager) {
       this.chapterCardManager.updateChapterCards();
+    }
+    if (this.progressIndicator) {
+      this.progressIndicator.updateProgress(this.markerManager.allMarkers);
     }
   }
 }

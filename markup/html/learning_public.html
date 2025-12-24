@@ -42,6 +42,7 @@
     <script src="./assets/js/learning/gauge.js"></script>
     <script src="./assets/js/learning/markers.js"></script>
     <script src="./assets/js/learning/chapter-cards.js"></script>
+    <script src="./assets/js/learning/progress-indicator.js"></script>
     <script src="./assets/js/learning/modal.js"></script>
     <script src="./assets/js/learning/main.js"></script>
 
@@ -50,6 +51,11 @@
       // true: 비활성 마커도 클릭 가능 (자유 학습 모드)
       // false: 순차적으로만 학습 가능 (순차 학습 모드)
       LEARNING_CONFIG.settings.allowDisabledClick = true;
+      // 랜덤하게 60% 완료
+      const allLessons = LEARNING_CONFIG.getAllMarkers();
+      allLessons.forEach((lesson) => {
+        lesson.completed = Math.random() < 0.9;
+      });
     </script>
   </body>
 </html>

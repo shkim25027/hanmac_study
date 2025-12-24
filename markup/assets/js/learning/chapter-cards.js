@@ -266,7 +266,7 @@ class ChapterCardManager {
 
     svg.innerHTML = `
       <!-- 그림자 -->
-      <g opacity="0.4">
+      <g opacity="0.5" style="mix-blend-mode:multiply" filter="url(#filter_box_shadow)">
         <ellipse cx="${svgConfig.shadowCx}" cy="${svgConfig.shadowCy}" rx="${svgConfig.shadowRx}" ry="${svgConfig.shadowRy}" fill="#8A7D64" opacity="0.5" style="mix-blend-mode:multiply"/>
       </g>
 
@@ -303,6 +303,11 @@ class ChapterCardManager {
 
       <defs>
         ${gradientDef}
+        <filter id="filter_box_shadow" x="0" y="0" width="196" height="18" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+          <feGaussianBlur stdDeviation="2" result="effect1_foregroundBlur_2000_108617"/>
+        </filter>
       </defs>
     `;
 
