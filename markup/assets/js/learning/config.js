@@ -230,7 +230,7 @@ const LEARNING_CONFIG = {
 
   // 비활성 마커 클릭 설정
   settings: {
-    allowDisabledClick: true, // true: 비활성 마커도 클릭 가능, false: 비활성 마커 클릭 불가
+    allowDisabledClick: false, // true: 비활성 마커도 클릭 가능, false: 비활성 마커 클릭 불가
     disabledClickMessage: "이전 학습을 먼저 완료해주세요.", // 비활성 마커 클릭 시 메시지
     showDisabledAlert: false, // true: 알림 표시, false: 콘솔 로그만
   },

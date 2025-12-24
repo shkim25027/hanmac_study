@@ -3,6 +3,9 @@
  */
 class LearningApp {
   constructor() {
+    // HTML data 속성에서 설정 읽기
+    this._loadSettingsFromHTML();
+
     this.gauge = new GaugeManager();
     this.markerManager = new MarkerManager(this.gauge, LEARNING_CONFIG);
     this.chapterCardManager = new ChapterCardManager(
@@ -11,10 +14,41 @@ class LearningApp {
     );
     this.modal = new VideoModal(LEARNING_CONFIG, this.markerManager);
 
-    // 마커 매니저에 모달 인스턴스 전달
+    // 마커 매니저와 챕터 카드 매니저에 모달 인스턴스 전달
     this.markerManager.setModalInstance(this.modal);
+    this.chapterCardManager.setModalInstance(this.modal);
 
     this.init();
+  }
+
+  /**
+   * HTML data 속성에서 설정 읽기
+   * @private
+   */
+  _loadSettingsFromHTML() {
+    const learningGauge = document.querySelector(".learning-gauge");
+    if (!learningGauge) return;
+
+    // data-allow-disabled-click
+    const allowDisabledClick = learningGauge.dataset.allowDisabledClick;
+    if (allowDisabledClick !== undefined) {
+      LEARNING_CONFIG.settings.allowDisabledClick =
+        allowDisabledClick === "true";
+    }
+
+    // data-show-disabled-alert
+    const showDisabledAlert = learningGauge.dataset.showDisabledAlert;
+    if (showDisabledAlert !== undefined) {
+      LEARNING_CONFIG.settings.showDisabledAlert = showDisabledAlert === "true";
+    }
+
+    // data-disabled-click-message
+    const disabledClickMessage = learningGauge.dataset.disabledClickMessage;
+    if (disabledClickMessage) {
+      LEARNING_CONFIG.settings.disabledClickMessage = disabledClickMessage;
+    }
+
+    console.log("[LearningApp] HTML 설정 로드 완료:", LEARNING_CONFIG.settings);
   }
 
   /**
@@ -48,4 +82,4 @@ class LearningApp {
 }
 
 // 앱 시작
-const learningApp = new LearningApp();
+window.learningApp = new LearningApp();

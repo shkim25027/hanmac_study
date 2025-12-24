@@ -46,7 +46,13 @@
           "컨펌대기",
           ""
         ],
-        "법정교육": ["../learning.html", "mainframe", "컨펌대기", ""]
+        "법정교육": ["../learning.html", "mainframe", "컨펌대기", ""],
+        "법정교육_임의": [
+          "../learning_public.html",
+          "mainframe",
+          "컨펌대기",
+          ""
+        ]
       }
     }
   }

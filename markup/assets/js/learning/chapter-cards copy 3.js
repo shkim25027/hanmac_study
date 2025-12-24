@@ -7,15 +7,6 @@ class ChapterCardManager {
     this.gaugeManager = gaugeManager;
     this.chapterCards = [];
     this.cardsContainer = null;
-    this.modalInstance = null; // 모달 인스턴스 저장
-  }
-
-  /**
-   * 모달 인스턴스 설정
-   * @param {VideoModal} modal - 모달 인스턴스
-   */
-  setModalInstance(modal) {
-    this.modalInstance = modal;
   }
 
   /**
@@ -55,36 +46,9 @@ class ChapterCardManager {
   _createCard(chapter, chapterIndex, chapterLesson) {
     const li = document.createElement("li");
 
-    // chapter-card 클래스 추가
-    li.classList.add("chapter-card");
-
     // 챕터 상태 결정
     const state = this._getChapterState(chapter);
-    if (state) {
-      li.classList.add(state); // 'completed', 'current' (빈 문자열이면 추가하지 않음)
-    }
-
-    // 클릭 가능 여부 확인
-    const isClickable = this._isCardClickable(chapterLesson);
-
-    // 클릭 이벤트 추가
-    if (isClickable) {
-      li.style.cursor = "pointer";
-      li.addEventListener("click", () => {
-        this._handleCardClick(chapterLesson, chapterIndex);
-      });
-    } else {
-      const settings = this.config.settings || {};
-      if (settings.allowDisabledClick) {
-        // 비활성 카드도 클릭 허용
-        li.style.cursor = "pointer";
-        li.addEventListener("click", () => {
-          this._handleCardClick(chapterLesson, chapterIndex);
-        });
-      } else {
-        li.style.cursor = "not-allowed";
-      }
-    }
+    li.className = state; // 'completed', 'current', 또는 빈 문자열
 
     // SVG 카드 생성
     const svg = this._createSVG(chapter, state, chapterIndex);
@@ -100,87 +64,7 @@ class ChapterCardManager {
       chapter: chapter,
       state: state,
       chapterIndex: chapterIndex,
-      chapterLesson: chapterLesson,
     });
-  }
-
-  /**
-   * 카드 클릭 핸들러
-   * @private
-   */
-  _handleCardClick(chapterLesson, chapterIndex) {
-    const isClickable = this._isCardClickable(chapterLesson);
-    const settings = this.config.settings || {};
-
-    if (isClickable && this.modalInstance) {
-      // 클릭 가능한 카드 - 모달 열기
-      console.log(
-        `[ChapterCardManager] 챕터 카드 클릭: ${chapterLesson.label} (${this.config.chapters[chapterIndex].name})`
-      );
-
-      // 전체 마커 배열에서 해당 챕터 마커의 인덱스 찾기
-      const allMarkers = this.config.getAllMarkers();
-      const globalIndex = allMarkers.findIndex(
-        (m) =>
-          m.pathPercent === chapterLesson.pathPercent &&
-          m.label === chapterLesson.label
-      );
-
-      if (globalIndex !== -1) {
-        this.modalInstance.load(chapterLesson, globalIndex);
-      }
-    } else if (!isClickable) {
-      // 비활성 카드 클릭
-      if (settings.allowDisabledClick && this.modalInstance) {
-        // 설정에서 비활성 카드 클릭을 허용하는 경우
-        console.log(
-          `[ChapterCardManager] 비활성 챕터 카드 클릭 허용: ${chapterLesson.label}`
-        );
-
-        const allMarkers = this.config.getAllMarkers();
-        const globalIndex = allMarkers.findIndex(
-          (m) =>
-            m.pathPercent === chapterLesson.pathPercent &&
-            m.label === chapterLesson.label
-        );
-
-        if (globalIndex !== -1) {
-          this.modalInstance.load(chapterLesson, globalIndex);
-        }
-      } else {
-        // 비활성 카드 클릭 불가
-        console.log(
-          `[ChapterCardManager] 비활성 챕터 카드 클릭 차단: ${chapterLesson.label}`
-        );
-
-        // 알림 표시 여부 확인
-        if (settings.showDisabledAlert !== false) {
-          const message =
-            settings.disabledClickMessage || "이전 학습을 먼저 완료해주세요.";
-          alert(message);
-        }
-      }
-    }
-  }
-
-  /**
-   * 카드 클릭 가능 여부 확인
-   * @private
-   */
-  _isCardClickable(chapterLesson) {
-    // 전체 마커 배열에서 해당 챕터 마커의 인덱스 찾기
-    const allMarkers = this.config.getAllMarkers();
-    const lessonIndex = allMarkers.findIndex(
-      (m) =>
-        m.pathPercent === chapterLesson.pathPercent &&
-        m.label === chapterLesson.label
-    );
-
-    if (lessonIndex === -1) return false;
-
-    // 첫 번째 레슨이거나, 이전 레슨이 완료된 경우 클릭 가능
-    if (lessonIndex === 0) return true;
-    return allMarkers[lessonIndex - 1].completed;
   }
 
   /**
@@ -188,32 +72,22 @@ class ChapterCardManager {
    * @private
    */
   _getChapterState(chapter) {
-    // 챕터의 첫 번째 레슨(챕터 마커) 확인
+    const allCompleted = chapter.lessons.every((lesson) => lesson.completed);
+    const someCompleted = chapter.lessons.some((lesson) => lesson.completed);
+
+    // 챕터의 첫 번째 레슨(챕터 마커)이 클릭 가능한지 확인
     const firstLesson = chapter.lessons[0];
     const isActive = this._isLessonActive(firstLesson);
 
-    let state = "";
-
-    // 챕터 마커가 완료되었으면 completed
-    if (firstLesson.completed) {
-      state = "completed";
+    if (allCompleted) {
+      return "completed"; // 전체 완료
+    } else if (someCompleted) {
+      return "current"; // 진행 중 (일부 완료)
+    } else if (isActive) {
+      return "current"; // 활성화 (클릭 가능)
+    } else {
+      return ""; // 미시작 (base)
     }
-    // 챕터 마커가 활성화(클릭 가능)이면 current
-    else if (isActive) {
-      state = "current";
-    }
-    // 그 외는 base (빈 문자열)
-    else {
-      state = "";
-    }
-
-    console.log(`[ChapterCardManager] 챕터 "${chapter.name}" 상태 결정:`, {
-      챕터마커완료: firstLesson.completed,
-      활성화: isActive,
-      결정된상태: state,
-    });
-
-    return state;
   }
 
   /**
@@ -331,9 +205,10 @@ class ChapterCardManager {
           balloonPath:
             "M191.139 1.266c5.592 0 10.127 4.534 10.127 10.127v114.746c0 5.592-4.535 10.127-10.127 10.127H108.56l-7.794 13-7.794-13h-81.58c-5.592 0-10.126-4.535-10.126-10.127V11.393C1.266 5.8 5.8 1.266 11.393 1.266h179.746z",
           balloonStrokePath:
-            "M108.56 136.266v-5h-1.295l-.836 1.078 2.131 1.64zm-7.794 13l-2.132 1.64 2.132 2.771 2.131-2.772-2.131-1.64zm-7.794-13l2.131-1.64-.836-1.077h-1.295v2.717zm98.167-135v2.717c3.093 0 5.61 2.516 5.61 5.61h5.433c0-6.092-4.951-11.044-11.043-11.044v2.717zm10.127 10.127h-2.717v114.746h5.434V11.393h-2.717zm0 114.746h-2.717c0 3.094-2.517 5.61-5.61 5.61v5.434c6.092 0 11.043-4.951 11.043-11.044h-2.716zm-10.127 10.127v-2.717H108.56v5.434h82.579v-2.717zm-82.58 0l-2.13-1.64-7.794 13 2.131 1.64 2.132 1.64 7.793-13-2.131-1.64zm-7.793 13l2.131-1.64-7.794-13-2.131 1.64-2.131 1.64 7.794 13 2.131-1.64zm-7.794-13v-2.717H11.393v5.434h73.586v-2.717zm-81.579 0v-2.717c-3.093 0-5.61-2.516-5.61-5.61H.817c0 6.093 4.952 11.044 11.044 11.044v-2.717zM1.266 126.139h2.717V11.393H-.55v114.746h2.717zm0-114.746h2.717c0-3.093 2.517-5.61 5.61-5.61V.35C3.5.35-1.45 5.301-1.45 11.393h2.717zm10.127-10.127v2.717h179.746V-.55H11.393v2.717z",
+            "M108.56 136.266V135h-.717l-.369.615 1.086.651zm-7.794 13l-1.086.651 1.086 1.81 1.085-1.81-1.085-.651zm-7.794-13l1.085-.651-.368-.615h-.717v1.266zm98.167-135V2.53A8.862 8.862 0 01200 11.393h2.531C202.531 5.1 197.43 0 191.139 0v1.266zm10.127 10.127H200v114.746h2.531V11.393h-1.265zm0 114.746H200a8.862 8.862 0 01-8.861 8.861v2.531c6.291 0 11.392-5.101 11.392-11.392h-1.265zm-10.127 10.127V135H108.56v2.531h82.579v-1.265zm-82.579 0l-1.086-.651-7.794 13 1.086.651 1.085.651 7.794-13-1.085-.651zm-7.794 13l1.085-.651-7.794-13-1.085.651-1.086.651 7.794 13 1.086-.651zm-7.794-13V135h-81.58v2.531h81.58v-1.265zm-81.58 0V135a8.862 8.862 0 01-8.86-8.861H0c0 6.291 5.1 11.392 11.393 11.392v-1.265zM1.267 126.139H2.53V11.393H0v114.746h1.266zm0-114.746H2.53a8.861 8.861 0 018.862-8.862V0C5.1 0 0 5.1 0 11.393h1.266zM11.393 1.266V2.53h179.746V0H11.393v1.266z",
           screenPath:
-            "M1.266 13.093c0-6.543 5.3-11.843 11.843-11.843h177.062c6.543 0 11.843 5.3 11.843 11.843v91.046H1.266V13.093z",
+            "M1.266 13.554C1.266 6.768 6.768 1.266 13.554 1.266h175.423c6.787 0 12.289 5.502 12.289 12.288v90.712H1.266V13.554z",
+          dividerPath: "M1.266 102.266h200v3h-200v-3z",
           imageX: "1.266",
           imageY: "1.266",
           imageWidth: "200",
@@ -520,70 +395,22 @@ class ChapterCardManager {
 
   /**
    * 챕터 카드 상태 업데이트
-   * @param {boolean} forceUpdate - true일 경우 상태가 같아도 강제 업데이트
    */
-  updateChapterCards(forceUpdate = false) {
+  updateChapterCards() {
     this.chapterCards.forEach((card, index) => {
       const chapter = card.chapter;
       const newState = this._getChapterState(chapter);
 
-      // 상태가 변경되었거나 강제 업데이트일 때
-      if (forceUpdate || card.state !== newState) {
-        console.log(
-          `[ChapterCardManager] 챕터 ${index + 1} 상태 ${forceUpdate ? "강제 " : ""}변경: "${card.state}" → "${newState}"`
-        );
-
-        // 1. 새 SVG 생성
+      if (card.state !== newState) {
+        // 상태가 변경되면 SVG 다시 생성
         const svg = this._createSVG(chapter, newState, card.chapterIndex);
-
-        // 2. 요소 복제 (이벤트 리스너 제거용)
-        const newElement = card.element.cloneNode(false); // 자식 없이 복제
-
-        // 3. 클래스 설정 (복제된 요소에)
-        newElement.className = "chapter-card";
-        if (newState) {
-          newElement.classList.add(newState);
-        }
-
-        // 4. SVG 추가
-        newElement.appendChild(svg);
-
-        // 5. 클릭 이벤트 설정
-        const isClickable = this._isCardClickable(card.chapterLesson);
-        const settings = this.config.settings || {};
-
-        if (isClickable) {
-          newElement.style.cursor = "pointer";
-          newElement.addEventListener("click", () => {
-            this._handleCardClick(card.chapterLesson, card.chapterIndex);
-          });
-        } else {
-          if (settings.allowDisabledClick) {
-            newElement.style.cursor = "pointer";
-            newElement.addEventListener("click", () => {
-              this._handleCardClick(card.chapterLesson, card.chapterIndex);
-            });
-          } else {
-            newElement.style.cursor = "not-allowed";
-          }
-        }
-
-        // 6. 위치 스타일 복사
-        newElement.style.position = card.element.style.position;
-        newElement.style.left = card.element.style.left;
-        newElement.style.top = card.element.style.top;
-        newElement.style.transform = card.element.style.transform;
-        newElement.style.zIndex = card.element.style.zIndex;
-
-        // 7. DOM에서 교체
-        card.element.parentNode.replaceChild(newElement, card.element);
-
-        // 8. 참조 업데이트
-        card.element = newElement;
+        card.element.className = newState;
+        card.element.innerHTML = "";
+        card.element.appendChild(svg);
         card.state = newState;
 
         console.log(
-          `[ChapterCardManager] 챕터 ${index + 1} 업데이트 완료: 클래스 = "${newElement.className}"`
+          `[ChapterCardManager] 챕터 ${index + 1} 상태 업데이트: ${newState}`
         );
       }
     });
