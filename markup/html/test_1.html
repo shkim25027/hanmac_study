@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>학습 진행 - SVG + 외부 JS</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 1621px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 32px;
+      }
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 14px;
+      }
+      .svg-wrapper {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+      object,
+      svg {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #eee;
+      }
+      .tab {
+        padding: 10px 20px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        font-size: 16px;
+        color: #666;
+        transition: all 0.3s;
+      }
+      .tab.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+      pre {
+        background: #272822;
+        color: #f8f8f2;
+        padding: 15px;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        background: #4caf50;
+        color: white;
+        border-radius: 12px;
+        font-size: 12px;
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📊 학습 진행 차트</h1>
+      <p class="subtitle">SVG + 외부 JavaScript 최적화 예제</p>
+
+      <div class="tabs">
+        <button class="tab active" onclick="showTab(0)">
+          방법 1: Object 태그 <span class="badge">추천</span>
+        </button>
+        <button class="tab" onclick="showTab(1)">방법 2: 인라인 SVG</button>
+        <button class="tab" onclick="showTab(2)">방법 3: 수동 적용</button>
+      </div>
+
+      <div class="tab-content active">
+        <h3>Object 태그로 외부 SVG 로드</h3>
+        <div class="svg-wrapper">
+          <object
+            data="./assets/images/learning/학습_진행_clean.svg"
+            type="image/svg+xml"
+            data-enhance
+          ></object>
+        </div>
+        <pre>
+&lt;object data="학습_진행_clean.svg" type="image/svg+xml" data-enhance&gt;&lt;/object&gt;
+&lt;script src="svg-enhancer.js"&gt;&lt;/script&gt;</pre
+        >
+      </div>
+
+      <div class="tab-content">
+        <h3>SVG를 HTML에 직접 포함</h3>
+        <p>SVG 파일 내용을 복사해서 HTML에 붙여넣고 data-enhance 속성 추가</p>
+        <pre>
+&lt;svg data-enhance viewBox="0 0 1621 632"&gt;
+  &lt;defs id="svg-defs"&gt;&lt;/defs&gt;
+  &lt;!-- SVG 내용 --&gt;
+&lt;/svg&gt;
+&lt;script src="svg-enhancer.js"&gt;&lt;/script&gt;</pre
+        >
+      </div>
+
+      <div class="tab-content">
+        <h3>JavaScript로 수동 적용</h3>
+        <pre>
+&lt;svg id="my-chart"&gt;...&lt;/svg&gt;
+
+&lt;script src="svg-enhancer.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  // 선택자로 지정
+  SVGEnhancer.enhance('#my-chart');
+  
+  // 또는 요소로 지정
+  const svg = document.querySelector('#my-chart');
+  SVGEnhancer.enhance(svg);
+&lt;/script&gt;</pre
+        >
+      </div>
+    </div>
+
+    <script src="./assets/js/learning/svg-enhancer.js"></script>
+    <script>
+      function showTab(index) {
+        const tabs = document.querySelectorAll(".tab");
+        const contents = document.querySelectorAll(".tab-content");
+
+        tabs.forEach((tab, i) => {
+          tab.classList.toggle("active", i === index);
+        });
+
+        contents.forEach((content, i) => {
+          content.classList.toggle("active", i === index);
+        });
+      }
+    </script>
+  </body>
+</html>

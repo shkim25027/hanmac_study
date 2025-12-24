@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>학습 진행률</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic",
+          sans-serif;
+        background: #f5f5f5;
+        padding: 20px;
+      }
+
+      .wrap.learning {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .container {
+        background: white;
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .page-title {
+        margin-bottom: 40px;
+      }
+
+      .page-title h3 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #333;
+      }
+
+      .page-title h3 em {
+        color: #c9a479;
+        font-style: normal;
+      }
+
+      .page-title p {
+        font-size: 16px;
+        color: #666;
+      }
+
+      .page-title p em {
+        color: #d9534f;
+        font-weight: 600;
+        font-style: normal;
+      }
+
+      .page-title p small {
+        font-size: 14px;
+        color: #999;
+      }
+
+      .learning-area {
+        background: #fafafa;
+        border-radius: 8px;
+        padding: 40px 20px;
+      }
+
+      .learning-gauge {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .svg-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .svg-wrapper object {
+        width: 100%;
+        height: auto;
+        max-width: 1621px;
+      }
+
+      /* 진행률 컨트롤 */
+      .progress-controls {
+        text-align: center;
+        margin-top: 30px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+      }
+
+      .progress-controls button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #c9a479;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .progress-controls button:hover {
+        background: #b8935f;
+      }
+
+      .progress-controls input {
+        width: 100px;
+        padding: 8px;
+        font-size: 16px;
+        text-align: center;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin: 0 10px;
+      }
+
+      .progress-info {
+        margin-top: 15px;
+        font-size: 18px;
+        color: #666;
+      }
+
+      .progress-info strong {
+        color: #c9a479;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap learning">
+      <div class="container">
+        <div class="learning-wrap">
+          <div class="page-title">
+            <h3><em>홍길동 선임연구원님</em></h3>
+            <p>
+              <em>D-66<small>(3월 20일)</small> 까지 필수 콘텐츠</em> 시청을
+              완료해주세요.
+            </p>
+          </div>
+
+          <div class="learning-area">
+            <div class="learning-gauge">
+              <div class="svg-wrapper">
+                <object
+                  id="gauge-svg"
+                  data="./assets/images/learning/학습_진행_clean.svg"
+                  type="image/svg+xml"
+                  data-enhance
+                ></object>
+              </div>
+            </div>
+
+            <!-- 진행률 컨트롤 (테스트용) -->
+            <div class="progress-controls">
+              <button onclick="setProgress(0)">0%</button>
+              <button onclick="setProgress(25)">25%</button>
+              <button onclick="setProgress(50)">50%</button>
+              <button onclick="setProgress(75)">75%</button>
+              <button onclick="setProgress(100)">100%</button>
+              <br /><br />
+              <input
+                type="number"
+                id="customProgress"
+                min="0"
+                max="100"
+                value="50"
+              />
+              <button
+                onclick="setProgress(document.getElementById('customProgress').value)"
+              >
+                적용
+              </button>
+              <div class="progress-info">
+                현재 진행률: <strong id="currentProgress">0</strong>%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG Enhancer 스크립트 -->
+    <script src="./assets/js/learning/svg-enhancer.js"></script>
+
+    <!-- Gauge Manager 스크립트 -->
+    <script src="./assets/js/learning/gauge.js"></script>
+
+    <!-- 메인 스크립트 -->
+    <script>
+      let gaugeManager = null;
+      let svgDoc = null;
+
+      // SVG 로드 완료 대기
+      const gaugeObject = document.getElementById("gauge-svg");
+
+      gaugeObject.addEventListener("load", function () {
+        console.log("✓ SVG 로드 완료");
+
+        try {
+          svgDoc = gaugeObject.contentDocument;
+
+          if (svgDoc) {
+            // SVG Enhancer 실행 (필터/그라디언트 추가)
+            if (window.SVGEnhancer) {
+              const svg = svgDoc.querySelector("svg");
+              if (svg) {
+                window.SVGEnhancer.enhance(svg);
+              }
+            }
+
+            // Gauge Manager 초기화
+            // SVG 내부의 maskPath를 찾아서 초기화
+            const maskPath = svgDoc.getElementById("maskPath");
+            if (!maskPath) {
+              console.warn(
+                "maskPath를 찾을 수 없습니다. path-fill을 대신 사용합니다."
+              );
+              // maskPath가 없으면 path-fill을 복제해서 사용
+              const pathFill = svgDoc.getElementById("path-fill");
+              if (pathFill) {
+                const newMaskPath = pathFill.cloneNode(true);
+                newMaskPath.id = "maskPath";
+                newMaskPath.style.stroke = "white";
+                newMaskPath.style.strokeWidth = "10";
+                newMaskPath.style.fill = "none";
+                pathFill.parentNode.appendChild(newMaskPath);
+              }
+            }
+
+            // GaugeManager 인스턴스 생성
+            const originalGetElementById =
+              document.getElementById.bind(document);
+            document.getElementById = function (id) {
+              if (id === "maskPath") {
+                return svgDoc.getElementById(id);
+              }
+              return originalGetElementById(id);
+            };
+
+            gaugeManager = new GaugeManager();
+
+            // 초기 진행률 설정 (50%)
+            setProgress(50);
+          } else {
+            console.error("SVG 문서에 접근할 수 없습니다.");
+          }
+        } catch (e) {
+          console.error("SVG 처리 중 오류:", e);
+        }
+      });
+
+      // 진행률 설정 함수
+      function setProgress(percent) {
+        percent = Math.max(0, Math.min(100, Number(percent)));
+
+        if (gaugeManager) {
+          gaugeManager.setProgress(percent);
+          document.getElementById("currentProgress").textContent = percent;
+          console.log(`진행률 설정: ${percent}%`);
+        } else {
+          console.warn("GaugeManager가 아직 초기화되지 않았습니다.");
+        }
+      }
+
+      // 에러 처리
+      gaugeObject.addEventListener("error", function () {
+        console.error("SVG 파일을 로드할 수 없습니다. 경로를 확인하세요.");
+      });
+    </script>
+  </body>
+</html>

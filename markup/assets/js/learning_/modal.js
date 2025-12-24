@@ -19,41 +19,7 @@ class VideoModal {
   }
 
   /**
-   * 챕터 기반으로 비디오 모달 로드
-   * @param {Object} chapter - 챕터 데이터
-   * @param {number} chapterIndex - 챕터 인덱스
-   * @param {number} initialLessonIndex - 초기 표시할 학습의 글로벌 인덱스
-   */
-  async loadChapter(chapter, chapterIndex, initialLessonIndex) {
-    try {
-      this.destroy();
-      this.currentLearningIndex = initialLessonIndex;
-
-      // 챕터 정보 저장
-      this.currentChapterInfo = {
-        chapterIndex: chapterIndex,
-        chapterData: chapter,
-        globalStartIndex: this.config.toGlobalIndex(chapterIndex, 0),
-      };
-
-      const modalHTML = await this._fetchModal();
-      const modalElement = this._parseModal(modalHTML, "learning");
-
-      document.body.appendChild(modalElement);
-      this.currentModal = modalElement;
-
-      const initialLesson = this.markerManager.allMarkers[initialLessonIndex];
-      this._setupVideo(modalElement, initialLesson.url);
-      this._updateContent(modalElement, initialLesson, initialLessonIndex);
-      this._show(modalElement);
-    } catch (error) {
-      console.error("모달 로드 오류:", error);
-      alert("비디오를 로드하는 중 오류가 발생했습니다.");
-    }
-  }
-
-  /**
-   * 비디오 모달 로드 (기존 호환성 유지)
+   * 비디오 모달 로드
    * @param {Object} videoData - 비디오 데이터
    * @param {number} currentIndex - 현재 전역 인덱스
    */
@@ -337,35 +303,46 @@ class VideoModal {
   }
 
   /**
-   * 현재 학습 항목 시각적 강조
+   * 현재 학습 항목 강조 효과
    * @private
    */
   _highlightCurrentLesson(currentItem) {
-    // 이미 active 클래스가 있으므로 추가 효과는 선택사항
-    // 예: 깜빡임 효과, 테두리 강조 등
-    currentItem.style.transition = "all 0.3s ease";
+    // 원래 배경색 저장
+    const originalBg = currentItem.style.backgroundColor;
 
-    // 간단한 강조 효과 (선택사항)
+    // 강조 효과
+    currentItem.style.transition = "background-color 0.3s ease";
+    currentItem.style.backgroundColor = "rgba(255, 193, 118, 0.2)"; // 연한 오렌지
+
+    // 1초 후 원래대로
     setTimeout(() => {
-      currentItem.style.transition = "";
+      currentItem.style.backgroundColor = originalBg;
+      // 2초 후 transition 제거
+      setTimeout(() => {
+        currentItem.style.transition = "";
+      }, 300);
     }, 1000);
   }
 
   // ============================================
-  // 높이 조정
+  // 높이 조정 시스템
   // ============================================
 
   /**
-   * 높이 조정 초기화
+   * 높이 조정 초기화 - 다단계 시도 + Observer
    * @private
    */
   _initializeHeightAdjustment() {
+    console.log("학습 목록 높이 조정 시작");
+
     // 1단계: 즉시 시도
     this._adjustLearningListHeight();
 
-    // 2단계: 다음 프레임에서 시도
+    // 2단계: requestAnimationFrame (2프레임 대기)
     requestAnimationFrame(() => {
-      this._adjustLearningListHeight();
+      requestAnimationFrame(() => {
+        this._adjustLearningListHeight();
+      });
     });
 
     // 3단계: 50ms 후 시도

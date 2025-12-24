@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+  </head>
+  <body>
+    <div class="wrap learning">
+      @@include("_include/_header.html")
+
+      <div class="container">
+        <div class="learning-wrap">
+          <div class="page-title">
+            <h3><em>홍길동 선임연구원님</em></h3>
+            <p>
+              <em>D-66<small>(3월 20일)</small> 까지 필수 콘텐츠</em> 시청을
+              완료해주세요.
+            </p>
+          </div>
+
+          <div class="learning-area">
+            <div class="learning-gauge">
+              <object
+                id="svgObj"
+                data="학습 진행_1.svg"
+                type="image/svg+xml"
+              ></object>
+              <!-- Start-line: 학습 목록이 있으면 자동으로 on 이미지로 변경됨 -->
+              <div class="start-line">
+                <img
+                  src="./assets/images/learning/img_start_off.svg"
+                  alt="start"
+                />
+              </div>
+              @@include("./learning_svg.html")
+
+              <!-- 챕터 카드 컨테이너 (JavaScript에서 동적 생성) -->
+              <ul class="chapter-list"></ul>
+              <!-- 마커 컨테이너 -->
+              <div id="markers-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="./assets/js/learning/config.js"></script>
+    <script src="./assets/js/learning/gauge.js"></script>
+    <script src="./assets/js/learning/markers.js"></script>
+    <script src="./assets/js/learning/chapter-cards.js"></script>
+    <script src="./assets/js/learning/progress-indicator.js"></script>
+    <script src="./assets/js/learning/modal.js"></script>
+    <script src="./assets/js/learning/main.js"></script>
+
+    <script>
+      const obj = document.getElementById("svgObj");
+
+      obj.addEventListener("load", () => {
+        const svgDoc = obj.contentDocument;
+        const target = svgDoc.getElementById("btn");
+
+        target.addEventListener("click", () => {
+          alert("SVG 클릭");
+        });
+      });
+    </script>
+  </body>
+</html>

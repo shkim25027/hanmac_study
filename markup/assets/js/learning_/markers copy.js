@@ -133,11 +133,13 @@ class MarkerManager {
       `[MarkerManager] 마커 [${index}] 생성: (${percentX.toFixed(2)}%, ${percentY.toFixed(2)}%)`
     );
 
-    // 마커는 클릭 불가 - 진행 표시만 함
-    marker.style.cursor = "default";
-    marker.style.pointerEvents = "none"; // 클릭 이벤트 완전 차단
+    // 마커 클릭 이벤트 설정 (항상 설정)
+    marker.addEventListener("click", () => {
+      this._handleMarkerClick(index);
+    });
 
-    this._setMarkerState(marker, index);
+    const isClickable = this.isMarkerClickable(index);
+    this._setMarkerState(marker, isClickable, index);
 
     this.markers.push({
       element: marker,
@@ -148,30 +150,93 @@ class MarkerManager {
   }
 
   /**
+   * 마커 클릭 핸들러
+   * @private
+   */
+  _handleMarkerClick(index) {
+    const isClickable = this.isMarkerClickable(index);
+    const settings = this.config.settings || {};
+
+    if (isClickable && this.modalInstance) {
+      // 클릭 가능한 마커 - 모달 열기
+      console.log(
+        `[MarkerManager] 마커 클릭: [${index}] ${this.markers[index].config.label}`
+      );
+      this.modalInstance.load(this.markers[index].config, index);
+    } else if (!isClickable) {
+      // 비활성 마커 클릭
+      const markerLabel = this.markers[index].config.label;
+
+      if (settings.allowDisabledClick && this.modalInstance) {
+        // 설정에서 비활성 마커 클릭을 허용하는 경우
+        console.log(
+          `[MarkerManager] 비활성 마커 클릭 허용: [${index}] ${markerLabel}`
+        );
+        this.modalInstance.load(this.markers[index].config, index);
+      } else {
+        // 비활성 마커 클릭 불가
+        console.log(
+          `[MarkerManager] 비활성 마커 클릭 차단: [${index}] ${markerLabel}`
+        );
+
+        // 알림 표시 여부 확인
+        if (settings.showDisabledAlert !== false) {
+          const message =
+            settings.disabledClickMessage || "이전 학습을 먼저 완료해주세요.";
+          alert(message);
+        }
+      }
+    }
+  }
+
+  /**
    * 마커 상태 설정
    * @private
    */
-  _setMarkerState(marker, index) {
+  _setMarkerState(marker, isClickable, index) {
     const config = this.allMarkers[index];
-
+    const settings = this.config.settings || {};
     // 기존 상태 클래스 제거
-    marker.classList.remove("current", "completed");
+    marker.classList.remove(
+      "disabled",
+      "has-click-event",
+      "current",
+      "completed"
+    );
 
     if (config.completed) {
       // 완료된 마커
-      marker.classList.add("completed");
-    } else if (this.isMarkerClickable(index)) {
+      marker.style.cursor = "pointer";
+      marker.classList.add("completed", "has-click-event");
+    } else if (isClickable) {
       // 현재 학습 가능한 마커 (current)
-      marker.classList.add("current");
+      marker.style.cursor = "pointer";
+      marker.classList.add("current", "has-click-event");
+    } else {
+      marker.style.opacity = "1";
+
+      if (settings.allowDisabledClick) {
+        // 비활성 마커 클릭 허용 모드: current처럼 보이게 (단, 첫 번째 마커 제외)
+        marker.style.cursor = "pointer";
+        if (index !== 0) {
+          marker.classList.add("current", "has-click-event");
+        } else {
+          marker.classList.add("has-click-event");
+        }
+      } else {
+        // 비활성 마커 클릭 불가 모드: 비활성 스타일
+        marker.style.cursor = "not-allowed";
+        marker.classList.add("disabled");
+      }
     }
 
     console.log(
-      `[MarkerManager] 마커 [${index}] 상태: ${config.completed ? "completed" : this.isMarkerClickable(index) ? "current" : "base"}`
+      `[MarkerManager] 마커 [${index}] 상태: ${config.completed ? "completed" : isClickable ? "current" : "disabled"}`
     );
   }
 
   /**
-   * 마커 클릭 가능 여부 확인 (진행 상태 판단용)
+   * 마커 클릭 가능 여부 확인
    * @param {number} index - 마커 인덱스
    * @returns {boolean}
    */
@@ -212,22 +277,51 @@ class MarkerManager {
    * 마커 클릭 가능 여부 업데이트
    */
   updateMarkerClickability() {
+    const settings = this.config.settings || {};
     this.markers.forEach((marker, index) => {
+      const isClickable = this.isMarkerClickable(index);
       const element = marker.element;
       const config = marker.config;
 
       // 기존 상태 클래스 제거
-      element.classList.remove("current", "completed");
+      element.classList.remove(
+        "disabled",
+        "has-click-event",
+        "current",
+        "completed"
+      );
 
-      // 상태에 따라 클래스 업데이트
+      // 상태에 따라 스타일 및 클래스 업데이트
       if (config.completed) {
-        element.classList.add("completed");
-      } else if (this.isMarkerClickable(index)) {
-        element.classList.add("current");
+        // 완료된 마커
+        element.style.opacity = "1";
+        element.style.cursor = "pointer";
+        element.classList.add("completed", "has-click-event");
+      } else if (isClickable) {
+        // 현재 학습 가능한 마커 (current)
+        element.style.opacity = "1";
+        element.style.cursor = "pointer";
+        element.classList.add("current", "has-click-event");
+      } else {
+        element.style.opacity = "1";
+
+        if (settings.allowDisabledClick) {
+          // 비활성 마커 클릭 허용 모드: current처럼 보이게 (단, 첫 번째 마커 제외)
+          element.style.cursor = "pointer";
+          if (index !== 0) {
+            element.classList.add("current", "has-click-event");
+          } else {
+            element.classList.add("has-click-event");
+          }
+        } else {
+          // 비활성 마커 클릭 불가 모드: 비활성 스타일
+          element.style.cursor = "not-allowed";
+          element.classList.add("disabled");
+        }
       }
     });
 
-    console.log("[MarkerManager] 마커 상태 업데이트 완료");
+    console.log("[MarkerManager] 마커 클릭 가능 여부 업데이트 완료");
   }
 
   /**

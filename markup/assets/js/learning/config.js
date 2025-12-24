@@ -214,14 +214,14 @@ const LEARNING_CONFIG = {
   // 마커 이미지 경로
   markerImages: {
     normal: {
-      base: "./assets/images/learning/mark_base.svg",
-      current: "./assets/images/learning/mark_current.svg",
-      completed: "./assets/images/learning/mark_completed.svg",
+      base: "./assets/images/learning/mark_base.png",
+      current: "./assets/images/learning/mark_current.png",
+      completed: "./assets/images/learning/mark_completed.png",
     },
     chapter: {
-      base: "./assets/images/learning/mark_chapter_base.svg",
-      current: "./assets/images/learning/mark_chapter_current.svg",
-      completed: "./assets/images/learning/mark_chapter_completed.svg",
+      base: "./assets/images/learning/mark_chapter_base.png",
+      current: "./assets/images/learning/mark_chapter_current.png",
+      completed: "./assets/images/learning/mark_chapter_completed.png",
     },
   },
 
