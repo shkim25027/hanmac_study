@@ -139,7 +139,7 @@ function csscopy() {
 // JS
 function scripts() {
   return (
-    src([paths.js.src, paths.js.ignore])
+    src([paths.js.src, paths.js.ignore], { base: "./markup/assets/js" })
       // .pipe(concat("common.js"))
       //.pipe(babel({ presets: ["@babel/preset-env"] }))
       //.pipe(terser())
