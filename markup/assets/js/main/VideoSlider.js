@@ -2,7 +2,7 @@
 // 비디오 슬라이드 모듈 (페이지네이션)
 // ============================================
 
-export class VideoSlider {
+class VideoSlider {
   constructor(config) {
     this.config = config;
     this.videos = config.videos || [];

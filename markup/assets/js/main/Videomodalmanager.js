@@ -2,7 +2,7 @@
 // 비디오 모달 관리 모듈 (Ajax 방식)
 // ============================================
 
-export class VideoModalManager {
+class VideoModalManager {
   constructor(config) {
     this.config = config;
     this.videos = config.videos || [];

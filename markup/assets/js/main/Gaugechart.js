@@ -2,7 +2,7 @@
 // 게이지 차트 모듈 (이미지 아이콘 버전)
 // ============================================
 
-export class GaugeChart {
+class GaugeChart {
   // 상수 정의
   static CONSTANTS = {
     MIN_PERCENT: 0.14, // 최소 표시 퍼센트 (14%)

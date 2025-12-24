@@ -2,7 +2,7 @@
 // 비디오 카드 렌더링 모듈
 // ============================================
 
-export class VideoCardRenderer {
+class VideoCardRenderer {
   constructor(config) {
     this.config = config;
     this.animationDelay = config.animationDelay || 50;
