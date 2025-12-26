@@ -61,28 +61,49 @@ class GaugeManager {
    * @private
    */
   _calculateProgressByCount(allMarkers) {
-    // 완료된 마커 개수 계산
-    const completedCount = allMarkers.filter((m) => m.completed).length;
+    // 실제 강의만 필터링 (챕터 제외)
+    const learningMarkers = allMarkers.filter(
+      (m) => m.isLearningContent !== false
+    );
+    const completedLearningCount = learningMarkers.filter(
+      (m) => m.completed
+    ).length;
 
-    if (completedCount === 0) {
-      // 완료된 학습 없음 → 시작점 (0%)
-      console.log("[GaugeManager] 완료 기준 진행률: 0% (0개 완료)");
-      return 0;
+    if (completedLearningCount === 0) {
+      // 완료된 학습 없음 → 첫 번째 챕터 마커까지
+      const firstChapterMarker = allMarkers.find(
+        (m) => m.isChapterMarker === true
+      );
+      const progress = firstChapterMarker
+        ? firstChapterMarker.pathPercent * 100
+        : 0;
+      console.log(
+        `[GaugeManager] 완료 기준 진행률: ${progress.toFixed(1)}% (0개 강의 완료, 첫 챕터 마커)`
+      );
+      return progress;
     }
 
-    if (completedCount >= allMarkers.length) {
-      // 모든 학습 완료 → 100%
-      console.log("[GaugeManager] 완료 기준 진행률: 100% (전체 완료)");
-      return 100;
+    if (completedLearningCount >= learningMarkers.length) {
+      // 모든 강의 완료 → 마지막 마커 위치
+      const lastMarkerProgress =
+        allMarkers[allMarkers.length - 1].pathPercent * 100;
+      console.log(
+        `[GaugeManager] 완료 기준 진행률: ${lastMarkerProgress.toFixed(1)}% (전체 ${learningMarkers.length}개 강의 완료)`
+      );
+      return lastMarkerProgress;
     }
 
-    // 완료된 개수만큼 앞에서부터 마커 위치로 계산
-    // 예: 3개 완료 → allMarkers[2].pathPercent (0, 1, 2 인덱스)
-    const targetIndex = completedCount - 1;
-    const progress = allMarkers[targetIndex].pathPercent * 100;
+    // 다음 학습할 강의 위치 (현재 학습 중인 마커)
+    const nextLearningMarker = learningMarkers[completedLearningCount];
+    const nextMarkerIndex = allMarkers.findIndex(
+      (m) =>
+        m.pathPercent === nextLearningMarker.pathPercent &&
+        m.label === nextLearningMarker.label
+    );
+    const progress = allMarkers[nextMarkerIndex].pathPercent * 100;
 
     console.log(
-      `[GaugeManager] 완료 기준 진행률: ${progress.toFixed(1)}% (${completedCount}개 완료, 인덱스 ${targetIndex})`
+      `[GaugeManager] 완료 기준 진행률: ${progress.toFixed(1)}% (${completedLearningCount}/${learningMarkers.length}개 강의 완료, 현재 학습: ${nextLearningMarker.label})`
     );
     return progress;
   }
@@ -92,35 +113,58 @@ class GaugeManager {
    * @private
    */
   _calculateProgressBySequence(allMarkers) {
-    // 마지막으로 완료된 학습의 인덱스 찾기 (순차적)
-    let lastCompletedIndex = -1;
+    // 실제 강의만 필터링 (챕터 제외)
+    const learningMarkers = allMarkers.filter(
+      (m) => m.isLearningContent !== false
+    );
 
-    for (let i = 0; i < allMarkers.length; i++) {
-      if (allMarkers[i].completed) {
-        lastCompletedIndex = i;
+    // 마지막으로 완료된 강의의 인덱스 찾기 (순차적)
+    let lastCompletedLearningIndex = -1;
+
+    for (let i = 0; i < learningMarkers.length; i++) {
+      if (learningMarkers[i].completed) {
+        lastCompletedLearningIndex = i;
       } else {
         // 완료되지 않은 학습을 만나면 중단
         break;
       }
     }
 
-    // 완료된 학습이 없는 경우
-    if (lastCompletedIndex === -1) {
-      console.log("[GaugeManager] 순차 진행률: 첫 학습 위치");
-      return allMarkers[0].pathPercent * 100;
+    // 완료된 강의가 없는 경우 → 첫 번째 챕터 마커까지
+    if (lastCompletedLearningIndex === -1) {
+      const firstChapterMarker = allMarkers.find(
+        (m) => m.isChapterMarker === true
+      );
+      const progress = firstChapterMarker
+        ? firstChapterMarker.pathPercent * 100
+        : 0;
+      console.log(
+        `[GaugeManager] 순차 진행률: ${progress.toFixed(1)}% (강의 완료 없음, 첫 챕터 마커)`
+      );
+      return progress;
     }
 
-    // 모든 학습이 완료된 경우
-    if (lastCompletedIndex === allMarkers.length - 1) {
-      console.log("[GaugeManager] 순차 진행률: 100% (전체 완료)");
-      return 100;
+    // 모든 강의가 완료된 경우 → 마지막 마커 위치
+    if (lastCompletedLearningIndex === learningMarkers.length - 1) {
+      const lastMarkerProgress =
+        allMarkers[allMarkers.length - 1].pathPercent * 100;
+      console.log(
+        `[GaugeManager] 순차 진행률: ${lastMarkerProgress.toFixed(1)}% (전체 ${learningMarkers.length}개 강의 완료)`
+      );
+      return lastMarkerProgress;
     }
 
-    // 마지막 완료 학습의 다음 학습(현재 해야 할 학습) 위치로 설정
-    const nextIndex = lastCompletedIndex + 1;
-    const progress = allMarkers[nextIndex].pathPercent * 100;
+    // 다음 학습할 강의 위치 (현재 학습 중인 마커)
+    const nextLearningMarker = learningMarkers[lastCompletedLearningIndex + 1];
+    const nextMarkerIndex = allMarkers.findIndex(
+      (m) =>
+        m.pathPercent === nextLearningMarker.pathPercent &&
+        m.label === nextLearningMarker.label
+    );
+    const progress = allMarkers[nextMarkerIndex].pathPercent * 100;
+
     console.log(
-      `[GaugeManager] 순차 진행률: ${progress.toFixed(1)}% (다음 학습: ${nextIndex})`
+      `[GaugeManager] 순차 진행률: ${progress.toFixed(1)}% (현재 학습: ${nextLearningMarker.label})`
     );
     return progress;
   }

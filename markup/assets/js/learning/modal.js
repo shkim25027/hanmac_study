@@ -29,11 +29,11 @@ class VideoModal {
       this.destroy();
       this.currentLearningIndex = initialLessonIndex;
 
-      // 챕터 정보 저장
+      // 챕터 정보 저장 (새 구조: 챕터 마커가 첫 번째)
       this.currentChapterInfo = {
         chapterIndex: chapterIndex,
         chapterData: chapter,
-        globalStartIndex: this.config.toGlobalIndex(chapterIndex, 0),
+        globalStartIndex: this.config.toGlobalIndex(chapterIndex, -1), // 챕터 마커 인덱스
       };
 
       const modalHTML = await this._fetchModal();
@@ -146,24 +146,51 @@ class VideoModal {
   }
 
   /**
-   * 진행률 업데이트
+   * 진행률 업데이트 (현재 챕터 기준)
    * @private
    */
   _updateProgress(modalElement, currentIndex) {
-    const allMarkers = this.markerManager.allMarkers;
-    const completedCount = allMarkers.filter((m) => m.completed).length;
-    const totalCount = allMarkers.length;
+    if (!this.currentChapterInfo) return;
+
+    const currentChapter = this.currentChapterInfo.chapterData;
+    const lessons = currentChapter.lessons;
+
+    // 현재 챕터의 완료된 학습 개수
+    const completedCount = lessons.filter((lesson) => lesson.completed).length;
+    const totalCount = lessons.length;
     const progressPercent = Math.round((completedCount / totalCount) * 100);
 
+    // 현재 학습의 챕터 내 로컬 인덱스 계산
+    const globalStartIndex = this.currentChapterInfo.globalStartIndex;
+    const localIndex = currentIndex - globalStartIndex;
+
     const gaugeFill = modalElement.querySelector("#gaugeFill");
-    const currentStep = modalElement.querySelector(".gauge-labels .label em");
+    const labelElement = modalElement.querySelector(
+      ".gauge-labels .label:not(.current)"
+    );
+    const currentStepEm = labelElement?.querySelector("em");
     const progressText = modalElement.querySelector(
-      ".gauge-labels .current em"
+      ".gauge-labels .label.current em"
     );
 
+    // 게이지바: 챕터 진행률
     if (gaugeFill) gaugeFill.style.width = progressPercent + "%";
-    if (currentStep) currentStep.textContent = currentIndex + 1;
+
+    // 차시 업데이트: "현재차시 / 총차시" 형식
+    if (labelElement) {
+      const currentText = localIndex + 1;
+      labelElement.innerHTML = `<em>${currentText}</em> / ${totalCount} 강`;
+      console.log(`[VideoModal] 차시 업데이트: ${currentText} / ${totalCount}`);
+    } else {
+      console.warn("[VideoModal] 차시 표시 요소를 찾을 수 없습니다.");
+    }
+
+    // 진행률 퍼센트: 챕터 진행률
     if (progressText) progressText.textContent = progressPercent;
+
+    console.log(
+      `[VideoModal] 챕터 진행률: ${completedCount}/${totalCount} (${progressPercent}%), 현재 차시: ${localIndex + 1}`
+    );
   }
 
   /**
@@ -176,12 +203,15 @@ class VideoModal {
 
     list.innerHTML = "";
 
-    // 현재 챕터의 학습 목록만 생성
-    const currentChapterLessons = this.currentChapterInfo.chapterData.lessons;
+    // 현재 챕터 정보
+    const currentChapter = this.currentChapterInfo.chapterData;
     const globalStartIndex = this.currentChapterInfo.globalStartIndex;
 
+    // 챕터는 시작점 표시용이므로 목차에서 제외
+    // 하위 lessons만 추가 (실제 강의)
+    const currentChapterLessons = currentChapter.lessons;
     currentChapterLessons.forEach((lesson, localIndex) => {
-      const globalIndex = globalStartIndex + localIndex;
+      const globalIndex = globalStartIndex + 1 + localIndex; // 챕터 다음부터
       const li = this._createListItem(
         lesson,
         globalIndex,
@@ -198,7 +228,13 @@ class VideoModal {
    */
   _createListItem(lesson, globalIndex, localIndex, currentGlobalIndex) {
     const li = document.createElement("li");
-    const isClickable = this.markerManager.isMarkerClickable(globalIndex);
+    const settings = this.config.settings || {};
+    const allowDisabledClick = settings.allowDisabledClick || false;
+
+    // allowDisabledClick 설정에 따라 클릭 가능 여부 결정
+    const isClickable = allowDisabledClick
+      ? true
+      : this.markerManager.isMarkerClickable(globalIndex);
     const isCurrentLesson = globalIndex === currentGlobalIndex;
     const isRelearning = isCurrentLesson && lesson.completed; // 재학습 여부
 
@@ -214,10 +250,13 @@ class VideoModal {
       li.className = "active";
     }
 
+    // allowDisabledClick가 false일 때만 disabled 스타일 적용
     if (!isClickable) {
       li.classList.add("disabled");
       li.style.opacity = "0.5";
       li.style.cursor = "not-allowed";
+    } else {
+      li.style.cursor = "pointer";
     }
 
     // 현재 학습 중인 항목에 data 속성 추가
@@ -623,6 +662,16 @@ class VideoModal {
       const currentLesson =
         this.markerManager.allMarkers[this.currentLearningIndex];
 
+      // 챕터 마커는 시작점 표시용이므로 완료 처리 안 함
+      if (currentLesson.isChapterMarker) {
+        console.log(
+          `[VideoModal] 챕터 마커는 완료 처리 안 함: ${currentLesson.label}`
+        );
+        this.currentLearningIndex = null;
+        this.currentChapterInfo = null;
+        return;
+      }
+
       // 완료된 학습을 다시 본 경우 (재학습)
       if (currentLesson.completed) {
         console.log(
@@ -647,6 +696,31 @@ class VideoModal {
    */
   destroy() {
     if (this.currentModal) {
+      // 이전 모달 닫을 때 완료 처리
+      if (this.currentLearningIndex !== null) {
+        const currentLesson =
+          this.markerManager.allMarkers[this.currentLearningIndex];
+
+        // 챕터 마커는 완료 처리 안 함
+        if (!currentLesson.isChapterMarker) {
+          // 완료된 학습을 다시 본 경우 (재학습)
+          if (currentLesson.completed) {
+            console.log(
+              `[VideoModal] 재학습 완료 (destroy): [${this.currentLearningIndex}] ${currentLesson.label} - 게이지 유지`
+            );
+          } else {
+            // 새로운 학습 완료
+            console.log(
+              `[VideoModal] 새 학습 완료 (destroy): [${this.currentLearningIndex}] ${currentLesson.label}`
+            );
+            this.markerManager.completeLesson(this.currentLearningIndex);
+          }
+        }
+
+        this.currentLearningIndex = null;
+        this.currentChapterInfo = null;
+      }
+
       // Observer들 정리
       if (this.resizeObserver) {
         this.resizeObserver.disconnect();

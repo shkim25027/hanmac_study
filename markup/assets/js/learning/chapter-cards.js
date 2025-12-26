@@ -70,9 +70,9 @@ class ChapterCardManager {
     this.cardsContainer.innerHTML = "";
 
     this.config.chapters.forEach((chapter, chapterIndex) => {
-      const chapterLesson = chapter.lessons[0];
-      if (chapterLesson && chapterLesson.type === "chapter") {
-        this._createCard(chapter, chapterIndex, chapterLesson);
+      // 새 구조: 챕터 자체가 마커이므로 chapter에서 직접 정보 가져오기
+      if (chapter.type === "chapter") {
+        this._createCard(chapter, chapterIndex, chapter);
       }
     });
 
@@ -140,6 +140,20 @@ class ChapterCardManager {
     playButton.alt = "재생";
     thumbnailContainer.appendChild(playButton);
 
+    // 게이지바 추가
+    const gaugeBar = document.createElement("div");
+    gaugeBar.className = "card-gauge-bar";
+    thumbnailContainer.appendChild(gaugeBar);
+
+    const gaugeFill = document.createElement("div");
+    gaugeFill.className = "card-gauge-fill";
+
+    // 챕터 진행률 계산 및 설정
+    const progressPercent = this._calculateChapterProgress(chapter);
+    gaugeFill.style.width = progressPercent + "%";
+
+    gaugeBar.appendChild(gaugeFill);
+
     inner.appendChild(thumbnailContainer);
 
     // 제목
@@ -166,7 +180,10 @@ class ChapterCardManager {
       `[ChapterCardManager] 챕터 카드 클릭: ${chapter.name} (챕터 ${chapterIndex + 1})`
     );
 
-    let targetLessonIndex = 0;
+    // 챕터는 시작점 표시용이므로 항상 첫 번째 미완료 lesson부터 시작
+    let targetLessonIndex = 0; // 첫 번째 lesson
+
+    // 첫 번째 미완료 lesson 찾기
     for (let i = 0; i < chapter.lessons.length; i++) {
       if (!chapter.lessons[i].completed) {
         targetLessonIndex = i;
@@ -178,10 +195,11 @@ class ChapterCardManager {
       chapterIndex,
       targetLessonIndex
     );
-    const targetLesson = chapter.lessons[targetLessonIndex];
+
+    const targetLabel = chapter.lessons[targetLessonIndex].label;
 
     console.log(
-      `[ChapterCardManager] 대상 학습: ${targetLesson.label} (글로벌 인덱스: ${globalIndex})`
+      `[ChapterCardManager] 대상 학습: ${targetLabel} (글로벌 인덱스: ${globalIndex})`
     );
 
     this.modalInstance.loadChapter(chapter, chapterIndex, globalIndex);
@@ -192,32 +210,32 @@ class ChapterCardManager {
    * @private
    */
   _getChapterState(chapter) {
-    const allCompleted = chapter.lessons.every((lesson) => lesson.completed);
-    if (allCompleted) return "completed";
+    // 새 구조: chapter.completed 사용 (자동 업데이트됨)
+    if (chapter.completed) return "completed";
 
     const anyCompleted = chapter.lessons.some((lesson) => lesson.completed);
     if (anyCompleted) return "current";
 
-    const firstLesson = chapter.lessons[0];
-    const isActive = this._isLessonActive(firstLesson);
+    // 챕터 자체가 활성화되어 있는지 확인
+    const isActive = this._isChapterActive(chapter);
     if (isActive) return "current";
 
     return "base";
   }
 
   /**
-   * 레슨 활성화 여부 확인
+   * 챕터 활성화 여부 확인
    * @private
    */
-  _isLessonActive(lesson) {
+  _isChapterActive(chapter) {
     const allMarkers = this.config.getAllMarkers();
-    const lessonIndex = allMarkers.findIndex(
-      (m) => m.pathPercent === lesson.pathPercent && m.label === lesson.label
+    const chapterMarkerIndex = allMarkers.findIndex(
+      (m) => m.pathPercent === chapter.pathPercent && m.isChapterMarker === true
     );
 
-    if (lessonIndex === -1) return false;
-    if (lessonIndex === 0) return true;
-    return allMarkers[lessonIndex - 1].completed;
+    if (chapterMarkerIndex === -1) return false;
+    if (chapterMarkerIndex === 0) return true;
+    return allMarkers[chapterMarkerIndex - 1].completed;
   }
 
   /**
@@ -236,6 +254,26 @@ class ChapterCardManager {
   }
 
   /**
+   * 챕터 진행률 계산
+   * @private
+   * @param {Object} chapter - 챕터 객체
+   * @returns {number} 진행률 (0-100)
+   */
+  _calculateChapterProgress(chapter) {
+    const completedCount = chapter.lessons.filter(
+      (lesson) => lesson.completed
+    ).length;
+    const totalCount = chapter.lessons.length;
+    const progressPercent = Math.round((completedCount / totalCount) * 100);
+
+    console.log(
+      `[ChapterCardManager] 챕터 "${chapter.name}" 진행률: ${completedCount}/${totalCount} (${progressPercent}%)`
+    );
+
+    return progressPercent;
+  }
+
+  /**
    * 카드 위치 설정
    * @private
    */
@@ -248,12 +286,12 @@ class ChapterCardManager {
     );
 
     const percentX = (point.x / viewBox.width) * 100 + 1.3;
-    const percentY = (point.y / viewBox.height) * 100 - 4;
+    const percentY = (point.y / viewBox.height) * 100 - 3;
 
     li.style.position = "absolute";
     li.style.left = `${percentX}%`;
     li.style.top = `${percentY}%`;
-    li.style.transform = "translate(-50%, -100%)";
+    li.style.transform = "translate(-50%, -105%)";
     li.style.zIndex = "10";
 
     console.log(
@@ -269,13 +307,26 @@ class ChapterCardManager {
     this.chapterCards.forEach((card, index) => {
       const chapter = card.chapter;
       const newState = this._getChapterState(chapter);
+      const newProgress = this._calculateChapterProgress(chapter);
 
-      if (forceUpdate || card.state !== newState) {
+      // 현재 게이지바의 진행률 확인
+      const gaugeFill = card.element.querySelector(".card-gauge-fill");
+      const currentProgress = gaugeFill
+        ? parseInt(gaugeFill.style.width) || 0
+        : 0;
+
+      // 상태가 변경되었거나 진행률이 변경되었거나 강제 업데이트인 경우
+      const shouldUpdate =
+        forceUpdate ||
+        card.state !== newState ||
+        currentProgress !== newProgress;
+
+      if (shouldUpdate) {
         console.log(
-          `[ChapterCardManager] 챕터 ${index + 1} 상태 ${forceUpdate ? "강제 " : ""}변경: "${card.state}" → "${newState}"`
+          `[ChapterCardManager] 챕터 ${index + 1} ${forceUpdate ? "강제 " : ""}업데이트: 상태 "${card.state}" → "${newState}", 진행률 ${currentProgress}% → ${newProgress}%`
         );
 
-        // 클래스만 업데이트 (CSS가 자동으로 스타일 변경)
+        // 클래스 업데이트 (CSS가 자동으로 스타일 변경)
         card.element.className = "chapter-card";
         if (newState) {
           card.element.classList.add(newState);
@@ -287,10 +338,15 @@ class ChapterCardManager {
           playButton.src = this._getPlayButtonImagePath(newState);
         }
 
+        // 게이지바 진행률 업데이트
+        if (gaugeFill) {
+          gaugeFill.style.width = newProgress + "%";
+        }
+
         card.state = newState;
 
         console.log(
-          `[ChapterCardManager] 챕터 ${index + 1} 업데이트 완료: 클래스 = "${card.element.className}"`
+          `[ChapterCardManager] 챕터 ${index + 1} 업데이트 완료: 클래스 = "${card.element.className}", 진행률 = ${newProgress}%`
         );
       }
     });

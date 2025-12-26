@@ -12,7 +12,11 @@ class LearningApp {
       LEARNING_CONFIG,
       this.gauge
     );
-    this.progressIndicator = new ProgressIndicator(LEARNING_CONFIG, this.gauge);
+    this.progressIndicator = new ProgressIndicator(
+      LEARNING_CONFIG,
+      this.gauge,
+      this.markerManager
+    );
     this.modal = new VideoModal(LEARNING_CONFIG, this.markerManager);
 
     // 마커 매니저와 챕터 카드 매니저에 모달 인스턴스 전달

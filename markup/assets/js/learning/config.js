@@ -7,14 +7,11 @@ const LEARNING_CONFIG = {
     {
       id: 1,
       name: "개인정보보호",
+      type: "chapter",
+      pathPercent: 0.108,
+      url: "OXTYn3JkkCQ",
+      completed: true, // 하위 lessons가 모두 완료되면 자동으로 true
       lessons: [
-        {
-          pathPercent: 0.108,
-          type: "chapter",
-          label: "챕터1-1",
-          url: "OXTYn3JkkCQ",
-          completed: true,
-        },
         {
           pathPercent: 0.137,
           type: "normal",
@@ -76,14 +73,11 @@ const LEARNING_CONFIG = {
     {
       id: 2,
       name: "직장내 괴롭힘 예방",
+      type: "chapter",
+      pathPercent: 0.325,
+      url: "OXTYn3JkkCQ",
+      completed: false,
       lessons: [
-        {
-          pathPercent: 0.325,
-          type: "chapter",
-          label: "챕터2-1",
-          url: "OXTYn3JkkCQ",
-          completed: false,
-        },
         {
           pathPercent: 0.367,
           type: "normal",
@@ -103,14 +97,11 @@ const LEARNING_CONFIG = {
     {
       id: 3,
       name: "장애인 인식 개선",
+      type: "chapter",
+      pathPercent: 0.442,
+      url: "OXTYn3JkkCQ",
+      completed: false,
       lessons: [
-        {
-          pathPercent: 0.442,
-          type: "chapter",
-          label: "챕터3-1",
-          url: "OXTYn3JkkCQ",
-          completed: false,
-        },
         {
           pathPercent: 0.486,
           type: "normal",
@@ -130,14 +121,11 @@ const LEARNING_CONFIG = {
     {
       id: 4,
       name: "성희롱 예방 교육",
+      type: "chapter",
+      pathPercent: 0.555,
+      url: "OXTYn3JkkCQ",
+      completed: false,
       lessons: [
-        {
-          pathPercent: 0.555,
-          type: "chapter",
-          label: "챕터4-1",
-          url: "OXTYn3JkkCQ",
-          completed: false,
-        },
         {
           pathPercent: 0.585,
           type: "normal",
@@ -157,14 +145,11 @@ const LEARNING_CONFIG = {
     {
       id: 5,
       name: "산업안전 보건",
+      type: "chapter",
+      pathPercent: 0.67,
+      url: "OXTYn3JkkCQ",
+      completed: false,
       lessons: [
-        {
-          pathPercent: 0.67,
-          type: "chapter",
-          label: "챕터5-1",
-          url: "OXTYn3JkkCQ",
-          completed: false,
-        },
         {
           pathPercent: 0.69,
           type: "normal",
@@ -211,6 +196,11 @@ const LEARNING_CONFIG = {
     },
   ],
 
+  // 평균 학습량 설정 (전체 학습 항목 대비 %)
+  averageProgress: {
+    threshold: 70, // 평균 학습량: 전체의 70%
+  },
+
   // 마커 이미지 경로
   markerImages: {
     normal: {
@@ -225,6 +215,13 @@ const LEARNING_CONFIG = {
     },
   },
 
+  // 상태 이미지 경로
+  stateImages: {
+    below: "./assets/images/learning/img_state_01.svg", // 평균 이하
+    average: "./assets/images/learning/img_state_02.svg", // 평균
+    above: "./assets/images/learning/img_state_03.svg", // 평균 이상
+  },
+
   // 모달 경로
   modalPath: "./_modal/video-learning.html",
 
@@ -236,59 +233,117 @@ const LEARNING_CONFIG = {
   },
 
   /**
-   * 전체 마커 배열 반환 (flat)
+   * 챕터의 완료 상태 자동 업데이트
+   * 하위 lessons가 모두 완료되면 챕터도 completed = true로 변경
+   */
+  updateChapterCompletionStatus() {
+    this.chapters.forEach((chapter) => {
+      const allLessonsCompleted = chapter.lessons.every(
+        (lesson) => lesson.completed
+      );
+      chapter.completed = allLessonsCompleted;
+    });
+  },
+
+  /**
+   * 전체 마커 배열 반환 (챕터 + lessons flat)
    * @returns {Array}
    */
   getAllMarkers() {
-    return this.chapters.flatMap((chapter) => chapter.lessons);
+    // 챕터 완료 상태 업데이트
+    this.updateChapterCompletionStatus();
+
+    const markers = [];
+    this.chapters.forEach((chapter) => {
+      // 챕터 자체를 마커로 추가 (시작점 표시용, 클릭 불가)
+      markers.push({
+        pathPercent: chapter.pathPercent,
+        type: chapter.type,
+        label: chapter.name,
+        url: chapter.url,
+        completed: chapter.completed,
+        chapterId: chapter.id,
+        isChapterMarker: true,
+        isLearningContent: false, // 강의 아님
+        isClickable: false, // 클릭 불가
+      });
+
+      // 하위 lessons 추가 (실제 강의)
+      chapter.lessons.forEach((lesson) => {
+        markers.push({
+          ...lesson,
+          chapterId: chapter.id,
+          isChapterMarker: false,
+          isLearningContent: true, // 실제 강의
+          isClickable: true, // 클릭 가능
+        });
+      });
+    });
+
+    return markers;
   },
 
   /**
    * 특정 인덱스의 챕터 정보 반환
    * @param {number} globalIndex - 전체 마커 기준 인덱스
-   * @returns {Object} { chapterIndex, chapterData, lessonIndex, lessonData }
+   * @returns {Object} { chapterIndex, chapterData, lessonIndex, lessonData, isChapterMarker }
    */
   getChapterByGlobalIndex(globalIndex) {
-    let currentIndex = 0;
+    const allMarkers = this.getAllMarkers();
+    const marker = allMarkers[globalIndex];
 
-    for (
-      let chapterIndex = 0;
-      chapterIndex < this.chapters.length;
-      chapterIndex++
-    ) {
-      const chapter = this.chapters[chapterIndex];
-      const chapterSize = chapter.lessons.length;
+    if (!marker) return null;
 
-      if (globalIndex < currentIndex + chapterSize) {
-        const lessonIndex = globalIndex - currentIndex;
-        return {
-          chapterIndex,
-          chapterData: chapter,
-          lessonIndex,
-          lessonData: chapter.lessons[lessonIndex],
-          globalStartIndex: currentIndex,
-        };
-      }
+    const chapterIndex = this.chapters.findIndex(
+      (ch) => ch.id === marker.chapterId
+    );
+    const chapter = this.chapters[chapterIndex];
 
-      currentIndex += chapterSize;
+    if (marker.isChapterMarker) {
+      // 챕터 마커인 경우
+      return {
+        chapterIndex,
+        chapterData: chapter,
+        lessonIndex: -1, // 챕터 자체이므로 -1
+        lessonData: marker,
+        isChapterMarker: true,
+      };
+    } else {
+      // 일반 레슨인 경우
+      const lessonIndex = chapter.lessons.findIndex(
+        (lesson) => lesson.pathPercent === marker.pathPercent
+      );
+
+      return {
+        chapterIndex,
+        chapterData: chapter,
+        lessonIndex,
+        lessonData: marker,
+        isChapterMarker: false,
+      };
     }
-
-    return null;
   },
 
   /**
    * 로컬 인덱스를 글로벌 인덱스로 변환
    * @param {number} chapterIndex - 챕터 인덱스
-   * @param {number} lessonIndex - 챕터 내 학습 인덱스
+   * @param {number} lessonIndex - 챕터 내 학습 인덱스 (-1이면 챕터 자체)
    * @returns {number}
    */
   toGlobalIndex(chapterIndex, lessonIndex) {
     let globalIndex = 0;
 
     for (let i = 0; i < chapterIndex; i++) {
-      globalIndex += this.chapters[i].lessons.length;
+      globalIndex += 1; // 챕터 마커
+      globalIndex += this.chapters[i].lessons.length; // 하위 lessons
     }
 
-    return globalIndex + lessonIndex;
+    if (lessonIndex === -1) {
+      // 챕터 마커 자체
+      return globalIndex;
+    } else {
+      // 하위 lesson
+      return globalIndex + 1 + lessonIndex;
+    }
   },
 };

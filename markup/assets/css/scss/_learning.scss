@@ -2,6 +2,32 @@
 
 @use "base" as *;
 
+.wrap {
+  &.learning {
+    .container {
+      position: relative;
+      overflow: hidden;
+      &::before {
+        content: " ";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 50%;
+        //opacity: 0.2;
+        background: url(../images/learning/bg_cloud.png) 0px 0px / 100% 100%
+          no-repeat;
+        pointer-events: none;
+        mask-image: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(0, 0, 0, 0) 100%
+        );
+      }
+    }
+  }
+}
+
 .learning,
 .onboarding {
   .page-title {
@@ -220,6 +246,7 @@
     height: calc(var(--window-inner-height) - 64px);
     padding: 0 32px;
     overflow: hidden;
+    z-index: 2;
     @include flex(column, center, flex-start);
   }
   &-area {
@@ -229,7 +256,7 @@
     background-image: url(../images/learning/bg_grid.svg);
     background-position: center;
     background-repeat: no-repeat;
-
+    padding-top: 3%;
     @include flex();
   }
   &-gauge {
@@ -528,11 +555,32 @@
           transition: color 0.3s ease;
         }
       }
+      .card-gauge {
+        &-bar {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 3px;
+          background-color: #fff;
+          box-shadow: 1.234px 1.234px 1.234px 0 rgba(0, 0, 0, 0.3) inset;
+        }
+        &-fill {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          height: 3px;
+          background-color: #e25e00;
+          box-shadow: 0.922px 0.922px 0.922px 0 rgba(0, 0, 0, 0.3) inset;
+        }
+      }
       .shadow-effect {
         position: absolute;
         width: 80%;
         height: 10px;
+        left: 50%;
         bottom: -14%;
+        translate: -50% -50%;
         &::before,
         &::after {
           content: "";
@@ -588,263 +636,4 @@
     &-percent {
     }
   }
-}
-
-@keyframes bounce {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-/* 추가 파일  */
-/* 챕터 그룹 컨테이너 */
-.chapter-groups {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-/* 개별 챕터 그룹 (마커 + 카드) */
-.chapter-group {
-  position: absolute;
-  pointer-events: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  transition: transform 0.3s ease;
-}
-
-/* 챕터 그룹 호버 효과 */
-.chapter-group:hover {
-  transform: translate(-50%, -50%) scale(1.05);
-  z-index: 100 !important;
-}
-
-/* 챕터 카드 */
-.chapter-card {
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-/* 챕터 마커 */
-.chapter-marker {
-  width: auto;
-  height: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chapter-marker img {
-  width: auto;
-  height: auto;
-  display: block;
-  transition: all 0.3s ease;
-}
-
-/* 상태별 스타일 */
-
-/* Base (미시작) 상태 */
-.chapter-group[data-state=""] {
-  opacity: 0.8;
-  z-index: 10;
-}
-
-.chapter-group[data-state=""] .chapter-card {
-  transform: scale(1);
-}
-
-.chapter-group[data-state=""] .chapter-marker img {
-  filter: grayscale(0.3);
-}
-
-/* Current (진행중) 상태 */
-.chapter-group[data-state="current"] {
-  opacity: 1;
-  z-index: 20;
-}
-
-.chapter-group[data-state="current"] .chapter-card {
-  transform: scale(1.1);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.chapter-group[data-state="current"] .chapter-marker img {
-  filter: none;
-}
-
-/* Completed (완료) 상태 */
-.chapter-group[data-state="completed"] {
-  opacity: 1;
-  z-index: 15;
-}
-
-.chapter-group[data-state="completed"] .chapter-card {
-  transform: scale(1);
-}
-
-.chapter-group[data-state="completed"] .chapter-marker img {
-  filter: brightness(1.1);
-}
-
-/* 애니메이션 */
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1.1);
-  }
-  50% {
-    transform: scale(1.15);
-  }
-}
-
-/* 등장 애니메이션 */
-@keyframes groupAppear {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-.chapter-group {
-  animation: groupAppear 0.5s ease-out forwards;
-}
-
-.chapter-group:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.chapter-group:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.chapter-group:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-.chapter-group:nth-child(4) {
-  animation-delay: 0.4s;
-}
-
-.chapter-group:nth-child(5) {
-  animation-delay: 0.5s;
-}
-
-/* 레이아웃 조정 */
-.chapter-group {
-  /* 카드가 위, 마커가 아래 */
-}
-
-.chapter-card {
-  order: 1;
-  margin-bottom: -20px; /* 카드와 마커 사이 간격 조정 */
-}
-
-.chapter-marker {
-  order: 2;
-}
-
-/* 상태별 카드 위치 미세 조정 */
-.chapter-group[data-state="current"] .chapter-card {
-  margin-bottom: -30px; /* current 상태일 때 카드가 더 크므로 간격 조정 */
-}
-
-.chapter-group[data-state="completed"] .chapter-card {
-  margin-bottom: -25px;
-}
-
-/* 반응형 디자인 */
-@media (max-width: 1200px) {
-  .chapter-card {
-    transform: scale(0.9);
-  }
-
-  .chapter-group[data-state="current"] .chapter-card {
-    transform: scale(1);
-  }
-}
-
-@media (max-width: 768px) {
-  .chapter-card {
-    transform: scale(0.7);
-  }
-
-  .chapter-group[data-state="current"] .chapter-card {
-    transform: scale(0.85);
-  }
-
-  .chapter-marker img {
-    width: 80%;
-  }
-}
-
-/* 디버깅용 (개발 중에만 사용) */
-.chapter-group.debug {
-  border: 2px dashed red;
-}
-
-.chapter-group.debug .chapter-card {
-  border: 1px solid blue;
-}
-
-.chapter-group.debug .chapter-marker {
-  border: 1px solid green;
-}
-
-/* 로딩 상태 */
-.chapter-group.loading {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.chapter-group.loading::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-/* 호버 시 추가 효과 */
-.chapter-group:hover .chapter-card svg {
-  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
-}
-
-.chapter-group:hover .chapter-marker img {
-  transform: scale(1.1);
-}
-
-/* 접근성 */
-.chapter-group:focus {
-  outline: 2px solid #1d9b75;
-  outline-offset: 4px;
-}
-
-.chapter-group:focus-visible {
-  outline: 2px solid #1d9b75;
-  outline-offset: 4px;
 }

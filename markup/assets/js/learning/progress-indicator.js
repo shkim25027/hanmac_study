@@ -2,10 +2,12 @@
  * 진행률 표시 관리 클래스
  */
 class ProgressIndicator {
-  constructor(config, gaugeManager) {
+  constructor(config, gaugeManager, markerManager = null) {
     this.config = config;
     this.gaugeManager = gaugeManager;
+    this.markerManager = markerManager; // 마커 매니저 참조 추가
     this.indicator = null;
+    this.stateIndicator = null; // 평균 상태 표시 요소
     this.gaugeSvg = document.getElementById("gauge-svg");
 
     // 곡선 스타일 설정 (변경 가능)
@@ -114,57 +116,289 @@ class ProgressIndicator {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2000_114823"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2000_114823" result="shape"/>
           </filter>
-          <filter id="filter1_i_2000_114823" x="40.9395" y="94.7188" width="50.2363" height="19.9746" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <filter id="filter1_i_2000_114823" x="40.9395" y="94.7188" width="50.2363" height="19.975" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset/>
-            <feGaussianBlur stdDeviation="1"/>
+            <feGaussianBlur stdDeviation="3"/>
             <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
-            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0"/>
+            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.3 0"/>
             <feBlend mode="normal" in2="shape" result="effect1_innerShadow_2000_114823"/>
           </filter>
-          <filter id="filter2_f_2000_114823" x="50.9144" y="101.505" width="29.2028" height="11.361" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <filter id="filter2_f_2000_114823" x="47.6211" y="98.2114" width="35.7891" height="17.9473" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-            <feGaussianBlur stdDeviation="1.35338" result="effect1_foregroundBlur_2000_114823"/>
+            <feGaussianBlur stdDeviation="3" result="effect1_foregroundBlur_2000_114823"/>
           </filter>
-          <filter id="filter3_f_2000_114823" x="56.8616" y="103.129" width="16.226" height="7.5776" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+          <filter id="filter3_f_2000_114823" x="57.5684" y="103.836" width="14.8135" height="8.16309" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
             <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
-            <feGaussianBlur stdDeviation="1.35338" result="effect1_foregroundBlur_2000_114823"/>
+            <feGaussianBlur stdDeviation="1" result="effect1_foregroundBlur_2000_114823"/>
           </filter>
-          <linearGradient id="paint0_linear_2000_114823" x1="40.5107" y1="112.147" x2="92.8162" y2="112.108" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#A0A0A0"/>
-            <stop offset="0.5" stop-color="#D4D4D4"/>
-            <stop offset="1" stop-color="#A0A0A0"/>
+          <linearGradient id="paint0_linear_2000_114823" x1="66.0569" y1="104.117" x2="66.0569" y2="120.434" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#A6A6A6"/>
+            <stop offset="1" stop-color="#C6C6C6"/>
           </linearGradient>
-          <linearGradient id="paint1_linear_2000_114823" x1="66.0569" y1="115.672" x2="66.0569" y2="93.0781" gradientUnits="userSpaceOnUse">
-            <stop stop-color="white" stop-opacity="0"/>
-            <stop offset="1" stop-color="white"/>
+          <linearGradient id="paint1_linear_2000_114823" x1="66.0569" y1="93.0781" x2="66.0569" y2="115.672" gradientUnits="userSpaceOnUse">
+            <stop stop-color="white"/>
+            <stop offset="1" stop-color="white" stop-opacity="0"/>
           </linearGradient>
-          <linearGradient id="paint2_linear_2000_114823" x1="66.0575" y1="114.693" x2="66.0575" y2="94.7188" gradientUnits="userSpaceOnUse">
-            <stop stop-color="white" stop-opacity="0"/>
-            <stop offset="1" stop-color="white"/>
+          <linearGradient id="paint2_linear_2000_114823" x1="66.0575" y1="94.7188" x2="66.0575" y2="114.694" gradientUnits="userSpaceOnUse">
+            <stop stop-color="white"/>
+            <stop offset="1" stop-color="white" stop-opacity="0"/>
           </linearGradient>
         </defs>
       </svg>
     `;
 
-    // 초기 위치 설정
-    this._positionIndicator();
+    // 게이지 컨테이너에 추가
+    const gaugeContainer = document.querySelector(".learning-gauge");
+    if (gaugeContainer) {
+      gaugeContainer.appendChild(this.indicator);
+    }
 
-    // 컨테이너에 추가
-    document.querySelector(".learning-gauge").appendChild(this.indicator);
+    // 위치 설정
+    this._positionIndicator();
 
     // 리사이즈 핸들러 설정
     this._setupResizeHandler();
 
-    console.log("[ProgressIndicator] 진행률 표시 생성 완료");
+    // 평균 상태 표시 생성
+    this._createStateIndicator();
   }
 
   /**
-   * 진행률 표시 위치 설정
+   * 평균 상태 표시 생성
+   * @private
+   */
+  _createStateIndicator() {
+    this.stateIndicator = document.createElement("div");
+    this.stateIndicator.className = "state-indicator";
+    this.stateIndicator.id = "state-indicator";
+
+    const gaugeContainer = document.querySelector(".learning-gauge");
+    if (gaugeContainer) {
+      gaugeContainer.appendChild(this.stateIndicator);
+    }
+
+    console.log("[ProgressIndicator] 평균 상태 표시 요소 생성 완료");
+  }
+
+  /**
+   * 평균 상태 업데이트
+   * @private
+   * @param {number} currentProgress - 현재 진행률 (0-100)
+   */
+  _updateStateIndicator(currentProgress) {
+    if (!this.stateIndicator || !this.config.averageProgress) return;
+
+    const threshold = this.config.averageProgress.threshold;
+    let stateImage = "";
+    let stateType = "";
+
+    // 상태 결정
+    if (currentProgress < threshold - 5) {
+      // 평균 이하 (여유 범위 5% 적용)
+      stateImage = this.config.stateImages.below;
+      stateType = "below";
+    } else if (
+      currentProgress >= threshold - 5 &&
+      currentProgress <= threshold + 5
+    ) {
+      // 평균
+      stateImage = this.config.stateImages.average;
+      stateType = "average";
+    } else {
+      // 평균 이상
+      stateImage = this.config.stateImages.above;
+      stateType = "above";
+    }
+
+    // SVG를 인라인으로 로드
+    fetch(stateImage)
+      .then((response) => response.text())
+      .then((svgContent) => {
+        this.stateIndicator.innerHTML = svgContent;
+        this.stateIndicator.classList.add("state-image", stateType);
+
+        // 현재 진행 위치의 마커 위에 배치
+        this._positionStateIndicatorOnMarker(currentProgress);
+      })
+      .catch((error) => {
+        console.error("[ProgressIndicator] SVG 로드 실패:", error);
+        // 폴백: img 태그 사용
+        this.stateIndicator.innerHTML = `
+          <img src="${stateImage}" alt="학습 상태" class="state-image ${stateType}" />
+        `;
+        this._positionStateIndicatorOnMarker(currentProgress);
+      });
+
+    console.log(
+      `[ProgressIndicator] 평균 상태 업데이트: ${stateType} (현재: ${currentProgress}%, 평균: ${threshold}%)`
+    );
+  }
+
+  /**
+   * 마커 위에 상태 표시 위치 설정
+   * @private
+   * @param {number} currentProgress - 현재 진행률 (0-100)
+   */
+  _positionStateIndicatorOnMarker(currentProgress) {
+    if (!this.stateIndicator) return;
+
+    const allMarkers = this.config.getAllMarkers();
+    // 실제 강의만 카운트 (챕터 제외)
+    const learningMarkers = allMarkers.filter(
+      (m) => m.isLearningContent !== false
+    );
+    const completedCount = learningMarkers.filter((m) => m.completed).length;
+
+    // 완료된 강의가 0개인 초기 상태: 상태 이미지 숨김
+    if (completedCount === 0) {
+      this.stateIndicator.style.display = "none";
+      console.log(`[ProgressIndicator] 학습 완료 0개: 상태 이미지 숨김`);
+      return;
+    }
+
+    // 모든 강의 완료 상태: 상태 이미지 숨김
+    if (completedCount >= learningMarkers.length) {
+      this.stateIndicator.style.display = "none";
+      console.log(`[ProgressIndicator] 전체 학습 완료: 상태 이미지 숨김`);
+      return;
+    }
+
+    // 다음 학습할 실제 강의 마커 찾기
+    const targetLearningMarker = learningMarkers[completedCount]; // 다음 학습할 강의
+
+    if (!targetLearningMarker) {
+      this.stateIndicator.style.display = "none";
+      return;
+    }
+
+    // 전체 마커 배열에서 해당 강의의 인덱스 찾기
+    const targetMarkerIndex = allMarkers.findIndex(
+      (m) =>
+        m.pathPercent === targetLearningMarker.pathPercent &&
+        m.label === targetLearningMarker.label
+    );
+
+    // 챕터 마커인 경우 상태 이미지 숨김 (안전장치)
+    if (targetLearningMarker.type === "chapter") {
+      this.stateIndicator.style.display = "none";
+      console.log(
+        `[ProgressIndicator] 챕터 마커(${targetLearningMarker.label})이므로 상태 이미지 숨김`
+      );
+      return;
+    }
+
+    // 일반 마커인 경우 표시
+    this.stateIndicator.style.display = "block";
+
+    // 마커 매니저에서 실제 마커 DOM 요소 찾기
+    const markerElements = document.querySelectorAll(".marker");
+    if (!markerElements || markerElements.length === 0) {
+      // 마커가 없으면 게이지 라인 기준으로 표시
+      const currentPercent = currentProgress / 100;
+      this._positionStateIndicator(currentPercent);
+      return;
+    }
+
+    const targetMarker = markerElements[targetMarkerIndex];
+    if (!targetMarker) {
+      // 타겟 마커가 없으면 게이지 라인 기준으로 표시
+      const currentPercent = currentProgress / 100;
+      this._positionStateIndicator(currentPercent);
+      return;
+    }
+
+    // 마커의 현재 위치 가져오기
+    const markerLeft = parseFloat(targetMarker.style.left) || 0;
+    const markerTop = parseFloat(targetMarker.style.top) || 0;
+
+    // 챕터1인지 확인 (chapterId === 1)
+    const isChapter1 = targetLearningMarker.chapterId === 1;
+
+    // 마커 위쪽에 상태 표시 배치
+    this.stateIndicator.style.position = "absolute";
+    this.stateIndicator.style.left = `${markerLeft}%`;
+    this.stateIndicator.style.top = `${markerTop}%`;
+    this.stateIndicator.style.zIndex = "12";
+    this.stateIndicator.style.pointerEvents = "none";
+
+    // 챕터1일 때만 미러링 (emoji/emoji-text 제외)
+    if (isChapter1) {
+      // transform-origin을 중앙으로 설정하여 제자리에서 반전
+      this.stateIndicator.style.transformOrigin = "center center";
+      this.stateIndicator.style.transform = "translate(-20%, -110%) scaleX(-1)";
+
+      // SVG 내부의 emoji와 emoji-text 요소를 다시 반전
+      const svg = this.stateIndicator.querySelector("svg");
+      if (svg) {
+        const emoji = svg.querySelector(".emoji");
+        const emojiText = svg.querySelector(".emoji-text");
+
+        if (emoji) {
+          emoji.style.transform = "translate(85%, 0%) scaleX(-1)";
+        }
+        if (emojiText) {
+          emojiText.style.transform = "translate(85%, 0%) scaleX(-1)";
+        }
+      }
+    } else {
+      // 챕터2 이상일 때는 기본 상태
+      this.stateIndicator.style.transformOrigin = "";
+      this.stateIndicator.style.transform = "translate(-20%, -110%)";
+
+      const svg = this.stateIndicator.querySelector("svg");
+      if (svg) {
+        const emoji = svg.querySelector(".emoji");
+        const emojiText = svg.querySelector(".emoji-text");
+
+        if (emoji) {
+          emoji.style.transform = "";
+        }
+        if (emojiText) {
+          emojiText.style.transform = "";
+        }
+      }
+    }
+
+    console.log(
+      `[ProgressIndicator] 일반 마커(${targetLearningMarker.label}) 위 상태 표시: 마커#${targetMarkerIndex} (${markerLeft.toFixed(2)}%, ${markerTop.toFixed(2)}%) ${isChapter1 ? "[미러링]" : ""}`
+    );
+  }
+
+  /**
+   * 상태 표시 위치 설정
+   * @private
+   * @param {number} percent - 위치 퍼센트 (0-1)
+   */
+  _positionStateIndicator(percent) {
+    if (!this.stateIndicator || !this.gaugeSvg) return;
+
+    const viewBox = this.gaugeSvg.viewBox.baseVal;
+    const point = this.gaugeManager.getPointAtPercent(percent);
+
+    // 퍼센트 기반 위치 계산
+    const percentX = (point.x / viewBox.width) * 100;
+    const percentY = (point.y / viewBox.height) * 100;
+
+    // 위치 설정 (게이지 라인 위쪽에 배치)
+    this.stateIndicator.style.position = "absolute";
+    this.stateIndicator.style.left = `${percentX}%`;
+    this.stateIndicator.style.top = `${percentY}%`;
+    this.stateIndicator.style.transform = "translate(-50%, -150%)"; // 라인 위쪽으로 배치
+    this.stateIndicator.style.zIndex = "12";
+    this.stateIndicator.style.pointerEvents = "none";
+
+    console.log(
+      `[ProgressIndicator] 상태 표시 위치: (${percentX.toFixed(2)}%, ${percentY.toFixed(2)}%)`
+    );
+  }
+
+  /**
+   * 트로피 위치 설정
    * @private
    */
   _positionIndicator() {
@@ -218,6 +452,15 @@ class ProgressIndicator {
       resizeTimer = setTimeout(() => {
         console.log("[ProgressIndicator] 리사이즈 감지: 위치 재계산");
         this._positionIndicator();
+
+        // 상태 표시도 재계산 (현재 진행률 기준, 마커 위)
+        if (this.stateIndicator && this.config.averageProgress) {
+          const valueSpan = this.indicator.querySelector(".progress-value");
+          if (valueSpan) {
+            const currentProgress = parseInt(valueSpan.textContent) || 0;
+            this._positionStateIndicatorOnMarker(currentProgress);
+          }
+        }
       }, 100);
     });
   }
@@ -229,8 +472,12 @@ class ProgressIndicator {
   updateProgress(allMarkers) {
     if (!this.indicator) return;
 
-    const completedCount = allMarkers.filter((m) => m.completed).length;
-    const totalCount = allMarkers.length;
+    // 실제 강의만 카운트 (챕터 제외)
+    const learningContent = allMarkers.filter(
+      (m) => m.isLearningContent !== false
+    );
+    const completedCount = learningContent.filter((m) => m.completed).length;
+    const totalCount = learningContent.length;
     const percent = Math.round((completedCount / totalCount) * 100);
 
     // tspan 요소 찾기
@@ -239,13 +486,16 @@ class ProgressIndicator {
       valueSpan.textContent = `${percent}%`;
     }
 
+    // 평균 상태 업데이트
+    this._updateStateIndicator(percent);
+
     // 100% 완료 시 트로피 이미지 교체
     if (percent === 100 && !this.indicator.classList.contains("completed")) {
       this._replaceWithCompletedTrophy();
     }
 
     console.log(
-      `[ProgressIndicator] 진행률 업데이트: ${percent}% (${completedCount}/${totalCount})`
+      `[ProgressIndicator] 진행률 업데이트: ${percent}% (${completedCount}/${totalCount} 강의)`
     );
   }
 
