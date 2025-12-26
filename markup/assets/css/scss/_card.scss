@@ -131,7 +131,9 @@
         background-size: contain;
 
         input[type="checkbox"] {
+          padding: 0;
           width: 24px;
+          height: 24px;
         }
       }
       .category {
