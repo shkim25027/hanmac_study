@@ -215,15 +215,32 @@ class ProgressIndicator {
       stateType = "above";
     }
 
+    // SVG 캐시 초기화
+    if (!this._svgCache) {
+      this._svgCache = {};
+    }
+
+    // 이미 로드된 SVG가 있으면 재사용
+    if (this._svgCache[stateImage]) {
+      this._applySvgContent(
+        this._svgCache[stateImage],
+        stateType,
+        currentProgress
+      );
+      console.log(`[ProgressIndicator] SVG 캐시 사용: ${stateType}`);
+      return;
+    }
+
     // SVG를 인라인으로 로드
     fetch(stateImage)
-      .then((response) => response.text())
+      .then((response) => {
+        if (!response.ok) throw new Error("SVG 로드 실패");
+        return response.text();
+      })
       .then((svgContent) => {
-        this.stateIndicator.innerHTML = svgContent;
-        this.stateIndicator.classList.add("state-image", stateType);
-
-        // 현재 진행 위치의 마커 위에 배치
-        this._positionStateIndicatorOnMarker(currentProgress);
+        // 캐시에 저장
+        this._svgCache[stateImage] = svgContent;
+        this._applySvgContent(svgContent, stateType, currentProgress);
       })
       .catch((error) => {
         console.error("[ProgressIndicator] SVG 로드 실패:", error);
@@ -237,6 +254,23 @@ class ProgressIndicator {
     console.log(
       `[ProgressIndicator] 평균 상태 업데이트: ${stateType} (현재: ${currentProgress}%, 평균: ${threshold}%)`
     );
+  }
+
+  /**
+   * SVG 컨텐츠 적용
+   * @private
+   */
+  _applySvgContent(svgContent, stateType, currentProgress) {
+    if (!this.stateIndicator) return;
+
+    this.stateIndicator.innerHTML = svgContent;
+    this.stateIndicator.classList.add("state-image", stateType);
+
+    // SVG DOM이 완전히 로드될 때까지 대기
+    requestAnimationFrame(() => {
+      // 현재 진행 위치의 마커 위에 배치
+      this._positionStateIndicatorOnMarker(currentProgress);
+    });
   }
 
   /**
@@ -316,8 +350,17 @@ class ProgressIndicator {
     const markerLeft = parseFloat(targetMarker.style.left) || 0;
     const markerTop = parseFloat(targetMarker.style.top) || 0;
 
-    // 챕터1인지 확인 (chapterId === 1)
-    const isChapter1 = targetLearningMarker.chapterId === 1;
+    console.log("타겟 마커 : " + targetMarkerIndex);
+    // ========== 특정 범위로 제한 ==========
+    const allowedRanges = [
+      [1, 8], // 1부터 8까지
+      [16, 19], // 16부터 15까지
+      [24, 25],
+    ];
+
+    const isInAllowedRange = allowedRanges.some(
+      ([start, end]) => targetMarkerIndex >= start && targetMarkerIndex <= end
+    );
 
     // 마커 위쪽에 상태 표시 배치
     this.stateIndicator.style.position = "absolute";
@@ -327,7 +370,7 @@ class ProgressIndicator {
     this.stateIndicator.style.pointerEvents = "none";
 
     // 챕터1일 때만 미러링 (emoji/emoji-text 제외)
-    if (isChapter1) {
+    if (isInAllowedRange) {
       // transform-origin을 중앙으로 설정하여 제자리에서 반전
       this.stateIndicator.style.transformOrigin = "center center";
       this.stateIndicator.style.transform = "translate(-20%, -110%) scaleX(-1)";
@@ -338,11 +381,31 @@ class ProgressIndicator {
         const emoji = svg.querySelector(".emoji");
         const emojiText = svg.querySelector(".emoji-text");
 
+        // 상태에 따라 다른 translate 값 적용
+        const threshold = this.config.averageProgress.threshold;
+        let emojiTranslateX, emojiTextTranslateX;
+
+        if (currentProgress < threshold - 5) {
+          // 평균 이하 (below)
+          emojiTranslateX = "85%";
+          emojiTextTranslateX = "82%";
+        } else if (
+          currentProgress >= threshold - 5 &&
+          currentProgress <= threshold + 5
+        ) {
+          // 평균 (average)
+          emojiTranslateX = "88%";
+          emojiTextTranslateX = "88%";
+        } else {
+          // 평균 이상 (above)
+          emojiTranslateX = "82%";
+          emojiTextTranslateX = "80%";
+        }
         if (emoji) {
-          emoji.style.transform = "translate(85%, 0%) scaleX(-1)";
+          emoji.style.transform = `translate(${emojiTranslateX}, 0%) scaleX(-1)`;
         }
         if (emojiText) {
-          emojiText.style.transform = "translate(85%, 0%) scaleX(-1)";
+          emojiText.style.transform = `translate(${emojiTextTranslateX}, 0%) scaleX(-1)`;
         }
       }
     } else {
@@ -363,10 +426,6 @@ class ProgressIndicator {
         }
       }
     }
-
-    console.log(
-      `[ProgressIndicator] 일반 마커(${targetLearningMarker.label}) 위 상태 표시: 마커#${targetMarkerIndex} (${markerLeft.toFixed(2)}%, ${markerTop.toFixed(2)}%) ${isChapter1 ? "[미러링]" : ""}`
-    );
   }
 
   /**

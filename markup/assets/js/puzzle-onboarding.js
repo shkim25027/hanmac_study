@@ -260,6 +260,11 @@ const GAUGE_CONFIG = {
     9: { left: 330.5, right: 709, align: "right" },
     10: { left: 21.5, right: 330.5 },
   },
+  WIDTH_RATIOS: {
+    1: 0.8, // 1번 게이지는 원래 너비의 80%
+    5: 0.6, // 5번 게이지는 원래 너비의 60%
+    10: 0.5, // 9번 게이지는 원래 너비의 70%
+  },
 };
 
 // ============================================================================
@@ -1145,6 +1150,7 @@ class PuzzlePiece {
 // ============================================================================
 // 게이지 관리 클래스
 // ============================================================================
+
 class GaugeManager {
   static createGauge(pieceId, svg) {
     const xRange = GAUGE_CONFIG.X_RANGES[pieceId];
@@ -1179,53 +1185,79 @@ class GaugeManager {
       gaugeWidth = fullWidth;
     }
 
+    if (GAUGE_CONFIG.WIDTH_RATIOS && GAUGE_CONFIG.WIDTH_RATIOS[pieceId]) {
+      const ratio = GAUGE_CONFIG.WIDTH_RATIOS[pieceId];
+      const originalWidth = gaugeWidth;
+      gaugeWidth = originalWidth * ratio;
+
+      if (xRange.align === "right") {
+        gaugeX = gaugeX + (originalWidth - gaugeWidth);
+      }
+    }
+
+    // ⭐ 1. 배경 게이지 (clip-path 영향 안 받음, 항상 100%)
     const bgPath = this._createGaugePath(gaugeX, gaugeY, gaugeWidth);
     const gaugeBg = SVGHelper.createElement("path", {
       d: bgPath,
+      class: "gauge-bg",
       fill: CONFIG.GAUGE.BG_COLOR,
       opacity: CONFIG.GAUGE.BG_OPACITY,
     });
     gaugeBg.style.mixBlendMode = "multiply";
     gaugeGroup.appendChild(gaugeBg);
 
-    const fillGroup = SVGHelper.createElement("g", {
-      class: "gauge-fill-group",
-      filter: "url(#gauge-fill-inner-shadow)",
-    });
+    // ⭐ 2. defs에 clipPath 추가
+    let defs = svg.querySelector("defs");
+    if (!defs) {
+      defs = SVGHelper.createElement("defs");
+      svg.insertBefore(defs, svg.firstChild);
+    }
 
     const clipPathId = `gauge-clip-${pieceId}`;
+    const existingClip = defs.querySelector(`#${clipPathId}`);
+    if (existingClip) existingClip.remove();
+
     const clipPath = SVGHelper.createElement("clipPath", {
       id: clipPathId,
     });
+
+    // ⭐ clipRect: x 고정, width만 증가
     const clipRect = SVGHelper.createElement("rect", {
       x: gaugeX,
-      y: gaugeY,
-      width: "0",
-      height: CONFIG.GAUGE.HEIGHT + 1,
+      y: gaugeY - 1,
+      width: "0", // 초기값 0
+      height: CONFIG.GAUGE.HEIGHT + 3,
       class: "gauge-clip-rect",
       "data-gauge-x": gaugeX,
       "data-gauge-width": gaugeWidth,
     });
-    clipPath.appendChild(clipRect);
 
-    let defs = svg.querySelector("defs");
-    if (!defs) {
-      defs = SVGHelper.createElement("defs");
-      svg.appendChild(defs);
-    }
+    clipRect.style.transition = "width 0.6s ease-out";
+    clipPath.appendChild(clipRect);
     defs.appendChild(clipPath);
+
+    // ⭐ 3. 채워지는 게이지 그룹 (clip-path 적용)
+    const fillGroup = SVGHelper.createElement("g", {
+      class: "gauge-fill-group",
+      "clip-path": `url(#${clipPathId})`, // ⭐ 여기에만 clip-path 적용!
+      filter: "url(#gauge-fill-inner-shadow)",
+    });
 
     const fillPath = this._createGaugePath(gaugeX, gaugeY, gaugeWidth);
     const gaugeFill = SVGHelper.createElement("path", {
       d: fillPath,
+      class: "gauge-fill",
       fill: CONFIG.GAUGE.FILL_COLOR,
-      "clip-path": `url(#${clipPathId})`,
     });
 
     fillGroup.appendChild(gaugeFill);
     gaugeGroup.appendChild(fillGroup);
 
     svg.appendChild(gaugeGroup);
+
+    console.log(
+      `✅ 게이지 생성: piece ${pieceId}, x: ${gaugeX}, width: ${gaugeWidth}`
+    );
   }
 
   static _createGaugePath(x, y, width) {
@@ -1247,17 +1279,29 @@ class GaugeManager {
   }
 
   static updateGauge(pieceId, progress) {
-    const gauge = document.querySelector(`.piece-gauge-${pieceId}`);
-    if (!gauge) return;
+    progress = Math.max(0, Math.min(100, progress));
 
     const clipRect = document.querySelector(`#gauge-clip-${pieceId} rect`);
-    if (!clipRect) return;
+    if (!clipRect) {
+      console.warn(`❌ 클리핑 rect를 찾을 수 없음: piece ${pieceId}`);
+      return;
+    }
 
     const gaugeWidth = parseFloat(clipRect.getAttribute("data-gauge-width"));
-    if (!gaugeWidth) return;
+    if (!gaugeWidth || isNaN(gaugeWidth)) {
+      console.warn(`❌ 게이지 너비를 찾을 수 없음: piece ${pieceId}`);
+      return;
+    }
 
     const newWidth = (gaugeWidth * progress) / 100;
-    clipRect.setAttribute("width", newWidth);
+
+    requestAnimationFrame(() => {
+      clipRect.setAttribute("width", newWidth);
+    });
+
+    console.log(
+      `✅ 게이지 업데이트: piece ${pieceId}, ${progress}%, width: ${newWidth.toFixed(2)}px`
+    );
   }
 }
 

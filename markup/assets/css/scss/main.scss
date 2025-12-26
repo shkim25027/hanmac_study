@@ -5,7 +5,8 @@
 .main {
   .container {
     position: relative;
-
+    height: calc(var(--window-inner-height) - 64px);
+    overflow: hidden;
     .bg-circle {
       position: absolute;
       left: 50%;
@@ -283,6 +284,7 @@
       position: absolute;
       width: clamp(932px, 48.5416vw, 48.5416vw);
       //aspect-ratio: 1 / 1;
+      padding-top: 0;
       left: 50%;
       top: 50%;
       translate: -50% -50%;

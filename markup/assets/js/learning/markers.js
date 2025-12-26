@@ -210,20 +210,34 @@ class MarkerManager {
     // 이전에 실제 강의가 없으면 활성화
     return true;
   }
-
   /**
    * 마커 상태 업데이트
    * @param {number} progress - 현재 진행률 (선택적)
    */
   updateMarkers(progress) {
     this.markers.forEach((marker, index) => {
-      // allMarkers에서 최신 상태 가져오기 (marker.config는 옛날 참조일 수 있음)
+      // allMarkers에서 최신 상태 가져오기
       const config = this.allMarkers[index];
       const imgSrc = this._getMarkerImage(config, index);
       marker.img.src = imgSrc;
 
       // marker.config도 업데이트하여 참조 동기화
       marker.config = config;
+
+      // ========== 이미지에 따른 클래스 업데이트 ==========
+      const element = marker.element;
+      element.classList.remove("current", "completed");
+
+      // 이미지 경로에서 상태 판단
+      if (
+        imgSrc.includes("_completed.png") ||
+        imgSrc.includes("_complete.png")
+      ) {
+        element.classList.add("completed");
+      } else if (imgSrc.includes("_current.png")) {
+        element.classList.add("current");
+      }
+      // ==================================================
     });
   }
 
@@ -250,13 +264,13 @@ class MarkerManager {
           (lesson) => lesson.completed
         );
         if (anyLessonStarted) {
-          return images.current;
+          return images.current; // mark_chapter_current.png 반환
         }
       }
 
       // 챕터가 활성화되었는지 체크 (이전 챕터 완료)
       if (this._isChapterActive(index)) {
-        return images.current;
+        return images.current; // mark_chapter_current.png 반환
       }
 
       return images.base;
