@@ -260,11 +260,7 @@ const GAUGE_CONFIG = {
     9: { left: 330.5, right: 709, align: "right" },
     10: { left: 21.5, right: 330.5 },
   },
-  WIDTH_RATIOS: {
-    1: 0.8, // 1번 게이지는 원래 너비의 80%
-    5: 0.6, // 5번 게이지는 원래 너비의 60%
-    10: 0.5, // 9번 게이지는 원래 너비의 70%
-  },
+  WIDTH_RATIOS: {},
 };
 
 // ============================================================================
@@ -1150,7 +1146,6 @@ class PuzzlePiece {
 // ============================================================================
 // 게이지 관리 클래스
 // ============================================================================
-
 class GaugeManager {
   static createGauge(pieceId, svg) {
     const xRange = GAUGE_CONFIG.X_RANGES[pieceId];
@@ -1167,140 +1162,118 @@ class GaugeManager {
     const fullWidth = xRange.right - xRange.left;
 
     let gaugeX;
-    let gaugeWidth;
+    let bgWidth; // ⭐ 배경용 (항상 100%)
+    let fillWidth; // ⭐ 채우기용 (비율 적용)
+
+    console.log(`🔍 piece ${pieceId} 체크:`, {
+      GAUGE_CONFIG: GAUGE_CONFIG,
+      WIDTH_RATIOS: GAUGE_CONFIG.WIDTH_RATIOS,
+      pieceId: pieceId,
+      ratio: GAUGE_CONFIG.WIDTH_RATIOS
+        ? GAUGE_CONFIG.WIDTH_RATIOS[pieceId]
+        : "undefined",
+      "조건1 (WIDTH_RATIOS 존재)": !!GAUGE_CONFIG.WIDTH_RATIOS,
+      "조건2 (pieceId ratio 존재)": GAUGE_CONFIG.WIDTH_RATIOS
+        ? !!GAUGE_CONFIG.WIDTH_RATIOS[pieceId]
+        : false,
+    });
 
     if (xRange.align === "right") {
       if (pieceId === 1) {
         gaugeX = 256;
-        gaugeWidth = 709 - 256;
+        bgWidth = 709 - 256;
       } else if (pieceId === 9) {
         gaugeX = 330.5;
-        gaugeWidth = 709 - 330.5;
+        bgWidth = 709 - 330.5;
       } else {
         gaugeX = xRange.left;
-        gaugeWidth = fullWidth;
+        bgWidth = fullWidth;
       }
     } else {
       gaugeX = xRange.left;
-      gaugeWidth = fullWidth;
+      bgWidth = fullWidth;
     }
 
+    // ⭐ 기본값: 채우기도 배경과 같음
+    fillWidth = bgWidth;
+
+    // ⭐ 비율이 있으면 채우기에만 적용
     if (GAUGE_CONFIG.WIDTH_RATIOS && GAUGE_CONFIG.WIDTH_RATIOS[pieceId]) {
+      // ⭐ 이 조건문이 실행되는지 확인!
+      console.log(
+        `⭐ 비율 적용: piece ${pieceId}, ratio: ${GAUGE_CONFIG.WIDTH_RATIOS[pieceId]}`
+      );
       const ratio = GAUGE_CONFIG.WIDTH_RATIOS[pieceId];
-      const originalWidth = gaugeWidth;
-      gaugeWidth = originalWidth * ratio;
-
-      if (xRange.align === "right") {
-        gaugeX = gaugeX + (originalWidth - gaugeWidth);
-      }
+      fillWidth = bgWidth * ratio;
     }
 
-    // ⭐ 1. 배경 게이지 (clip-path 영향 안 받음, 항상 100%)
-    const bgPath = this._createGaugePath(gaugeX, gaugeY, gaugeWidth);
-    const gaugeBg = SVGHelper.createElement("path", {
-      d: bgPath,
-      class: "gauge-bg",
-      fill: CONFIG.GAUGE.BG_COLOR,
+    // ⭐ 1. 배경 선 (항상 bgWidth)
+    const bgLine = SVGHelper.createElement("line", {
+      x1: gaugeX,
+      y1: gaugeY + CONFIG.GAUGE.HEIGHT / 2,
+      x2: gaugeX + bgWidth,
+      y2: gaugeY + CONFIG.GAUGE.HEIGHT / 2,
+      stroke: CONFIG.GAUGE.BG_COLOR,
+      "stroke-width": CONFIG.GAUGE.HEIGHT,
+      "stroke-linecap": "round",
       opacity: CONFIG.GAUGE.BG_OPACITY,
+      class: "gauge-bg-line",
     });
-    gaugeBg.style.mixBlendMode = "multiply";
-    gaugeGroup.appendChild(gaugeBg);
+    bgLine.style.mixBlendMode = "multiply";
+    gaugeGroup.appendChild(bgLine);
 
-    // ⭐ 2. defs에 clipPath 추가
-    let defs = svg.querySelector("defs");
-    if (!defs) {
-      defs = SVGHelper.createElement("defs");
-      svg.insertBefore(defs, svg.firstChild);
-    }
-
-    const clipPathId = `gauge-clip-${pieceId}`;
-    const existingClip = defs.querySelector(`#${clipPathId}`);
-    if (existingClip) existingClip.remove();
-
-    const clipPath = SVGHelper.createElement("clipPath", {
-      id: clipPathId,
-    });
-
-    // ⭐ clipRect: x 고정, width만 증가
-    const clipRect = SVGHelper.createElement("rect", {
-      x: gaugeX,
-      y: gaugeY - 1,
-      width: "0", // 초기값 0
-      height: CONFIG.GAUGE.HEIGHT + 3,
-      class: "gauge-clip-rect",
-      "data-gauge-x": gaugeX,
-      "data-gauge-width": gaugeWidth,
-    });
-
-    clipRect.style.transition = "width 0.6s ease-out";
-    clipPath.appendChild(clipRect);
-    defs.appendChild(clipPath);
-
-    // ⭐ 3. 채워지는 게이지 그룹 (clip-path 적용)
-    const fillGroup = SVGHelper.createElement("g", {
-      class: "gauge-fill-group",
-      "clip-path": `url(#${clipPathId})`, // ⭐ 여기에만 clip-path 적용!
+    // ⭐ 2. 채워지는 선 (fillWidth)
+    const fillLine = SVGHelper.createElement("line", {
+      x1: gaugeX,
+      y1: gaugeY + CONFIG.GAUGE.HEIGHT / 2,
+      x2: gaugeX + fillWidth,
+      y2: gaugeY + CONFIG.GAUGE.HEIGHT / 2,
+      stroke: CONFIG.GAUGE.FILL_COLOR,
+      "stroke-width": CONFIG.GAUGE.HEIGHT,
+      "stroke-linecap": "round",
+      class: "gauge-fill-line",
       filter: "url(#gauge-fill-inner-shadow)",
+      "data-gauge-length": fillWidth,
     });
 
-    const fillPath = this._createGaugePath(gaugeX, gaugeY, gaugeWidth);
-    const gaugeFill = SVGHelper.createElement("path", {
-      d: fillPath,
-      class: "gauge-fill",
-      fill: CONFIG.GAUGE.FILL_COLOR,
-    });
+    fillLine.style.strokeDasharray = `${fillWidth}`;
+    fillLine.style.strokeDashoffset = `${fillWidth}`;
+    fillLine.style.transition = "stroke-dashoffset 0.6s ease-out";
 
-    fillGroup.appendChild(gaugeFill);
-    gaugeGroup.appendChild(fillGroup);
-
+    gaugeGroup.appendChild(fillLine);
     svg.appendChild(gaugeGroup);
 
     console.log(
-      `✅ 게이지 생성: piece ${pieceId}, x: ${gaugeX}, width: ${gaugeWidth}`
-    );
-  }
-
-  static _createGaugePath(x, y, width) {
-    const height = CONFIG.GAUGE.HEIGHT;
-    const radius = CONFIG.GAUGE.RADIUS;
-    const rightOffset = 0.5;
-
-    return (
-      `M${x} ${y + radius}` +
-      `C${x} ${y + radius * 0.5} ${x + radius * 0.5} ${y} ${x + radius} ${y}` +
-      `H${x + width - radius}` +
-      `C${x + width - radius * 0.5} ${y} ${x + width} ${y + radius * 0.5} ${x + width} ${y + radius}` +
-      `L${x + width} ${y + height - radius + rightOffset}` +
-      `C${x + width} ${y + height - radius * 0.5 + rightOffset} ${x + width - radius * 0.5} ${y + height + rightOffset} ${x + width - radius} ${y + height + rightOffset}` +
-      `H${x + radius}` +
-      `C${x + radius * 0.5} ${y + height} ${x} ${y + height - radius * 0.5} ${x} ${y + height - radius}` +
-      `Z`
+      `✅ 게이지 생성: piece ${pieceId}, bgWidth: ${bgWidth}, fillWidth: ${fillWidth}`
     );
   }
 
   static updateGauge(pieceId, progress) {
     progress = Math.max(0, Math.min(100, progress));
 
-    const clipRect = document.querySelector(`#gauge-clip-${pieceId} rect`);
-    if (!clipRect) {
-      console.warn(`❌ 클리핑 rect를 찾을 수 없음: piece ${pieceId}`);
+    const fillLine = document.querySelector(
+      `.piece-gauge-${pieceId} .gauge-fill-line`
+    );
+
+    if (!fillLine) {
+      console.warn(`❌ 게이지를 찾을 수 없음: piece ${pieceId}`);
       return;
     }
 
-    const gaugeWidth = parseFloat(clipRect.getAttribute("data-gauge-width"));
-    if (!gaugeWidth || isNaN(gaugeWidth)) {
-      console.warn(`❌ 게이지 너비를 찾을 수 없음: piece ${pieceId}`);
+    const gaugeLength = parseFloat(fillLine.getAttribute("data-gauge-length"));
+    if (!gaugeLength || isNaN(gaugeLength)) {
+      console.warn(`❌ 게이지 길이를 찾을 수 없음: piece ${pieceId}`);
       return;
     }
 
-    const newWidth = (gaugeWidth * progress) / 100;
+    const offset = gaugeLength * (1 - progress / 100);
 
     requestAnimationFrame(() => {
-      clipRect.setAttribute("width", newWidth);
+      fillLine.style.strokeDashoffset = `${offset}`;
     });
 
     console.log(
-      `✅ 게이지 업데이트: piece ${pieceId}, ${progress}%, width: ${newWidth.toFixed(2)}px`
+      `✅ 게이지 업데이트: piece ${pieceId}, ${progress}%, offset: ${offset.toFixed(2)}`
     );
   }
 }

@@ -131,37 +131,6 @@
           completed: false,
         },
       };
-
-      // ⭐ 3. 게이지 테스트 (DOMContentLoaded 안에!)
-      document.addEventListener("DOMContentLoaded", function () {
-        // 초기화 대기 (1.5초 후)
-        setTimeout(() => {
-          console.log("=== 🔥 게이지 테스트 시작 🔥 ===");
-
-          // 순차적으로 채우기
-          updatePieceGauge(1, 30);
-          setTimeout(() => updatePieceGauge(2, 50), 800);
-          setTimeout(() => updatePieceGauge(5, 70), 1600);
-          setTimeout(() => updatePieceGauge(9, 100), 2400);
-        }, 1500);
-
-        // 1번 게이지 강제로 표시
-        const gauge1 = document.querySelector(
-          ".piece-gauge-1 .gauge-fill-path"
-        );
-        console.log("게이지 찾음:", gauge1);
-        console.log("현재 stroke:", gauge1?.getAttribute("stroke"));
-        console.log("현재 opacity:", gauge1?.style.opacity);
-
-        // 강제로 표시
-        if (gauge1) {
-          gauge1.style.strokeDashoffset = "0"; // 100% 표시
-          gauge1.style.stroke = "#E8643D";
-          gauge1.style.opacity = "1";
-          gauge1.style.strokeWidth = "7";
-          console.log("✅ 강제 업데이트 완료");
-        }
-      });
     </script>
   </body>
 </html>
