@@ -372,6 +372,116 @@ class FilterFactory {
     return filter;
   }
 
+  static createBoardFillShadowFilter() {
+    const filter = SVGHelper.createElement("filter", {
+      id: "board-fill-shadow",
+      x: "0",
+      y: "0",
+      width: "100%",
+      height: "100%",
+      filterUnits: "userSpaceOnUse",
+      "color-interpolation-filters": "sRGB",
+    });
+
+    // BackgroundImageFix
+    filter.appendChild(
+      SVGHelper.createElement("feFlood", {
+        "flood-opacity": "0",
+        result: "BackgroundImageFix",
+      })
+    );
+
+    // Drop shadow (아래쪽 외부 그림자) - filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25))
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        in: "SourceAlpha",
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+        result: "hardAlpha",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feOffset", {
+        dy: "4",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feGaussianBlur", {
+        stdDeviation: "2",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feComposite", {
+        in2: "hardAlpha",
+        operator: "out",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0",
+        result: "effect1_dropShadow",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in: "SourceGraphic",
+        in2: "effect1_dropShadow",
+        result: "shape",
+      })
+    );
+
+    // Inner shadow (위쪽 inset shadow) - box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.25) inset
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        in: "SourceAlpha",
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+        result: "hardAlpha",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feOffset", {
+        dy: "-4",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feComposite", {
+        in2: "hardAlpha",
+        operator: "arithmetic",
+        k2: "-1",
+        k3: "1",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0",
+        result: "effect2_innerShadow",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in: "shape",
+        in2: "effect2_innerShadow",
+        result: "final",
+      })
+    );
+
+    return filter;
+  }
+
   static createInnerShadowFilter() {
     const filter = SVGHelper.createElement("filter", {
       id: CONFIG.FILTER_IDS.INNER_SHADOW,
@@ -571,11 +681,12 @@ class FilterFactory {
       })
     );
 
-    filter.appendChild(SVGHelper.createElement("feOffset", { dy: "1" }));
+    // Inner shadow (위쪽 inset shadow 효과) - box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.25) inset
+    filter.appendChild(SVGHelper.createElement("feOffset", { dy: "-4" }));
 
     filter.appendChild(
       SVGHelper.createElement("feGaussianBlur", {
-        stdDeviation: "2",
+        stdDeviation: "0",
       })
     );
 
@@ -591,15 +702,64 @@ class FilterFactory {
     filter.appendChild(
       SVGHelper.createElement("feColorMatrix", {
         type: "matrix",
-        values: "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0",
+        result: "innerShadow",
+      })
+    );
+
+    // Drop shadow (아래쪽 외부 그림자) - filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25))
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        in: "SourceAlpha",
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+        result: "dropShadowAlpha",
       })
     );
 
     filter.appendChild(
+      SVGHelper.createElement("feOffset", {
+        dx: "0",
+        dy: "4",
+        in: "dropShadowAlpha",
+        result: "dropShadowOffset",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feGaussianBlur", {
+        stdDeviation: "2",
+        in: "dropShadowOffset",
+        result: "dropShadowBlur",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0",
+        in: "dropShadowBlur",
+        result: "dropShadow",
+      })
+    );
+
+    // Inner shadow와 drop shadow를 합침
+    filter.appendChild(
       SVGHelper.createElement("feBlend", {
         mode: "normal",
-        in2: "shape",
-        result: "effect1_innerShadow",
+        in: "innerShadow",
+        in2: "dropShadow",
+        result: "combinedShadow",
+      })
+    );
+
+    // 최종적으로 shape와 shadow를 합침
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in: "shape",
+        in2: "combinedShadow",
+        result: "final",
       })
     );
 
@@ -1515,6 +1675,7 @@ class PuzzleManager {
 
     defs.appendChild(FilterFactory.createCompletedFilter());
     defs.appendChild(FilterFactory.createInnerShadowFilter());
+    defs.appendChild(FilterFactory.createBoardFillShadowFilter());
     defs.appendChild(FilterFactory.createHoverShadowFilter());
     defs.appendChild(FilterFactory.createGaugeFillFilter());
 
@@ -1574,6 +1735,7 @@ class PuzzleManager {
       const path = SVGHelper.createElement("path", {
         d: boardData.d,
         fill: boardData.fill,
+        filter: "url(#board-fill-shadow)",
       });
       this.svg.appendChild(path);
     });
@@ -1868,9 +2030,17 @@ class PuzzleManager {
   _initializeCompletedPieces() {
     const completedPieces = [];
     PUZZLE_PIECES.forEach((puzzlePiece) => {
-      const content = this.contentManager.getContent(puzzlePiece.id);
+      const pieceId = puzzlePiece.id;
+      const content = this.contentManager.getContent(pieceId);
+      
+      // 완료된 퍼즐은 완료 리스트에 추가
       if (content?.completed === true) {
-        completedPieces.push(puzzlePiece.id);
+        completedPieces.push(pieceId);
+        // 완료된 퍼즐의 게이지를 100%로 설정
+        this.updateGauge(pieceId, 100);
+      } else {
+        // 미완료 퍼즐의 게이지를 0%로 초기화 (보이도록)
+        this.updateGauge(pieceId, 0);
       }
     });
 

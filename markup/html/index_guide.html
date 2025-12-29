@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
+  </head>
+  <body>
+    <div class="wrap main">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+        <div class="bg-circle">
+          <ul>
+            <li><div></div></li>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </div>
+        <div class="learning-area">
+          <svg
+            id="gauge"
+            viewBox="0 0 794 460"
+            preserveAspectRatio="xMidYMid meet"
+          ></svg>
+        </div>
+        <div class="main-contents">
+          <div class="text-box">
+            <span><em>홍길동</em> 선임연구원님</span>
+            <div class="keyword-area">
+              <button id="keywordSettingsBtn">
+                나의 키워드 <i class="ico-setting"></i>
+              </button>
+              <div class="keyword-list" id="myKeyword">
+                <label class="kw-allow" for="chk1">
+                  <input type="checkbox" id="chk1" />
+                  #인물
+                </label>
+                <label class="kw-allow" for="chk2">
+                  <input type="checkbox" id="chk2" checked />
+                  #소통
+                </label>
+                <label class="kw-allow" for="chk3">
+                  <input type="checkbox" id="chk3" checked />
+                  #협업
+                </label>
+              </div>
+              <div class="keyword-list">
+                <label class="kw-deny" for="chk4">
+                  <input type="checkbox" id="chk4" checked />
+                  #마인드셋
+                </label>
+                <label class="kw-deny" for="chk5">
+                  <input type="checkbox" id="chk5" />
+                  #웰니스
+                </label>
+              </div>
+            </div>
+            <p><em>취향저격 영상 추천</em>드려요.</p>
+          </div>
+
+          <div class="video-wrap">
+            <!-- 비디오 카드 컨테이너 -->
+            <div class="video-cards-container" id="videoCardsContainer"></div>
+            <!-- 네비게이션 버튼 -->
+            <button class="btn-prev" id="prevBtn">‹</button>
+            <button class="btn-next" id="nextBtn">›</button>
+            <!-- 페이지네이션 -->
+            <div class="pagination" id="pagination">
+              <span class="current">1</span> / 1
+            </div>
+          </div>
+
+          <!-- keyword modal -->
+          @@include("_modal/keyword.html")
+          <!-- // keyword modal -->
+        </div>
+      </div>
+
+      <!-- // container -->
+    </div>
+    <script src="./assets/js/main/VideoCardRenderer.js"></script>
+    <script src="./assets/js/main/VideoSlider.js"></script>
+    <script src="./assets/js/main/Videomodalmanager.js"></script>
+    <script src="./assets/js/main/Gaugechart.js"></script>
+    <script>
+      const videos = [
+        {
+          id: 1,
+          url: "KE_MeQZgnPM",
+          category: "리더십",
+          subcate: "행복과 건강",
+          bookmark: true,
+          title: "정선근 교수가 알려주는 목디스크 지식",
+          picker: "홍길동",
+          type: "main",
+          keywords: ["소통", "건강"],
+          gauge: 8,
+        },
+        {
+          id: 2,
+          url: "a2l1uZfsRi0",
+          category: "인사이트",
+          subcate: "행복과 건강",
+          bookmark: false,
+          title: "회계를 조금이라도 이해하면 인생이 달라지는 이유",
+          picker: "",
+          type: "comment",
+          keywords: ["소통", "코칭"],
+          gauge: 80,
+        },
+        {
+          id: 3,
+          url: "IeF8r0ycgVg",
+          category: "리더십",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "꼰대가 되지 않고 건설적인 피드백을 하는 법",
+          picker: "",
+          type: "onboarding",
+          keywords: ["마인드셋", "자기개발"],
+          gauge: 35,
+        },
+        {
+          id: 4,
+          url: "KMZXMI0QPoA",
+          category: "리더십",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "[경영 추천도서] 팀장이 처음이신가요? | 팀장 리더십 수업",
+          picker: "",
+          type: "learning",
+          keywords: ["마인드셋", "중간관리자"],
+          gauge: 0,
+        },
+        {
+          id: 5,
+          url: "CRKwszz6l2M",
+          category: "인사이트",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "프로와 아마추어를 가르는 차이점!",
+          picker: "",
+          type: "main",
+          keywords: ["소통", "건강"],
+          gauge: 0,
+        },
+        {
+          id: 6,
+          url: "IZm1m_FKmc0",
+          category: "인사이트",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "창의적인 캠페인의 시작",
+          picker: "",
+          type: "main",
+          keywords: ["팔로우십", "AI"],
+          gauge: 0,
+        },
+        {
+          id: 7,
+          url: "KE_MeQZgnPM",
+          category: "리더십",
+          subcate: "행복과 건강",
+          bookmark: false,
+          title: "정선근 교수가 알려주는 목디스크 지식",
+          picker: "홍길동",
+          type: "main",
+          keywords: ["소통", "건강"],
+          gauge: 8,
+        },
+        {
+          id: 8,
+          url: "a2l1uZfsRi0",
+          category: "인사이트",
+          subcate: "행복과 건강",
+          bookmark: false,
+          title: "회계를 조금이라도 이해하면 인생이 달라지는 이유",
+          picker: "",
+          type: "main",
+          keywords: ["소통", "코칭"],
+          gauge: 80,
+        },
+        {
+          id: 9,
+          url: "IeF8r0ycgVg",
+          category: "리더십",
+          subcate: "피플스토리",
+          bookmark: false,
+          title: "꼰대가 되지 않고 건설적인 피드백을 하는 법",
+          picker: "",
+          type: "main",
+          keywords: ["마인드셋", "자기개발"],
+          gauge: 35,
+        },
+      ];
+
+      // 렌더러 초기화
+      const renderer = new VideoCardRenderer({
+        animationDelay: 50,
+      });
+
+      // 슬라이더 초기화
+      const slider = new VideoSlider({
+        videos: videos,
+        videosPerPage: 6,
+        onPageChange: (pageVideos) => {
+          renderer.renderCards(pageVideos);
+        },
+      });
+
+      // 비디오 모달 매니저 초기화
+      const modalManager = new VideoModalManager({
+        videos: videos,
+      });
+
+      // 슬라이더 초기화 (첫 페이지 렌더링 포함)
+      slider.init();
+      renderer.renderCards(slider.getCurrentPageVideos());
+
+      // 모달 매니저 초기화 (카드 클릭 이벤트 등록)
+      modalManager.init();
+
+      // ========================================
+      // 게이지 차트 초기화
+      // ========================================
+
+      const gauge = new GaugeChart({
+        size: 832,
+        strokeWidth: 31,
+        maxValue: 50,
+        padding: 20,
+        outerTextOffset: 6,
+        innerTextOffset: 35,
+        dotRadius: 7,
+      });
+
+      // 게이지 초기화
+      gauge.init();
+
+      // 예시: 학습 시간 업데이트 (35분)
+      gauge.update(25);
+
+      // ========================================
+      // 키워드 모달 기능
+      // ========================================
+
+      // DOM 요소
+      const modal = document.getElementById("keywordModal");
+      const settingsBtn = document.getElementById("keywordSettingsBtn");
+      const checkIcon = modal.querySelector(".modal-header .ico-check");
+
+      // 현재 선택된 키워드 저장
+      let allowKeywords = ["인물", "소통", "협업"]; // 초기값
+      const maxAllowKeywords = 3;
+
+      // 모달 체크박스 상태 동기화
+      function syncModalCheckboxes() {
+        const modalCheckboxes = modal.querySelectorAll(
+          ".keyword-tag input[type='checkbox']"
+        );
+        modalCheckboxes.forEach((checkbox) => {
+          const label = checkbox.closest("label");
+          if (label) {
+            const keywordText = label.textContent
+              .trim()
+              .replace("#", "")
+              .trim();
+            checkbox.checked = allowKeywords.includes(keywordText);
+          }
+        });
+      }
+
+      // 체크박스 활성화/비활성화 상태 업데이트
+      function updateCheckboxStates() {
+        const modalCheckboxes = modal.querySelectorAll(
+          ".keyword-tag input[type='checkbox']"
+        );
+        const isMaxReached = allowKeywords.length >= maxAllowKeywords;
+
+        modalCheckboxes.forEach((checkbox) => {
+          const label = checkbox.closest("label");
+          if (label) {
+            const keywordText = label.textContent
+              .trim()
+              .replace("#", "")
+              .trim();
+            const isSelected = allowKeywords.includes(keywordText);
+
+            if (!isSelected && isMaxReached) {
+              checkbox.disabled = true;
+              label.style.opacity = "0.5";
+              label.style.cursor = "not-allowed";
+            } else {
+              checkbox.disabled = false;
+              label.style.opacity = "1";
+              label.style.cursor = "pointer";
+            }
+          }
+        });
+      }
+
+      // 메인 화면 키워드 표시 업데이트
+      function updateMainKeywordDisplay() {
+        const allowArea = document.querySelector("#myKeyword");
+        if (allowArea) {
+          allowArea.innerHTML = "";
+
+          allowKeywords.forEach((keyword, index) => {
+            const label = document.createElement("label");
+            label.className = "kw-allow";
+            label.setAttribute("for", `chk_allow_${index}`);
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `chk_allow_${index}`;
+            checkbox.checked = true;
+
+            const text = document.createTextNode(`#${keyword}`);
+
+            label.appendChild(checkbox);
+            label.appendChild(text);
+            allowArea.appendChild(label);
+          });
+        }
+      }
+
+      // 최대 개수 초과 메시지
+      function showLimitMessage() {
+        const modalHeader = modal.querySelector(".modal-header");
+        if (modalHeader) {
+          const existingMsg = modalHeader.querySelector(".limit-message");
+          if (existingMsg) return;
+
+          const message = document.createElement("span");
+          message.className = "limit-message";
+          message.textContent = ` (최대 ${maxAllowKeywords}개까지 선택 가능)`;
+          message.style.color = "#ff4444";
+          message.style.fontSize = "14px";
+          message.style.marginLeft = "10px";
+          modalHeader.appendChild(message);
+
+          setTimeout(() => {
+            message.remove();
+          }, 2000);
+        }
+      }
+
+      // 모달 팝업 열기
+      settingsBtn.onclick = () => {
+        syncModalCheckboxes();
+        updateCheckboxStates();
+        modal.style.display = "block";
+      };
+
+      // 모달 외부 클릭 시 닫기
+      modal.onclick = (e) => {
+        if (e.target === modal) {
+          modal.style.display = "none";
+          updateMainKeywordDisplay();
+        }
+      };
+
+      // 체크 아이콘 클릭 시 닫기
+      if (checkIcon) {
+        checkIcon.onclick = () => {
+          modal.style.display = "none";
+          updateMainKeywordDisplay();
+        };
+      }
+
+      // 모달 내 체크박스 이벤트
+      const modalCheckboxes = modal.querySelectorAll(
+        ".keyword-tag input[type='checkbox']"
+      );
+      modalCheckboxes.forEach((checkbox) => {
+        checkbox.onchange = () => {
+          const label = checkbox.closest("label");
+          if (label) {
+            const keywordText = label.textContent
+              .trim()
+              .replace("#", "")
+              .trim();
+
+            // 최대 개수 체크
+            if (checkbox.checked && allowKeywords.length >= maxAllowKeywords) {
+              checkbox.checked = false;
+              showLimitMessage();
+              return;
+            }
+
+            if (!checkbox.disabled) {
+              // 키워드 추가/제거
+              if (checkbox.checked) {
+                if (!allowKeywords.includes(keywordText)) {
+                  allowKeywords.push(keywordText);
+                }
+              } else {
+                allowKeywords = allowKeywords.filter((k) => k !== keywordText);
+              }
+              updateCheckboxStates();
+            }
+          }
+        };
+      });
+    </script>
+  </body>
+</html>

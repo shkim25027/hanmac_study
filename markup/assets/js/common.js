@@ -98,6 +98,30 @@ window.addEventListener("resize", () => {
 
 window.addEventListener("scroll", () => {});
 
+// container 스크롤 시 border-radius 펼쳐지는 효과
+function initContainerScrollEffect() {
+  const container = document.querySelector(".container");
+  if (!container) return;
+
+  const borderRadius = 30; // border-radius 값
+  const scrollThreshold = 100; // border-radius가 완전히 펼쳐지는 스크롤 거리
+
+  container.addEventListener("scroll", () => {
+    const scrollTop = container.scrollTop;
+    // 스크롤 위치에 따라 border-radius를 점진적으로 제거
+    const progress = Math.min(scrollTop / scrollThreshold, 1);
+    const currentRadius = borderRadius * (1 - progress);
+
+    // clip-path를 사용하여 border-radius 효과 구현
+    container.style.clipPath = `inset(0 0 0 0 round ${currentRadius}px ${currentRadius}px 0 0)`;
+  });
+}
+
+// DOMContentLoaded 시 초기화
+document.addEventListener("DOMContentLoaded", () => {
+  initContainerScrollEffect();
+});
+
 function includehtml() {
   var allElements = document.querySelectorAll("[data-include-path]");
   Array.prototype.forEach.call(allElements, function (el) {
