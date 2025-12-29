@@ -166,30 +166,46 @@ const DEFAULT_CONFIG = {
   const GRADIENTS = [
     {
       id: CONFIG.GRADIENT_IDS.BOARD_1,
+      x1: "69.54%",
+      y1: "3.97%",
+      x2: "30.46%",
+      y2: "96.03%",
       stops: [
-        { offset: "0%", color: "#8E2F00" },
-        { offset: "100%", color: "#662A0D" },
+        { offset: "14.97%", color: "#8E2F00" },
+        { offset: "89.98%", color: "#662A0D" },
       ],
     },
     {
       id: CONFIG.GRADIENT_IDS.BOARD_2,
+      x1: "69.54%",
+      y1: "3.97%",
+      x2: "30.46%",
+      y2: "96.03%",
       stops: [
-        { offset: "0%", color: "#2A5338" },
-        { offset: "100%", color: "#306843" },
+        { offset: "14.97%", color: "#2A5338" },
+        { offset: "89.98%", color: "#306843" },
       ],
     },
     {
       id: CONFIG.GRADIENT_IDS.BOARD_3,
+      x1: "69.54%",
+      y1: "3.97%",
+      x2: "30.46%",
+      y2: "96.03%",
       stops: [
-        { offset: "0%", color: "#5B4822" },
-        { offset: "100%", color: "#795711" },
+        { offset: "14.97%", color: "#5B4822" },
+        { offset: "89.98%", color: "#795711" },
       ],
     },
     {
       id: CONFIG.GRADIENT_IDS.BOARD_4,
+      x1: "69.54%",
+      y1: "3.97%",
+      x2: "30.46%",
+      y2: "96.03%",
       stops: [
-        { offset: "0%", color: "#1D375D" },
-        { offset: "100%", color: "#385888" },
+        { offset: "14.97%", color: "#1D375D" },
+        { offset: "89.98%", color: "#385888" },
       ],
     },
   ];
@@ -439,9 +455,17 @@ const DEFAULT_CONFIG = {
     }
   
     static createGradient(gradientData) {
-      const gradient = this.createElement("linearGradient", {
+      const attributes = {
         id: gradientData.id,
-      });
+      };
+  
+      // 그라데이션 방향 설정
+      if (gradientData.x1) attributes.x1 = gradientData.x1;
+      if (gradientData.y1) attributes.y1 = gradientData.y1;
+      if (gradientData.x2) attributes.x2 = gradientData.x2;
+      if (gradientData.y2) attributes.y2 = gradientData.y2;
+  
+      const gradient = this.createElement("linearGradient", attributes);
   
       gradientData.stops.forEach((stop) => {
         const stopElement = this.createElement("stop", {
@@ -933,6 +957,121 @@ const DEFAULT_CONFIG = {
           dy: "4",
           stdDeviation: "3",
           "flood-color": "rgba(0, 0, 0, 0.3)",
+        })
+      );
+  
+      return filter;
+    }
+  
+    static createBoardFilter() {
+      const filter = SVGHelper.createElement("filter", {
+        id: "board-3d-effect",
+        x: "-10%",
+        y: "-10%",
+        width: "120%",
+        height: "120%",
+        filterUnits: "userSpaceOnUse",
+        "color-interpolation-filters": "sRGB",
+      });
+  
+      // Drop shadow (외부 그림자)
+      filter.appendChild(
+        SVGHelper.createElement("feFlood", {
+          "flood-opacity": "0",
+          result: "BackgroundImageFix",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feColorMatrix", {
+          in: "SourceAlpha",
+          type: "matrix",
+          values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+          result: "hardAlpha",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feOffset", {
+          dy: "4",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feGaussianBlur", {
+          stdDeviation: "2",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feComposite", {
+          in2: "hardAlpha",
+          operator: "out",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feColorMatrix", {
+          type: "matrix",
+          values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feBlend", {
+          mode: "normal",
+          in2: "BackgroundImageFix",
+          result: "effect1_dropShadow",
+        })
+      );
+  
+      // Shape (원본 모양 유지)
+      filter.appendChild(
+        SVGHelper.createElement("feBlend", {
+          mode: "normal",
+          in: "SourceGraphic",
+          in2: "effect1_dropShadow",
+          result: "shape",
+        })
+      );
+  
+      // Inner shadow (내부 그림자 - 상단)
+      filter.appendChild(
+        SVGHelper.createElement("feColorMatrix", {
+          in: "SourceAlpha",
+          type: "matrix",
+          values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+          result: "hardAlpha2",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feOffset", {
+          dy: "-4",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feComposite", {
+          in2: "hardAlpha2",
+          operator: "arithmetic",
+          k2: "-1",
+          k3: "1",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feColorMatrix", {
+          type: "matrix",
+          values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0",
+        })
+      );
+  
+      filter.appendChild(
+        SVGHelper.createElement("feBlend", {
+          mode: "normal",
+          in2: "shape",
+          result: "effect2_innerShadow",
         })
       );
   
@@ -2262,6 +2401,7 @@ const DEFAULT_CONFIG = {
       defs.appendChild(FilterFactory.createInnerShadowFilter());
       defs.appendChild(FilterFactory.createHoverShadowFilter());
       defs.appendChild(FilterFactory.createGaugeFillFilter());
+      defs.appendChild(FilterFactory.createBoardFilter()); // 보드 3D 효과 필터
   
       FilterFactory.createPlayButtonFilters().forEach((filter) => {
         defs.appendChild(filter);
@@ -2319,6 +2459,7 @@ const DEFAULT_CONFIG = {
         const path = SVGHelper.createElement("path", {
           d: boardData.d,
           fill: boardData.fill,
+          filter: "url(#board-3d-effect)", // 3D 효과 필터 적용
         });
         this.svg.appendChild(path);
       });
