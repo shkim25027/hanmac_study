@@ -43,6 +43,7 @@ $transition-speed: 0.1s;
   backdrop-filter: blur($backdrop-blur);
   padding: $card-padding-hover;
   @include maskContents();
+  inset: none;
 }
 
 // =======================================
