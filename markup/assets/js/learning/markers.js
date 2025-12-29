@@ -376,6 +376,9 @@ class MarkerManager {
       (m) => m.completed
     ).length;
 
+    let targetPathPercent = 0;
+    let targetConfig = null;
+
     if (settings.allowDisabledClick) {
       // 비활성 마커 클릭 허용 모드: 다음 학습 마커까지
       if (completedLearningCount === 0) {
@@ -383,13 +386,10 @@ class MarkerManager {
         const firstChapterMarker = this.allMarkers.find(
           (m) => m.isChapterMarker === true
         );
-        progressPercent = firstChapterMarker
-          ? firstChapterMarker.pathPercent * 100
-          : 0;
+        targetConfig = firstChapterMarker;
       } else if (completedLearningCount >= learningMarkers.length) {
         // 전체 완료: 마지막 마커 위치
-        progressPercent =
-          this.allMarkers[this.allMarkers.length - 1].pathPercent * 100;
+        targetConfig = this.allMarkers[this.allMarkers.length - 1];
       } else {
         // 다음 학습할 강의 마커 위치
         const nextLearningMarker = learningMarkers[completedLearningCount];
@@ -398,12 +398,8 @@ class MarkerManager {
             m.pathPercent === nextLearningMarker.pathPercent &&
             m.label === nextLearningMarker.label
         );
-        progressPercent = this.allMarkers[nextMarkerIndex].pathPercent * 100;
+        targetConfig = this.allMarkers[nextMarkerIndex];
       }
-
-      console.log(
-        `[MarkerManager] 완료 개수 기준: ${completedLearningCount}개 강의 → ${progressPercent.toFixed(1)}%`
-      );
     } else {
       // 순차 학습 모드: 다음 학습 마커까지
       if (completedLearningCount === 0) {
@@ -411,13 +407,10 @@ class MarkerManager {
         const firstChapterMarker = this.allMarkers.find(
           (m) => m.isChapterMarker === true
         );
-        progressPercent = firstChapterMarker
-          ? firstChapterMarker.pathPercent * 100
-          : 0;
+        targetConfig = firstChapterMarker;
       } else if (completedLearningCount >= learningMarkers.length) {
         // 전체 완료: 마지막 마커 위치
-        progressPercent =
-          this.allMarkers[this.allMarkers.length - 1].pathPercent * 100;
+        targetConfig = this.allMarkers[this.allMarkers.length - 1];
       } else {
         // 다음 학습할 강의 마커 위치
         const nextLearningMarker = learningMarkers[completedLearningCount];
@@ -426,15 +419,43 @@ class MarkerManager {
             m.pathPercent === nextLearningMarker.pathPercent &&
             m.label === nextLearningMarker.label
         );
-        progressPercent = this.allMarkers[nextMarkerIndex].pathPercent * 100;
+        targetConfig = this.allMarkers[nextMarkerIndex];
       }
+    }
 
+    // 타겟 마커 찾기 (pathPercent로 비교)
+    const targetMarker = targetConfig
+      ? this.markers.find(
+          (m) =>
+            m.config &&
+            m.config.pathPercent === targetConfig.pathPercent &&
+            m.config.label === targetConfig.label
+        )
+      : null;
+
+    if (targetMarker && targetMarker.element) {
+      // 마커의 실제 DOM 위치 가져오기
+      const markerLeft = parseFloat(targetMarker.element.style.left) || 0;
+      const markerTop = parseFloat(targetMarker.element.style.top) || 0;
+      
+      // maskPath에서 마커 위치에 가장 가까운 지점 찾기
+      targetPathPercent = this.gaugeManager.findClosestPathPercent(markerLeft, markerTop);
+      
+      progressPercent = targetPathPercent * 100; // 로그용
       console.log(
-        `[MarkerManager] 순차 기준: ${completedLearningCount}개 강의 완료 → ${progressPercent.toFixed(1)}%`
+        `[MarkerManager] 마커 실제 위치 기반: (${markerLeft.toFixed(2)}%, ${markerTop.toFixed(2)}%) → pathPercent: ${targetPathPercent.toFixed(4)} (${progressPercent.toFixed(1)}%)`
+      );
+    } else if (targetConfig) {
+      // 마커를 찾을 수 없는 경우 pathPercent 직접 사용
+      targetPathPercent = targetConfig.pathPercent || 0;
+      progressPercent = targetPathPercent * 100;
+      console.log(
+        `[MarkerManager] 마커를 찾을 수 없음, pathPercent 직접 사용: ${progressPercent.toFixed(1)}%`
       );
     }
 
-    this.gaugeManager.setProgress(progressPercent);
+    // 마커 실제 위치에 가장 가까운 pathPercent를 사용하여 채움
+    this.gaugeManager.setProgress(targetPathPercent, true);
     this.updateMarkers(progressPercent);
     this.updateMarkerClickability();
 

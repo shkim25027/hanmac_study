@@ -577,7 +577,7 @@ h5 {
     .learning-list {
       position: relative;
       color: var(--text-learning-base);
-
+      @include scrollbar-light();
       &::before {
         @include pseudo(block, absolute, "");
         left: 56px;

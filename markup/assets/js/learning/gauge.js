@@ -4,17 +4,20 @@
 class GaugeManager {
   constructor() {
     this.maskPath = document.getElementById("maskPath");
+    this.gaugeSvg = document.getElementById("gauge-svg");
     this.pathLength = 0;
   }
 
   /**
    * 진행률 설정
-   * @param {number} percent - 진행률 (0-100)
+   * @param {number} percent - 진행률 (0-100) 또는 pathPercent (0-1)
+   * @param {boolean} isPathPercent - percent가 pathPercent인지 여부 (기본값: false)
    */
-  setProgress(percent) {
-    if (!this.maskPath) return;
-
-    const p = percent / 100;
+  setProgress(percent, isPathPercent = false) {
+    if (!this.maskPath) {
+      console.warn("[GaugeManager] maskPath를 찾을 수 없습니다");
+      return;
+    }
 
     if (this.pathLength === 0) {
       this.pathLength = this.maskPath.getTotalLength();
@@ -22,9 +25,20 @@ class GaugeManager {
       this.maskPath.style.strokeDashoffset = this.pathLength;
     }
 
-    // 현재 offset 값 가져오기
-    const currentOffset = parseFloat(this.maskPath.style.strokeDashoffset) || this.pathLength;
-    const targetOffset = this.pathLength * (1 - p);
+    let targetPathPercent;
+    
+    if (isPathPercent) {
+      // pathPercent를 직접 사용 (0-1)
+      targetPathPercent = Math.max(0, Math.min(1, percent));
+    } else {
+      // percent를 pathPercent로 변환 (0-100 -> 0-1)
+      targetPathPercent = Math.max(0, Math.min(1, percent / 100));
+    }
+
+    // maskPath는 아래에서 위로 채워지므로, pathPercent에 해당하는 길이까지만 채움
+    // pathPercent가 0이면 시작점, 1이면 끝점
+    const targetLength = this.pathLength * targetPathPercent;
+    const targetOffset = this.pathLength - targetLength;
     
     // 애니메이션을 위한 transition 추가 (처음 한 번만)
     if (!this.maskPath.style.transition) {
@@ -33,6 +47,10 @@ class GaugeManager {
     
     // offset 업데이트 (transition으로 자연스럽게 애니메이션됨)
     this.maskPath.style.strokeDashoffset = targetOffset;
+    
+    console.log(
+      `[GaugeManager] setProgress: pathPercent=${targetPathPercent.toFixed(4)}, targetOffset=${targetOffset.toFixed(2)}, pathLength=${this.pathLength.toFixed(2)}`
+    );
   }
 
   /**
@@ -48,10 +66,50 @@ class GaugeManager {
   }
 
   /**
-   * 초기 진행률 계산
+   * 마커의 실제 DOM 위치에 가장 가까운 maskPath 지점 찾기
+   * @param {number} markerPercentX - 마커의 X 위치 (퍼센트)
+   * @param {number} markerPercentY - 마커의 Y 위치 (퍼센트)
+   * @returns {number} 가장 가까운 지점의 pathPercent (0-1)
+   */
+  findClosestPathPercent(markerPercentX, markerPercentY) {
+    if (!this.maskPath || !this.gaugeSvg) return 0;
+
+    if (this.pathLength === 0) {
+      this.pathLength = this.maskPath.getTotalLength();
+    }
+
+    const viewBox = this.gaugeSvg.viewBox.baseVal;
+    const markerX = (markerPercentX / 100) * viewBox.width;
+    const markerY = (markerPercentY / 100) * viewBox.height;
+
+    // maskPath를 따라 여러 지점을 샘플링하여 가장 가까운 지점 찾기
+    const samples = 200; // 샘플링 개수 (정확도와 성능의 균형)
+    let closestDistance = Infinity;
+    let closestPercent = 0;
+
+    for (let i = 0; i <= samples; i++) {
+      const percent = i / samples;
+      const point = this.maskPath.getPointAtLength(this.pathLength * percent);
+      
+      // 마커 위치와의 거리 계산
+      const dx = point.x - markerX;
+      const dy = point.y - markerY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestPercent = percent;
+      }
+    }
+
+    return closestPercent;
+  }
+
+  /**
+   * 초기 진행률 계산 (타겟 마커 config 반환)
    * @param {Array} allMarkers - 전체 마커 배열
    * @param {Object} config - 설정 객체
-   * @returns {number} 진행률
+   * @returns {Object} 타겟 마커 config 객체
    */
   calculateInitialProgress(allMarkers, config) {
     const settings = config?.settings || {};
@@ -83,23 +141,22 @@ class GaugeManager {
       const firstChapterMarker = allMarkers.find(
         (m) => m.isChapterMarker === true
       );
-      const progress = firstChapterMarker
-        ? firstChapterMarker.pathPercent * 100
-        : 0;
-      console.log(
-        `[GaugeManager] 완료 기준 진행률: ${progress.toFixed(1)}% (0개 강의 완료, 첫 챕터 마커)`
-      );
-      return progress;
+      if (firstChapterMarker) {
+        console.log(
+          `[GaugeManager] 완료 기준 진행률: 첫 챕터 마커 (0개 강의 완료)`
+        );
+        return firstChapterMarker; // 마커 config 반환
+      }
+      return null;
     }
 
     if (completedLearningCount >= learningMarkers.length) {
       // 모든 강의 완료 → 마지막 마커 위치
-      const lastMarkerProgress =
-        allMarkers[allMarkers.length - 1].pathPercent * 100;
+      const lastMarker = allMarkers[allMarkers.length - 1];
       console.log(
-        `[GaugeManager] 완료 기준 진행률: ${lastMarkerProgress.toFixed(1)}% (전체 ${learningMarkers.length}개 강의 완료)`
+        `[GaugeManager] 완료 기준 진행률: 마지막 마커 (전체 ${learningMarkers.length}개 강의 완료)`
       );
-      return lastMarkerProgress;
+      return lastMarker; // 마커 config 반환
     }
 
     // 다음 학습할 강의 위치 (현재 학습 중인 마커)
@@ -109,12 +166,12 @@ class GaugeManager {
         m.pathPercent === nextLearningMarker.pathPercent &&
         m.label === nextLearningMarker.label
     );
-    const progress = allMarkers[nextMarkerIndex].pathPercent * 100;
+    const targetMarker = allMarkers[nextMarkerIndex];
 
     console.log(
-      `[GaugeManager] 완료 기준 진행률: ${progress.toFixed(1)}% (${completedLearningCount}/${learningMarkers.length}개 강의 완료, 현재 학습: ${nextLearningMarker.label})`
+      `[GaugeManager] 완료 기준 진행률: ${completedLearningCount}/${learningMarkers.length}개 강의 완료, 현재 학습: ${nextLearningMarker.label}`
     );
-    return progress;
+    return targetMarker; // 마커 config 반환
   }
 
   /**
@@ -144,23 +201,22 @@ class GaugeManager {
       const firstChapterMarker = allMarkers.find(
         (m) => m.isChapterMarker === true
       );
-      const progress = firstChapterMarker
-        ? firstChapterMarker.pathPercent * 100
-        : 0;
-      console.log(
-        `[GaugeManager] 순차 진행률: ${progress.toFixed(1)}% (강의 완료 없음, 첫 챕터 마커)`
-      );
-      return progress;
+      if (firstChapterMarker) {
+        console.log(
+          `[GaugeManager] 순차 진행률: 첫 챕터 마커 (강의 완료 없음)`
+        );
+        return firstChapterMarker; // 마커 config 반환
+      }
+      return null;
     }
 
     // 모든 강의가 완료된 경우 → 마지막 마커 위치
     if (lastCompletedLearningIndex === learningMarkers.length - 1) {
-      const lastMarkerProgress =
-        allMarkers[allMarkers.length - 1].pathPercent * 100;
+      const lastMarker = allMarkers[allMarkers.length - 1];
       console.log(
-        `[GaugeManager] 순차 진행률: ${lastMarkerProgress.toFixed(1)}% (전체 ${learningMarkers.length}개 강의 완료)`
+        `[GaugeManager] 순차 진행률: 마지막 마커 (전체 ${learningMarkers.length}개 강의 완료)`
       );
-      return lastMarkerProgress;
+      return lastMarker; // 마커 config 반환
     }
 
     // 다음 학습할 강의 위치 (현재 학습 중인 마커)
@@ -170,11 +226,11 @@ class GaugeManager {
         m.pathPercent === nextLearningMarker.pathPercent &&
         m.label === nextLearningMarker.label
     );
-    const progress = allMarkers[nextMarkerIndex].pathPercent * 100;
+    const targetMarker = allMarkers[nextMarkerIndex];
 
     console.log(
-      `[GaugeManager] 순차 진행률: ${progress.toFixed(1)}% (현재 학습: ${nextLearningMarker.label})`
+      `[GaugeManager] 순차 진행률: 현재 학습: ${nextLearningMarker.label}`
     );
-    return progress;
+    return targetMarker; // 마커 config 반환
   }
 }

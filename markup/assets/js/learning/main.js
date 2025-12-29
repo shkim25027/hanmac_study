@@ -70,12 +70,46 @@ class LearningApp {
       // 진행률 표시 생성
       this.progressIndicator.createIndicator();
 
-      // 초기 진행률 설정
-      const initialProgress = this.gauge.calculateInitialProgress(
+      // 초기 진행률 설정 (마커의 실제 DOM 위치 기반)
+      const targetMarkerConfig = this.gauge.calculateInitialProgress(
         this.markerManager.allMarkers,
         LEARNING_CONFIG
       );
-      this.gauge.setProgress(initialProgress);
+      
+      // 마커의 실제 DOM 위치를 찾아서 가장 가까운 pathPercent 계산
+      let initialPathPercent = 0;
+      
+      if (targetMarkerConfig) {
+        // 타겟 마커 찾기 (pathPercent와 label로 비교)
+        const targetMarker = this.markerManager.markers.find(
+          (m) =>
+            m.config &&
+            m.config.pathPercent === targetMarkerConfig.pathPercent &&
+            m.config.label === targetMarkerConfig.label
+        );
+        
+        if (targetMarker && targetMarker.element) {
+          // 마커의 실제 DOM 위치 가져오기
+          const markerLeft = parseFloat(targetMarker.element.style.left) || 0;
+          const markerTop = parseFloat(targetMarker.element.style.top) || 0;
+          
+          // maskPath에서 마커 위치에 가장 가까운 지점 찾기
+          initialPathPercent = this.gauge.findClosestPathPercent(markerLeft, markerTop);
+          
+          console.log(
+            `[LearningApp] 초기 진행률: 마커 실제 위치 (${markerLeft.toFixed(2)}%, ${markerTop.toFixed(2)}%) → pathPercent: ${initialPathPercent.toFixed(4)}`
+          );
+        } else {
+          // 마커를 찾을 수 없는 경우 pathPercent 직접 사용
+          initialPathPercent = targetMarkerConfig.pathPercent || 0;
+          console.log(
+            `[LearningApp] 초기 진행률: 마커를 찾을 수 없음, pathPercent 직접 사용: ${(initialPathPercent * 100).toFixed(1)}%`
+          );
+        }
+      }
+      
+      // 마커 실제 위치에 가장 가까운 pathPercent를 사용하여 채움
+      this.gauge.setProgress(initialPathPercent, true);
 
       // 진행률 표시 업데이트
       this.progressIndicator.updateProgress(this.markerManager.allMarkers);
