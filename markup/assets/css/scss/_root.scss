@@ -31,6 +31,11 @@
   --text-learning-primary: #ff5c00;
   --text-learning-secondary: #008c49;
 
+  --text-card-category: #252525;
+  --text-card-title-active: #ff7d33;
+  --text-card-title-complete: #66ba92;
+  --text-card-author: #d1cfcf;
+
   /* 배경 */
   //--bg-base: #f6f1e9;
   --bg-base: #e4ddcf;
@@ -100,6 +105,73 @@
   --bg-btn-primary: #ff5c00;
   --bg-btn-secondary: #1f1f1f;
 
+  --bg-card: rgba(255, 255, 255, 0.6);
+  --bg-card-hover-start: #ff6600;
+  --bg-card-hover-end: rgba(255, 132, 0, 0.7);
+  --bg-card-thumb-overlay: rgba(255, 255, 255, 0.3);
+  --bg-card-shadow: rgba(217, 202, 190, 0.5);
+  --bg-card-hover-shadow: rgba(198, 187, 177, 0.5);
+  --bg-card-shadow-inner: rgba(0, 0, 0, 1);
+  --bg-pick-shadow: rgba(166, 154, 97, 0.25);
+
+  --bg-modal: rgba(0, 0, 0, 0.8);
+  --bg-modal-content: #f6f1e9;
+  --bg-modal-close-hover: #e00400;
+
+  --bg-scrollbar-thumb: #443b27;
+  --bg-scrollbar-thumb-dark: #383838;
+  --bg-scrollbar-track: #000;
+  --bg-scrollbar-thumb-light: rgba(255, 255, 255, 0.2);
+  --bg-scrollbar-thumb-light-hover: rgba(255, 255, 255, 0.3);
+  --bg-scrollbar-track-light: rgba(255, 255, 255, 0.05);
+
+  --bg-video-gauge: #171717;
+  --bg-video-gauge-fill: #ff6c19;
+  --bg-video-gauge-border: rgba(0, 0, 0, 0.4);
+
+  --bg-learning-line: #c6c3c3;
+  --bg-learning-dot: #8d8888;
+  --bg-learning-active: rgba(255, 92, 0, 0.2);
+  --bg-learning-active-line: #ffad7f;
+  --bg-learning-active-dot: #ff5c00;
+  --bg-learning-complete: rgba(0, 140, 73, 0.2);
+  --bg-learning-complete-line: #7fc5a4;
+  --bg-learning-complete-dot: #008c49;
+
+  --bg-chapter-current: #146b51;
+  --bg-chapter-completed: #ba9a85;
+  --bg-card-base: #7e7e7e;
+  --bg-card-current: #1d9b75;
+  --bg-card-current-border: #1f9b76;
+  --bg-card-current-bg: #dbefe9;
+  --bg-card-completed: #ab3d00;
+  --bg-gauge-fill: #e25e00;
+  --bg-shadow: #8a7d64;
+
+  --bg-puzzle-family: #7ed29b;
+  --bg-puzzle-hanmac: #ffccca;
+  --bg-puzzle-value: #87a7d6;
+  --bg-puzzle-company: #b49a65;
+
+  --bg-piece-1: #1d375d;
+  --bg-piece-2: #662a0d;
+  --bg-piece-3: #5b4822;
+  --bg-piece-4: #2a5338;
+
+  --bg-circle-border: #a7790f;
+  --bg-circle-start: rgba(127, 47, 0, 0.1);
+  --bg-circle-end: rgba(167, 121, 15, 0.5);
+  --bg-circle-dot: rgba(221, 144, 0, 0.6);
+  --bg-circle-dot-hover: rgba(221, 144, 0, 0.8);
+  --bg-circle-dot-stroke: rgba(221, 144, 0, 0.2);
+  --bg-gradient-start: #ece3d2;
+  --bg-gradient-end: #fff;
+  --bg-learning-line-color: #edba8a;
+  --bg-modal-header: #f04400;
+
+  --bg-textarea: #2a2a2a;
+  --bg-textarea-placeholder: rgba(255, 255, 255, 0.5);
+
   /* border */
   --border-base: rgba(0, 0, 0, 0.05);
   --border-primary: #fff;
@@ -114,9 +186,21 @@
   --border-video: rgba(255, 255, 255, 0.1);
 
   --border-btn: rgba(255, 255, 255, 0.2);
+  --border-card: rgba(255, 255, 255, 0.8);
+  --border-modal: #888;
+  --border-pick: rgba(255, 255, 255, 0.5);
+  --border-comment-resizer: rgba(230, 227, 225, 0.1);
 
   /* drop */
   --text-shadow:
     -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
   --text-stroke: drop-shadow(0 0 0.5px #000);
+
+  /* shadow */
+  --shadow-pagination: rgba(0, 0, 0, 0.4);
+  --shadow-modal: rgba(0, 0, 0, 0.25);
+  --shadow-card-drop: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow-card-drop-small: 0 4px 2px rgba(0, 0, 0, 0.05);
+  --shadow-gauge-inset: rgba(0, 0, 0, 0.3);
+  --shadow-comment: 0 8px 22px 22px rgba(0, 0, 0, 0.8);
 }

@@ -138,6 +138,13 @@ class ChapterCardManager {
     playButton.alt = "재생";
     thumbnailContainer.appendChild(playButton);
 
+    // 스탬프 아이콘 추가 (completed 상태일 때만 표시)
+    if (state === "completed") {
+      const stamp = document.createElement("div");
+      stamp.className = "ico-stamp";
+      inner.appendChild(stamp);
+    }
+
     // 게이지바 추가
     const gaugeBar = document.createElement("div");
     gaugeBar.className = "card-gauge-bar";
@@ -146,12 +153,10 @@ class ChapterCardManager {
     const gaugeFill = document.createElement("div");
     gaugeFill.className = "card-gauge-fill";
 
-    // 챕터 진행률 계산 및 설정
     const progressPercent = this._calculateChapterProgress(chapter);
     gaugeFill.style.width = progressPercent + "%";
 
     gaugeBar.appendChild(gaugeFill);
-
     inner.appendChild(thumbnailContainer);
 
     // 제목
@@ -307,13 +312,11 @@ class ChapterCardManager {
       const newState = this._getChapterState(chapter);
       const newProgress = this._calculateChapterProgress(chapter);
 
-      // 현재 게이지바의 진행률 확인
       const gaugeFill = card.element.querySelector(".card-gauge-fill");
       const currentProgress = gaugeFill
         ? parseInt(gaugeFill.style.width) || 0
         : 0;
 
-      // 상태가 변경되었거나 진행률이 변경되었거나 강제 업데이트인 경우
       const shouldUpdate =
         forceUpdate ||
         card.state !== newState ||
@@ -321,31 +324,38 @@ class ChapterCardManager {
 
       if (shouldUpdate) {
         console.log(
-          `[ChapterCardManager] 챕터 ${index + 1} ${forceUpdate ? "강제 " : ""}업데이트: 상태 "${card.state}" → "${newState}", 진행률 ${currentProgress}% → ${newProgress}%`
+          `[ChapterCardManager] 챕터 ${index + 1} ${forceUpdate ? "강제 " : ""}업데이트`
         );
 
-        // 클래스 업데이트 (CSS가 자동으로 스타일 변경)
         card.element.className = "chapter-card";
         if (newState) {
           card.element.classList.add(newState);
         }
 
-        // 플레이 버튼 이미지 업데이트
         const playButton = card.element.querySelector(".card-play-button");
         if (playButton) {
           playButton.src = this._getPlayButtonImagePath(newState);
         }
 
-        // 게이지바 진행률 업데이트
         if (gaugeFill) {
           gaugeFill.style.width = newProgress + "%";
         }
 
-        card.state = newState;
+        // 스탬프 업데이트
+        const inner = card.element.querySelector(".chapter-card-inner");
+        const existingStamp = inner.querySelector(".ico-stamp");
 
-        console.log(
-          `[ChapterCardManager] 챕터 ${index + 1} 업데이트 완료: 클래스 = "${card.element.className}", 진행률 = ${newProgress}%`
-        );
+        if (newState === "completed" && !existingStamp) {
+          const stamp = document.createElement("div");
+          stamp.className = "ico-stamp";
+          // 제목 앞에 삽입
+          const title = inner.querySelector(".card-title");
+          inner.insertBefore(stamp, title);
+        } else if (newState !== "completed" && existingStamp) {
+          existingStamp.remove();
+        }
+
+        card.state = newState;
       }
     });
   }

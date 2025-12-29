@@ -1,11 +1,10 @@
 // ============================================================================
-// 퍼즐 온보딩 시스템 - 리팩토링 버전
+// 퍼즐 온보딩 시스템
 // ============================================================================
 
 // ============================================================================
 // 설정 및 상수
 // ============================================================================
-// CONFIG 정의 부분을 이렇게 수정 (파일 맨 위)
 const DEFAULT_CONFIG = {
   SVG: {
     NAMESPACE: "http://www.w3.org/2000/svg",
@@ -35,20 +34,20 @@ const DEFAULT_CONFIG = {
   },
 
   IMAGE_PATHS: {
-    BASE: "./assets/images/onboarding/bg_piece.png", // 비활성 (양쪽 모드 공통)
+    BASE: "./assets/images/onboarding/bg_piece.png",
     COMPLETED: {
-      ACTIVE: "./assets/images/onboarding/bg_piece_completed.png", // 개별 선택
-      COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png", // 개별 완료
-      ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png", // 전체 완료 애니메이션
+      ACTIVE: "./assets/images/onboarding/bg_piece_completed.png",
+      COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png",
+      ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png",
     },
     FINISH: {
-      ACTIVE: "./assets/images/onboarding/bg_piece_all_completed.png", // 개별 선택
-      COMPLETED: "./assets/images/onboarding/bg_piece_finish.png", // 개별 완료
-      ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png", // 전체 완료 애니메이션
+      ACTIVE: "./assets/images/onboarding/bg_piece_all_completed.png",
+      COMPLETED: "./assets/images/onboarding/bg_piece_finish.png",
+      ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png",
     },
   },
 
-  COMPLETION_MODE: "FINISH", // "COMPLETED" 또는 "FINISH"
+  COMPLETION_MODE: "FINISH",
 
   PLAY_BUTTON: {
     RADIUS: 28,
@@ -81,27 +80,17 @@ const DEFAULT_CONFIG = {
   },
 };
 
-// ⭐ window.puzzleConfig와 병합
 const CONFIG = {
   ...DEFAULT_CONFIG,
   ...(window.puzzleConfig || {}),
 };
 
-// CONFIG에 완성된 퍼즐 보드 경로 추가
-const COMPLETED_BOARD_PATH =
-  "M256 780V651.625H21V523H330.5V267H256.008L256.132 267H330.61L330.618 523H709.008L708.876 11H256.008L256 11V0H709V268H1162V11H1615V268H1615V523H1162V268H709V523H709V780H1162V523H1162V780H1615V523H1615V268H1853V617H1615V780H1162H709H256V780H21V523H330.5V523H21V523Z";
-
-// 또는 실제 보드 외곽선 경로 (더 정확한 방법)
-const COMPLETED_BOARD_OUTLINE =
-  "M14 0H699C704.523 0 709 4.47715 709 10V11H1162V11H1615V11H1856C1861.52 0 1866 4.47715 1866 10V258C1866 263.523 1861.52 268 1856 268H1615V268H1162V268H709V268H709V523H1162V523H1615V523H1853V617H1615V780H1162V780H709V780H256V780H21V523H330.5V267H21.5V523H14C8.47717 525 4 520.523 4 515V10C4 4.47715 8.47715 0 14 0Z";
-
 const CELEBRATION_RIBBON_POSITION = {
   pieceId: 2,
-  offsetX: 0, // 피스 중앙 기준
-  offsetY: -200, // 피스 상단 위 200px
+  offsetX: 0,
+  offsetY: -200,
 };
 
-// 퍼즐 조각 데이터
 const PUZZLE_PIECES = [
   {
     id: 1,
@@ -155,7 +144,6 @@ const PUZZLE_PIECES = [
   },
 ];
 
-// 보드 배경 경로 데이터
 const BOARD_PATHS = [
   {
     d: "M1866 258C1866 263.523 1861.52 268 1856 268L709 268L709 9.99991C709 4.47706 713.477 -0.000100757 719 -0.000100274L1856 -8.74227e-07C1861.52 -3.91404e-07 1866 4.47715 1866 10L1866 258Z",
@@ -175,7 +163,6 @@ const BOARD_PATHS = [
   },
 ];
 
-// 그라디언트 정의
 const GRADIENTS = [
   {
     id: CONFIG.GRADIENT_IDS.BOARD_1,
@@ -207,22 +194,19 @@ const GRADIENTS = [
   },
 ];
 
-// 재생 버튼 위치 (타이틀 텍스트 아래 배치)
-// 계산식: 타이틀 Y + (폰트 크기/2) + 줄 수에 따른 오프셋 + 여백(5px) + 버튼 반지름(35px)
 const BUTTON_POSITIONS = [
-  { id: 1, x: 475, y: 651 + 35 }, // 706 (한 줄)
-  { id: 2, x: 935, y: 140 + 35 }, // 195 (한 줄)
-  { id: 3, x: 1388, y: 140 + 35 }, // 195 (한 줄)
-  { id: 4, x: 1388, y: 385 + 35 }, // 450 (한 줄)
-  { id: 5, x: 935, y: 385 + 35 }, // 450 (한 줄)
-  { id: 6, x: 935, y: 651 + 35 }, // 706 (한 줄)
-  { id: 7, x: 1388, y: 651 + 35 }, // 706 (한 줄)
-  { id: 8, x: 1734, y: 442 + 15 + 35 }, // 518 (두 줄: 중심 + 줄 간격 + 폰트 절반)
-  { id: 9, x: 482, y: 267 + 15 + 35 }, // 343 (두 줄: 중심 + 줄 간격 + 폰트 절반)
-  { id: 10, x: 176, y: 385 + 35 }, // 450 (한 줄)
+  { id: 1, x: 475, y: 686 },
+  { id: 2, x: 935, y: 175 },
+  { id: 3, x: 1388, y: 175 },
+  { id: 4, x: 1388, y: 420 },
+  { id: 5, x: 935, y: 420 },
+  { id: 6, x: 935, y: 686 },
+  { id: 7, x: 1388, y: 686 },
+  { id: 8, x: 1734, y: 492 },
+  { id: 9, x: 482, y: 317 },
+  { id: 10, x: 176, y: 420 },
 ];
 
-// 타이틀 위치
 const TITLE_POSITIONS = [
   {
     id: 1,
@@ -241,7 +225,6 @@ const TITLE_POSITIONS = [
   { id: 10, x: 176, y: 365, lines: ["삼안 소개"] },
 ];
 
-// 게이지 설정
 const GAUGE_CONFIG = {
   POSITIONS: {
     1: 780,
@@ -257,17 +240,30 @@ const GAUGE_CONFIG = {
   },
   X_RANGES: {
     1: { left: 21, right: 709, align: "right" },
-    2: { left: 709, right: 1162 },
-    3: { left: 1162, right: 1615 },
-    4: { left: 1162, right: 1615 },
-    5: { left: 709, right: 1162 },
-    6: { left: 709, right: 1162 },
-    7: { left: 1162, right: 1615 },
-    8: { left: 1615, right: 1853 },
-    9: { left: 330.5, right: 709, align: "right" },
+    2: { left: 709.158, right: 1162 },
+    3: { left: 1162.16, right: 1615 },
+    4: { left: 1162.16, right: 1615 },
+    5: { left: 709.158, right: 1162 },
+    6: { left: 709.158, right: 1162 },
+    7: { left: 1162.16, right: 1615 },
+    8: { left: 1615.08, right: 1853 },
+    9: { left: 330.61, right: 709.008, align: "right" },
     10: { left: 21.5, right: 330.5 },
   },
   WIDTH_RATIOS: {},
+  // 퍼즐 경계 내에서 게이지가 그려지도록 최대 길이 제한 (stroke-linecap 반지름 고려)
+  MAX_LENGTHS: {
+    1: 453, // 709 - 256
+    2: 452.842, // 1162 - 709.158
+    3: 452.84, // 1615 - 1162.16
+    4: 452.84, // 1615 - 1162.16
+    5: 452.842, // 1162 - 709.158
+    6: 452.842, // 1162 - 709.158
+    7: 452.84, // 1615 - 1162.16
+    8: 237.92, // 1853 - 1615.08
+    9: 378.398, // 709.008 - 330.61
+    10: 309, // 330.5 - 21.5
+  },
 };
 
 // ============================================================================
@@ -575,11 +571,7 @@ class FilterFactory {
       })
     );
 
-    filter.appendChild(
-      SVGHelper.createElement("feOffset", {
-        dy: "1",
-      })
-    );
+    filter.appendChild(SVGHelper.createElement("feOffset", { dy: "1" }));
 
     filter.appendChild(
       SVGHelper.createElement("feGaussianBlur", {
@@ -617,7 +609,6 @@ class FilterFactory {
   static createPlayButtonFilters() {
     const filters = [];
 
-    // 외부 원 필터 (드롭 섀도우 + 내부 섀도우)
     const outerFilter = SVGHelper.createElement("filter", {
       id: "play-button-outer-filter",
       x: "-50%",
@@ -628,7 +619,6 @@ class FilterFactory {
       "color-interpolation-filters": "sRGB",
     });
 
-    // 드롭 섀도우
     outerFilter.appendChild(
       SVGHelper.createElement("feGaussianBlur", {
         in: "SourceAlpha",
@@ -671,7 +661,6 @@ class FilterFactory {
 
     filters.push(outerFilter);
 
-    // 재생 아이콘 필터 (드롭 섀도우 + 내부 섀도우)
     const iconFilter = SVGHelper.createElement("filter", {
       id: "play-button-icon-filter",
       x: "-50%",
@@ -682,7 +671,6 @@ class FilterFactory {
       "color-interpolation-filters": "sRGB",
     });
 
-    // 드롭 섀도우
     iconFilter.appendChild(
       SVGHelper.createElement("feOffset", {
         dx: "2",
@@ -738,7 +726,6 @@ class FilterFactory {
       height: "200%",
     });
 
-    // 드롭 섀도우
     filter.appendChild(
       SVGHelper.createElement("feDropShadow", {
         dx: "0",
@@ -767,8 +754,8 @@ class ContentManager {
         url: "",
         type: "youtube",
         title: piece.title,
-        group: 1, // 기본 그룹
-        completed: false, // 완료 상태
+        group: 1,
+        completed: false,
       };
     });
     return defaultContent;
@@ -795,7 +782,6 @@ class ContentManager {
             this._updateSVGText(pieceId, value.title);
           }
 
-          // 버튼 타입 또는 그룹 변경 시 버튼 업데이트
           if (value.type || value.group) {
             this._updateButtonType(pieceId);
           }
@@ -866,10 +852,7 @@ class ContentManager {
     const buttonGroup = svg.querySelector(`.piece-play-${pieceId}`);
     if (!buttonGroup) return;
 
-    // 기존 버튼 제거
     buttonGroup.remove();
-
-    // 새 버튼 생성
     UIElementFactory.createPlayButton(pieceId, svg);
   }
 
@@ -945,7 +928,6 @@ class PuzzlePiece {
       "1.0",
       true
     );
-
     this._createImageLayer(
       "piece-finish-image",
       `bg-image-finish-${this.data.id}`,
@@ -1001,7 +983,6 @@ class PuzzlePiece {
   }
 
   _handleHover(isHovering) {
-    // 모든 조각에서 텍스트 숨김 처리
     this._toggleText(isHovering);
 
     const hoverImg = this.group.querySelector(".piece-hover-image");
@@ -1023,7 +1004,6 @@ class PuzzlePiece {
       overlayBase.style.display = isHovering ? "none" : "block";
     }
 
-    // ⭐ 완료된 조각의 경우 현재 보이는 이미지를 임시로 숨김
     if (this.isCompleted) {
       const completedImg = this.group.querySelector(".piece-completed-image");
       const allCompletedImg = this.group.querySelector(
@@ -1031,24 +1011,14 @@ class PuzzlePiece {
       );
       const finishImg = this.group.querySelector(".piece-finish-image");
 
-      // COMPLETED 이미지가 보이는 경우
-      if (completedImg && completedImg.style.display !== "none") {
-        completedImg.style.opacity = isHovering ? "0" : "1";
-      }
-
-      // ALL_COMPLETED 이미지가 보이는 경우
-      if (allCompletedImg && allCompletedImg.style.display !== "none") {
-        allCompletedImg.style.opacity = isHovering ? "0" : "1";
-      }
-
-      // ⭐ FINISH 이미지가 보이는 경우도 추가
-      if (finishImg && finishImg.style.display !== "none") {
-        finishImg.style.opacity = isHovering ? "0" : "1";
-      }
+      [completedImg, allCompletedImg, finishImg].forEach((img) => {
+        if (img && img.style.display !== "none") {
+          img.style.opacity = isHovering ? "0" : "1";
+        }
+      });
     }
   }
 
-  // 텍스트 표시/숨김 메서드
   _toggleText(hide) {
     const svg = PuzzleManager.instance?.svg;
     if (!svg) return;
@@ -1061,7 +1031,6 @@ class PuzzlePiece {
       const x = parseFloat(text.getAttribute("x"));
       const y = parseFloat(text.getAttribute("y"));
 
-      // 현재 조각의 타이틀 위치와 일치하는 텍스트 찾기
       if (Math.abs(x - titlePos.x) < 1 && Math.abs(y - titlePos.y) < 1) {
         text.style.opacity = hide ? "0" : "1";
         text.style.transition = "opacity 0.3s ease";
@@ -1085,7 +1054,6 @@ class PuzzlePiece {
 
     if (baseImage) baseImage.style.display = "none";
 
-    // 양쪽 모드 모두 completed 이미지 사용 (패턴이 모드별로 다른 이미지를 가리킴)
     if (completedImage) {
       completedImage.style.display = "block";
       completedImage.setAttribute(
@@ -1097,18 +1065,16 @@ class PuzzlePiece {
 
   showAllCompleted() {
     const baseImg = this.group.querySelector(".piece-base-image");
-    const hoverImg = this.group.querySelector(".piece-hover-image");
     const completedImg = this.group.querySelector(".piece-completed-image");
     const allCompletedImg = this.group.querySelector(
       ".piece-all-completed-image"
     );
     const finishImg = this.group.querySelector(".piece-finish-image");
 
-    if (baseImg) baseImg.style.display = "none";
-    if (completedImg) completedImg.style.display = "none";
-    if (allCompletedImg) allCompletedImg.style.display = "none";
+    [baseImg, completedImg, allCompletedImg].forEach((img) => {
+      if (img) img.style.display = "none";
+    });
 
-    // 애니메이션 종료 후 최종 상태 이미지 표시
     if (finishImg) {
       finishImg.style.display = "block";
       finishImg.setAttribute(
@@ -1138,29 +1104,16 @@ class GaugeManager {
     const fullWidth = xRange.right - xRange.left;
 
     let gaugeX;
-    let bgWidth; // ⭐ 배경용 (항상 100%)
-    let fillWidth; // ⭐ 채우기용 (비율 적용)
-
-    console.log(`🔍 piece ${pieceId} 체크:`, {
-      GAUGE_CONFIG: GAUGE_CONFIG,
-      WIDTH_RATIOS: GAUGE_CONFIG.WIDTH_RATIOS,
-      pieceId: pieceId,
-      ratio: GAUGE_CONFIG.WIDTH_RATIOS
-        ? GAUGE_CONFIG.WIDTH_RATIOS[pieceId]
-        : "undefined",
-      "조건1 (WIDTH_RATIOS 존재)": !!GAUGE_CONFIG.WIDTH_RATIOS,
-      "조건2 (pieceId ratio 존재)": GAUGE_CONFIG.WIDTH_RATIOS
-        ? !!GAUGE_CONFIG.WIDTH_RATIOS[pieceId]
-        : false,
-    });
+    let bgWidth;
+    let fillWidth;
 
     if (xRange.align === "right") {
       if (pieceId === 1) {
         gaugeX = 256;
         bgWidth = 709 - 256;
       } else if (pieceId === 9) {
-        gaugeX = 330.5;
-        bgWidth = 709 - 330.5;
+        gaugeX = 330.61; // 정확한 경계 사용
+        bgWidth = 709.008 - 330.61;
       } else {
         gaugeX = xRange.left;
         bgWidth = fullWidth;
@@ -1170,20 +1123,32 @@ class GaugeManager {
       bgWidth = fullWidth;
     }
 
-    // ⭐ 기본값: 채우기도 배경과 같음
+    // stroke-linecap: "round"로 인한 반지름만큼 여유 고려
+    const strokeRadius = CONFIG.GAUGE.HEIGHT / 2;
+    gaugeX = Math.max(gaugeX, xRange.left + strokeRadius);
+
     fillWidth = bgWidth;
 
-    // ⭐ 비율이 있으면 채우기에만 적용
     if (GAUGE_CONFIG.WIDTH_RATIOS && GAUGE_CONFIG.WIDTH_RATIOS[pieceId]) {
-      // ⭐ 이 조건문이 실행되는지 확인!
-      console.log(
-        `⭐ 비율 적용: piece ${pieceId}, ratio: ${GAUGE_CONFIG.WIDTH_RATIOS[pieceId]}`
-      );
       const ratio = GAUGE_CONFIG.WIDTH_RATIOS[pieceId];
       fillWidth = bgWidth * ratio;
     }
 
-    // ⭐ 1. 배경 선 (항상 bgWidth)
+    // 퍼즐 경계를 넘지 않도록 최대 길이 제한
+    if (GAUGE_CONFIG.MAX_LENGTHS && GAUGE_CONFIG.MAX_LENGTHS[pieceId]) {
+      const maxLength = GAUGE_CONFIG.MAX_LENGTHS[pieceId];
+      fillWidth = Math.min(fillWidth, maxLength);
+      bgWidth = Math.min(bgWidth, maxLength);
+    }
+
+    // stroke-linecap: "round"로 인한 반지름만큼 여유를 두고 경계 체크
+    const maxEndX = xRange.right - strokeRadius; // 반지름만큼 여유
+    const calculatedEndX = gaugeX + bgWidth;
+    if (calculatedEndX > maxEndX) {
+      bgWidth = maxEndX - gaugeX;
+      fillWidth = Math.min(fillWidth, bgWidth);
+    }
+
     const bgLine = SVGHelper.createElement("line", {
       x1: gaugeX,
       y1: gaugeY + CONFIG.GAUGE.HEIGHT / 2,
@@ -1198,7 +1163,6 @@ class GaugeManager {
     bgLine.style.mixBlendMode = "multiply";
     gaugeGroup.appendChild(bgLine);
 
-    // ⭐ 2. 채워지는 선 (fillWidth)
     const fillLine = SVGHelper.createElement("line", {
       x1: gaugeX,
       y1: gaugeY + CONFIG.GAUGE.HEIGHT / 2,
@@ -1218,10 +1182,6 @@ class GaugeManager {
 
     gaugeGroup.appendChild(fillLine);
     svg.appendChild(gaugeGroup);
-
-    console.log(
-      `✅ 게이지 생성: piece ${pieceId}, bgWidth: ${bgWidth}, fillWidth: ${fillWidth}`
-    );
   }
 
   static updateGauge(pieceId, progress) {
@@ -1231,26 +1191,16 @@ class GaugeManager {
       `.piece-gauge-${pieceId} .gauge-fill-line`
     );
 
-    if (!fillLine) {
-      console.warn(`❌ 게이지를 찾을 수 없음: piece ${pieceId}`);
-      return;
-    }
+    if (!fillLine) return;
 
     const gaugeLength = parseFloat(fillLine.getAttribute("data-gauge-length"));
-    if (!gaugeLength || isNaN(gaugeLength)) {
-      console.warn(`❌ 게이지 길이를 찾을 수 없음: piece ${pieceId}`);
-      return;
-    }
+    if (!gaugeLength || isNaN(gaugeLength)) return;
 
     const offset = gaugeLength * (1 - progress / 100);
 
     requestAnimationFrame(() => {
       fillLine.style.strokeDashoffset = `${offset}`;
     });
-
-    console.log(
-      `✅ 게이지 업데이트: piece ${pieceId}, ${progress}%, offset: ${offset.toFixed(2)}`
-    );
   }
 }
 
@@ -1262,7 +1212,6 @@ class UIElementFactory {
     const position = BUTTON_POSITIONS.find((p) => p.id === pieceId);
     if (!position) return;
 
-    // 콘텐츠 타입 및 그룹 확인
     const contentManager = PuzzleManager.instance?.contentManager;
     const content = contentManager?.getContent(pieceId);
     const isFileType = content?.type === "file";
@@ -1274,9 +1223,7 @@ class UIElementFactory {
     });
     buttonGroup.style.cursor = "pointer";
 
-    // 아이콘 생성 (각 아이콘이 자체 배경을 포함)
     if (isFileType) {
-      // 파일 아이콘 (배경 원 + PDF 아이콘)
       this._createFileIconWithBackground(
         buttonGroup,
         position.x,
@@ -1284,7 +1231,6 @@ class UIElementFactory {
         groupColor
       );
     } else {
-      // 재생 아이콘 (배경 원 + 재생 삼각형)
       this._createPlayIcon(buttonGroup, position.x, position.y, groupColor);
     }
 
@@ -1292,12 +1238,10 @@ class UIElementFactory {
   }
 
   static _createPlayIcon(group, x, y, groupColor) {
-    // 외부 원 그룹 (필터 적용)
     const outerCircleGroup = SVGHelper.createElement("g", {
       filter: "url(#play-button-outer-filter)",
     });
 
-    // 메인 원 (그룹 색상)
     const mainCircle = SVGHelper.createElement("ellipse", {
       cx: x,
       cy: y,
@@ -1308,7 +1252,6 @@ class UIElementFactory {
     });
     outerCircleGroup.appendChild(mainCircle);
 
-    // 테두리 원 (흰색 stroke)
     const strokeCircle = SVGHelper.createElement("ellipse", {
       cx: x,
       cy: y,
@@ -1323,7 +1266,6 @@ class UIElementFactory {
 
     group.appendChild(outerCircleGroup);
 
-    // 재생 아이콘 (삼각형)
     const playIconGroup = SVGHelper.createElement("g", {
       filter: "url(#play-button-icon-filter)",
     });
@@ -1344,12 +1286,10 @@ class UIElementFactory {
   }
 
   static _createFileIconWithBackground(group, centerX, centerY, groupColor) {
-    // 외부 원 그룹 (필터 적용)
     const outerCircleGroup = SVGHelper.createElement("g", {
       filter: "url(#play-button-outer-filter)",
     });
 
-    // 메인 원 (그룹 색상)
     const mainCircle = SVGHelper.createElement("ellipse", {
       cx: centerX,
       cy: centerY,
@@ -1360,7 +1300,6 @@ class UIElementFactory {
     });
     outerCircleGroup.appendChild(mainCircle);
 
-    // 테두리 원 (흰색 stroke)
     const strokeCircle = SVGHelper.createElement("ellipse", {
       cx: centerX,
       cy: centerY,
@@ -1375,12 +1314,10 @@ class UIElementFactory {
 
     group.appendChild(outerCircleGroup);
 
-    // 파일 아이콘 추가
     this._createFileIcon(group, centerX, centerY, groupColor);
   }
 
   static _createFileIcon(group, centerX, centerY, groupColor = "#8F360B") {
-    // 업로드된 SVG의 viewBox는 "0 0 32 28"
     const iconWidth = 32;
     const iconHeight = 28;
     const x = centerX - iconWidth / 2;
@@ -1390,7 +1327,6 @@ class UIElementFactory {
       transform: `translate(${x}, ${y})`,
     });
 
-    // PDF 박스 (흰색 사각형)
     const pdfBox = SVGHelper.createElement("rect", {
       x: "11.4277",
       y: "13.7109",
@@ -1401,14 +1337,12 @@ class UIElementFactory {
     });
     iconGroup.appendChild(pdfBox);
 
-    // 메인 문서 path (흰색)
     const docPath = SVGHelper.createElement("path", {
       d: "M10.2855 21.7114H6.85687L6.85687 3.42563H13.7141L13.7141 8.56851C13.7154 9.02275 13.8965 9.458 14.2177 9.7792C14.5389 10.1004 14.9741 10.2815 15.4283 10.2828H20.5712L20.5712 12.5685H22.2855L22.2855 8.56851C22.2886 8.45586 22.2671 8.3439 22.2227 8.24032C22.1784 8.13674 22.112 8.04401 22.0284 7.96851L16.0284 1.96848C15.9532 1.88436 15.8606 1.81774 15.7569 1.77331C15.6532 1.72888 15.5411 1.70773 15.4283 1.71133H6.85687C6.40263 1.71269 5.96738 1.89374 5.64618 2.21494C5.32498 2.53613 5.14393 2.97138 5.14258 3.42563L5.14258 21.7114C5.14393 22.1657 5.32498 22.6009 5.64618 22.9221C5.96738 23.2433 6.40263 23.4244 6.85687 23.4257H10.2855L10.2855 21.7114ZM15.4283 3.76849L20.2284 8.56851H15.4283L15.4283 3.76849Z",
       fill: "white",
     });
     iconGroup.appendChild(docPath);
 
-    // PDF 텍스트 (그룹 색상)
     const pdfText = SVGHelper.createElement("path", {
       d: "M14.2689 22.5625L14.2689 16.1878H16.7839C17.2674 16.1878 17.6793 16.2802 18.0196 16.4648C18.3599 16.6475 18.6193 16.9017 18.7978 17.2274C18.9783 17.5512 19.0686 17.9247 19.0686 18.348C19.0686 18.7713 18.9773 19.1448 18.7947 19.4685C18.6121 19.7923 18.3475 20.0444 18.0009 20.2249C17.6565 20.4054 17.2394 20.4957 16.7497 20.4957H15.1467L15.1467 19.4156H16.5318C16.7912 19.4156 17.0049 19.371 17.173 19.2818C17.3431 19.1905 17.4697 19.0649 17.5527 18.9052C17.6378 18.7433 17.6803 18.5576 17.6803 18.348C17.6803 18.1363 17.6378 17.9517 17.5527 17.7939C17.4697 17.6342 17.3431 17.5107 17.173 17.4235C17.0028 17.3343 16.787 17.2897 16.5256 17.2897H15.6167L15.6167 22.5625H14.2689ZM21.9408 22.5625H19.681L19.681 16.1878H21.9595C22.6007 16.1878 23.1527 16.3154 23.6154 16.5707C24.0782 16.8238 24.434 17.188 24.6831 17.6632C24.9341 18.1384 25.0597 18.707 25.0597 19.3689C25.0597 20.033 24.9341 20.6036 24.6831 21.0809C24.434 21.5582 24.0761 21.9244 23.6092 22.1796C23.1444 22.4349 22.5882 22.5625 21.9408 22.5625ZM21.0288 21.4077H21.8848C22.2832 21.4077 22.6183 21.3372 22.8902 21.1961C23.1641 21.0529 23.3695 20.8319 23.5065 20.5331C23.6455 20.2322 23.715 19.8441 23.715 19.3689C23.715 18.8979 23.6455 18.513 23.5065 18.2141C23.3695 17.9153 23.1651 17.6954 22.8933 17.5543C22.6215 17.4132 22.2863 17.3426 21.8879 17.3426H21.0288L21.0288 21.4077ZM25.7951 22.5625L25.7951 16.1878H30.0158L30.0158 17.299H27.1429L27.1429 18.818H29.7357L29.7357 19.9292H27.1429L27.1429 22.5625H25.7951Z",
       fill: groupColor,
@@ -1562,7 +1496,6 @@ class PuzzleManager {
 
     this.boardElement.appendChild(this.svg);
 
-    // 초기 콘텐츠에서 완료된 조각 자동 처리
     this._initializeCompletedPieces();
   }
 
@@ -1572,7 +1505,7 @@ class PuzzleManager {
       fill: "none",
     });
   }
-  // 1. _setupDefs 메서드 - 각 레이어별 패턴 생성
+
   _setupDefs() {
     const defs = SVGHelper.createElement("defs");
 
@@ -1585,17 +1518,13 @@ class PuzzleManager {
     defs.appendChild(FilterFactory.createHoverShadowFilter());
     defs.appendChild(FilterFactory.createGaugeFillFilter());
 
-    // 재생 버튼 필터
     FilterFactory.createPlayButtonFilters().forEach((filter) => {
       defs.appendChild(filter);
     });
 
-    // 텍스트 섀도우 필터
     defs.appendChild(FilterFactory.createTextShadowFilter());
 
     PUZZLE_PIECES.forEach((piece) => {
-      // 1. piece-base-image용 패턴
-      // 비활성 상태 - 양쪽 모드 공통
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-${piece.id}`,
@@ -1604,7 +1533,6 @@ class PuzzleManager {
         )
       );
 
-      // 2. piece-hover-image용 패턴 (썸네일)
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-hover-${piece.id}`,
@@ -1613,10 +1541,6 @@ class PuzzleManager {
         )
       );
 
-      // 3. piece-completed-image용 패턴
-      // 개별 선택/활성화 시 사용
-      // COMPLETED 모드: bg_piece_completed.png
-      // FINISH 모드: bg_piece_all_completed.png
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-completed-${piece.id}`,
@@ -1625,8 +1549,6 @@ class PuzzleManager {
         )
       );
 
-      // 4. piece-all-completed-image용 패턴
-      // 전체 완료 애니메이션 시 사용
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-all-completed-${piece.id}`,
@@ -1635,10 +1557,6 @@ class PuzzleManager {
         )
       );
 
-      // 5. piece-finish-image용 패턴
-      // 개별 완료 시 사용
-      // COMPLETED 모드: bg_piece_completed.png
-      // FINISH 모드: bg_piece_finish.png
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-finish-${piece.id}`,
@@ -1650,6 +1568,7 @@ class PuzzleManager {
 
     this.svg.appendChild(defs);
   }
+
   _createBoardBackground() {
     BOARD_PATHS.forEach((boardData) => {
       const path = SVGHelper.createElement("path", {
@@ -1695,6 +1614,9 @@ class PuzzleManager {
     this.completedCount++;
     this._updateProgress();
 
+    // 완료된 퍼즐의 게이지를 100%로 업데이트
+    this.updateGauge(pieceId, 100);
+
     if (this.completedCount === PUZZLE_PIECES.length) {
       this._handleAllComplete();
     }
@@ -1712,60 +1634,42 @@ class PuzzleManager {
     if (progressPercent) progressPercent.textContent = Math.round(percentage);
   }
 
-  //  _handleAllComplete 메서드도 수정
   _handleAllComplete() {
-    // 완료 애니메이션 표시
     this._showCompletionAnimation();
 
-    // 리본 애니메이션 표시
     setTimeout(() => {
       this._showRibbonAnimation();
     }, 500);
 
-    // 애니메이션 후 all-completed 클래스만 추가
     setTimeout(() => {
       this.boardElement.classList.add("all-completed");
     }, 3100);
 
-    // 축하 메시지
     this._showCelebration();
   }
-  // 리본 애니메이션 메서드
+
   async _showRibbonAnimation() {
-    // 2번 피스 조각의 위치 찾기
     const piece2 = this.pieces.find((p) => p.data.id === 2);
     if (!piece2) return;
 
     const piece2Group = piece2.group;
     const piece2Bbox = piece2Group.getBBox();
-
-    // 보드의 실제 위치
     const boardRect = this.boardElement.getBoundingClientRect();
     const svgRect = this.svg.getBoundingClientRect();
 
-    // SVG 좌표계에서의 2번 피스 하단 중앙 위치
     const piece2CenterX = piece2Bbox.x + piece2Bbox.width / 2.1;
     const piece2BottomY = piece2Bbox.y + piece2Bbox.height / 2.2;
 
-    // ⭐ 리본 원본 크기 (SVG viewBox 기준)
     const ribbonOriginalWidth = 377;
     const ribbonOriginalHeight = 336;
     const ribbonAspectRatio = ribbonOriginalWidth / ribbonOriginalHeight;
+    const ribbonWidthInSVG = piece2Bbox.width * 0.9;
+    const ribbonHeightInSVG = ribbonWidthInSVG / ribbonAspectRatio;
 
-    // ⭐ 2번 피스 크기 기준으로 리본 크기 계산 (피스 너비의 80% 정도)
-    const ribbonWidthInSVG = piece2Bbox.width * 0.9; // 피스 너비의 80%
-    const ribbonHeightInSVG = ribbonWidthInSVG / ribbonAspectRatio; // 비율 유지
-
-    // 또는 피스 높이 기준으로 계산하려면:
-    // const ribbonHeightInSVG = piece2Bbox.height * 0.9; // 피스 높이의 90%
-    // const ribbonWidthInSVG = ribbonHeightInSVG * ribbonAspectRatio; // 비율 유지
-
-    // 리본 SVG 파일 로드
     try {
       const response = await fetch("./assets/images/onboarding/img_ribbon.svg");
       const svgText = await response.text();
 
-      // 리본 컨테이너 생성
       const ribbonContainer = document.createElement("div");
       ribbonContainer.className = "ribbon-animation-container";
       ribbonContainer.style.cssText = `
@@ -1779,19 +1683,13 @@ class PuzzleManager {
       overflow: visible;
     `;
 
-      // SVG 생성
       const svg = document.createElementNS(CONFIG.SVG.NAMESPACE, "svg");
       svg.setAttribute("viewBox", CONFIG.SVG.VIEWBOX);
       svg.setAttribute("width", "100%");
       svg.setAttribute("height", "100%");
-      svg.style.cssText = `
-      overflow: visible;
-    `;
+      svg.style.cssText = `overflow: visible;`;
 
-      // 리본 그룹 생성
       const ribbonGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
-
-      // ⭐ 비율 기반 스케일 계산
       const ribbonScale = ribbonWidthInSVG / ribbonOriginalWidth;
 
       ribbonGroup.setAttribute(
@@ -1799,12 +1697,10 @@ class PuzzleManager {
         `translate(${piece2CenterX - ribbonWidthInSVG / 2}, ${piece2BottomY - ribbonHeightInSVG / 2}) scale(${ribbonScale})`
       );
 
-      // SVG 파일 내용을 파싱
       const parser = new DOMParser();
       const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
       const ribbonSvg = svgDoc.documentElement;
 
-      // SVG의 모든 자식 요소를 ribbonGroup에 추가
       Array.from(ribbonSvg.children).forEach((child) => {
         const importedNode = document.importNode(child, true);
         ribbonGroup.appendChild(importedNode);
@@ -1814,7 +1710,6 @@ class PuzzleManager {
       ribbonContainer.appendChild(svg);
       document.body.appendChild(ribbonContainer);
 
-      // ⭐ circle 요소는 고정 위치에서 페이드인
       const circles = ribbonGroup.querySelectorAll("circle");
       circles.forEach((circle) => {
         circle.style.opacity = "0";
@@ -1825,31 +1720,24 @@ class PuzzleManager {
         }, 100);
       });
 
-      // ⭐ 각 path가 개별로 하늘에서 떨어짐
       const pathGroups = ribbonGroup.querySelectorAll("g[filter]");
 
       pathGroups.forEach((pathGroup, index) => {
-        // 하늘에서 떨어지는 시작 높이 (랜덤)
         const startY = -300 - Math.random() * 200;
-
-        // 랜덤한 delay와 duration
         const delay = index * 100 + Math.random() * 100;
         const duration = 800 + Math.random() * 400;
 
-        // 초기 상태: 위쪽에서 시작, 투명
         pathGroup.style.opacity = "0";
         pathGroup.style.transform = `translateY(${startY}px)`;
         pathGroup.style.transition = `all ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
         pathGroup.style.transitionDelay = `${delay}ms`;
 
-        // 애니메이션 시작: 원래 위치로 떨어짐
         setTimeout(() => {
           pathGroup.style.opacity = "1";
           pathGroup.style.transform = `translateY(0)`;
         }, 50);
       });
 
-      // ⭐ 애니메이션 완료 후 서서히 사라짐
       setTimeout(() => {
         ribbonContainer.style.transition = "opacity 0.5s ease";
         ribbonContainer.style.opacity = "0";
@@ -1863,12 +1751,9 @@ class PuzzleManager {
     }
   }
 
-  // 완료 이미지 애니메이션 메서드 추가
   _showCompletionAnimation() {
-    // 퍼즐 보드의 위치와 크기 가져오기
     const boardRect = this.boardElement.getBoundingClientRect();
 
-    // SVG 컨테이너 생성 (보드와 동일한 위치)
     const animationContainer = document.createElement("div");
     animationContainer.className = "completion-animation-container";
     animationContainer.style.cssText = `
@@ -1883,7 +1768,6 @@ class PuzzleManager {
     transition: opacity 1s ease;
   `;
 
-    // SVG 생성
     const svg = SVGHelper.createElement("svg", {
       viewBox: CONFIG.SVG.VIEWBOX,
       style: `
@@ -1893,7 +1777,6 @@ class PuzzleManager {
     `,
     });
 
-    // defs 설정
     const defs = SVGHelper.createElement("defs");
     const completedPattern = SVGHelper.createPattern(
       "completion-animation-pattern",
@@ -1905,7 +1788,6 @@ class PuzzleManager {
     defs.appendChild(FilterFactory.createCompletedFilter());
     svg.appendChild(defs);
 
-    // 모든 퍼즐 조각을 하나의 그룹으로
     const boardGroup = SVGHelper.createElement("g");
 
     PUZZLE_PIECES.forEach((piece) => {
@@ -1923,21 +1805,17 @@ class PuzzleManager {
     animationContainer.appendChild(svg);
     document.body.appendChild(animationContainer);
 
-    // 페이드 인
     setTimeout(() => {
       animationContainer.style.opacity = "1";
     }, 100);
 
-    // 페이드 아웃
     setTimeout(() => {
       animationContainer.style.opacity = "0";
     }, 3000);
 
-    // 제거 및 이미지 교체
     setTimeout(() => {
       animationContainer.remove();
 
-      // 전체 완료 시 showAllCompleted 호출 (모드에 따라 다른 이미지 표시)
       this.pieces.forEach((piece) => {
         piece.showAllCompleted();
       });
@@ -1946,33 +1824,32 @@ class PuzzleManager {
 
   _showCelebration() {
     const pageTitle = document.querySelector(".page-title");
+    if (!pageTitle) return;
+
     const p = pageTitle.querySelector("p");
-    // 기존 em 값 가져오기
-    const emText = pageTitle.querySelector("h3 em").textContent;
+    const emText = pageTitle.querySelector("h3 em")?.textContent;
+
     if (CONFIG.COMPLETION_MODE === "FINISH") {
-      // h3, p 변경
       pageTitle.querySelector("h3").innerHTML = `
     <em>온보딩 필수 콘텐츠</em> 시청을 완료하셨습니다.
   `;
-      p.classList.add("fw-b");
-      p.innerHTML = `
+      if (p) {
+        p.classList.add("fw-b");
+        p.innerHTML = `
     필요할 땐 <em>언제든</em> 다시 볼 수 있어요.
   `;
+      }
     } else {
-      // h3, p 변경
       pageTitle.querySelector("h3").innerHTML = `
     <span><em>${emText}</em>님,</span> 수고하셨습니다.
   `;
 
-      pageTitle.querySelector("p").innerHTML = `
+      if (p) {
+        p.innerHTML = `
     <em>온보딩 필수 콘텐츠 </em> 시청을 완료하셨습니다.
   `;
+      }
     }
-    /*
-    const overlay = document.getElementById("overlay");
-    const celebration = document.getElementById("celebration");
-    if (overlay) overlay.classList.add("show");
-    if (celebration) celebration.classList.add("show");*/
   }
 
   initializeWithCompletedPieces(completedPieceIds) {
@@ -1981,14 +1858,14 @@ class PuzzleManager {
       if (piece) {
         piece.markComplete();
         this.completedCount++;
+        // 완료된 퍼즐의 게이지를 100%로 업데이트
+        this.updateGauge(pieceId, 100);
       }
     });
     this._updateProgress();
   }
 
-  // 2. PuzzleManager의 _initializeCompletedPieces 메서드 수정
   _initializeCompletedPieces() {
-    // contentManager에서 completed: true인 조각들을 찾아서 자동으로 완료 처리
     const completedPieces = [];
     PUZZLE_PIECES.forEach((puzzlePiece) => {
       const content = this.contentManager.getContent(puzzlePiece.id);
@@ -2000,12 +1877,9 @@ class PuzzleManager {
     if (completedPieces.length > 0) {
       this.initializeWithCompletedPieces(completedPieces);
 
-      // ⭐ 모든 조각이 완료된 경우
       if (this.completedCount === PUZZLE_PIECES.length) {
-        // 전체 완료 상태로 설정
         this.boardElement.classList.add("all-completed");
 
-        // 전체 완료 이미지로 전환 (모드에 따라 다른 이미지 표시)
         this.pieces.forEach((piece) => {
           piece.showAllCompleted();
         });

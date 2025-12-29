@@ -2,21 +2,121 @@
 
 @use "base" as *;
 
+// =======================================
+// Variables
+// =======================================
+$learning-height: calc(var(--window-inner-height) - 64px);
+$gauge-base-width: 1610px;
+
+// Note: Colors are now managed via CSS variables in _root.scss
+
+// Sizes
+$chapter-widths: (
+  base: 160px,
+  base-4: 150px,
+  base-5: 140px,
+  completed: 200px,
+  current: 328px,
+);
+
+// =======================================
+// Mixins
+// =======================================
+@mixin learning-container {
+  position: relative;
+  width: 100%;
+  height: $learning-height;
+  padding: 0 32px;
+  overflow: hidden;
+  @include flex(column, center, flex-start);
+}
+
+@mixin chapter-width($size) {
+  width: calc(($size / $gauge-base-width) * 100%);
+}
+
+@mixin card-tail($color, $size: 15px, $border-size: 10px) {
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -#{$size};
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: #{$border-size} solid transparent;
+    border-right: #{$border-size} solid transparent;
+    border-top: #{$size} solid $color;
+  }
+}
+
+@mixin puzzle-img-box(
+  $width,
+  $left: null,
+  $top: null,
+  $right: null,
+  $bottom: null
+) {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  width: $width;
+  @if $left {
+    left: $left;
+  }
+  @if $top {
+    top: $top;
+  }
+  @if $right {
+    right: $right;
+  }
+  @if $bottom {
+    bottom: $bottom;
+  }
+}
+
+@mixin puzzle-title(
+  $color,
+  $left: null,
+  $top: null,
+  $right: null,
+  $bottom: null
+) {
+  position: absolute;
+  font-size: 1.25vw;
+  font-weight: 700;
+  z-index: 1;
+  color: $color;
+  @if $left {
+    left: $left;
+  }
+  @if $top {
+    top: $top;
+  }
+  @if $right {
+    right: $right;
+  }
+  @if $bottom {
+    bottom: $bottom;
+  }
+}
+
+// =======================================
+// Wrap Styles
+// =======================================
 .wrap {
   &.lessons {
     .container {
       position: relative;
       overflow: hidden;
+
       &::before {
-        content: " ";
-        position: absolute;
+        @include pseudo(block, absolute, " ");
         left: 0;
         top: 0;
         width: 100%;
         height: 50%;
-        //opacity: 0.2;
-        background: url(../images/learning/bg_cloud.png) 0px 0px / 100% 100%
-          no-repeat;
+        @include bgImg("../images/learning/bg_cloud.png", 100% 100%, 0px 0px);
         pointer-events: none;
         mask-image: linear-gradient(
           to bottom,
@@ -28,32 +128,42 @@
   }
 }
 
+// =======================================
+// Page Title Styles
+// =======================================
 .lessons,
 .onboarding {
   .page-title {
     padding-top: 74px;
     text-align: center;
+
     p {
       font-size: 40px;
       font-weight: 400;
+
       &.fw-b {
         font-weight: 700;
       }
+
       em {
         font-weight: 700;
         color: var(--text-title-accent);
       }
+
       small {
         font-size: 32px;
         font-weight: 400;
       }
     }
+
     h3 {
       font-size: 32px;
       font-weight: 300;
+
       span {
         font-weight: 400;
       }
+
       em {
         font-weight: 500;
       }
@@ -61,6 +171,9 @@
   }
 }
 
+// =======================================
+// Onboarding Styles
+// =======================================
 .onboarding {
   .container {
     background:
@@ -71,92 +184,92 @@
         rgba(134, 114, 77, 0.2) 88.94%
       ),
       linear-gradient(180deg, #f9f6f0 0%, #e6ddcc 100%);
-
     box-shadow: 0 -2px 3px 0 rgba(0, 0, 0, 0.5);
   }
 
   .puzzle {
     &-wrap {
-      position: relative;
-      width: 100%;
-      height: calc(var(--window-inner-height) - 64px);
-      padding: 0 32px;
-      overflow: hidden;
-      @include flex(column, center, flex-start);
+      @include learning-container;
     }
+
     &-area {
       position: relative;
       width: 100%;
       flex-grow: 1;
       @include flex(row, center, center);
     }
+
     &-board {
       position: relative;
       width: 90%;
       margin-top: -4%;
+
       svg {
         width: 100%;
         height: auto;
         display: block;
         transform: perspective(794px) rotateX(6deg);
         transform-origin: bottom;
-        text {
-        }
       }
 
       .img-box {
-        position: absolute;
-        z-index: 1;
-        pointer-events: none;
-
         &.family {
-          width: 14.07089%;
-          left: 0.75187%;
-          top: 5.03778%;
+          @include puzzle-img-box(14.07089%, $left: 0.75187%, $top: 5.03778%);
         }
 
         &.hanmac {
-          width: 13.4264%;
-          top: 3.77833%;
-          right: 2.68528%;
+          @include puzzle-img-box(13.4264%, $top: 3.77833%, $right: 2.68528%);
         }
+
         &.value {
-          width: 9.23737%;
-          left: -1.61117%;
-          bottom: -4.87804%;
+          @include puzzle-img-box(
+            9.23737%,
+            $left: -1.61117%,
+            $bottom: -4.87804%
+          );
         }
+
         &.company {
-          width: 12.88936%;
-          right: -2.68528%;
-          bottom: -8.07926%;
+          @include puzzle-img-box(
+            12.88936%,
+            $right: -2.68528%,
+            $bottom: -8.07926%
+          );
         }
       }
+
       .tit-box {
-        position: absolute;
-        font-size: 1.25vw; /* 24px */
-        font-weight: 700;
-        z-index: 1;
         &.family {
-          color: #7ed29b;
-          left: 8.2706%;
-          top: 31.1083%;
+          @include puzzle-title(
+            var(--bg-puzzle-family),
+            $left: 8.2706%,
+            $top: 31.1083%
+          );
         }
 
         &.hanmac {
-          color: #ffccca;
-          top: 31.1083%;
-          right: 6.44468%;
+          @include puzzle-title(
+            var(--bg-puzzle-hanmac),
+            $top: 31.1083%,
+            $right: 6.44468%
+          );
           opacity: 0.45;
         }
+
         &.value {
-          color: #87a7d6;
-          left: 8.05585%;
-          bottom: 10.51829%;
+          @include puzzle-title(
+            var(--bg-puzzle-value),
+            $left: 8.05585%,
+            $bottom: 10.51829%
+          );
         }
+
         &.company {
-          color: #b49a65;
-          right: 8.05585%;
-          bottom: 15.1133%;
+          @include puzzle-title(
+            var(--bg-puzzle-company),
+            $right: 8.05585%,
+            $bottom: 15.1133%
+          );
         }
       }
     }
@@ -164,22 +277,29 @@
     &-piece {
       &-group {
         cursor: pointer;
+
         &:hover {
           .piece-overlay-hover {
             fill-opacity: 0.3;
           }
         }
+
         &.completed {
           .piece-overlay-base {
             fill: white;
             fill-opacity: 0.6;
           }
+
+          .gauge-fill-line {
+            stroke-dashoffset: 0 !important;
+          }
         }
+
         &:not(.completed) {
           &[data-piece="1"],
           &[data-piece="6"] {
             .piece-overlay-base {
-              fill: #1d375d;
+              fill: var(--bg-piece-1);
               fill-opacity: 0.2;
             }
           }
@@ -189,7 +309,7 @@
           &[data-piece="4"],
           &[data-piece="5"] {
             .piece-overlay-base {
-              fill: #662a0d;
+              fill: var(--bg-piece-2);
               fill-opacity: 0.2;
             }
           }
@@ -197,7 +317,7 @@
           &[data-piece="7"],
           &[data-piece="8"] {
             .piece-overlay-base {
-              fill: #5b4822;
+              fill: var(--bg-piece-3);
               fill-opacity: 0.2;
             }
           }
@@ -205,22 +325,24 @@
           &[data-piece="9"],
           &[data-piece="10"] {
             .piece-overlay-base {
-              fill: #2a5338;
+              fill: var(--bg-piece-4);
               fill-opacity: 0.2;
             }
           }
         }
       }
+
       &-overlay {
         &-base {
           fill: white;
           fill-opacity: 0;
-          transition: all 0.3s ease;
+          @include transition(all, 0.3s, ease);
         }
+
         &-hover {
           fill: black;
           fill-opacity: 0;
-          transition: all 0.3s ease;
+          @include transition(all, 0.3s, ease);
           pointer-events: none;
         }
       }
@@ -228,6 +350,9 @@
   }
 }
 
+// =======================================
+// Completion Styles
+// =======================================
 .completion {
   &-animation {
     &-container {
@@ -239,56 +364,59 @@
   }
 }
 
+// =======================================
+// Lessons Styles
+// =======================================
 .lessons {
   &-wrap {
-    position: relative;
-    width: 100%;
-    height: calc(var(--window-inner-height) - 64px);
-    padding: 0 32px;
-    overflow: hidden;
+    @include learning-container;
     z-index: 2;
-    @include flex(column, center, flex-start);
   }
+
   &-area {
     position: relative;
     width: 100%;
     flex-grow: 1;
-    background-image: url(../images/learning/bg_grid.svg);
-    background-position: center;
-    background-repeat: no-repeat;
+    @include bgImg("../images/learning/bg_grid.svg", auto, center);
     padding-top: 3%;
     @include flex();
   }
+
   &-gauge {
     text-align: center;
     width: 84.427%;
     margin: auto;
     translate: 4% 0;
+
     svg {
       width: 100%;
       height: auto;
     }
   }
+
   .start-line {
     position: absolute;
     bottom: 0;
-    left: -0;
+    left: 0;
     width: 3.91304%;
     translate: -8% -32%;
   }
+
   #markers-container {
     translate: none;
   }
+
   .marker {
     position: absolute;
     cursor: pointer;
+
     &[data-type="chapter"] {
-      width: calc(48px / 1610px) * 100%;
+      width: 2.4676%;
+      transform: scale(1.4);
 
       &::before,
       &::after {
-        content: "";
-        position: absolute;
+        @include pseudo(block, absolute, "");
         aspect-ratio: 1 / 1;
         top: 50%;
         left: 50%;
@@ -296,77 +424,82 @@
         mix-blend-mode: multiply;
         z-index: 9;
       }
+
       &::before {
-        content: "";
         width: 25%;
         filter: blur(2px);
         opacity: 0.4;
       }
+
       &::after {
         width: 15%;
         filter: blur(0.7px);
         opacity: 0.2;
       }
+
       &.current {
         &::before,
         &::after {
-          background-color: #146b51;
+          background-color: var(--bg-chapter-current);
         }
       }
+
       &.completed {
         &::before,
         &::after {
-          background-color: #ba9a85;
+          background-color: var(--bg-chapter-completed);
         }
       }
     }
-    &[data-type="normal"] {
-      width: calc(48px / 1610px) * 100%;
-      translate: 0 -40%;
-    }
 
-    &[data-type="chapter"] {
-      width: 2.4676%;
-      transform: scale(1.4);
-    }
     &[data-type="normal"] {
       width: 2.3442%;
       translate: 0 -40%;
+
       &.current {
         transform: scale(1.6) !important;
       }
     }
 
+    // Marker positioning
     &:first-child {
       translate: 0 -80%;
     }
+
     &:nth-child(n + 2):nth-child(-n + 9) {
       translate: 0 -90%;
       transform: scale(1.2);
     }
+
     &:nth-child(n + 11):nth-child(-n + 12),
     &:nth-child(n + 14):nth-child(-n + 15) {
       transform: scale(1.2);
     }
+
     &:nth-child(10),
     &:nth-child(13) {
       translate: 0 -50%;
     }
+
     &:nth-child(16),
     &:nth-child(19) {
       translate: 0 -60%;
       transform: scale(1);
     }
+
     &:nth-child(n + 17):nth-child(-n + 18) {
       translate: 0 -60%;
       transform: scale(1.1);
     }
+
     &:nth-child(n + 20):nth-child(-n + 25) {
       translate: 0 -60%;
     }
+
     &:nth-child(n + 22):nth-child(-n + 24) {
       transform: scale(0.9);
     }
+
     &:nth-child(25) {
       transform: scale(0.8);
     }
@@ -374,40 +507,46 @@
   .chapter {
     &-list {
       pointer-events: none;
+
       li {
         position: absolute;
-        transition: all 0.3s ease;
+        @include transition(all, 0.3s, ease);
         pointer-events: auto;
+
         &:not(.completed, .current) {
           filter: grayscale(100%);
-          &:nth-child(1) {
-            width: calc((160px / 1610px) * 100%);
+
+          @for $i from 1 through 3 {
+            &:nth-child(#{$i}) {
+              @include chapter-width(map-get($chapter-widths, base));
+            }
           }
-          &:nth-child(2) {
-            width: calc((160px / 1610px) * 100%);
-          }
-          &:nth-child(3) {
-            width: calc((160px / 1610px) * 100%);
-          }
+
           &:nth-child(4) {
-            width: calc((150px / 1610px) * 100%);
+            @include chapter-width(map-get($chapter-widths, base-4));
           }
+
           &:nth-child(5) {
-            width: calc((140px / 1610px) * 100%);
+            @include chapter-width(map-get($chapter-widths, base-5));
           }
         }
+
         &.completed {
-          width: calc((200px / 1610px) * 100%);
+          @include chapter-width(map-get($chapter-widths, completed));
+
           svg {
             animation: bounce 0.5s ease;
           }
         }
+
         &.current {
-          width: calc((328px / 1610px) * 100%);
+          @include chapter-width(map-get($chapter-widths, current));
+
           svg {
             animation: bounce 0.5s ease;
           }
         }
+
         svg {
           width: 100%;
           height: auto;
@@ -418,18 +557,17 @@
     }
     &-card {
       position: relative;
-      transition: all 0.3s ease;
+      @include transition(all, 0.3s, ease);
 
       &-inner {
         position: relative;
         background: white;
         border-radius: 8px;
-        padding: 0px;
-        transition: all 0.3s ease;
-        /* 말풍선 꼬리 */
+        padding: 0;
+        @include transition(all, 0.3s, ease);
+
         &::after {
-          content: "";
-          position: absolute;
+          @include pseudo(block, absolute, "");
           bottom: -14px;
           left: 50%;
           transform: translateX(-50%);
@@ -442,7 +580,7 @@
         }
       }
 
-      /* 기본 상태 (회색) */
+      // Base state (gray)
       &.base {
         .chapter-card-inner {
           border-radius: 8px;
@@ -452,80 +590,77 @@
               rgba(74, 74, 74, 0.2) 100%
             )
             #fff;
+
           &::after {
             border-top-color: #d9d9d9;
           }
         }
+
         .card-title {
           font-size: 14px;
-          color: #7e7e7e;
+          color: var(--bg-card-base);
         }
       }
-      /* 진행중 상태 (초록색) */
+
+      // Current state (green)
       &.current {
         .chapter-card-inner {
           border-radius: 14px;
-          border: 3px solid #1f9b76;
+          border: 3px solid var(--bg-card-current-border);
           background: linear-gradient(
               180deg,
               rgba(31, 155, 118, 0) 50%,
               rgba(31, 155, 118, 0.2) 100%
             )
             #fff;
+
           &::after {
-            border-top-color: #dbefe9;
+            border-top-color: var(--bg-card-current-bg);
             border-top-width: 18px;
             border-left-width: 14px;
             border-right-width: 14px;
             bottom: -16px;
           }
+
           &::before {
-            border-top-color: #1f9b76;
+            @include pseudo(block, absolute, "");
+            border-top-color: var(--bg-card-current-border);
             border-top-width: 18px;
             border-left-width: 16px;
             border-right-width: 16px;
             bottom: -18px;
+            width: 0;
+            height: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left-color: transparent;
+            border-right-color: transparent;
           }
         }
+
         .card-title {
           font-size: 24px;
           padding: 8px 0;
-          color: #1d9b75;
+          color: var(--bg-card-current);
         }
+
         .card-play-button {
           width: calc(54px / 328px * 100%);
         }
       }
-      /* 완료 상태 (베이지/주황) */
+
+      // Completed state (beige/orange)
       &.completed {
-        &:nth-child(2) {
-          .chapter-card-inner {
-            &::before {
-              transform: scale(1.2);
+        @for $i from 2 through 5 {
+          &:nth-child(#{$i}) {
+            .chapter-card-inner {
+              &::before {
+                transform: scale(1 + ($i - 1) * 0.1);
+              }
             }
           }
         }
-        &:nth-child(3) {
-          .chapter-card-inner {
-            &::before {
-              transform: scale(1.3);
-            }
-          }
-        }
-        &:nth-child(4) {
-          .chapter-card-inner {
-            &::before {
-              transform: scale(1.4);
-            }
-          }
-        }
-        &:nth-child(5) {
-          .chapter-card-inner {
-            &::before {
-              transform: scale(1.5);
-            }
-          }
-        }
+
         .chapter-card-inner {
           border-radius: 10px;
           background: linear-gradient(
@@ -534,31 +669,28 @@
               rgba(234, 215, 204, 0.9) 100%
             )
             #fff;
+
           &::before {
-            content: " ";
-            position: absolute;
+            @include pseudo(block, absolute, " ");
             top: 0;
             right: 0;
             translate: 50% -30%;
             width: 60px;
             aspect-ratio: 1 / 1;
-            background-image: url(../images/learning/img_stamp.svg);
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
+            @include bgImg("../images/learning/img_stamp.svg", contain, center);
             z-index: 1;
           }
 
           &::after {
-            border-top-color: rgba(255, 255, 255, 0.95);
             border-top-color: #f9f4f1;
           }
         }
+
         .card-thumbnail-container {
           position: relative;
-          &:after {
-            content: " ";
-            position: absolute;
+
+          &::after {
+            @include pseudo(block, absolute, " ");
             top: 0;
             left: 0;
             width: 100%;
@@ -570,10 +702,12 @@
             );
           }
         }
+
         .card-title {
           font-size: 20px;
-          color: #ab3d00;
+          color: var(--bg-card-completed);
         }
+
         .card-play-button {
           width: calc(38px / 200px * 100%);
         }
@@ -583,6 +717,7 @@
           width: 100%;
           height: auto;
           display: block;
+
           &-container {
             position: relative;
             width: 100%;
@@ -592,13 +727,15 @@
             overflow: hidden;
           }
         }
+
         &-title {
           text-align: center;
           font-weight: 700;
           padding: 4px 0;
-          transition: color 0.3s ease;
+          @include transition(color, 0.3s, ease);
         }
       }
+
       .card-gauge {
         &-bar {
           position: absolute;
@@ -609,15 +746,17 @@
           background-color: #fff;
           box-shadow: 1.234px 1.234px 1.234px 0 rgba(0, 0, 0, 0.3) inset;
         }
+
         &-fill {
           position: absolute;
           bottom: 0;
           left: 0;
           height: 3px;
-          background-color: #e25e00;
-          box-shadow: 0.922px 0.922px 0.922px 0 rgba(0, 0, 0, 0.3) inset;
+          background-color: var(--bg-gauge-fill);
+          box-shadow: 0.922px 0.922px 0.922px 0 var(--shadow-gauge-inset) inset;
         }
       }
+
       .shadow-effect {
         position: absolute;
         width: 80%;
@@ -625,59 +764,57 @@
         left: 50%;
         bottom: -20%;
         translate: -50% -50%;
+
         &::before,
         &::after {
-          content: "";
-          position: absolute;
+          @include pseudo(block, absolute, "");
           left: 50%;
           transform: translateX(-50%);
-          background: #8a7d64;
+          background: var(--bg-shadow);
           border-radius: 50%;
           mix-blend-mode: multiply;
-          opacity: 0.2; /* 0.5 * 0.4 (전체 opacity) */
-        }
-        /* 첫 번째 ellipse - 더 넓고 흐린 그림자 */
-        &::before {
-          width: 100%; /* rx="94" * 2 */
-          height: 10px; /* ry="5" * 2 */
-          top: 4px; /* cy="9" - ry="5" */
-          filter: blur(4px); /* stdDeviation="2" * 2 */
+          opacity: 0.2;
         }
 
-        /* 두 번째 ellipse - 더 좁고 선명한 그림자 */
+        &::before {
+          width: 100%;
+          height: 10px;
+          top: 4px;
+          filter: blur(4px);
+          background: var(--bg-shadow);
+        }
+
         &::after {
-          width: 80%; /* rx="69" * 2 */
-          height: 4px; /* ry="1.5" * 2 */
-          top: 8px; /* cy="9.5" - ry="1.5" */
-          filter: blur(2px); /* stdDeviation="1" * 2 */
+          width: 80%;
+          height: 4px;
+          top: 8px;
+          filter: blur(2px);
+          background: var(--bg-shadow);
         }
       }
-      /* 플레이 버튼 */
+
       .card-play-button {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        @include center-absolute;
         width: calc(39px / 160px * 100%);
         height: auto;
-        transition: transform 0.2s ease;
+        @include transition(transform, 0.2s, ease);
         z-index: 2;
       }
     }
   }
+
   .progress {
     &-indicator {
-      /* 크기 조정 */
-      width: calc((131px / 1610px) * 100%);
+      @include chapter-width(131px);
       height: auto;
+
       &.completed {
-        width: calc((140px / 1610px) * 100%);
+        @include chapter-width(140px);
       }
+
       svg {
         overflow: visible;
       }
-    }
-    &-percent {
     }
   }
 }
