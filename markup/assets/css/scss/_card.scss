@@ -2,51 +2,76 @@
 
 @use "base" as *;
 
+// =======================================
+// Variables
+// =======================================
+// Note: Colors are now managed via CSS variables in _root.scss
+
+// Sizes
+$card-border-radius: 120px;
+$card-width: 360px;
+$card-height: 144px;
+$card-padding-hover: 15px;
+$card-padding: 8px 32px 8px 12px;
+$card-gap: 22px;
+$thumb-size: 128px;
+$pick-width: 144px;
+$pick-height: 42px;
+$bookmark-size: 24px;
+
+// Effects
+$backdrop-blur: 9.350000381469727px;
+$backdrop-blur-small: 2px;
+$transition-speed: 0.1s;
+
+// =======================================
+// Mixins
+// =======================================
+@mixin card-hover-overlay {
+  @include center-absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  opacity: 0;
+  @include transition(all, $transition-speed, linear);
+}
+
+@mixin card-hover-active {
+  opacity: 1;
+  background: linear-gradient(180deg, var(--bg-card-hover-start) 0%, var(--bg-card-hover-end) 100%);
+  box-shadow: 8px 16px 24px 0 var(--bg-card-hover-shadow);
+  backdrop-filter: blur($backdrop-blur);
+  padding: $card-padding-hover;
+  @include maskContents();
+}
+
+// =======================================
+// Video Card Styles
+// =======================================
 .video {
   &-card {
     position: relative;
-    border-radius: 120px;
+    border-radius: $card-border-radius;
 
     &::before {
-      content: " ";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 100%;
-      height: 100%;
-      border-radius: inherit;
+      @include card-hover-overlay;
       padding: 0;
-      translate: -50% -50%;
-      opacity: 0;
-      transition: all 0.1s linear;
     }
+
     &:hover {
       &::before {
-        opacity: 1;
-        background: linear-gradient(
-          180deg,
-          #ff6600 0%,
-          rgba(255, 132, 0, 0.7) 100%
-        );
-        box-shadow: 8px 16px 24px 0 rgba(198, 187, 177, 0.5);
-        backdrop-filter: blur(9.350000381469727px);
-        padding: 15px;
-        @include maskContents();
-
-        top: 50%;
-        left: 50%;
-        translate: -50% -50%;
+        @include card-hover-active;
       }
+
       .card {
         &::before {
-          content: " ";
-          position: absolute;
-          width: 100%;
-          height: 100%;
+          @include pseudo(block, absolute, " ");
           top: 0;
           left: 0;
+          width: 100%;
+          height: 100%;
           border-radius: inherit;
-          box-shadow: 0 0 7px 0 #000;
+          box-shadow: 0 0 7px 0 var(--bg-card-shadow-inner);
           z-index: -1;
         }
       }
@@ -56,16 +81,15 @@
       position: absolute;
       left: -110px;
       top: -10px;
-      width: 144px;
-      height: 42px;
+      width: $pick-width;
+      height: $pick-height;
       border-radius: 24px 24px 0 24px;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-
+      border: 1px solid var(--border-pick);
       background: var(--bg-pick);
       font-size: 16px;
       color: var(--text-pick);
-      box-shadow: 0 4px 8px 0 rgba(166, 154, 97, 0.25);
-      backdrop-filter: blur(2px);
+      box-shadow: 0 4px 8px 0 var(--bg-pick-shadow);
+      backdrop-filter: blur($backdrop-blur-small);
       gap: 2px;
       @include flex();
 
@@ -73,43 +97,49 @@
         margin-left: 2px;
         font-weight: 700;
       }
+
       .ico-pick {
         z-index: 1;
         @include svgIcon("../images/ico/ico_pick.svg", 24px);
       }
     }
+
     .card {
-      width: 360px;
-      height: 144px;
+      width: $card-width;
+      height: $card-height;
       border-radius: inherit;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 8px 12px 0 rgba(217, 202, 190, 0.5);
-      backdrop-filter: blur(9.350000381469727px);
-      gap: 22px;
-      padding: 8px 32px 8px 12px;
+      border: 1px solid var(--border-card);
+      background: var(--bg-card);
+      box-shadow: 0 8px 12px 0 var(--bg-card-shadow);
+      backdrop-filter: blur($backdrop-blur);
+      gap: $card-gap;
+      padding: $card-padding;
       z-index: 1;
       @include flex();
+
       &:hover {
-        box-shadow: 0 8px 12px 0 rgba(217, 202, 190, 0.5);
+        box-shadow: 0 8px 12px 0 var(--bg-card-shadow);
       }
     }
+
     .thumb {
       position: relative;
-      min-width: 128px;
-      max-width: 128px;
+      min-width: $thumb-size;
+      max-width: $thumb-size;
       border-radius: 50%;
       aspect-ratio: 1 / 1;
       overflow: hidden;
       @include flex();
+
       &::after {
         width: 100%;
         height: 100%;
-        background: rgba(255, 255, 255, 0.3);
+        background: var(--bg-card-thumb-overlay);
         box-sizing: border-box;
         padding: 4px;
         @include maskContents();
       }
+
       img {
         width: 100%;
         height: 100%;
@@ -117,44 +147,48 @@
         object-fit: cover;
       }
     }
+
     .txt-box {
       @include flex(column, flex-start, center);
+
       .bookmark {
         position: absolute;
         top: 10px;
         right: 42px;
-        width: 24px;
-        height: 24px;
-
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
+        width: $bookmark-size;
+        height: $bookmark-size;
+        @include bgImg("", contain, center);
 
         input[type="checkbox"] {
           padding: 0;
-          width: 24px;
-          height: 24px;
+          width: $bookmark-size;
+          height: $bookmark-size;
         }
       }
+
       .category {
         margin-bottom: 8px;
         font-size: 12px;
         font-weight: 700;
-        color: #252525;
+        color: var(--text-card-category);
         display: block;
         padding: 4px 6px;
         border-radius: 4px;
-        background: #ded7cf;
+        background: var(--bg-cate-primary);
+
         &.leader {
           background: var(--bg-cate-primary);
         }
+
         &.insight {
           background: var(--bg-cate-secondary);
         }
+
         &.biz {
           background: var(--bg-cate-tertiary);
         }
       }
+
       .title {
         font-size: 20px;
         font-weight: 700;
@@ -162,6 +196,7 @@
         color: var(--text-primary);
         @include ellipsis(2);
       }
+
       .author {
         margin-top: 16px;
         font-size: 14px;
@@ -172,6 +207,7 @@
         @include ellipsis(1);
       }
     }
+
     .gauge {
       &-bar {
         position: absolute;
@@ -183,6 +219,7 @@
         padding-bottom: 4px;
         @include maskContents();
       }
+
       &-fill {
         position: absolute;
         left: 0;

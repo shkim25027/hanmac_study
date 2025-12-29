@@ -2,65 +2,131 @@
 
 @use "base" as *;
 
+// =======================================
+// Variables
+// =======================================
+$main-height: calc(var(--window-inner-height) - 64px);
+$header-height: 64px;
+
+// Note: Colors are now managed via CSS variables in _root.scss
+
+// Sizes
+$circle-sizes: (
+  1: clamp(1372px, 71.45833vw, 71.45833vw),
+  2: clamp(1066px, 55.5208vw, 55.5208vw),
+  3: clamp(794px, 41.3541vw, 41.3541vw),
+  4: clamp(470px, 24.4791vw, 24.4791vw),
+);
+
+$circle-opacities: (
+  1: 1,
+  2: 0.7,
+  3: 0.6,
+  4: 0.5,
+);
+
+// SVG Arrow URLs
+$svg-arrow-prev-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23DD842F'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+$svg-arrow-prev-disabled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23EFE7D7'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+$svg-arrow-prev-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23D34D00'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+$svg-arrow-next-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61160)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61160' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23DD842F'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+$svg-arrow-next-disabled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61162)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61162' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23EFE7D7'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+$svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61162)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61162' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23D34D00'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+
+// =======================================
+// Mixins
+// =======================================
+@mixin center-absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+@mixin circle-mask {
+  mask:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      #d9d9d9 0%,
+      rgba(166, 166, 166, 0.08) 40%,
+      rgba(140, 140, 140, 0.08) 60%,
+      #737373 100%
+    );
+  mask-composite: intersect;
+  -webkit-mask:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      #d9d9d9 0%,
+      rgba(166, 166, 166, 0.08) 40%,
+      rgba(140, 140, 140, 0.08) 60%,
+      #737373 100%
+    );
+  -webkit-mask-composite: source-in;
+}
+
+@mixin arrow-button-base {
+  position: absolute;
+  width: 84px;
+  height: 180px;
+  top: 50%;
+  translate: 0 -50%;
+  @include textBlind();
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+@mixin arrow-button-hover($property: left) {
+  &:not(.disabled) {
+    &:hover {
+      #{$property}: 30px;
+    }
+  }
+}
+
+// =======================================
+// Main Styles
+// =======================================
 .main {
   .container {
     position: relative;
-    height: calc(var(--window-inner-height) - 64px);
+    height: $main-height;
     overflow: hidden;
+
     .bg-circle {
-      position: absolute;
-      left: 50%;
-      top: 50%;
+      @include center-absolute;
       width: 100%;
       margin: auto;
-      height: calc(var(--window-inner-height) - 64px);
-      mask:
-        linear-gradient(
-          to right,
-          transparent 0%,
-          black 10%,
-          black 90%,
-          transparent 100%
-        ),
-        linear-gradient(
-          180deg,
-          #d9d9d9 0%,
-          rgba(166, 166, 166, 0.08) 40%,
-          rgba(140, 140, 140, 0.08) 60%,
-          #737373 100%
-        );
-      mask-composite: intersect;
-      -webkit-mask:
-        linear-gradient(
-          to right,
-          transparent 0%,
-          black 10%,
-          black 90%,
-          transparent 100%
-        ),
-        linear-gradient(
-          180deg,
-          #d9d9d9 0%,
-          rgba(166, 166, 166, 0.08) 40%,
-          rgba(140, 140, 140, 0.08) 60%,
-          #737373 100%
-        );
-      -webkit-mask-composite: source-in;
-      translate: -50% -50%;
+      height: $main-height;
+      @include circle-mask;
       @include flex();
       overflow: hidden;
+
       &::before {
-        content: " ";
-        position: absolute;
+        @include pseudo(block, absolute, " ");
         top: 50%;
         width: 100vw;
         height: 67.22222vh;
         background: linear-gradient(
           180deg,
-          #ece3d2 0%,
-          #fff 23.56%,
-          #fff 66.83%,
-          #ece3d2 100%
+          var(--bg-gradient-start) 0%,
+          var(--bg-gradient-end) 23.56%,
+          var(--bg-gradient-end) 66.83%,
+          var(--bg-gradient-start) 100%
         );
         translate: 0 -50%;
         opacity: 0.67;
@@ -68,69 +134,59 @@
 
       ul {
         position: relative;
-        width: clamp(1372px, 71.45833vw, 71.45833vw);
+        width: map-get($circle-sizes, 1);
         aspect-ratio: 1 / 1;
+
         li {
-          position: absolute;
-          top: 50%;
-          left: 50%;
+          @include center-absolute;
           aspect-ratio: 1 / 1;
           border-radius: 50%;
-          border: 1px solid #a7790f;
-          translate: -50% -50%;
+          border: 1px solid var(--bg-circle-border);
           background-blend-mode: multiply, normal;
           background:
-            linear-gradient(
-              0deg,
-              rgba(127, 47, 0, 0.1) 0%,
-              rgba(127, 47, 0, 0.1) 100%
-            ),
+            linear-gradient(0deg, var(--bg-circle-start) 0%, var(--bg-circle-start) 100%),
             radial-gradient(
               50% 50% at 50% 50%,
               rgba(167, 121, 15, 0) 94.72%,
-              rgba(167, 121, 15, 0.5) 100%
+              var(--bg-circle-end) 100%
             );
+
           &::before,
           &::after {
-            content: " ";
-            position: absolute;
+            @include pseudo(block, absolute, " ");
             border-radius: 50%;
             aspect-ratio: 1 / 1;
             top: 50%;
           }
-          &:nth-child(1) {
-            width: clamp(1372px, 71.45833vw, 71.45833vw);
-            transform: rotate(30deg);
-            &::before {
-              width: 12px;
-              height: 12px;
-              background: radial-gradient(
-                50% 50% at 50% 50%,
-                rgba(221, 144, 0, 0.6) 60%,
-                rgba(221, 144, 0, 0.8) 100%
-              );
 
-              stroke-width: 1px;
-              stroke: rgba(221, 144, 0, 0.2);
-              left: -6px;
-              opacity: 0.6;
+          @each $index, $size in $circle-sizes {
+            &:nth-child(#{$index}) {
+              width: $size;
+              opacity: map-get($circle-opacities, $index);
+
+              @if $index == 1 {
+                transform: rotate(30deg);
+
+                &::before {
+                  width: 12px;
+                  height: 12px;
+                  background: radial-gradient(
+                    50% 50% at 50% 50%,
+                    var(--bg-circle-dot) 60%,
+                    var(--bg-circle-dot-hover) 100%
+                  );
+                  stroke-width: 1px;
+                  stroke: var(--bg-circle-dot-stroke);
+                  left: -6px;
+                  opacity: 0.6;
+                }
+
+                &::after {
+                  width: 14px;
+                  height: 14px;
+                }
+              }
             }
-            &::after {
-              width: 14px;
-              height: 14px;
-            }
-          }
-          &:nth-child(2) {
-            width: clamp(1066px, 55.5208vw, 55.5208vw);
-            opacity: 0.7;
-          }
-          &:nth-child(3) {
-            width: clamp(794px, 41.3541vw, 41.3541vw);
-            opacity: 0.6;
-          }
-          &:nth-child(4) {
-            width: clamp(470px, 24.4791vw, 24.4791vw);
-            opacity: 0.5;
           }
         }
       }
@@ -139,21 +195,26 @@
 
   &-contents {
     width: 100%;
-    height: calc(var(--window-inner-height) - 64px);
+    height: $main-height;
     @include flex(column);
+
     .text-box {
       text-align: center;
       z-index: 1;
+
       span {
         color: var(--text-main-primary);
         font-size: 32px;
+
         em {
           font-weight: 700;
         }
       }
+
       p {
         color: var(--text-main-primary);
         font-size: 38px;
+
         em {
           color: var(--text-main-secondary);
           font-weight: 700;
@@ -163,28 +224,26 @@
 
     .keyword {
       &-area {
-        padding-top: 18px;
-        padding-bottom: 15px;
+        padding: 18px 0 15px;
         text-align: center;
         gap: 12px;
         width: max-content;
         margin: auto;
         @include flex(column, center, center);
+
         button {
           font-size: 13px;
           font-weight: 700;
           color: var(--text-main-primary);
           opacity: 0.7;
+
           .ico-setting {
             display: inline-block;
             width: 14px;
             height: 14px;
-            background: url(../images/ico/ico_setting.svg);
+            @include bgImg("../images/ico/ico_setting.svg", contain, center);
           }
         }
-      }
-
-      &-list {
       }
     }
   }
@@ -193,66 +252,60 @@
     &-wrap {
       position: absolute;
       width: 100%;
-      height: calc(var(--window-inner-height) - 64px);
+      height: $main-height;
+
       .btn {
         &-prev,
         &-next {
-          position: absolute;
-          width: 84px;
-          height: 180px;
-          top: 50%;
-          translate: 0 -50%;
-          @include textBlind();
+          @include arrow-button-base;
         }
+
         &-prev {
           left: 40px;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23DD842F'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: contain;
-          transition: left 0.2s linear;
+          background-image: $svg-arrow-prev-default;
+          @include transition(left, 0.2s, linear);
+          @include arrow-button-hover(left);
+
           &.disabled {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23EFE7D7'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+            background-image: $svg-arrow-prev-disabled;
           }
-          &:not(.disabled) {
-            &:hover {
-              background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23D34D00'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-              left: 30px;
-            }
+
+          &:not(.disabled):hover {
+            background-image: $svg-arrow-prev-hover;
           }
         }
+
         &-next {
           right: 40px;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61160)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61160' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23DD842F'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: contain;
-          transition: right 0.2s linear;
+          background-image: $svg-arrow-next-default;
+          @include transition(right, 0.2s, linear);
+          @include arrow-button-hover(right);
+
           &.disabled {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61162)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61162' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23EFE7D7'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+            background-image: $svg-arrow-next-disabled;
           }
-          &:not(.disabled) {
-            &:hover {
-              right: 30px;
-              background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61162)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61162' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23D34D00'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-            }
+
+          &:not(.disabled):hover {
+            background-image: $svg-arrow-next-hover;
           }
         }
       }
+
       .pagination {
-        position: absolute;
+        @include center-absolute;
         bottom: 20px;
-        left: 50%;
         transform: translateX(-50%);
         font-size: 20px;
-        color: rgba(0, 0, 0, 0.4);
+        color: var(--shadow-pagination);
         font-weight: 400;
+
         .current {
           font-size: 24px;
           font-weight: 700;
         }
       }
     }
+
     &-cards-container {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -262,80 +315,74 @@
       height: 100%;
       column-gap: 10%;
     }
+
     &-card {
       &:nth-child(3) {
         margin-left: -30%;
       }
+
       &:nth-child(4) {
         margin-right: -30%;
       }
     }
   }
+
   .my-learning {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    @include center-absolute;
     width: 796px;
     translate: -50% -100%;
   }
 
   .learning {
     &-area {
-      position: absolute;
+      @include center-absolute;
       width: clamp(932px, 48.5416vw, 48.5416vw);
-      //aspect-ratio: 1 / 1;
       padding-top: 0;
-      left: 50%;
-      top: 50%;
-      translate: -50% -50%;
       background: none;
+
       &::before,
       &::after {
-        content: " ";
-        position: absolute;
+        @include pseudo(block, absolute, " ");
         width: 158px;
         height: 1px;
         bottom: 48.4%;
       }
+
       &::before {
         left: 2.2%;
-        background: linear-gradient(
-          90deg,
-          #edba8a 0%,
-          rgba(237, 186, 138, 0) 100%
-        );
+        background: linear-gradient(90deg, var(--bg-learning-line-color) 0%, rgba(237, 186, 138, 0) 100%);
       }
+
       &::after {
         right: 2.2%;
-        background: linear-gradient(
-          90deg,
-          rgba(237, 186, 138, 0) 11.59%,
-          #edba8a 100%
-        );
+        background: linear-gradient(90deg, rgba(237, 186, 138, 0) 11.59%, var(--bg-learning-line-color) 100%);
       }
     }
   }
 }
 
+// =======================================
+// Modal Styles
+// =======================================
 .modal {
   &.keyword {
     background-color: rgba(0, 0, 0, 0);
+
     .modal {
       &-header {
-        color: #f04400;
+        color: var(--bg-modal-header);
         font-size: 14px;
         font-weight: 700;
+
         .ico-check {
           display: inline-block;
           margin-left: 8px;
           width: 8px;
           height: 8px;
-          background: url(../images/ico/ico_check.svg);
-          background-position: center;
-          background-repeat: no-repeat;
-          background-size: contain;
+          @include bgImg("../images/ico/ico_check.svg", contain, center);
         }
       }
+
       &-content {
         width: 640px;
         min-height: auto;
@@ -344,8 +391,9 @@
         @include flex(column, center, center);
         background: rgba(255, 255, 255, 0.98);
         border: none;
-        box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.25);
+        box-shadow: 0 0 6px 0 var(--shadow-modal);
         transform: translate(-50%, -10px);
+
         .keyword-list {
           max-width: 100%;
         }
@@ -353,29 +401,35 @@
     }
   }
 }
+
+// =======================================
+// Guide Styles
+// =======================================
 .guide-btn {
   position: absolute;
   top: 100px;
   z-index: 99999;
 }
+
 .guide {
   &-wrap {
     position: fixed;
-    left: 0;
     top: 0;
+    left: 0;
     width: 100%;
-    //background-color: rgba(0, 0, 0, 0.5);
     z-index: 99;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    @include transition(opacity, 0.5s, ease);
     display: none;
     @include full-height;
+
     &.active {
       opacity: 1;
       pointer-events: auto;
       display: block;
     }
   }
+
   &-svg {
     position: fixed;
     top: 0;
@@ -384,6 +438,7 @@
     height: 100%;
     pointer-events: auto;
   }
+
   &-borders {
     position: fixed;
     top: 0;
@@ -393,16 +448,14 @@
     pointer-events: none;
     z-index: 10000;
   }
+
   &-border {
     position: absolute;
     outline: 2px dashed #fff;
     border-radius: 4px;
-    //opacity: 0;
-    //animation: borderFadeIn 0.6s ease-out forwards;
   }
 
   &-mask {
-    //background-color: #000;
     &.nav {
       position: absolute;
       left: 50%;

@@ -5,47 +5,83 @@
 @forward "import/lib-fonts";
 @forward "import/reset-css";
 
-/* 스크롤바 스타일 */
-::-webkit-scrollbar {
-  height: 10px;
-  width: 7px;
-}
-::-webkit-scrollbar-thumb {
-  background-color: #443b27;
-  border-radius: 8px;
-  background-clip: padding-box;
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
-}
-::-webkit-scrollbar-track {
-  background-color: #000;
+// =======================================
+// Variables
+// =======================================
+// Note: Colors are now managed via CSS variables in _root.scss
+
+// Sizes
+$scrollbar-width: 7px;
+$scrollbar-height: 10px;
+$scrollbar-width-small: 6px;
+$modal-width: 470px;
+$modal-min-height: 500px;
+$video-modal-width: 1720px;
+$video-modal-height: 900px;
+$video-sidebar-width: 437px;
+
+// =======================================
+// Mixins
+// =======================================
+@mixin scrollbar-style(
+  $width: $scrollbar-width,
+  $height: $scrollbar-height,
+  $thumb-color: var(--bg-scrollbar-thumb),
+  $track-color: var(--bg-scrollbar-track)
+) {
+  &::-webkit-scrollbar {
+    height: $height;
+    width: $width;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb-color;
+    border-radius: 8px;
+    background-clip: padding-box;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: $track-color;
+  }
 }
 
-/* clearfix */
+@mixin scrollbar-light {
+  &::-webkit-scrollbar {
+    width: $scrollbar-width-small;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(--bg-scrollbar-track-light);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--bg-scrollbar-thumb-light);
+    border-radius: 3px;
+
+    &:hover {
+      background: var(--bg-scrollbar-thumb-light-hover);
+    }
+  }
+}
+
+// =======================================
+// Global Styles
+// =======================================
+// Scrollbar
+html {
+  @include scrollbar-style();
+}
+
+// Clearfix
 .clearfix {
-  /* IE 지원 방식 : *zoom: 1;*/
-  &:before,
-  &:after {
-    content: "";
-    display: block;
-  }
-  &:after {
-    clear: both;
-  }
+  @include clearfix;
 }
 
-/* hidden */
+// Hidden
 .blind {
-  position: absolute;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  border: 0;
-  padding: 0;
-  white-space: nowrap;
+  @include blind;
 }
 
 .hidden,
@@ -53,15 +89,20 @@
   display: none !important;
 }
 
+// =======================================
+// Component Styles
+// =======================================
+// Gradient mask
 [class*="gra"] {
   position: relative;
+
   &::before,
   &::after {
-    content: "";
-    position: absolute;
+    @include pseudo(block, absolute, "");
     border-radius: inherit;
     pointer-events: none;
   }
+
   &::after {
     inset: 0;
     padding: 1px;
@@ -71,11 +112,12 @@
   }
 }
 
-/* 입력창 */
+// Input
 .input {
   &-group {
     position: relative;
     @include flex();
+
     .btn-clear {
       position: absolute;
       top: 50%;
@@ -87,6 +129,7 @@
 
 .checkbox {
   position: relative;
+
   input[type="checkbox"] {
     position: absolute;
     width: 0;
@@ -95,9 +138,7 @@
   }
 }
 
-/* 버튼 */
-
-/* 키워드 */
+// Keyword
 [class^="keyword"] {
   flex-wrap: wrap;
   gap: 8px;
@@ -106,6 +147,7 @@
   &[class*="list"] {
     max-width: 470px;
   }
+
   &[class*="tag"] {
     label {
       &:has(:checked) {
@@ -127,65 +169,69 @@
     border: 1px solid var(--border-keyword-base);
     font-weight: 500;
     line-height: 1;
-    //cursor: pointer;
+
     &:has(+ [type="checkbox"]:checked) {
       color: var(--text-keyword-secondary);
       background: var(--bg-keyword-primary-hover);
       border: 1px solid var(--border-keyword-primary-hover);
+
       &:has(:checked) {
         color: var(--text-keyword-primary);
         background: var(--bg-keyword-primary);
         border: 1px solid var(--border-keyword-primary);
       }
     }
-    input {
-      &[type="checkbox"] {
-        position: absolute;
-        width: 0;
-        height: 0;
-        opacity: 0;
-      }
+
+    input[type="checkbox"] {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
     }
   }
+
   .kw {
     &-box {
       position: relative;
+
       label {
         &::after {
-          content: " ";
-          position: absolute;
+          @include pseudo(block, absolute, " ");
           top: -2px;
-          right: 0px;
+          right: 0;
           width: 14px;
           height: 14px;
           -webkit-appearance: none;
+          appearance: none;
           border-radius: 50%;
-          background-image: url(../images/ico/ico_add.svg);
-          background-position: center;
-          background-size: cover;
-          background-repeat: no-repeat;
+          @include bgImg("../images/ico/ico_add.svg", cover, center);
         }
+
         &:has(:checked) {
           &::after {
-            background-image: url(../images/ico/ico_remove.svg);
+            background-image: url("../images/ico/ico_remove.svg");
           }
         }
       }
     }
+
     &-allow {
       color: var(--text-keyword-secondary);
       background: var(--bg-keyword-primary-hover);
       border: 1px solid var(--border-keyword-primary-hover);
+
       &:has(:checked) {
         color: var(--text-keyword-primary);
         background: var(--bg-keyword-primary);
         border: 1px solid var(--border-keyword-primary);
       }
     }
+
     &-deny {
       color: var(--text-keyword-secondary);
       background: var(--bg-keyword-secondary-hover);
       border: 1px solid var(--border-keyword-secondary-hover);
+
       &:has(:checked) {
         color: var(--text-keyword-primary);
         background: var(--bg-keyword-secondary);
@@ -195,13 +241,14 @@
   }
 }
 
+// Typography
 h5 {
   font-size: 16px;
   font-weight: 700;
   text-align: left;
 }
 
-/* 뱃지 */
+// Badge
 .badge {
   &-danger {
     border-radius: 4px;
@@ -211,6 +258,7 @@ h5 {
   }
 }
 
+// Bookmark
 .bookmark {
   padding: 8px;
   border-radius: 4px;
@@ -218,62 +266,62 @@ h5 {
   gap: 6px;
   font-size: 12px;
   @include flex();
+
   input[type="checkbox"] {
     height: 10px;
     -webkit-appearance: none;
+    appearance: none;
     @include useIcon("bookmark", 12px);
+
     &:checked {
       @include useIcon("bookmark-on", 12px);
     }
   }
 }
 
-/* 모달 */
+// =======================================
+// Modal Styles
+// =======================================
 .modal {
   display: none;
   position: fixed;
-  z-index: 1;
+  z-index: 30;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: var(--bg-modal);
   overflow: auto;
-  z-index: 30;
 
   .modal-content {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #f6f1e9;
-    padding: 40px 20px 20px 20px;
-    border: 1px solid #888;
-    width: 470px;
-    min-height: 500px;
+    @include center-absolute;
+    background-color: var(--bg-modal-content);
+    padding: 40px 20px 20px;
+    border: 1px solid var(--border-modal);
+    width: $modal-width;
+    min-height: $modal-min-height;
     border-radius: 8px;
     text-align: center;
   }
 
   .close {
-    color: #000;
-    float: right;
-    font-size: 26px;
-    font-weight: bold;
     position: absolute;
     right: 12px;
     top: 12px;
     display: block;
-    margin-left: auto;
     width: 26px;
     height: 26px;
-    background: none;
+    color: #000;
+    font-size: 26px;
+    font-weight: bold;
     line-height: 1;
+    background: none;
     filter: var(--text-shadow);
-    transition: all 0.1s ease-in-out;
+    @include transition(all, 0.1s, ease-in-out);
+
     &:hover,
     &:focus {
-      color: #e00400;
+      color: var(--bg-modal-close-hover);
       text-decoration: none;
       cursor: pointer;
       text-shadow: var(--text-stroke);
@@ -281,20 +329,8 @@ h5 {
   }
 
   &.video {
-    ::-webkit-scrollbar {
-      height: 10px;
-      width: 7px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background-color: #383838;
-      border-radius: 8px;
-      background-clip: padding-box;
-      border-top: 1px solid transparent;
-      border-bottom: 1px solid transparent;
-    }
-    ::-webkit-scrollbar-track {
-      background-color: #000;
-    }
+    @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
+
     .close {
       color: var(--text-revers);
       font-size: 36px;
@@ -303,25 +339,27 @@ h5 {
       height: 36px;
       top: 0;
     }
+
     .modal {
       &-content {
-        width: 1720px;
-        height: 900px;
+        width: $video-modal-width;
+        height: $video-modal-height;
         padding: 0;
         background: var(--bg-video);
         border: none;
         border-radius: 20px;
         overflow: hidden;
       }
+
       &-body {
         display: grid;
-        grid-template-columns: 1fr 437px;
+        grid-template-columns: 1fr $video-sidebar-width;
       }
     }
 
     .video {
       &-contents {
-        height: 900px;
+        height: $video-modal-height;
         border-right: 1px solid var(--border-video);
       }
 
@@ -330,6 +368,7 @@ h5 {
         padding-top: 56.0405%;
         border-bottom: 1px solid var(--border-video);
         overflow: hidden;
+
         iframe {
           position: absolute;
           top: 0;
@@ -338,22 +377,26 @@ h5 {
           height: 100%;
         }
       }
+
       &-info {
         height: 184px;
         padding: 0 36px;
         text-align: left;
         color: var(--text-revers);
         overflow-y: auto;
+
         .tit-box {
           position: relative;
           width: 100%;
           height: 80px;
           border-bottom: 1px solid var(--border-video);
           @include flex(column, flex-start, center);
+
           h3 {
             font-size: 20px;
             font-weight: 700;
           }
+
           .bookmark {
             position: absolute;
             bottom: 18px;
@@ -361,17 +404,20 @@ h5 {
             color: rgba(255, 255, 255, 0.5);
           }
         }
+
         .meta {
           font-size: 14px;
+          color: var(--text-video-primary);
 
           span {
             color: var(--text-video-primary);
           }
+
           em {
             font-weight: 700;
           }
-          color: var(--text-video-primary);
         }
+
         .desc {
           padding: 22px 0;
           font-size: 14px;
@@ -384,15 +430,18 @@ h5 {
         display: grid;
         grid-template-rows: auto 1fr auto;
         grid-auto-rows: auto;
-        height: 900px;
+        height: $video-modal-height;
         overflow: hidden;
+
         .comment-wrap {
           align-self: end;
+
           &:has(.comment-list) {
             border-top: 1px solid var(--border-video);
-            box-shadow: 0 8px 22px 22px rgba(0, 0, 0, 0.8);
+            box-shadow: var(--shadow-comment);
           }
         }
+
         &.step {
           .video-header {
             flex-direction: column;
@@ -404,10 +453,12 @@ h5 {
               ),
               #1b1b1b;
             height: max-content;
+
             .tit-box {
               gap: 12px;
               @include flex(column, flex-start, flex-start);
             }
+
             .sub-txt {
               font-size: 20px;
               font-weight: 400;
@@ -421,27 +472,29 @@ h5 {
                 position: relative;
                 width: 100%;
               }
+
               &-bar {
                 position: relative;
                 width: 100%;
                 height: 15px;
-                background: #171717;
+                background: var(--bg-video-gauge);
                 border-radius: 4px;
                 overflow: hidden;
-                border: 0.5px solid rgba(0, 0, 0, 0.4);
+                border: 0.5px solid var(--bg-video-gauge-border);
                 margin-bottom: 8px;
               }
+
               &-fill {
                 position: absolute;
                 top: 0;
                 left: 0;
                 height: 100%;
-                background: #ff6c19;
+                background: var(--bg-video-gauge-fill);
                 border-radius: 4px;
-                transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                @include transition(width, 0.6s, cubic-bezier(0.4, 0, 0.2, 1));
+
                 &::after {
-                  content: "";
-                  position: absolute;
+                  @include pseudo(block, absolute, "");
                   top: 0;
                   left: 0;
                   width: 100%;
@@ -452,11 +505,12 @@ h5 {
                       rgba(255, 255, 255, 0) 50%,
                       rgba(255, 191, 0, 0.4) 100%
                     ),
-                    #ff6c19;
+                    var(--bg-video-gauge-fill);
                   mix-blend-mode: color-dodge;
                   opacity: 0.4;
                 }
               }
+
               &-ticks {
                 position: absolute;
                 top: 0;
@@ -467,9 +521,11 @@ h5 {
                 mix-blend-mode: plus-lighter;
                 opacity: 0.2;
               }
+
               &-labels {
                 font-size: 14px;
                 @include flex(row, center, space-between);
+
                 em {
                   font-weight: 700;
                   margin: 0 2px;
@@ -477,20 +533,24 @@ h5 {
               }
             }
           }
+
           .video-list {
             padding-top: 20px;
           }
         }
       }
+
       &-header {
-        padding: 38px 16px 16px 16px;
+        padding: 38px 16px 16px;
         min-height: 80px;
         color: var(--text-revers);
         gap: 16px;
         @include flex(row, flex-start, flex-start);
+
         .tit {
           line-height: 26px;
         }
+
         .badge {
           width: 42px;
           height: 26px;
@@ -501,9 +561,11 @@ h5 {
           border-radius: 25px;
         }
       }
+
       &-list {
         overflow-y: auto;
         align-self: start;
+
         .tit {
           color: #fff;
           margin-bottom: 8px;
@@ -514,7 +576,9 @@ h5 {
     .learning-list {
       position: relative;
       color: var(--text-learning-base);
+
       &::before {
+        @include pseudo(block, absolute, "");
         left: 56px;
         width: 1px;
         height: calc(100% - 5px);
@@ -526,9 +590,8 @@ h5 {
           #fff 90%,
           rgba(255, 255, 255, 0) 100%
         );
-        opacity: 0.2;
-        @include pseudo();
       }
+
       > li {
         border: none;
       }
@@ -538,83 +601,92 @@ h5 {
         padding: 0;
         margin-bottom: 5px;
         grid-template-columns: 44px 1fr;
+
         .learning-box {
           position: relative;
           gap: 12px;
           padding: 8px 20px;
           @include flex(row, center, flex-start);
+
           &::before {
+            @include pseudo(block, absolute, "");
             left: 0;
             width: 20px;
             height: 1px;
-            background-color: #c6c3c3;
-            @include pseudo();
+            background-color: var(--bg-learning-line);
           }
+
           &::after {
+            @include pseudo(block, absolute, "");
             left: -6px;
             width: 12px;
             height: 12px;
-            background-color: #8d8888;
+            background-color: var(--bg-learning-dot);
             border-radius: 50%;
-            outline: 2px solid #c6c3c3;
-            @include pseudo();
+            outline: 2px solid var(--bg-learning-line);
           }
+
           .title {
-            color: #d1cfcf;
+            color: var(--text-card-author);
           }
         }
+
         .thumb {
           min-width: 105px;
           max-width: 105px;
         }
+
         .sep,
         .state {
           font-size: 14px;
           white-space: nowrap;
         }
       }
+
       .active {
         color: var(--text-learning-primary);
+
         .seq,
         .state {
           font-weight: 600;
         }
+
         .learning-box {
-          background: linear-gradient(
-            90deg,
-            rgba(255, 92, 0, 0.2) 0%,
-            rgba(255, 92, 0, 0) 100%
-          );
+          background: linear-gradient(90deg, var(--bg-learning-active) 0%, rgba(255, 92, 0, 0) 100%);
+
           &::before {
-            background-color: #ffad7f;
+            background-color: var(--bg-learning-active-line);
           }
+
           &::after {
-            background-color: #ff5c00;
-            outline-color: #ffad7f;
+            background-color: var(--bg-learning-active-dot);
+            outline-color: var(--bg-learning-active-line);
           }
+
           .title {
-            color: #ff7d33;
+            color: var(--text-card-title-active);
             font-weight: 600;
           }
         }
       }
+
       .complet {
         color: var(--text-learning-secondary);
+
         .learning-box {
-          background: linear-gradient(
-            90deg,
-            rgba(0, 140, 73, 0.2) 0%,
-            rgba(0, 140, 73, 0) 100%
-          );
+          background: linear-gradient(90deg, var(--bg-learning-complete) 0%, rgba(0, 140, 73, 0) 100%);
+
           &::before {
-            background-color: #7fc5a4;
+            background-color: var(--bg-learning-complete-line);
           }
+
           &::after {
-            background-color: #008c49;
-            outline-color: #7fc5a4;
+            background-color: var(--bg-learning-complete-dot);
+            outline-color: var(--bg-learning-complete-line);
           }
+
           .title {
-            color: #66ba92;
+            color: var(--text-card-title-complete);
           }
         }
       }
@@ -630,41 +702,47 @@ h5 {
     }
     textarea {
       flex-grow: 1;
-      color: #fff;
-      background: #2a2a2a;
+      color: var(--text-revers);
+      background: var(--bg-textarea);
       height: 32px;
       border-radius: 4px;
       padding: 6px 8px;
       font-size: 14px;
       line-height: 1.4;
+
       &::placeholder {
-        color: rgba(255, 255, 255, 0.5);
+        color: var(--bg-textarea-placeholder);
       }
     }
+
     .btn {
       &-area {
         gap: 4px;
         @include flex();
       }
+
       &-active {
         background: var(--bg-btn-primary);
       }
     }
-    /* 버튼 */
+
     [class^="btn"] {
       min-width: 40px;
       min-height: 32px;
       border-radius: 4px;
       color: #fff;
       font-size: 12px;
+
       &:not([class*="area"]) {
-        background: #000;
+        background: var(--bg-btn-base);
       }
+
       &:disabled {
         color: #8f8f8f;
         background: var(--bg-btn-secondary);
         border: 1px solid var(--border-btn);
       }
+
       &[class*="save"] {
         &:not(:disabled) {
           background: var(--text-accent);
@@ -751,76 +829,42 @@ h5 {
     background: var(--bg-comment);
   }
   &-resizer {
-    height: 8px;
-    background: transparent;
-    cursor: ns-resize;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: absolute;
     left: calc(50% - 21px);
     top: -24px;
-    height: 24px;
     width: 42px;
+    height: 24px;
     flex-shrink: 0;
-    border-radius: 8px 8px 0 0;
-    border-top: 1px solid rgba(230, 227, 225, 0.1);
-    border-right: 1px solid rgba(230, 227, 225, 0.1);
-    border-left: 1px solid rgba(230, 227, 225, 0.1);
     background: var(--bg-comment);
+    border-radius: 8px 8px 0 0;
+    border-top: 1px solid var(--border-comment-resizer);
+    border-right: 1px solid var(--border-comment-resizer);
+    border-left: 1px solid var(--border-comment-resizer);
+    cursor: ns-resize;
     z-index: 1;
-    &:hover {
-      //background: rgba(255, 255, 255, 0.05);
+    @include flex();
 
-      .resizer-handle {
-        // background: var(--border-video);
-        background-color: var(--text-myclass);
-      }
-    }
-
+    &:hover,
     &.resizing {
-      //background: rgba(255, 255, 255, 0.1);
-
       .resizer-handle {
-        //background: var(--bg-keyword-primary);
         background-color: var(--text-myclass);
       }
     }
 
     .resizer-handle {
-      /*
-      width: 40px;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 2px;
-      */
       width: 100%;
       height: 100%;
       margin: auto;
-      transition: background 0.2s ease;
-      @include svgIconMask("../images/ico/ico_drag.svg", #fff, 18px);
+      @include transition(background, 0.2s, ease);
+      @include svgIconMask("../images/ico/ico_drag.svg", var(--text-revers), 18px);
     }
   }
+
   &-list-wrap {
     overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 0;
-    &::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.3);
-      }
-    }
+    @include scrollbar-light;
   }
   &-list {
     padding: 16px 0;
@@ -863,52 +907,65 @@ h5 {
   }
 }
 
-/* media query */
-// 1024px ~ : 기본 데스크톱
-@media all and (min-width: 1024px) {
+// =======================================
+// Media Queries
+// =======================================
+$font-sizes: (
+  desktop: 10px,
+  tablet: 14px,
+  mobile-large: 13px,
+  mobile: 12px,
+  mobile-small: 10px,
+  mobile-xs: 9px,
+  mobile-xxs: 8px,
+);
+
+// Desktop (1024px ~)
+@include mq(desktop) {
   html {
-    font-size: 10px;
+    font-size: map-get($font-sizes, desktop);
   }
 }
 
-// 1023px 이하: 태블릿
-@media all and (max-width: 1023px) {
+// Tablet (1023px 이하)
+@include mq(tablet, max) {
   html {
-    font-size: 14px;
+    font-size: map-get($font-sizes, tablet);
   }
 }
 
-// 767px 이하
+// Mobile Large (767px 이하)
 @media all and (max-width: 767px) {
   html {
-    font-size: 13px;
+    font-size: map-get($font-sizes, mobile-large);
   }
 }
 
-// 639px 이하
+// Mobile (639px 이하)
 @media all and (max-width: 639px) {
   html {
-    font-size: 12px;
+    font-size: map-get($font-sizes, mobile);
   }
 }
 
-// 479px 이하
+// Mobile Small (479px 이하)
 @media all and (max-width: 479px) {
   html {
-    font-size: 10px;
+    font-size: map-get($font-sizes, mobile-small);
   }
 }
 
-// 359px 이하
+// Mobile XS (359px 이하)
 @media all and (max-width: 359px) {
   html {
-    font-size: 9px;
+    font-size: map-get($font-sizes, mobile-xs);
   }
 }
 
-// 319px 이하
+// Mobile XXS (319px 이하)
 @media all and (max-width: 319px) {
   html {
-    font-size: 8px;
+    font-size: map-get($font-sizes, mobile-xxs);
   }
 }
+

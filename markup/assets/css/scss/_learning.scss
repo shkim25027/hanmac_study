@@ -50,13 +50,7 @@ $chapter-widths: (
   }
 }
 
-@mixin puzzle-img-box(
-  $width,
-  $left: null,
-  $top: null,
-  $right: null,
-  $bottom: null
-) {
+@mixin puzzle-img-box($width, $left: null, $top: null, $right: null, $bottom: null) {
   position: absolute;
   z-index: 1;
   pointer-events: none;
@@ -75,13 +69,7 @@ $chapter-widths: (
   }
 }
 
-@mixin puzzle-title(
-  $color,
-  $left: null,
-  $top: null,
-  $right: null,
-  $bottom: null
-) {
+@mixin puzzle-title($color, $left: null, $top: null, $right: null, $bottom: null) {
   position: absolute;
   font-size: 1.25vw;
   font-weight: 700;
@@ -118,11 +106,7 @@ $chapter-widths: (
         height: 50%;
         @include bgImg("../images/learning/bg_cloud.png", 100% 100%, 0px 0px);
         pointer-events: none;
-        mask-image: linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 1) 0%,
-          rgba(0, 0, 0, 0) 100%
-        );
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
       }
     }
   }
@@ -222,54 +206,30 @@ $chapter-widths: (
         }
 
         &.value {
-          @include puzzle-img-box(
-            9.23737%,
-            $left: -1.61117%,
-            $bottom: -4.87804%
-          );
+          @include puzzle-img-box(9.23737%, $left: -1.61117%, $bottom: -4.87804%);
         }
 
         &.company {
-          @include puzzle-img-box(
-            12.88936%,
-            $right: -2.68528%,
-            $bottom: -8.07926%
-          );
+          @include puzzle-img-box(12.88936%, $right: -2.68528%, $bottom: -8.07926%);
         }
       }
 
       .tit-box {
         &.family {
-          @include puzzle-title(
-            var(--bg-puzzle-family),
-            $left: 8.2706%,
-            $top: 31.1083%
-          );
+          @include puzzle-title(var(--bg-puzzle-family), $left: 8.2706%, $top: 31.1083%);
         }
 
         &.hanmac {
-          @include puzzle-title(
-            var(--bg-puzzle-hanmac),
-            $top: 31.1083%,
-            $right: 6.44468%
-          );
+          @include puzzle-title(var(--bg-puzzle-hanmac), $top: 31.1083%, $right: 6.44468%);
           opacity: 0.45;
         }
 
         &.value {
-          @include puzzle-title(
-            var(--bg-puzzle-value),
-            $left: 8.05585%,
-            $bottom: 10.51829%
-          );
+          @include puzzle-title(var(--bg-puzzle-value), $left: 8.05585%, $bottom: 10.51829%);
         }
 
         &.company {
-          @include puzzle-title(
-            var(--bg-puzzle-company),
-            $right: 8.05585%,
-            $bottom: 15.1133%
-          );
+          @include puzzle-title(var(--bg-puzzle-company), $right: 8.05585%, $bottom: 15.1133%);
         }
       }
     }

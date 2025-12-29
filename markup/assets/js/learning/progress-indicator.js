@@ -366,7 +366,7 @@ class ProgressIndicator {
     this.stateIndicator.style.position = "absolute";
     this.stateIndicator.style.left = `${markerLeft}%`;
     this.stateIndicator.style.top = `${markerTop}%`;
-    this.stateIndicator.style.zIndex = "12";
+    this.stateIndicator.style.zIndex = "9";
     this.stateIndicator.style.pointerEvents = "none";
 
     // 챕터1일 때만 미러링 (emoji/emoji-text 제외)

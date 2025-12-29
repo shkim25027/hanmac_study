@@ -347,3 +347,33 @@ const LEARNING_CONFIG = {
     }
   },
 };
+
+/**
+ * HTML에서 설정된 learningConfigData를 LEARNING_CONFIG에 적용
+ * window.learningConfigData가 있으면 completed 상태를 업데이트
+ */
+if (typeof window !== 'undefined' && window.learningConfigData) {
+  const configData = window.learningConfigData;
+  
+  LEARNING_CONFIG.chapters.forEach((chapter) => {
+    const chapterData = configData[chapter.id];
+    
+    if (chapterData) {
+      // 챕터 완료 상태 업데이트
+      if (chapterData.completed !== undefined) {
+        chapter.completed = chapterData.completed;
+      }
+      
+      // 레슨 완료 상태 업데이트
+      if (chapterData.lessons && Array.isArray(chapterData.lessons)) {
+        chapterData.lessons.forEach((lessonData, index) => {
+          if (chapter.lessons[index] && lessonData.completed !== undefined) {
+            chapter.lessons[index].completed = lessonData.completed;
+          }
+        });
+      }
+    }
+  });
+  
+  console.log('[LEARNING_CONFIG] learningConfigData 적용 완료:', LEARNING_CONFIG);
+}
