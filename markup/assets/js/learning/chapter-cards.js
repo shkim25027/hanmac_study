@@ -62,9 +62,7 @@ class ChapterCardManager {
     if (!this.cardsContainer) {
       this.cardsContainer = document.createElement("ul");
       this.cardsContainer.className = "chapter-list";
-      document
-        .querySelector(".learning-gauge")
-        .appendChild(this.cardsContainer);
+      document.querySelector(".lessons-gauge").appendChild(this.cardsContainer);
     }
 
     this.cardsContainer.innerHTML = "";

@@ -35,13 +35,20 @@ const DEFAULT_CONFIG = {
   },
 
   IMAGE_PATHS: {
-    BASE: "./assets/images/onboarding/bg_piece.png",
-    COMPLETED: "./assets/images/onboarding/bg_piece_completed.png",
-    ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png",
-    FINISH: "./assets/images/onboarding/bg_piece_finish.png",
+    BASE: "./assets/images/onboarding/bg_piece.png", // 비활성 (양쪽 모드 공통)
+    COMPLETED: {
+      ACTIVE: "./assets/images/onboarding/bg_piece_completed.png", // 개별 선택
+      COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png", // 개별 완료
+      ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png", // 전체 완료 애니메이션
+    },
+    FINISH: {
+      ACTIVE: "./assets/images/onboarding/bg_piece_all_completed.png", // 개별 선택
+      COMPLETED: "./assets/images/onboarding/bg_piece_finish.png", // 개별 완료
+      ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png", // 전체 완료 애니메이션
+    },
   },
 
-  COMPLETION_MODE: "FINISH", // 기본값
+  COMPLETION_MODE: "FINISH", // "COMPLETED" 또는 "FINISH"
 
   PLAY_BUTTON: {
     RADIUS: 28,
@@ -1074,33 +1081,17 @@ class PuzzlePiece {
     this.group.classList.add("completed");
 
     const baseImage = this.group.querySelector(".piece-base-image");
-    // ⭐ hoverImage는 숨기지 않음 (호버 시 계속 사용)
-    // const hoverImage = this.group.querySelector(".piece-hover-image");
     const completedImage = this.group.querySelector(".piece-completed-image");
-    const finishImage = this.group.querySelector(".piece-finish-image");
 
     if (baseImage) baseImage.style.display = "none";
-    // ⭐ 이 줄 제거 - hover 이미지는 계속 사용
-    // if (hoverImage) hoverImage.style.display = "none";
-    // ⭐ COMPLETION_MODE에 따라 이미지 선택
-    if (CONFIG.COMPLETION_MODE === "FINISH") {
-      // FINISH 모드일 때는 finish 이미지 사용
-      if (finishImage) {
-        finishImage.style.display = "block";
-        finishImage.setAttribute(
-          "filter",
-          `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
-        );
-      }
-    } else {
-      // COMPLETED 모드일 때는 completed 이미지 사용
-      if (completedImage) {
-        completedImage.style.display = "block";
-        completedImage.setAttribute(
-          "filter",
-          `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
-        );
-      }
+
+    // 양쪽 모드 모두 completed 이미지 사용 (패턴이 모드별로 다른 이미지를 가리킴)
+    if (completedImage) {
+      completedImage.style.display = "block";
+      completedImage.setAttribute(
+        "filter",
+        `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
+      );
     }
   }
 
@@ -1111,28 +1102,13 @@ class PuzzlePiece {
     const allCompletedImg = this.group.querySelector(
       ".piece-all-completed-image"
     );
-
-    if (baseImg) baseImg.style.display = "none";
-    if (completedImg) completedImg.style.display = "none";
-    if (allCompletedImg) {
-      allCompletedImg.style.display = "block";
-      allCompletedImg.setAttribute(
-        "filter",
-        `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
-      );
-    }
-  }
-  showFinish() {
-    const baseImg = this.group.querySelector(".piece-base-image");
-    const completedImg = this.group.querySelector(".piece-completed-image");
-    const allCompletedImg = this.group.querySelector(
-      ".piece-all-completed-image"
-    );
     const finishImg = this.group.querySelector(".piece-finish-image");
 
     if (baseImg) baseImg.style.display = "none";
     if (completedImg) completedImg.style.display = "none";
     if (allCompletedImg) allCompletedImg.style.display = "none";
+
+    // 애니메이션 종료 후 최종 상태 이미지 표시
     if (finishImg) {
       finishImg.style.display = "block";
       finishImg.setAttribute(
@@ -1596,7 +1572,7 @@ class PuzzleManager {
       fill: "none",
     });
   }
-  // 1. _setupDefs 메서드에 FINISH 패턴 추가
+  // 1. _setupDefs 메서드 - 각 레이어별 패턴 생성
   _setupDefs() {
     const defs = SVGHelper.createElement("defs");
 
@@ -1618,6 +1594,8 @@ class PuzzleManager {
     defs.appendChild(FilterFactory.createTextShadowFilter());
 
     PUZZLE_PIECES.forEach((piece) => {
+      // 1. piece-base-image용 패턴
+      // 비활성 상태 - 양쪽 모드 공통
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-${piece.id}`,
@@ -1626,6 +1604,7 @@ class PuzzleManager {
         )
       );
 
+      // 2. piece-hover-image용 패턴 (썸네일)
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-hover-${piece.id}`,
@@ -1634,27 +1613,36 @@ class PuzzleManager {
         )
       );
 
+      // 3. piece-completed-image용 패턴
+      // 개별 선택/활성화 시 사용
+      // COMPLETED 모드: bg_piece_completed.png
+      // FINISH 모드: bg_piece_all_completed.png
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-completed-${piece.id}`,
-          CONFIG.IMAGE_PATHS.COMPLETED,
+          CONFIG.IMAGE_PATHS[CONFIG.COMPLETION_MODE].ACTIVE,
           false
         )
       );
 
+      // 4. piece-all-completed-image용 패턴
+      // 전체 완료 애니메이션 시 사용
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-all-completed-${piece.id}`,
-          CONFIG.IMAGE_PATHS.ALL_COMPLETED,
+          CONFIG.IMAGE_PATHS[CONFIG.COMPLETION_MODE].ALL_COMPLETED,
           false
         )
       );
 
-      // ⭐ FINISH 패턴 추가
+      // 5. piece-finish-image용 패턴
+      // 개별 완료 시 사용
+      // COMPLETED 모드: bg_piece_completed.png
+      // FINISH 모드: bg_piece_finish.png
       defs.appendChild(
         SVGHelper.createPattern(
           `bg-image-finish-${piece.id}`,
-          CONFIG.IMAGE_PATHS.FINISH,
+          CONFIG.IMAGE_PATHS[CONFIG.COMPLETION_MODE].COMPLETED,
           false
         )
       );
@@ -1909,7 +1897,7 @@ class PuzzleManager {
     const defs = SVGHelper.createElement("defs");
     const completedPattern = SVGHelper.createPattern(
       "completion-animation-pattern",
-      CONFIG.IMAGE_PATHS.ALL_COMPLETED,
+      CONFIG.IMAGE_PATHS[CONFIG.COMPLETION_MODE].ALL_COMPLETED,
       false
     );
     defs.appendChild(completedPattern);
@@ -1949,23 +1937,11 @@ class PuzzleManager {
     setTimeout(() => {
       animationContainer.remove();
 
-      // ⭐ COMPLETION_MODE에 따라 이미지 선택
-      if (CONFIG.COMPLETION_MODE === "FINISH") {
-        this._switchToFinishImage();
-      } else {
-        // COMPLETED 이미지 유지
-        this.pieces.forEach((piece) => {
-          piece.showCompleted(); // ALL_COMPLETED 대신 일반 completed 유지
-        });
-      }
+      // 전체 완료 시 showAllCompleted 호출 (모드에 따라 다른 이미지 표시)
+      this.pieces.forEach((piece) => {
+        piece.showAllCompleted();
+      });
     }, 3100);
-  }
-
-  // 6. _switchToFinishImage 메서드 추가
-  _switchToFinishImage() {
-    this.pieces.forEach((piece) => {
-      piece.showFinish();
-    });
   }
 
   _showCelebration() {
@@ -2029,14 +2005,10 @@ class PuzzleManager {
         // 전체 완료 상태로 설정
         this.boardElement.classList.add("all-completed");
 
-        // ⭐ COMPLETION_MODE에 따라 이미지 선택
-        if (CONFIG.COMPLETION_MODE === "FINISH") {
-          // FINISH 이미지로 전환
-          this._switchToFinishImage();
-        } else {
-          // COMPLETED 이미지 유지 (아무것도 하지 않음)
-          // 각 조각은 이미 markComplete()로 COMPLETED 이미지를 표시 중
-        }
+        // 전체 완료 이미지로 전환 (모드에 따라 다른 이미지 표시)
+        this.pieces.forEach((piece) => {
+          piece.showAllCompleted();
+        });
       }
     }
   }

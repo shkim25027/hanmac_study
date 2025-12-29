@@ -31,7 +31,7 @@ class LearningApp {
    * @private
    */
   _loadSettingsFromHTML() {
-    const learningGauge = document.querySelector(".learning-gauge");
+    const learningGauge = document.querySelector(".lessons-gauge");
     if (!learningGauge) return;
 
     // data-allow-disabled-click

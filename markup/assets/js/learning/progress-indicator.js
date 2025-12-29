@@ -153,7 +153,7 @@ class ProgressIndicator {
     `;
 
     // 게이지 컨테이너에 추가
-    const gaugeContainer = document.querySelector(".learning-gauge");
+    const gaugeContainer = document.querySelector(".lessons-gauge");
     if (gaugeContainer) {
       gaugeContainer.appendChild(this.indicator);
     }
@@ -177,7 +177,7 @@ class ProgressIndicator {
     this.stateIndicator.className = "state-indicator";
     this.stateIndicator.id = "state-indicator";
 
-    const gaugeContainer = document.querySelector(".learning-gauge");
+    const gaugeContainer = document.querySelector(".lessons-gauge");
     if (gaugeContainer) {
       gaugeContainer.appendChild(this.stateIndicator);
     }

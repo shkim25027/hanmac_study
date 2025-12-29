@@ -3,7 +3,7 @@
 @use "base" as *;
 
 .wrap {
-  &.learning {
+  &.lessons {
     .container {
       position: relative;
       overflow: hidden;
@@ -28,7 +28,7 @@
   }
 }
 
-.learning,
+.lessons,
 .onboarding {
   .page-title {
     padding-top: 74px;
@@ -239,7 +239,7 @@
   }
 }
 
-.learning {
+.lessons {
   &-wrap {
     position: relative;
     width: 100%;
