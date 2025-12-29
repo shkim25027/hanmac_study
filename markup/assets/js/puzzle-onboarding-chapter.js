@@ -1159,10 +1159,64 @@ const DEFAULT_CONFIG = {
         return;
       }
   
+      const chapter = chapterInfo.chapter;
+  
+      // file 타입인 경우 모달 대신 파일 처리
+      if (chapter.type === "file") {
+        console.log(`[PuzzlePiece] file 타입: ${chapter.name}`);
+        this._handleFileType(chapter, chapterInfo.chapterIndex);
+        return;
+      }
+  
+      // youtube 타입인 경우 모달 열기
       PuzzleManager.instance.openChapterModal(
         chapterInfo.chapterIndex,
         chapterInfo.chapter
       );
+    }
+  
+    /**
+     * file 타입 처리
+     * @private
+     */
+    _handleFileType(chapter, chapterIndex) {
+      if (!chapter.lessons || chapter.lessons.length === 0) {
+        console.warn('[PuzzlePiece] file 타입이지만 lessons가 없습니다');
+        return;
+      }
+  
+      // 첫 번째 lesson의 URL 사용
+      const firstLesson = chapter.lessons[0];
+      const fileUrl = firstLesson.url;
+  
+      if (!fileUrl) {
+        console.warn('[PuzzlePiece] file URL이 없습니다');
+        alert('파일 URL이 설정되지 않았습니다.');
+        return;
+      }
+  
+      // URL이 http로 시작하면 새창 열기, 아니면 다운로드
+      if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
+        console.log('[PuzzlePiece] 새창에서 파일 열기:', fileUrl);
+        window.open(fileUrl, '_blank');
+      } else {
+        console.log('[PuzzlePiece] 파일 다운로드:', fileUrl);
+        // 다운로드 링크 생성 및 클릭
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = firstLesson.label || 'download';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+  
+      // file 타입도 학습 완료 처리
+      if (!firstLesson.completed) {
+        console.log(`[PuzzlePiece] file 타입 학습 완료 처리: [${chapterIndex}-0] ${firstLesson.label}`);
+        PuzzleManager.instance.chapterManager.completeLesson(chapterIndex, 0);
+        PuzzleManager.instance.updatePieceGauge(chapter.pieceId);
+        PuzzleManager.instance._updateTotalProgress();
+      }
     }
   
     markComplete() {
@@ -1789,6 +1843,7 @@ const DEFAULT_CONFIG = {
         // 상태 클래스
         if (index === modalState.currentLessonIndex) {
           li.className = "active";
+          li.setAttribute("data-current", "true"); // 현재 학습 마커
         } else if (lesson.completed) {
           li.className = "complet";
         }
@@ -1856,6 +1911,78 @@ const DEFAULT_CONFIG = {
   
         list.appendChild(li);
       });
+  
+      // 목록 생성 후 현재 학습으로 스크롤
+      setTimeout(() => {
+        this._scrollToCurrentLesson(modal);
+      }, 100);
+    }
+  
+    /**
+     * 현재 학습 중인 항목으로 스크롤
+     * @private
+     */
+    static _scrollToCurrentLesson(modal) {
+      const learningList = modal.querySelector(".learning-list");
+      if (!learningList) {
+        console.warn("[ModalManager] 학습 목록을 찾을 수 없습니다");
+        return;
+      }
+  
+      // 현재 학습 중인 항목 찾기
+      const currentItem = learningList.querySelector('li[data-current="true"]');
+      if (!currentItem) {
+        console.warn("[ModalManager] 현재 학습 항목을 찾을 수 없습니다");
+        return;
+      }
+  
+      // 현재 항목이 보이는 영역에 있는지 확인
+      const listRect = learningList.getBoundingClientRect();
+      const itemRect = currentItem.getBoundingClientRect();
+      
+      // 목록의 가시 영역 계산 (상대적 위치)
+      const itemRelativeTop = currentItem.offsetTop;
+      const itemHeight = itemRect.height;
+      const listScrollTop = learningList.scrollTop;
+      const listHeight = learningList.clientHeight;
+      
+      // 현재 보이는 영역의 범위
+      const visibleTop = listScrollTop;
+      const visibleBottom = listScrollTop + listHeight;
+      
+      // 항목의 위치
+      const itemTop = itemRelativeTop;
+      const itemBottom = itemRelativeTop + itemHeight;
+      
+      // 항목이 완전히 보이는지 확인
+      const isFullyVisible = itemTop >= visibleTop && itemBottom <= visibleBottom;
+      
+      console.log(`[ModalManager] 스크롤 체크:`, {
+        itemLabel: currentItem.querySelector(".title")?.textContent,
+        itemTop,
+        itemBottom,
+        visibleTop,
+        visibleBottom,
+        isFullyVisible
+      });
+  
+      // 화면에 보이지 않을 때만 스크롤
+      if (!isFullyVisible) {
+        // 목록 중앙에 항목 배치
+        const scrollPosition = itemRelativeTop - (listHeight / 2) + (itemHeight / 2);
+  
+        // 부드러운 스크롤
+        learningList.scrollTo({
+          top: Math.max(0, scrollPosition),
+          behavior: "smooth"
+        });
+  
+        console.log(`[ModalManager] 현재 학습으로 스크롤 실행:`, {
+          scrollPosition
+        });
+      } else {
+        console.log(`[ModalManager] 현재 학습이 이미 화면에 보임 - 스크롤 생략`);
+      }
     }
   
     /**
