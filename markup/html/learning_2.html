@@ -38,17 +38,70 @@
       </div>
     </div>
 
-    <script src="./assets/js/learning/config.js"></script>
+    <!-- HTML에서 completed 값 설정 (config.js 로드 전에 설정) -->
+    <script>
+      // 방법 1: 배열 형태로 설정
+      // window.learningConfigData = [
+      //   { chapterId: 1, lessonIndex: 0, completed: true }, // 챕터 1의 첫 번째 레슨 완료
+      //   { chapterId: 1, lessonIndex: 1, completed: true }, // 챕터 1의 두 번째 레슨 완료
+      //   { chapterId: 1, lessonIndex: -1, completed: true }, // 챕터 1 자체 완료
+      //   { chapterId: 2, lessonIndex: 0, completed: true }, // 챕터 2의 첫 번째 레슨 완료
+      // ];
 
+      // 방법 2: 객체 형태로 설정 (더 직관적)
+      // window.learningConfigData = {
+      //   1: {
+      //     completed: true, // 챕터 1 자체 완료
+      //     lessons: [
+      //       { completed: true },  // 챕터 1의 첫 번째 레슨 완료
+      //       { completed: true },  // 챕터 1의 두 번째 레슨 완료
+      //       { completed: false }, // 챕터 1의 세 번째 레슨 미완료
+      //     ],
+      //   },
+      //   2: {
+      //     completed: false, // 챕터 2 자체 미완료
+      //     lessons: [
+      //       { completed: true },  // 챕터 2의 첫 번째 레슨 완료
+      //       { completed: false }, // 챕터 2의 두 번째 레슨 미완료
+      //     ],
+      //   },
+      // };
+
+      // 예시: 챕터 1의 모든 레슨을 완료 상태로 설정
+      window.learningConfigData = {
+        1: {
+          completed: true, // 챕터 1 자체 완료
+          lessons: [
+            { completed: true },
+            { completed: true },
+            { completed: true },
+            { completed: true },
+            { completed: true },
+            { completed: true },
+            { completed: true },
+            { completed: true },
+          ],
+        },
+        2: {
+          completed: true, // 챕터 2 자체 완료
+          lessons: [{ completed: true }, { completed: true }],
+        },
+        3: {
+          completed: true, // 챕터 3 자체 완료
+          lessons: [{ completed: true }, { completed: true }],
+        },
+        4: {
+          lessons: [{ completed: true }, { completed: true }],
+        },
+      };
+    </script>
+
+    <script src="./assets/js/learning/config.js"></script>
     <script src="./assets/js/learning/gauge.js"></script>
     <script src="./assets/js/learning/markers.js"></script>
     <script src="./assets/js/learning/chapter-cards.js"></script>
     <script src="./assets/js/learning/progress-indicator.js"></script>
     <script src="./assets/js/learning/modal.js"></script>
     <script src="./assets/js/learning/main.js"></script>
-
-    <script>
-      LessonCompletion.setCompleted(1, true);
-    </script>
   </body>
 </html>

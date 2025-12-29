@@ -10,63 +10,63 @@ const LEARNING_CONFIG = {
       type: "chapter",
       pathPercent: 0.108,
       url: "OXTYn3JkkCQ",
-      completed: true, // 하위 lessons가 모두 완료되면 자동으로 true
+      completed: false, // 하위 lessons가 모두 완료되면 자동으로 true
       lessons: [
         {
           pathPercent: 0.137,
           type: "normal",
           label: "1-2단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.159,
           type: "normal",
           label: "1-3단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.182,
           type: "normal",
           label: "1-4단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.205,
           type: "normal",
           label: "1-5단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.228,
           type: "normal",
           label: "1-6단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.25,
           type: "normal",
           label: "1-7단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.272,
           type: "normal",
           label: "1-8단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.298,
           type: "normal",
           label: "1-9단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
       ],
     },
@@ -76,21 +76,21 @@ const LEARNING_CONFIG = {
       type: "chapter",
       pathPercent: 0.325,
       url: "OXTYn3JkkCQ",
-      completed: true,
+      completed: false,
       lessons: [
         {
           pathPercent: 0.367,
           type: "normal",
           label: "2-2단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.41,
           type: "normal",
           label: "2-3단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
       ],
     },
@@ -100,21 +100,21 @@ const LEARNING_CONFIG = {
       type: "chapter",
       pathPercent: 0.442,
       url: "OXTYn3JkkCQ",
-      completed: true,
+      completed: false,
       lessons: [
         {
           pathPercent: 0.486,
           type: "normal",
           label: "3-2단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
         {
           pathPercent: 0.531,
           type: "normal",
           label: "3-3단계",
           url: "OXTYn3JkkCQ",
-          completed: true,
+          completed: false,
         },
       ],
     },
@@ -198,7 +198,7 @@ const LEARNING_CONFIG = {
 
   // 평균 학습량 설정 (전체 학습 항목 대비 %)
   averageProgress: {
-    threshold: 70, // 평균 학습량: 전체의 70%
+    threshold: 80, // 평균 학습량: 전체의 70%
   },
 
   // 마커 이미지 경로
