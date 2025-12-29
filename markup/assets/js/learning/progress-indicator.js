@@ -9,6 +9,9 @@ class ProgressIndicator {
     this.indicator = null;
     this.stateIndicator = null; // 평균 상태 표시 요소
     this.gaugeSvg = document.getElementById("gauge-svg");
+    this.lastMarkerIndex = -1; // 이전 마커 인덱스 추적
+    this.lastIndicatorPosition = null; // 이전 indicator 위치 저장
+    this.animationFrameId = null; // 애니메이션 프레임 ID
 
     // 곡선 스타일 설정 (변경 가능)
     // 'arc-up': 위로 휘어지는 호 (기본)
@@ -346,15 +349,14 @@ class ProgressIndicator {
       return;
     }
 
-    // 마커의 현재 위치 가져오기
-    const markerLeft = parseFloat(targetMarker.style.left) || 0;
-    const markerTop = parseFloat(targetMarker.style.top) || 0;
-
+    // maskPath 기준으로 끝 지점 계산 (가장 정확함)
+    const maskPath = document.getElementById("maskPath");
+    
     console.log("타겟 마커 : " + targetMarkerIndex);
     // ========== 특정 범위로 제한 ==========
     const allowedRanges = [
       [1, 8], // 1부터 8까지
-      [16, 19], // 16부터 15까지
+      [16, 19], // 16부터 19까지
       [24, 25],
     ];
 
@@ -362,12 +364,146 @@ class ProgressIndicator {
       ([start, end]) => targetMarkerIndex >= start && targetMarkerIndex <= end
     );
 
-    // 마커 위쪽에 상태 표시 배치
-    this.stateIndicator.style.position = "absolute";
-    this.stateIndicator.style.left = `${markerLeft}%`;
-    this.stateIndicator.style.top = `${markerTop}%`;
-    this.stateIndicator.style.zIndex = "9";
-    this.stateIndicator.style.pointerEvents = "none";
+    // maskPath 기준으로 끝 지점 계산 (가장 정확함)
+    if (maskPath && this.gaugeSvg) {
+      // 기존 애니메이션 프레임 취소
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+      
+      const maskPathLength = maskPath.getTotalLength();
+      
+      // maskPath와 동일한 transition 속도로 자연스럽게 이동
+      if (!this.stateIndicator.style.transition) {
+        this.stateIndicator.style.transition = "left 0.8s ease-out, top 0.8s ease-out";
+      }
+      
+      // transition 중 실시간으로 위치 업데이트
+      const updatePosition = () => {
+        if (!this.stateIndicator || !maskPath) return;
+        
+        // maskPath의 현재 stroke-dashoffset을 확인하여 진행률 계산
+        // stroke-dashoffset이 줄어들수록 더 많이 채워짐
+        // 초기값은 pathLength이고, 0에 가까울수록 더 많이 채워짐
+        const currentOffset = parseFloat(maskPath.style.strokeDashoffset);
+        if (isNaN(currentOffset)) {
+          // offset이 없으면 초기 상태 (0% 채워짐)
+          this.animationFrameId = requestAnimationFrame(updatePosition);
+          return;
+        }
+        
+        // 채워진 길이 = 전체 길이 - 현재 offset
+        // maskPath는 아래에서 위로 채워지므로, 채워진 길이만큼 시작점부터 이동
+        const filledLength = Math.max(0, Math.min(maskPathLength, maskPathLength - currentOffset));
+        
+        // maskPath 경로상의 해당 위치 계산 (채워진 부분의 끝 지점)
+        const point = maskPath.getPointAtLength(filledLength);
+        
+        const viewBox = this.gaugeSvg.viewBox.baseVal;
+        
+        // SVG 좌표를 퍼센트로 변환
+        const percentX = (point.x / viewBox.width) * 100;
+        const percentY = (point.y / viewBox.height) * 100;
+        
+        // state-indicator를 maskPath의 채워진 끝 지점으로 이동
+        this.stateIndicator.style.position = "absolute";
+        this.stateIndicator.style.left = `${percentX}%`;
+        this.stateIndicator.style.top = `${percentY}%`;
+        this.stateIndicator.style.zIndex = "9";
+        this.stateIndicator.style.pointerEvents = "none";
+        
+        // transform 설정 (마커 위에 위치하도록)
+        if (isInAllowedRange) {
+          this.stateIndicator.style.transformOrigin = "center center";
+          this.stateIndicator.style.transform = "translate(-20%, -110%) scaleX(-1)";
+        } else {
+          this.stateIndicator.style.transformOrigin = "";
+          this.stateIndicator.style.transform = "translate(-20%, -110%)";
+        }
+        
+        // SVG 내부 요소 처리
+        const svg = this.stateIndicator.querySelector("svg");
+        if (svg) {
+          const emoji = svg.querySelector(".emoji");
+          const emojiText = svg.querySelector(".emoji-text");
+          
+          if (isInAllowedRange) {
+            const threshold = this.config.averageProgress.threshold;
+            let emojiTranslateX, emojiTextTranslateX;
+            
+            if (currentProgress < threshold - 5) {
+              emojiTranslateX = "85%";
+              emojiTextTranslateX = "82%";
+            } else if (
+              currentProgress >= threshold - 5 &&
+              currentProgress <= threshold + 5
+            ) {
+              emojiTranslateX = "88%";
+              emojiTextTranslateX = "88%";
+            } else {
+              emojiTranslateX = "82%";
+              emojiTextTranslateX = "80%";
+            }
+            
+            if (emoji) {
+              emoji.style.transform = `translate(${emojiTranslateX}, 0%) scaleX(-1)`;
+            }
+            if (emojiText) {
+              emojiText.style.transform = `translate(${emojiTextTranslateX}, 0%) scaleX(-1)`;
+            }
+          } else {
+            if (emoji) {
+              emoji.style.transform = "";
+            }
+            if (emojiText) {
+              emojiText.style.transform = "";
+            }
+          }
+        }
+        
+        // 위치 저장
+        this.lastIndicatorPosition = {
+          left: percentX,
+          top: percentY
+        };
+        
+        // transition이 끝날 때까지 계속 업데이트
+        this.animationFrameId = requestAnimationFrame(updatePosition);
+      };
+      
+      // transition 시작
+      updatePosition();
+      
+      // transition이 끝나면 애니메이션 중지
+      const handleTransitionEnd = () => {
+        if (this.animationFrameId) {
+          cancelAnimationFrame(this.animationFrameId);
+          this.animationFrameId = null;
+        }
+        maskPath.removeEventListener('transitionend', handleTransitionEnd);
+      };
+      
+      maskPath.addEventListener('transitionend', handleTransitionEnd, { once: true });
+    } else {
+      // maskPath가 없으면 마커 위치 사용
+      const markerLeft = parseFloat(targetMarker.style.left) || 0;
+      const markerTop = parseFloat(targetMarker.style.top) || 0;
+      
+      this.stateIndicator.style.position = "absolute";
+      this.stateIndicator.style.left = `${markerLeft}%`;
+      this.stateIndicator.style.top = `${markerTop}%`;
+      this.stateIndicator.style.zIndex = "9";
+      this.stateIndicator.style.pointerEvents = "none";
+      
+      this.lastIndicatorPosition = {
+        left: markerLeft,
+        top: markerTop
+      };
+    }
+    
+    // 현재 마커 인덱스 저장
+    this.lastMarkerIndex = targetMarkerIndex;
 
     // 챕터1일 때만 미러링 (emoji/emoji-text 제외)
     if (isInAllowedRange) {
@@ -426,6 +562,109 @@ class ProgressIndicator {
         }
       }
     }
+  }
+
+  /**
+   * 경로를 따라 애니메이션으로 이동
+   * @private
+   * @param {SVGPathElement} pathFill - path-fill 경로 요소
+   * @param {number} startProgress - 시작 진행률 (0-1)
+   * @param {number} endProgress - 끝 진행률 (0-1)
+   * @param {number} targetMarkerLeft - 목표 마커의 left 위치 (%)
+   * @param {number} targetMarkerTop - 목표 마커의 top 위치 (%)
+   * @param {boolean} isInAllowedRange - 특정 범위 여부
+   * @param {number} currentProgress - 현재 진행률 (0-100)
+   */
+  _animateAlongPath(pathFill, startProgress, endProgress, targetMarkerLeft, targetMarkerTop, isInAllowedRange, currentProgress) {
+    if (!this.stateIndicator || !this.gaugeSvg) return;
+
+    const pathLength = pathFill.getTotalLength();
+    const viewBox = this.gaugeSvg.viewBox.baseVal;
+    const duration = 800; // 애니메이션 지속 시간 (ms)
+    const startTime = performance.now();
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // easing 함수 (ease-out)
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      
+      // 현재 경로상의 위치 계산
+      const currentPathProgress = startProgress + (endProgress - startProgress) * easedProgress;
+      const point = pathFill.getPointAtLength(pathLength * currentPathProgress);
+      
+      const pathPercentX = (point.x / viewBox.width) * 100;
+      const pathPercentY = (point.y / viewBox.height) * 100;
+      
+      // 경로상 위치와 마커 위치를 보간 (마지막에는 마커 위치로 수렴)
+      const finalProgress = Math.min(progress * 1.2, 1); // 1.2배로 해서 마커 위치로 더 빨리 수렴
+      const percentX = pathPercentX + (targetMarkerLeft - pathPercentX) * finalProgress;
+      const percentY = pathPercentY + (targetMarkerTop - pathPercentY) * finalProgress;
+      
+      // 위치 업데이트
+      this.stateIndicator.style.left = `${percentX}%`;
+      this.stateIndicator.style.top = `${percentY}%`;
+      
+      // transform 설정
+      if (isInAllowedRange) {
+        this.stateIndicator.style.transformOrigin = "center center";
+        this.stateIndicator.style.transform = "translate(-20%, -110%) scaleX(-1)";
+      } else {
+        this.stateIndicator.style.transformOrigin = "";
+        this.stateIndicator.style.transform = "translate(-20%, -110%)";
+      }
+      
+      // SVG 내부 요소 처리
+      const svg = this.stateIndicator.querySelector("svg");
+      if (svg) {
+        const emoji = svg.querySelector(".emoji");
+        const emojiText = svg.querySelector(".emoji-text");
+        
+        if (isInAllowedRange) {
+          const threshold = this.config.averageProgress.threshold;
+          let emojiTranslateX, emojiTextTranslateX;
+          
+          if (currentProgress < threshold - 5) {
+            emojiTranslateX = "85%";
+            emojiTextTranslateX = "82%";
+          } else if (
+            currentProgress >= threshold - 5 &&
+            currentProgress <= threshold + 5
+          ) {
+            emojiTranslateX = "88%";
+            emojiTextTranslateX = "88%";
+          } else {
+            emojiTranslateX = "82%";
+            emojiTextTranslateX = "80%";
+          }
+          
+          if (emoji) {
+            emoji.style.transform = `translate(${emojiTranslateX}, 0%) scaleX(-1)`;
+          }
+          if (emojiText) {
+            emojiText.style.transform = `translate(${emojiTextTranslateX}, 0%) scaleX(-1)`;
+          }
+        } else {
+          if (emoji) {
+            emoji.style.transform = "";
+          }
+          if (emojiText) {
+            emojiText.style.transform = "";
+          }
+        }
+      }
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        // 애니메이션 완료 후 정확히 마커 위치로 설정
+        this.stateIndicator.style.left = `${targetMarkerLeft}%`;
+        this.stateIndicator.style.top = `${targetMarkerTop}%`;
+      }
+    };
+    
+    requestAnimationFrame(animate);
   }
 
   /**

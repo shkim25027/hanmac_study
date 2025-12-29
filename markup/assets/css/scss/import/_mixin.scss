@@ -1,5 +1,7 @@
 // @mixin
 
+@use "sass:map";
+
 // --------------------------------------------
 // Layout Mixins
 // --------------------------------------------
@@ -211,7 +213,7 @@ $icon-registry: (
   "bookmark-on": "../images/ico/ico_bookmark_on.svg", // 흰색 버전
 );
 @function icon($name) {
-  @return map-get($icon-registry, $name);
+  @return map.get($icon-registry, $name);
 }
 
 @mixin useIcon($name, $size: 24px) {

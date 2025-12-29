@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+@use "sass:map";
 @use "base" as *;
 
 // =======================================
@@ -478,21 +479,21 @@ $chapter-widths: (
 
           @for $i from 1 through 3 {
             &:nth-child(#{$i}) {
-              @include chapter-width(map-get($chapter-widths, base));
+              @include chapter-width(map.get($chapter-widths, base));
             }
           }
 
           &:nth-child(4) {
-            @include chapter-width(map-get($chapter-widths, base-4));
+            @include chapter-width(map.get($chapter-widths, base-4));
           }
 
           &:nth-child(5) {
-            @include chapter-width(map-get($chapter-widths, base-5));
+            @include chapter-width(map.get($chapter-widths, base-5));
           }
         }
 
         &.completed {
-          @include chapter-width(map-get($chapter-widths, completed));
+          @include chapter-width(map.get($chapter-widths, completed));
 
           svg {
             animation: bounce 0.5s ease;
@@ -500,7 +501,7 @@ $chapter-widths: (
         }
 
         &.current {
-          @include chapter-width(map-get($chapter-widths, current));
+          @include chapter-width(map.get($chapter-widths, current));
 
           svg {
             animation: bounce 0.5s ease;

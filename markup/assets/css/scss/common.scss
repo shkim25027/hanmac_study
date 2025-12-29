@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+@use "sass:map";
 @use "base" as *;
 @forward "import/typography";
 @forward "import/lib-fonts";
@@ -923,49 +924,49 @@ $font-sizes: (
 // Desktop (1024px ~)
 @include mq(desktop) {
   html {
-    font-size: map-get($font-sizes, desktop);
+    font-size: map.get($font-sizes, desktop);
   }
 }
 
 // Tablet (1023px 이하)
 @include mq(tablet, max) {
   html {
-    font-size: map-get($font-sizes, tablet);
+    font-size: map.get($font-sizes, tablet);
   }
 }
 
 // Mobile Large (767px 이하)
 @media all and (max-width: 767px) {
   html {
-    font-size: map-get($font-sizes, mobile-large);
+    font-size: map.get($font-sizes, mobile-large);
   }
 }
 
 // Mobile (639px 이하)
 @media all and (max-width: 639px) {
   html {
-    font-size: map-get($font-sizes, mobile);
+    font-size: map.get($font-sizes, mobile);
   }
 }
 
 // Mobile Small (479px 이하)
 @media all and (max-width: 479px) {
   html {
-    font-size: map-get($font-sizes, mobile-small);
+    font-size: map.get($font-sizes, mobile-small);
   }
 }
 
 // Mobile XS (359px 이하)
 @media all and (max-width: 359px) {
   html {
-    font-size: map-get($font-sizes, mobile-xs);
+    font-size: map.get($font-sizes, mobile-xs);
   }
 }
 
 // Mobile XXS (319px 이하)
 @media all and (max-width: 319px) {
   html {
-    font-size: map-get($font-sizes, mobile-xxs);
+    font-size: map.get($font-sizes, mobile-xxs);
   }
 }
 

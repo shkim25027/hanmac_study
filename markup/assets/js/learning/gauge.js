@@ -22,8 +22,17 @@ class GaugeManager {
       this.maskPath.style.strokeDashoffset = this.pathLength;
     }
 
-    const offset = this.pathLength * (1 - p);
-    this.maskPath.style.strokeDashoffset = offset;
+    // 현재 offset 값 가져오기
+    const currentOffset = parseFloat(this.maskPath.style.strokeDashoffset) || this.pathLength;
+    const targetOffset = this.pathLength * (1 - p);
+    
+    // 애니메이션을 위한 transition 추가 (처음 한 번만)
+    if (!this.maskPath.style.transition) {
+      this.maskPath.style.transition = "stroke-dashoffset 0.8s ease-out";
+    }
+    
+    // offset 업데이트 (transition으로 자연스럽게 애니메이션됨)
+    this.maskPath.style.strokeDashoffset = targetOffset;
   }
 
   /**
