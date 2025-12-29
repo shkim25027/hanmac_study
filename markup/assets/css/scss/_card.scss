@@ -43,7 +43,6 @@ $transition-speed: 0.1s;
   backdrop-filter: blur($backdrop-blur);
   padding: $card-padding-hover;
   @include maskContents();
-  inset: none;
 }
 
 // =======================================
@@ -62,6 +61,9 @@ $transition-speed: 0.1s;
     &:hover {
       &::before {
         @include card-hover-active;
+        inset: auto;
+        top: 50%;
+        left: 50%;
       }
 
       .card {
