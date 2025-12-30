@@ -1007,7 +1007,9 @@ class PuzzlePiece {
       fill: `url(${baseUrl}#${patternId})`,
       "fill-opacity": opacity,
       stroke: "#333",
-      "stroke-width": "1",
+      "stroke-width": "2",
+      "stroke-linejoin": "round",
+      "stroke-linecap": "round",
     });
 
     if (hidden) path.style.display = "none";

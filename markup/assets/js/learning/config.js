@@ -129,7 +129,7 @@ const LEARNING_CONFIG = {
         {
           pathPercent: 0.585,
           type: "normal",
-          label: "성희롱 예방 교육 1",
+          label: "성희롱 예방 교육 1", 
           url: "OXTYn3JkkCQ",
           completed: false,
         },

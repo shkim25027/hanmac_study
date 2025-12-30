@@ -56,85 +56,211 @@
         COMPLETION_MODE: "FINISH", // "COMPLETED" 또는 "FINISH"
       };
       // 2. 콘텐츠 데이터 설정
-      window.puzzleContentData = {
-        1: {
-          title: "왜 다윈인인가 (최재천 교수)",
-          url: "OXTYn3JkkCQ",
+      window.puzzleChapterData = [
+        {
+          id: 1,
+          name: "한맥가족 소개 및 경영이념",
+          pieceId: 9,
+          type: "youtube",
+          group: 1,
+          completed: true,
+          lessons: [
+            {
+              label: "한맥가족의 역사",
+              url: "KWKJbTgtkrk",
+              completed: true,
+            },
+          ],
+        },
+        {
+          id: 2,
+          name: "삼안 회사 소개",
+          pieceId: 10,
+          type: "youtube",
+          group: 1,
+          completed: true,
+          lessons: [
+            {
+              label: "삼안 회사 개요",
+              url: "HugaMHZRBC8",
+              completed: true,
+            },
+          ],
+        },
+        {
+          id: 3,
+          name: "왜 다윈인인가",
+          pieceId: 1,
           type: "youtube",
           group: 3,
           completed: true,
+          lessons: [
+            {
+              label: "왜 다윈인가? - 1강 소통_#001",
+              url: "OXTYn3JkkCQ", 
+              completed: true,
+            },
+            {
+              label: "왜 다윈인가? - 1강 소통_#002",
+              url: "oVoZLxi62Zg", 
+              completed: true,
+            },
+            {
+              label: "왜 다윈인가? - 1강 소통_#003",
+              url: "OXTYn3JkkCQ", 
+              completed: true,
+            },
+            {
+              label: "왜 다윈인가? - 1강 소통_#004",
+              url: "oVoZLxi62Zg", 
+              completed: true,
+            },
 
-          // 완료 여부
+            {
+              label: "왜 다윈인가? - 2강 통섭_#001",
+              url: "OXTYn3JkkCQ", 
+              completed: true,
+            },
+            {
+              label: "왜 다윈인가? - 2강 통섭_#002",
+              url: "oVoZLxi62Zg", 
+              completed: true,
+            },
+            {
+              label: "왜 다윈인가? - 2강 통섭_#003",
+              url: "OXTYn3JkkCQ", 
+              completed: true,
+            },
+            {
+              label: "왜 다윈인가? - 2강 통섭_#004",
+              url: "oVoZLxi62Zg", 
+              completed: true,
+            },
+          ],
         },
-        2: {
-          title: "새로운 시대를 준비하는 우리",
-          url: "",
+        {
+          id: 4,
+          name: "새로운 시대를 준비하는 우리",
+          pieceId: 2,
           type: "file",
           group: 2,
           completed: true,
+          lessons: [
+            {
+              label: "디지털 전환의 시대",
+              url: "./files/education.pdf",
+              completed: true,
+            },
+          ],
         },
-        3: {
-          title: "기술개발센터 소개",
-          url: "T3pkeUl5fT4",
+        {
+          id: 5,
+          name: "기술개발센터 소개",
+          pieceId: 3,
+          type: "youtube",
+          group: 2,
+          lessons: [
+            {
+              label: "기술개발센터 역할",
+              url: "T3pkeUl5fT4",
+              completed: false,
+            },
+          ],
+        },
+        {
+          id: 6,
+          name: "건설산업의 디지털 전환",
+          pieceId: 4,
           type: "youtube",
           group: 2,
           completed: true,
-
-          // ✅ 완료된 조각
+          lessons: [
+            {
+              label: "건설 DX 개요",
+              url: "T3pkeUl5fT4",
+              completed: true,
+            },
+          ],
         },
-        4: {
-          title: "건설산업의 디지털 전환",
-          url: "T3pkeUl5fT4",
+        {
+          id: 7,
+          name: "상용 소프트웨어 소개",
+          pieceId: 5,
           type: "youtube",
           group: 2,
           completed: true,
+          lessons: [
+            {
+              label: "주요 S/W 플랫폼",
+              url: "T3pkeUl5fT4",
+              completed: true,
+            },
+          ],
         },
-        5: {
-          title: "상용 소프트웨어 소개",
-          url: "T3pkeUl5fT4",
-          type: "youtube",
-          group: 2,
-          completed: true,
-        },
-        6: {
-          title: "축적의 시간",
-          url: "8MugD6Cwhl8",
+        {
+          id: 8,
+          name: "축적의 시간",
+          pieceId: 6,
           type: "youtube",
           group: 3,
-          completed: false,
-
-          // ✅ 완료된 조각
+          completed: true,
+          lessons: [
+            {
+              label: "축적의 시간 - 착각의 시간",
+              url: "8MugD6Cwhl8",
+              completed: true,
+            },
+            {
+              label: "축적의 시간 - 축적에서 길을 찾다",
+              url: "8MugD6Cwhl8",
+              completed: true,
+            },
+            {
+              label: "축적의 시간 2 - 천재는 잊어라",
+              url: "8MugD6Cwhl8",
+              completed: true,
+            },
+            {
+              label: "축적의 시간2 - 유령이 된 리더들",
+              url: "8MugD6Cwhl8",
+              completed: true,
+            },
+            
+          ],
         },
-        7: {
-          title: "회사생활 안내 (경력사원)",
-          url: "Py7nutVN53s",
+        {
+          id: 9,
+          name: "회사생활 안내 (경력)",
+          pieceId: 7,
           type: "youtube",
           group: 4,
           completed: true,
+          lessons: [
+            {
+              label: "경력사원 온보딩",
+              url: "Py7nutVN53s",
+              completed: true,
+            },
+          ],
         },
-        8: {
-          title: "회사생활 안내 (신규입사자)",
-          url: "Py7nutVN53s",
+        {
+          id: 10,
+          name: "회사생활 안내 (신규)",
+          pieceId: 8,
           type: "youtube",
           group: 4,
           completed: true,
+          lessons: [
+            {
+              label: "신규입사자 가이드",
+              url: "Py7nutVN53s",
+              completed: true,
+            },
+          ],
         },
-        9: {
-          title: "한맥가족 소개 및 경영이념",
-          url: "KWKJbTgtkrk",
-          type: "youtube",
-          group: 1,
-          completed: true,
-        },
-        10: {
-          title: "삼안 회사 소개",
-          url: "HugaMHZRBC8",
-          type: "youtube",
-          group: 1,
-          completed: true,
-        },
-      };
+      ];
     </script>
-    <script src="./assets/js/puzzle-onboarding.js"></script>
+
+    <script src="./assets/js/puzzle-onboarding-chapter.js"></script>
   </body>
 </html>

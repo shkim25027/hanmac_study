@@ -343,7 +343,8 @@ h5 {
 
     .modal {
       &-content {
-        width: $video-modal-width;
+        width: 89.5833%;
+        max-width: $video-modal-width;
         height: $video-modal-height;
         padding: 0;
         background: var(--bg-video);
