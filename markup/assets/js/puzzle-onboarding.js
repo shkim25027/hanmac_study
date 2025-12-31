@@ -22,7 +22,7 @@ const DEFAULT_CONFIG = {
 
   FILTER_IDS: {
     COMPLETED: "completed-effect",
-    INNER_SHADOW: "inner-shadow-effect",
+    //INNER_SHADOW: "inner-shadow-effect",
     HOVER_SHADOW: "hover-shadow-effect",
     PIECE_EMBOSSING: "piece-embossing-effect",     
   },
@@ -605,7 +605,7 @@ class FilterFactory {
       11,
       6,
       "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
-      "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0",  // ✅ 흰색 하이라이트 투명도 0.5
+      "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0",
       "effect1_innerShadow",
       "effect2_innerShadow"
     );
@@ -1513,15 +1513,17 @@ class PuzzlePiece {
       hoverImg.setAttribute("fill-opacity", isHovering ? "1.0" : "0");
       
       if (isHovering) {
-        // ✅ 호버 시: 내부 그림자 효과만 (box-shadow 효과)
-        // box-shadow: 11px 6px 4px 0 rgba(255, 255, 255, 0.25) inset, -14px -11px 4px 0 rgba(0, 0, 0, 0.25) inset
+        // 호버 시: 엠보싱 + 내부 그림자
         hoverImg.setAttribute(
           "filter",
-          `url(#${CONFIG.FILTER_IDS.INNER_SHADOW})`
+          `url(#${CONFIG.FILTER_IDS.PIECE_EMBOSSING}) url(#${CONFIG.FILTER_IDS.INNER_SHADOW})`
         );
       } else {
-        // 호버 해제 시: 필터 제거
-        hoverImg.removeAttribute("filter");
+        // 호버 해제 시: 엠보싱만
+        hoverImg.setAttribute(
+          "filter",
+          `url(#${CONFIG.FILTER_IDS.PIECE_EMBOSSING})`
+        );
       }
     }
 
