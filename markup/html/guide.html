@@ -1,10 +1,10 @@
-
 <div class="guide-wrap">
   <svg class="guide-svg" width="100%" height="100%">
     <defs>
       <mask id="guide-mask">
         <rect x="0" y="0" width="100%" height="100%" fill="white" />
         <path id="guide-cutout-path" fill="black" />
+        <path id="guide-arc-stroke-mask-path" fill="black" />
       </mask>
     </defs>
     <rect
@@ -15,858 +15,102 @@
       fill="rgba(0, 0, 0, 0.5)"
       mask="url(#guide-mask)"
     />
+    <path
+      id="guide-stroke-path"
+      fill="none"
+      stroke="#FFF"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-dasharray="4"
+    />
+    <path
+      id="guide-arc-ellipse-stroke-path"
+      fill="none"
+      stroke="#FFF"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-dasharray="4"
+    />
+    <!-- 요소 간 연결 라인 -->
+    <g id="guide-element-connection-lines" stroke="#FFF" stroke-width="1" stroke-dasharray="0" fill="none" />
   </svg>
 
   <div class="guide-mask nav"></div>
-  <div class="guide-mask"></div>
 </div>
+
+<!-- JS 파일 import -->
+<script src="./assets/js/main/MultiGuide.js"></script>
 <script>
-  class MultiGuide {
-    constructor(targets) {
-      this.targets = targets;
-      this.isActive = false;
-      this.init();
-    }
-
-    init() {
-      console.log("[MultiGuide.init] 초기화 시작");
-      
-      this.guideWrap = document.querySelector(".guide-wrap");
-      console.log("[MultiGuide.init] guideWrap:", this.guideWrap);
-      
-      if (!this.guideWrap) {
-        console.error("[MultiGuide.init] ❌ .guide-wrap 요소를 찾을 수 없습니다!");
-        // 재시도
-        setTimeout(() => {
-          this.guideWrap = document.querySelector(".guide-wrap");
-          if (this.guideWrap) {
-            console.log("[MultiGuide.init] ✅ 재시도 후 guideWrap 찾음");
-            this.continueInit();
-          } else {
-            console.error("[MultiGuide.init] ❌ 재시도 실패");
-          }
-        }, 100);
-        return;
-      }
-      
-      this.continueInit();
-    }
-    
-    continueInit() {
-      this.cutoutPath = document.getElementById("guide-cutout-path");
-      console.log("[MultiGuide.init] cutoutPath:", this.cutoutPath);
-      
-      this.bordersContainer = document.getElementById("guideBorders");
-      this.labelsContainer = document.getElementById("guideLabels");
-
-      if (!this.bordersContainer) {
-        this.bordersContainer = document.createElement("div");
-        this.bordersContainer.id = "guideBorders";
-        this.bordersContainer.className = "guide-borders";
-        this.guideWrap.appendChild(this.bordersContainer);
-        console.log("[MultiGuide.init] bordersContainer 생성됨");
-      }
-
-      if (!this.labelsContainer) {
-        this.labelsContainer = document.createElement("div");
-        this.labelsContainer.id = "guideLabels";
-        this.labelsContainer.className = "guide-labels";
-        this.labelsContainer.style.cssText =
-          "position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10000;";
-        this.guideWrap.appendChild(this.labelsContainer);
-        console.log("[MultiGuide.init] labelsContainer 생성됨");
-      }
-
-      this.attachEvents();
-      console.log("[MultiGuide.init] ✅ 초기화 완료");
-    }
-
-    getStartButton() {
-      return (
-        document.querySelector(".guide-start-btn") ||
-        document.getElementById("guideStart") ||
-        document.querySelector("[data-guide-start]")
-      );
-    }
-
-    attachEvents() {
-      const startBtn = this.getStartButton();
-      if (startBtn) {
-        startBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          this.show();
-        });
-      }
-
-      const svg = document.querySelector(".guide-svg");
-      if (svg) {
-        svg.addEventListener("click", (e) => {
-          if (e.target === svg || e.target.tagName.toLowerCase() === "rect") {
-            this.hide();
-          }
-        });
-      }
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && this.isActive) {
-          this.hide();
-        }
-      });
-    }
-
-    show() {
-      console.log("[MultiGuide.show] 가이드 표시 시작");
-      console.log("[MultiGuide.show] guideWrap 요소:", this.guideWrap);
-      
-      if (!this.guideWrap) {
-        console.error("[MultiGuide.show] ❌ guideWrap을 찾을 수 없습니다!");
-        return;
-      }
-
-      this.isActive = true;
-      this.guideWrap.classList.add("active");
-      console.log("[MultiGuide.show] active 클래스 추가됨. 클래스 목록:", this.guideWrap.className);
-
-      const startBtn = this.getStartButton();
-      if (startBtn) startBtn.style.display = "none";
-
-      document.body.style.overflow = "hidden";
-
-      console.log("[MultiGuide.show] cutouts 생성 중...");
-      this.createCutouts();
-      
-      console.log("[MultiGuide.show] borders 생성 중...");
-      this.createBorders();
-      
-      console.log("[MultiGuide.show] labels 생성 중...");
-      this.createLabels();
-      
-      console.log("[MultiGuide.show] ✅ 가이드 표시 완료");
-      
-      // DOM 확인
-      setTimeout(() => {
-        const computedStyle = window.getComputedStyle(this.guideWrap);
-        console.log("[MultiGuide.show] 최종 확인:", {
-          display: computedStyle.display,
-          opacity: computedStyle.opacity,
-          visibility: computedStyle.visibility,
-          hasActiveClass: this.guideWrap.classList.contains("active")
-        });
-      }, 100);
-    }
-
-    hide() {
-      this.isActive = false;
-      this.guideWrap.classList.remove("active");
-
-      const startBtn = this.getStartButton();
-      if (startBtn) startBtn.style.display = "block";
-
-      document.body.style.overflow = "";
-
-      if (this.bordersContainer) this.bordersContainer.innerHTML = "";
-      if (this.labelsContainer) this.labelsContainer.innerHTML = "";
-    }
-
-    createCutouts() {
-      let pathData = "";
-
-      this.targets.forEach((target) => {
-        const element = document.querySelector(target.selector);
-        if (!element) {
-          console.warn("요소를 찾을 수 없음:", target.selector);
-          return;
-        }
-
-        // gauge SVG를 기반으로 arc 그리기
-        if (target.useGaugeArc) {
-          pathData += this.createGaugeArcPath(element, target) + " ";
-        }
-        // 일반 arc
-        else if (target.shape === "arc") {
-          pathData +=
-            this.createArcPath(
-              element.getBoundingClientRect(),
-              target.padding || 15,
-              target
-            ) + " ";
-        }
-        // 기본 사각형
-        else {
-          const rect = element.getBoundingClientRect();
-          const padding = target.padding || 15;
-          const radius = target.borderRadius || 12;
-          pathData +=
-            this.createRoundedRectPath(
-              rect.left - padding,
-              rect.top - padding,
-              rect.width + padding * 2,
-              rect.height + padding * 2,
-              radius
-            ) + " ";
-        }
-      });
-
-      this.cutoutPath.setAttribute("d", pathData.trim());
-    }
-
-    // 실제 게이지 설정값을 사용한 arc path
-    createGaugeArcPath(containerElement, target) {
-      // gauge SVG 찾기
-      const gaugeSvg = document.getElementById("gauge");
-      if (!gaugeSvg) {
-        console.warn("gauge SVG를 찾을 수 없습니다");
-        return this.createArcPath(
-          containerElement.getBoundingClientRect(),
-          target.padding || 15,
-          target
-        );
-      }
-
-      // 게이지 설정값 (gauge.js와 동일)
-      const size = target.gaugeSize || 832;
-      const strokeWidth = target.gaugeStrokeWidth || 31;
-      const padding = target.gaugePadding || 20;
-
-      // 실제 반지름 계산 (gauge.js와 동일)
-      const center = size / 2;
-      const radius = size / 2 - strokeWidth / 2 - padding;
-
-      // SVG의 화면상 위치와 크기
-      const svgRect = gaugeSvg.getBoundingClientRect();
-
-      // viewBox 정보
-      const viewBox = gaugeSvg.viewBox.baseVal;
-      const viewBoxWidth = viewBox.width;
-      const viewBoxHeight = viewBox.height;
-
-      // 스케일 계산
-      const scaleX = svgRect.width / viewBoxWidth;
-      const scaleY = svgRect.height / viewBoxHeight;
-
-      // 중심점 화면 좌표 변환
-      const screenCenterX = svgRect.left + (center - viewBox.x) * scaleX;
-      const screenCenterY = svgRect.top + (center - viewBox.y) * scaleY;
-
-      // 반지름 화면 좌표 변환
-      const screenRadius = radius * scaleX;
-      const screenStrokeWidth = strokeWidth * scaleX;
-
-      // arc의 두께 (stroke + 여유)
-      const arcThickness = screenStrokeWidth + (target.padding || 10) * 2;
-
-      // 각도 설정 (기본: 하단 반원)
-      const startAngle = target.startAngle || 180;
-      const endAngle = target.endAngle || 360;
-
-      // 외부/내부 반지름
-      const outerRadius = screenRadius + arcThickness / 2;
-      const innerRadius = screenRadius - arcThickness / 2;
-
-      // 각도를 라디안으로
-      const startRad = (startAngle * Math.PI) / 180;
-      const endRad = (endAngle * Math.PI) / 180;
-
-      // 외부 arc 점들
-      const outerStartX = screenCenterX + outerRadius * Math.cos(startRad);
-      const outerStartY = screenCenterY + outerRadius * Math.sin(startRad);
-      const outerEndX = screenCenterX + outerRadius * Math.cos(endRad);
-      const outerEndY = screenCenterY + outerRadius * Math.sin(endRad);
-
-      // 내부 arc 점들
-      const innerStartX = screenCenterX + innerRadius * Math.cos(startRad);
-      const innerStartY = screenCenterY + innerRadius * Math.sin(startRad);
-      const innerEndX = screenCenterX + innerRadius * Math.cos(endRad);
-      const innerEndY = screenCenterY + innerRadius * Math.sin(endRad);
-
-      const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-
-      // 🔥 둥근 끝을 위한 반지름 (arc 두께의 절반)
-      const capRadius = arcThickness / 2;
-
-      // 도넛 모양 path + 양쪽 끝에 원 추가
-      let pathData = `
-        M ${outerStartX},${outerStartY}
-        A ${outerRadius},${outerRadius} 0 ${largeArc} 1 ${outerEndX},${outerEndY}
-        L ${innerEndX},${innerEndY}
-        A ${innerRadius},${innerRadius} 0 ${largeArc} 0 ${innerStartX},${innerStartY}
-        Z
-      `;
-
-      // 시작점 둥근 캡 (원)
-      const startCapCenterX = screenCenterX + screenRadius * Math.cos(startRad);
-      const startCapCenterY = screenCenterY + screenRadius * Math.sin(startRad);
-      pathData += `
-        M ${startCapCenterX + capRadius},${startCapCenterY}
-        A ${capRadius},${capRadius} 0 1 1 ${startCapCenterX - capRadius},${startCapCenterY}
-        A ${capRadius},${capRadius} 0 1 1 ${startCapCenterX + capRadius},${startCapCenterY}
-        Z
-      `;
-
-      // 끝점 둥근 캡 (원)
-      const endCapCenterX = screenCenterX + screenRadius * Math.cos(endRad);
-      const endCapCenterY = screenCenterY + screenRadius * Math.sin(endRad);
-      pathData += `
-        M ${endCapCenterX + capRadius},${endCapCenterY}
-        A ${capRadius},${capRadius} 0 1 1 ${endCapCenterX - capRadius},${endCapCenterY}
-        A ${capRadius},${capRadius} 0 1 1 ${endCapCenterX + capRadius},${endCapCenterY}
-        Z
-      `;
-
-      return pathData;
-    }
-
-    // 일반 arc path (fallback)
-    createArcPath(rect, padding, target) {
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const radius = rect.width / 2 + padding;
-      const thickness = target.arcThickness || radius * 0.2;
-      const startAngle = target.startAngle || 180;
-      const endAngle = target.endAngle || 360;
-
-      const outerRadius = radius;
-      const innerRadius = radius - thickness;
-
-      const startRad = (startAngle * Math.PI) / 180;
-      const endRad = (endAngle * Math.PI) / 180;
-
-      const outerStartX = centerX + outerRadius * Math.cos(startRad);
-      const outerStartY = centerY + outerRadius * Math.sin(startRad);
-      const outerEndX = centerX + outerRadius * Math.cos(endRad);
-      const outerEndY = centerY + outerRadius * Math.sin(endRad);
-
-      const innerStartX = centerX + innerRadius * Math.cos(startRad);
-      const innerStartY = centerY + innerRadius * Math.sin(startRad);
-      const innerEndX = centerX + innerRadius * Math.cos(endRad);
-      const innerEndY = centerY + innerRadius * Math.sin(endRad);
-
-      const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-
-      // 🔥 둥근 끝을 위한 반지름
-      const capRadius = thickness / 2;
-
-      // 도넛 모양 + 양쪽 끝 원
-      let pathData = `
-        M ${outerStartX},${outerStartY}
-        A ${outerRadius},${outerRadius} 0 ${largeArc} 1 ${outerEndX},${outerEndY}
-        L ${innerEndX},${innerEndY}
-        A ${innerRadius},${innerRadius} 0 ${largeArc} 0 ${innerStartX},${innerStartY}
-        Z
-      `;
-
-      // 시작점 둥근 캡
-      const startCapX =
-        centerX + (outerRadius - thickness / 2) * Math.cos(startRad);
-      const startCapY =
-        centerY + (outerRadius - thickness / 2) * Math.sin(startRad);
-      pathData += `
-        M ${startCapX + capRadius},${startCapY}
-        A ${capRadius},${capRadius} 0 1 1 ${startCapX - capRadius},${startCapY}
-        A ${capRadius},${capRadius} 0 1 1 ${startCapX + capRadius},${startCapY}
-        Z
-      `;
-
-      // 끝점 둥근 캡
-      const endCapX =
-        centerX + (outerRadius - thickness / 2) * Math.cos(endRad);
-      const endCapY =
-        centerY + (outerRadius - thickness / 2) * Math.sin(endRad);
-      pathData += `
-        M ${endCapX + capRadius},${endCapY}
-        A ${capRadius},${capRadius} 0 1 1 ${endCapX - capRadius},${endCapY}
-        A ${capRadius},${capRadius} 0 1 1 ${endCapX + capRadius},${endCapY}
-        Z
-      `;
-
-      return pathData;
-    }
-
-    createRoundedRectPath(x, y, width, height, radius) {
-      return `
-        M ${x + radius},${y}
-        L ${x + width - radius},${y}
-        Q ${x + width},${y} ${x + width},${y + radius}
-        L ${x + width},${y + height - radius}
-        Q ${x + width},${y + height} ${x + width - radius},${y + height}
-        L ${x + radius},${y + height}
-        Q ${x},${y + height} ${x},${y + height - radius}
-        L ${x},${y + radius}
-        Q ${x},${y} ${x + radius},${y}
-        Z
-      `;
-    }
-
-    createBorders() {
-      this.targets.forEach((target, index) => {
-        const element = document.querySelector(target.selector);
-        if (!element) return;
-
-        // arc는 SVG border로 그리기
-        if (target.useGaugeArc || target.shape === "arc") {
-          // this.createArcBorder(element, target, index);
-          return;
-        }
-
-        // 일반 요소만 div border 표시
-        const rect = element.getBoundingClientRect();
-        const padding = target.padding || 15;
-
-        const border = document.createElement("div");
-        border.className = "guide-border";
-        border.style.cssText = `
-          left: ${rect.left - padding}px;
-          top: ${rect.top - padding}px;
-          width: ${rect.width + padding * 2}px;
-          height: ${rect.height + padding * 2}px;
-          animation-delay: ${index * 0.1}s;
-        `;
-        this.bordersContainer.appendChild(border);
-      });
-    }
-
-    // arc 전용 SVG 보더
-    createArcBorder(element, target, index) {
-      const gaugeSvg = document.getElementById("gauge");
-      if (!gaugeSvg && !target.useGaugeArc) {
-        return;
-      }
-
-      let screenCenterX, screenCenterY, screenRadius, arcThickness;
-
-      if (gaugeSvg && target.useGaugeArc) {
-        // 실제 게이지 설정 사용
-        const size = target.gaugeSize || 832;
-        const strokeWidth = target.gaugeStrokeWidth || 31;
-        const padding = target.gaugePadding || 20;
-
-        const center = size / 2;
-        const gaugeRadius = size / 2 - strokeWidth / 2 - padding;
-
-        const svgRect = gaugeSvg.getBoundingClientRect();
-        const viewBox = gaugeSvg.viewBox.baseVal;
-        const scaleX = svgRect.width / viewBox.width;
-
-        screenCenterX = svgRect.left + (center - viewBox.x) * scaleX;
-        screenCenterY = svgRect.top + (center - viewBox.y) * scaleX;
-        screenRadius = gaugeRadius * scaleX;
-        const screenStrokeWidth = strokeWidth * scaleX;
-        arcThickness = screenStrokeWidth + (target.padding || 10) * 2;
-      } else {
-        // fallback
-        const rect = element.getBoundingClientRect();
-        screenCenterX = rect.left + rect.width / 2;
-        screenCenterY = rect.top + rect.height / 2;
-        screenRadius = rect.width / 2;
-        arcThickness = target.arcThickness || screenRadius * 0.2;
-      }
-
-      const startAngle = target.startAngle || 180;
-      const endAngle = target.endAngle || 360;
-
-      const outerRadius = screenRadius + arcThickness / 2;
-      const innerRadius = screenRadius - arcThickness / 2;
-
-      const startRad = (startAngle * Math.PI) / 180;
-      const endRad = (endAngle * Math.PI) / 180;
-
-      const outerStartX = screenCenterX + outerRadius * Math.cos(startRad);
-      const outerStartY = screenCenterY + outerRadius * Math.sin(startRad);
-      const outerEndX = screenCenterX + outerRadius * Math.cos(endRad);
-      const outerEndY = screenCenterY + outerRadius * Math.sin(endRad);
-
-      const innerStartX = screenCenterX + innerRadius * Math.cos(startRad);
-      const innerStartY = screenCenterY + innerRadius * Math.sin(startRad);
-      const innerEndX = screenCenterX + innerRadius * Math.cos(endRad);
-      const innerEndY = screenCenterY + innerRadius * Math.sin(endRad);
-
-      const largeArc = endAngle - startAngle > 180 ? 1 : 0;
-
-      // SVG 생성
-      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.style.cssText = `
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-      `;
-
-      // 외부 arc
-      const outerArc = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-      );
-      const outerArcData = `
-        M ${outerStartX},${outerStartY}
-        A ${outerRadius},${outerRadius} 0 ${largeArc} 1 ${outerEndX},${outerEndY}
-      `;
-      outerArc.setAttribute("d", outerArcData);
-      outerArc.setAttribute("fill", "none");
-      outerArc.setAttribute("stroke", "#4A9EFF");
-      outerArc.setAttribute("stroke-width", "3");
-
-      // 내부 arc
-      const innerArc = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-      );
-      const innerArcData = `
-        M ${innerStartX},${innerStartY}
-        A ${innerRadius},${innerRadius} 0 ${largeArc} 1 ${innerEndX},${innerEndY}
-      `;
-      innerArc.setAttribute("d", innerArcData);
-      innerArc.setAttribute("fill", "none");
-      innerArc.setAttribute("stroke", "#4A9EFF");
-      innerArc.setAttribute("stroke-width", "3");
-
-      // 시작쪽 반원 캡 (채워진 원)
-      const startCapRadius = arcThickness / 2;
-      const startCapCenterX = screenCenterX + screenRadius * Math.cos(startRad);
-      const startCapCenterY = screenCenterY + screenRadius * Math.sin(startRad);
-
-      const startCap = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "circle"
-      );
-      startCap.setAttribute("cx", startCapCenterX);
-      startCap.setAttribute("cy", startCapCenterY);
-      startCap.setAttribute("r", startCapRadius);
-      startCap.setAttribute("fill", "#4A9EFF");
-      startCap.setAttribute("stroke", "#4A9EFF");
-      startCap.setAttribute("stroke-width", "3");
-
-      // 끝쪽 반원 캡 (채워진 원)
-      const endCapCenterX = screenCenterX + screenRadius * Math.cos(endRad);
-      const endCapCenterY = screenCenterY + screenRadius * Math.sin(endRad);
-
-      const endCap = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "circle"
-      );
-      endCap.setAttribute("cx", endCapCenterX);
-      endCap.setAttribute("cy", endCapCenterY);
-      endCap.setAttribute("r", startCapRadius);
-      endCap.setAttribute("fill", "#4A9EFF");
-      endCap.setAttribute("stroke", "#4A9EFF");
-      endCap.setAttribute("stroke-width", "3");
-
-      svg.appendChild(outerArc);
-      svg.appendChild(innerArc);
-      svg.appendChild(startCap);
-      svg.appendChild(endCap);
-      this.bordersContainer.appendChild(svg);
-    }
-
-    createLabels() {
-      this.targets.forEach((target, index) => {
-        if (!target.label) return;
-
-        const element = document.querySelector(target.selector);
-        if (!element) return;
-
-        const rect = element.getBoundingClientRect();
-
-        // 설명 박스 생성
-        const tooltipBox = document.createElement("div");
-        tooltipBox.className = "guide-tooltip-box";
-        tooltipBox.style.cssText = `
-          position: fixed;
-          background: white;
-          border: 2px solid #000;
-          border-radius: 8px;
-          padding: 16px 20px;
-          //max-width: 300px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          z-index: 10001;
-          pointer-events: auto;
-          animation: tooltipFadeIn 0.4s ease-out ${index * 0.1 + 0.3}s forwards;
-          opacity: 0;
-        `;
-
-        // 제목
-        const title = document.createElement("div");
-        title.className = "guide-tooltip-title";
-        title.textContent = target.label;
-        title.style.cssText = `
-          font-weight: bold;
-          font-size: 16px;
-          margin-bottom: ${target.description ? '8px' : '0'};
-          color: #000;
-        `;
-        tooltipBox.appendChild(title);
-
-        // 설명 (있는 경우)
-        if (target.description) {
-          const description = document.createElement("div");
-          description.className = "guide-tooltip-description";
-          // 줄바꿈 처리
-          const lines = target.description.split('\n');
-          lines.forEach((line, idx) => {
-            if (idx > 0) {
-              description.appendChild(document.createElement("br"));
-            }
-            description.appendChild(document.createTextNode(line));
-          });
-          description.style.cssText = `
-            font-size: 14px;
-            line-height: 1.5;
-            color: #666;
-            white-space: pre-line;
-          `;
-          tooltipBox.appendChild(description);
-        }
-
-        // 먼저 DOM에 추가해서 높이 측정
-        this.labelsContainer.appendChild(tooltipBox);
-        
-        // 위치 계산 (요소 근처에 배치)
-        let left = rect.left + rect.width / 2;
-        let top = rect.top - 10;
-
-        // 요소 위쪽에 배치 (공간이 부족하면 아래쪽)
-        if (target.position === "bottom" || (rect.top < 150 && target.position !== "top")) {
-          top = rect.bottom + 15;
-        } else {
-          const boxHeight = tooltipBox.offsetHeight || 100;
-          top = rect.top - boxHeight - 15;
-          if (top < 10) {
-            top = rect.bottom + 15;
-          }
-        }
-
-        // 좌우 정렬
-        if (target.position === "left") {
-          left = rect.left - 10;
-          tooltipBox.setAttribute("data-position", "left");
-          tooltipBox.style.transform = "translateX(-100%)";
-        } else if (target.position === "right") {
-          left = rect.right + 10;
-          tooltipBox.setAttribute("data-position", "right");
-          tooltipBox.style.transform = "translateX(0)";
-        } else {
-          tooltipBox.style.transform = "translateX(-50%)";
-        }
-
-        tooltipBox.style.left = `${left}px`;
-        tooltipBox.style.top = `${top}px`;
-      });
-
-      // 애니메이션 스타일 추가
-      if (!document.getElementById("guide-tooltip-styles")) {
-        const style = document.createElement("style");
-        style.id = "guide-tooltip-styles";
-        style.textContent = `
-          @keyframes tooltipFadeIn {
-            from {
-              opacity: 0;
-              transform: translateY(-10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          .guide-tooltip-box[data-position="left"] {
-            animation-name: tooltipFadeInLeft;
-          }
-          .guide-tooltip-box[data-position="right"] {
-            animation-name: tooltipFadeInRight;
-          }
-          @keyframes tooltipFadeInLeft {
-            from {
-              opacity: 0;
-              transform: translateX(-100%) translateY(-10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(-100%) translateY(0);
-            }
-          }
-          @keyframes tooltipFadeInRight {
-            from {
-              opacity: 0;
-              transform: translateX(0) translateY(-10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(0) translateY(0);
-            }
-          }
-        `;
-        document.head.appendChild(style);
-      }
-    }
-  }
-
-  // ============================================
-  // 타겟 설정 - 실제 게이지 설정 반영
-  // ============================================
-  const guideTargets = [
-    {
-      selector: ".guide-mask",
-      padding: 0,
-      borderRadius: 8,
-      label: "메뉴",
-      description: "마이클래스 : 분기별 업데이트 되는 권장 학습\n온보딩/법정교육 : 정해진 기간 내 이수해야 하는 필수 교육\n리더십/인사이트/비즈트렌드 : 지속적으로 업데이트 되는 자율 학습",
-      position: "bottom",
-    },
-    {
-      selector: ".input-group",
-      padding: 0,
-      borderRadius: 12,
-      label: "검색",
-      description: "2개 단어 이상 검색 시 띄어쓰기로 구분해 검색",
-      position: "bottom",
-    },
-    {
-      selector: ".item-box:first-of-type",
-      padding: 0,
-      borderRadius: 8,
-      label: "공지사항",
-      description: "중요한 공지·알림 확인",
-      position: "bottom",
-    },
-    {
-      selector: ".item-box:last-of-type, .mypage",
-      padding: 0,
-      borderRadius: 8,
-      label: "마이페이지",
-      description: "나의 학습현황·최근 시청·저장한 콘텐츠·한 줄소감을 한눈에 확인",
-      position: "bottom",
-    },
-    // ===== 실제 게이지 설정을 사용한 정확한 arc! =====
-    {
-      selector: ".learning-area", // 또는 gauge의 부모 컨테이너
-      useGaugeArc: true, // 🔥 실제 게이지 설정 사용!
-      gaugeSize: 832, // gauge.js의 size
-      gaugeStrokeWidth: 31, // gauge.js의 strokeWidth
-      gaugePadding: 20, // gauge.js의 padding
-      padding: 10, // 추가 여백
-      startAngle: 180, // 시작 각도
-      endAngle: 360, // 끝 각도
-      label: "내 학습 vs 회사 평균",
-      description: "내 학습 정도를 회사 평균과 한눈에 비교",
-      position: "bottom",
-    },
-    // ============================================
-    {
-      selector: ".keyword-area",
-      padding: 20,
-      borderRadius: 16,
-      label: "나의 관심 키워드 + 회사추천 키워드",
-      description: "키워드 버튼으로 ON/OFF, 나의 관심 키워드 편집가능",
-      position: "bottom",
-    },
-    {
-      selector: "#nextBtn",
-      padding: 12,
-      borderRadius: 12,
-      label: "컨텐츠 변경",
-      description: "버튼을 클릭하여 다음 컨텐츠 확인",
-      position: "left",
-    },
-  ];
-
-  // MultiGuide 초기화 함수 (외부에서 호출 가능하도록)
-  window.initMultiGuide = function() {
-    if (window.multiGuide) {
-      console.log("MultiGuide가 이미 초기화되어 있습니다.");
-      return;
-    }
-
-    window.multiGuide = new MultiGuide(guideTargets);
-    console.log("멀티 가이드 초기화 완료!");
-    
-    // 페이지 로드 시 자동으로 가이드 실행
-    // 모든 리소스와 렌더링이 완료된 후 실행
-    let retryCount = 0;
-    const maxRetries = 50; // 200ms * 50 = 10초
-    
-    function autoShowGuide() {
-      retryCount++;
-      
-      // 필요한 요소들이 모두 로드되었는지 확인
-      const requiredElements = guideTargets
-        .map(target => {
-          const el = document.querySelector(target.selector);
-          return { target, element: el, found: el !== null };
-        });
-      
-      const foundCount = requiredElements.filter(r => r.found).length;
-      const missingSelectors = requiredElements.filter(r => !r.found).map(r => r.target.selector);
-      
-      console.log(`[MultiGuide] 요소 확인 (${retryCount}회차): ${foundCount}/${guideTargets.length}`, {
-        found: foundCount,
-        total: guideTargets.length,
-        missing: missingSelectors
-      });
-      
-      // 최소한 절반 이상의 요소가 있으면 실행 (너무 엄격하지 않게)
-      const minRequiredElements = Math.max(3, Math.floor(guideTargets.length * 0.5));
-      
-      if (foundCount >= minRequiredElements) {
-        // 게이지가 있는 경우 게이지 초기화 확인 (선택적)
-        const gaugeTarget = guideTargets.find(t => t.useGaugeArc);
-        if (gaugeTarget) {
-          const gaugeElement = document.getElementById("gauge");
-          if (gaugeElement) {
-            const hasGaugeContent = gaugeElement.children.length > 0 || 
-                                   gaugeElement.querySelector('path') !== null ||
-                                   gaugeElement.innerHTML.trim() !== '';
-            
-            if (!hasGaugeContent && retryCount < 20) {
-              console.log("[MultiGuide] 게이지가 아직 초기화되지 않았습니다. 대기 중...");
-              if (retryCount < maxRetries) {
-                setTimeout(autoShowGuide, 200);
-              }
-              return;
-            }
-          }
-        }
-        
-        // 가이드 실행
-        try {
-          console.log("[MultiGuide] 가이드 실행 시도...");
-          window.multiGuide.show();
-          console.log("[MultiGuide] ✅ 멀티 가이드 자동 실행 완료!");
-        } catch (error) {
-          console.error("[MultiGuide] ❌ 실행 중 오류:", error);
-        }
-      } else {
-        // 요소가 아직 준비되지 않았으면 재시도
-        if (retryCount < maxRetries) {
-          console.log(`[MultiGuide] 요소가 부족합니다. 재시도 중... (${retryCount}/${maxRetries})`);
-          setTimeout(autoShowGuide, 200);
-        } else {
-          console.warn("[MultiGuide] ⚠️ 자동 실행 시간 초과. 찾지 못한 요소:", missingSelectors);
-          console.warn("[MultiGuide] 수동으로 실행하려면: window.multiGuide.show()");
-          
-          // 그래도 실행 시도 (일부 요소만 있어도)
-          if (foundCount > 0) {
-            try {
-              console.log("[MultiGuide] 일부 요소만으로 가이드 실행 시도...");
-              window.multiGuide.show();
-            } catch (error) {
-              console.error("[MultiGuide] 실행 실패:", error);
-            }
-          }
-        }
-      }
-    }
-
-    // window.load 이벤트를 기다린 후 실행
-    if (document.readyState === "complete") {
-      setTimeout(autoShowGuide, 1000);
-    } else {
-      window.addEventListener("load", () => {
-        setTimeout(autoShowGuide, 1000);
-      });
-    }
-  };
-
-  // 자동 초기화는 index_guide.html에서 게이지 초기화 후 호출
-  // 여기서는 함수만 정의하고, 외부에서 호출하도록 함
+const guideTargets = [
+  {
+    selector: ".guide-mask.nav",
+    label: "메뉴",
+    description: "마이클래스 : 분기별 업데이트 되는 권장 학습\n온보딩/법정교육 : 정해진 기간 내 이수해야 하는 필수 교육\n리더십/인사이트/비즈트렌드 : 지속적으로 업데이트 되는 자율 학습",
+    position: "left bottom",
+    class:"menu"
+  },
+  {
+    selector: ".input-group",
+    label: "검색",
+    description: "2개 단어 이상 검색 시 띄어쓰기로 구분해 검색",
+    position: "left bottom",
+    class:"search"
+  },
+  {
+    selector: ".alerts",
+    label: "공지사항",
+    description: "중요한 공지·알림 확인",
+    position: "right bottom",
+    class:"notice"
+  },
+  {
+    selector: ".mypage",
+    label: "마이페이지",
+    description: "나의 학습현황·최근 시청·저장한 콘텐츠·한줄소감을 한눈에 확인",
+    position: "left bottom",
+    class:"mypage"
+  },
+  {
+    selector: "#gauge",
+    useGaugeArc: true,
+    gaugeSize: 832,
+    gaugeStrokeWidth: 31,
+    gaugePadding: 20,
+    padding: 0,
+    startAngle: 180,
+    endAngle: 360,
+    label: "내 학습 vs 회사 평균",
+    description: "내 학습 정도를 회사 평균과 한눈에 비교",
+    position: "top center",
+    class:"learning"
+  },
+  {
+    selector: ".keyword-area",
+    label: "나의 관심 키워드 + 회사추천 키워드",
+    description: "키워드 버튼으로 ON/OFF, 나의 관심 키워드 편집가능",
+    position: "left bottom",
+    class:"interest"
+  },
+  {
+    selector: "#nextBtn",
+    label: "컨텐츠 변경",
+    description: "버튼을 클릭하여 다음 컨텐츠 확인",
+    position: "right bottom",
+    class:"change"
+  },
+  // 🔥 키워드 요소 - 마스크만 (label 없음)
+  {
+    selector: ".video-card:nth-child(3) .key-badge:first-child",
+    padding: 4,
+    borderRadius: 4,
+  },
+  {
+    selector: ".video-card:nth-child(5) .key-badge:first-child",
+    padding: 4,
+    borderRadius: 4,
+  },
+];
+  // 가이드 초기화
+  initMultiGuide(guideTargets);
 </script>

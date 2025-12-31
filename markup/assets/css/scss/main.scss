@@ -2,7 +2,7 @@
 
 @use "sass:map";
 @use "base" as *;
-
+@forward "_guide";
 // =======================================
 // Variables
 // =======================================
@@ -225,7 +225,9 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 
     .keyword {
       &-area {
-        padding: 18px 0 15px;
+        padding: 8px 12px;
+        margin-top: 10px;
+        margin-bottom: 8px;
         text-align: center;
         gap: 12px;
         width: max-content;
@@ -400,72 +402,6 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
           max-width: 100%;
         }
       }
-    }
-  }
-}
-
-// =======================================
-// Guide Styles
-// =======================================
-.guide-btn {
-  position: absolute;
-  top: 100px;
-  z-index: 99999;
-}
-
-.guide {
-  &-wrap {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 99;
-    opacity: 0;
-    @include transition(opacity, 0.5s, ease);
-    display: none;
-    @include full-height;
-
-    &.active {
-      opacity: 1;
-      pointer-events: auto;
-      display: block;
-    }
-  }
-
-  &-svg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: auto;
-  }
-
-  &-borders {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 10000;
-  }
-
-  &-border {
-    position: absolute;
-    outline: 2px dashed #fff;
-    border-radius: 4px;
-  }
-
-  &-mask {
-    &.nav {
-      position: absolute;
-      left: 50%;
-      top: 14px;
-      width: 900px;
-      height: 32px;
-      translate: -61% 0;
-      opacity: 0.5;
     }
   }
 }

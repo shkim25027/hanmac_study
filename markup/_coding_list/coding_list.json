@@ -15,6 +15,7 @@
         "인트로": ["../intro.html", "mainframe", "컨펌대기", ""]
       },
       "메인": {
+        "가이드": ["../index_guide.html", "mainframe", "컨펌대기", ""],
         "메인": ["../index.html", "mainframe", "컨펌대기", ""],
         "메인_초과": ["../index_over.html", "mainframe", "컨펌대기", ""],
         "팝업_키워드": [
