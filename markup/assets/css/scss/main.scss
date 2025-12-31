@@ -349,16 +349,16 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
         @include pseudo(block, absolute, " ");
         width: 158px;
         height: 1px;
-        bottom: 48.4%;
+        bottom: 48.5%;
       }
 
       &::before {
-        left: 2.2%;
+        left: 7.2%;
         background: linear-gradient(90deg, var(--bg-learning-line-color) 0%, rgba(237, 186, 138, 0) 100%);
       }
 
       &::after {
-        right: 2.2%;
+        right: 7.2%;
         background: linear-gradient(90deg, rgba(237, 186, 138, 0) 11.59%, var(--bg-learning-line-color) 100%);
       }
     }
