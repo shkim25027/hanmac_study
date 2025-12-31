@@ -226,12 +226,11 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
     .keyword {
       &-area {
         padding: 8px 12px;
-        margin-top: 10px;
-        margin-bottom: 8px;
+        margin: 10px auto 8px auto;
         text-align: center;
         gap: 12px;
         width: max-content;
-        margin: auto;
+       
         @include flex(column, center, center);
 
         button {
