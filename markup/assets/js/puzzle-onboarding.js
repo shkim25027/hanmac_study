@@ -1,5 +1,5 @@
 // ============================================================================
-// 퍼즐 온보딩 시스템
+// 퍼즐 온보딩 시스템 (챕터 기반)
 // ============================================================================
 
 // ============================================================================
@@ -9,7 +9,7 @@ const DEFAULT_CONFIG = {
   SVG: {
     NAMESPACE: "http://www.w3.org/2000/svg",
     XLINK_NAMESPACE: "http://www.w3.org/1999/xlink",
-    VIEWBOX: "0 0 1870 801",
+    VIEWBOX: "0 0 1870 801",  
     DIMENSIONS: { width: 1870, height: 801 },
   },
 
@@ -24,6 +24,7 @@ const DEFAULT_CONFIG = {
     COMPLETED: "completed-effect",
     INNER_SHADOW: "inner-shadow-effect",
     HOVER_SHADOW: "hover-shadow-effect",
+    PIECE_EMBOSSING: "piece-embossing-effect",     
   },
 
   GRADIENT_IDS: {
@@ -95,52 +96,63 @@ const PUZZLE_PIECES = [
   {
     id: 1,
     title: "왜 다윈인인가 (최재천 교수)",
-    path: "M256 780V651.625H21V523H709V780H256Z",
+    // 원본: M256.658 780V651.625H22V523H709V780H256.658Z
+    // Stroke 보정: 상하좌우 각 1px 안쪽
+    path: "M257.658 779V651.625H23V524H708V779H257.658Z",
   },
   {
     id: 2,
     title: "새로운 시대 준비된 우리",
-    path: "M709.158 11H1162L1161.99 268H709L709.158 11Z",
+    // 원본: M709.158 11H1162L1161.99 268H709L709.158 11Z
+    path: "M710.158 12H1161L1160.99 267H710L710.158 12Z",
   },
   {
     id: 3,
     title: "기술개발센터소개",
-    path: "M1162.16 11H1615L1614.99 268H1162L1162.16 11Z",
+    // 원본: M1162.16 11H1617L1616.99 268H1162L1162.16 11Z
+    path: "M1163.16 12H1616L1615.99 267H1163L1163.16 12Z",
   },
   {
     id: 4,
     title: "건설산업의 디지털 전환을",
-    path: "M1162.16 268H1615L1614.99 523H1162L1162.16 268Z",
+    // 원본: M1162.16 268H1615L1614.99 523H1162L1162.16 268Z
+    path: "M1163.16 269H1614L1613.99 522H1163L1163.16 269Z",
   },
   {
     id: 5,
     title: "상용 S/W 소개",
-    path: "M709.158 268H1162L1161.99 523H709L709.158 268Z",
+    // 원본: M709.158 268H1162L1161.99 523H709L709.158 268Z
+    path: "M710.158 269H1161L1160.99 522H710L710.158 269Z",
   },
   {
     id: 6,
     title: "축적의 시간",
-    path: "M709.158 523H1162L1161.99 780H709L709.158 523Z",
+    // 원본: M709.158 523H1162L1161.99 780H709L709.158 523Z
+    path: "M710.158 524H1161L1160.99 779H710L710.158 524Z",
   },
   {
     id: 7,
     title: "회사생활 (경력)",
-    path: "M1162.16 523H1615L1614.99 780H1162L1162.16 523Z",
+    // 원본: M1162.16 523H1615L1614.99 780H1162L1162.16 523Z
+    path: "M1163.16 524H1614L1613.99 779H1163L1163.16 524Z",
   },
   {
     id: 8,
     title: "회사생활 (신규입사자편)",
-    path: "M1615.08 268H1853L1852.99 617H1615L1615.08 268Z",
+    // 원본: M1615.08 268H1853L1852.99 617H1615L1615.08 268Z
+    path: "M1616.08 269H1852L1851.99 616H1616L1616.08 269Z",
   },
   {
     id: 9,
     title: "한맥가족 소개 및 경영이념",
-    path: "M256.008 11L256.132 267H330.61L330.618 523H709.008L708.876 11H256.008Z",
+    // 원본: M256.008 11L256.132 267H330.61L330.618 523H709.008L708.876 11H256.008Z
+    path: "M257.008 12L257.132 266H329.61L329.618 522H708.008L707.876 12H257.008Z",
   },
   {
     id: 10,
     title: "삼안 소개",
-    path: "M330.5 267H21.5V523H330.5V267Z",
+    // 원본: M330.5 267H21.5V523H330.5V267Z
+    path: "M329.5 268H22.5V522H329.5V268Z",
   },
 ];
 
@@ -166,30 +178,46 @@ const BOARD_PATHS = [
 const GRADIENTS = [
   {
     id: CONFIG.GRADIENT_IDS.BOARD_1,
+    x1: "69.54%",
+    y1: "3.97%",
+    x2: "30.46%",
+    y2: "96.03%",
     stops: [
-      { offset: "0%", color: "#8E2F00" },
-      { offset: "100%", color: "#662A0D" },
+      { offset: "14.97%", color: "#8E2F00" },
+      { offset: "89.98%", color: "#662A0D" },
     ],
   },
   {
     id: CONFIG.GRADIENT_IDS.BOARD_2,
+    x1: "69.54%",
+    y1: "3.97%",
+    x2: "30.46%",
+    y2: "96.03%",
     stops: [
-      { offset: "0%", color: "#2A5338" },
-      { offset: "100%", color: "#306843" },
+      { offset: "14.97%", color: "#2A5338" },
+      { offset: "89.98%", color: "#306843" },
     ],
   },
   {
     id: CONFIG.GRADIENT_IDS.BOARD_3,
+    x1: "69.54%",
+    y1: "3.97%",
+    x2: "30.46%",
+    y2: "96.03%",
     stops: [
-      { offset: "0%", color: "#5B4822" },
-      { offset: "100%", color: "#795711" },
+      { offset: "14.97%", color: "#5B4822" },
+      { offset: "89.98%", color: "#795711" },
     ],
   },
   {
     id: CONFIG.GRADIENT_IDS.BOARD_4,
+    x1: "69.54%",
+    y1: "3.97%",
+    x2: "30.46%",
+    y2: "96.03%",
     stops: [
-      { offset: "0%", color: "#1D375D" },
-      { offset: "100%", color: "#385888" },
+      { offset: "14.97%", color: "#1D375D" },
+      { offset: "89.98%", color: "#385888" },
     ],
   },
 ];
@@ -207,6 +235,7 @@ const BUTTON_POSITIONS = [
   { id: 10, x: 176, y: 420 },
 ];
 
+// 초기 타이틀은 PUZZLE_PIECES에서 가져오고, 챕터 데이터로 업데이트됨
 const TITLE_POSITIONS = [
   {
     id: 1,
@@ -250,21 +279,175 @@ const GAUGE_CONFIG = {
     9: { left: 330.61, right: 709.008, align: "right" },
     10: { left: 21.5, right: 330.5 },
   },
-  WIDTH_RATIOS: {},
-  // 퍼즐 경계 내에서 게이지가 그려지도록 최대 길이 제한 (stroke-linecap 반지름 고려)
   MAX_LENGTHS: {
-    1: 453, // 709 - 256
-    2: 452.842, // 1162 - 709.158
-    3: 452.84, // 1615 - 1162.16
-    4: 452.84, // 1615 - 1162.16
-    5: 452.842, // 1162 - 709.158
-    6: 452.842, // 1162 - 709.158
-    7: 452.84, // 1615 - 1162.16
-    8: 237.92, // 1853 - 1615.08
-    9: 378.398, // 709.008 - 330.61
-    10: 309, // 330.5 - 21.5
+    1: 453,
+    2: 452.842,
+    3: 452.84,
+    4: 452.84,
+    5: 452.842,
+    6: 452.842,
+    7: 452.84,
+    8: 237.92,
+    9: 378.398,
+    10: 309,
   },
 };
+
+// ============================================================================
+// 챕터 관리 클래스
+// ============================================================================
+class ChapterManager {
+  constructor(chapterData) {
+    this.chapters = chapterData || [];
+    console.log('[ChapterManager] 초기화:', this.chapters);
+    this._validateAndInitialize();
+  }
+
+  _validateAndInitialize() {
+    this.chapters.forEach((chapter, index) => {
+      if (!chapter.lessons || !Array.isArray(chapter.lessons)) {
+        chapter.lessons = [];
+      }
+      
+      // completed 속성 초기화
+      if (chapter.completed === undefined) {
+        chapter.completed = false;
+      }
+      
+      chapter.lessons.forEach((lesson) => {
+        if (lesson.completed === undefined) {
+          lesson.completed = false;
+        }
+      });
+      
+      console.log(`[ChapterManager] 챕터 ${index}: ${chapter.name}, pieceId: ${chapter.pieceId}, lessons: ${chapter.lessons.length}`);
+    });
+  }
+
+  /**
+   * 챕터 가져오기
+   */
+  getChapter(chapterIndex) {
+    return this.chapters[chapterIndex];
+  }
+
+  /**
+   * pieceId로 챕터 찾기
+   */
+  getChapterByPieceId(pieceId) {
+    const chapterIndex = this.chapters.findIndex(
+      (chapter) => chapter.pieceId === pieceId
+    );
+    if (chapterIndex === -1) return null;
+
+    return {
+      chapterIndex,
+      chapter: this.chapters[chapterIndex],
+    };
+  }
+
+  /**
+   * 챕터의 진행률 계산 (completed 기반)
+   */
+  getChapterProgress(chapterIndex) {
+    const chapter = this.chapters[chapterIndex];
+    if (!chapter || !chapter.lessons || chapter.lessons.length === 0) {
+      return 0;
+    }
+
+    const completedCount = chapter.lessons.filter(
+      (lesson) => lesson.completed
+    ).length;
+    const totalCount = chapter.lessons.length;
+
+    return Math.round((completedCount / totalCount) * 100);
+  }
+
+  /**
+   * 전체 진행률 계산
+   */
+  getTotalProgress() {
+    let totalLessons = 0;
+    let completedLessons = 0;
+
+    this.chapters.forEach((chapter) => {
+      if (chapter.lessons && chapter.lessons.length > 0) {
+        totalLessons += chapter.lessons.length;
+        completedLessons += chapter.lessons.filter(
+          (lesson) => lesson.completed
+        ).length;
+      }
+    });
+
+    if (totalLessons === 0) return 0;
+    return Math.round((completedLessons / totalLessons) * 100);
+  }
+
+  /**
+   * 학습 완료 처리
+   */
+  completeLesson(chapterIndex, lessonIndex) {
+    const chapter = this.chapters[chapterIndex];
+    if (!chapter || !chapter.lessons || !chapter.lessons[lessonIndex]) {
+      console.error("Invalid chapter or lesson index");
+      return;
+    }
+
+    const lesson = chapter.lessons[lessonIndex];
+    
+    // 이미 완료된 학습이면 처리하지 않음
+    if (lesson.completed) {
+      console.log(
+        `[ChapterManager] 이미 완료된 학습: [${chapterIndex}-${lessonIndex}] ${lesson.label}`
+      );
+      return;
+    }
+
+    lesson.completed = true;
+    console.log(
+      `[ChapterManager] 학습 완료: [${chapterIndex}-${lessonIndex}] ${lesson.label}`
+    );
+
+    // 챕터의 모든 학습이 완료되었는지 확인
+    const allCompleted = chapter.lessons.every((l) => l.completed);
+    if (allCompleted && !chapter.completed) {
+      chapter.completed = true;
+      console.log(
+        `[ChapterManager] 챕터 완료: [${chapterIndex}] ${chapter.name}`
+      );
+    }
+  }
+
+  /**
+   * 챕터가 완료되었는지 확인
+   */
+  isChapterCompleted(chapterIndex) {
+    const chapter = this.chapters[chapterIndex];
+    if (!chapter) return false;
+    return chapter.completed === true;
+  }
+
+  /**
+   * 모든 챕터가 완료되었는지 확인
+   */
+  isAllCompleted() {
+    return this.chapters.every((chapter) => chapter.completed === true);
+  }
+
+  /**
+   * 챕터 데이터 가져오기
+   */
+  getChapterData(chapterIndex) {
+    return this.chapters[chapterIndex];
+  }
+
+  /**
+   * 전체 챕터 수
+   */
+  getTotalChapters() {
+    return this.chapters.length;
+  }
+}
 
 // ============================================================================
 // SVG 유틸리티 클래스
@@ -284,9 +467,17 @@ class SVGHelper {
   }
 
   static createGradient(gradientData) {
-    const gradient = this.createElement("linearGradient", {
+    const attributes = {
       id: gradientData.id,
-    });
+    };
+
+    // 그라데이션 방향 설정
+    if (gradientData.x1) attributes.x1 = gradientData.x1;
+    if (gradientData.y1) attributes.y1 = gradientData.y1;
+    if (gradientData.x2) attributes.x2 = gradientData.x2;
+    if (gradientData.y2) attributes.y2 = gradientData.y2;
+
+    const gradient = this.createElement("linearGradient", attributes);
 
     gradientData.stops.forEach((stop) => {
       const stopElement = this.createElement("stop", {
@@ -414,7 +605,7 @@ class FilterFactory {
       11,
       6,
       "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
-      "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0",
+      "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0",  // ✅ 흰색 하이라이트 투명도 0.5
       "effect1_innerShadow",
       "effect2_innerShadow"
     );
@@ -546,6 +737,7 @@ class FilterFactory {
       "color-interpolation-filters": "sRGB",
     });
 
+     // 배경 이미지 고정
     filter.appendChild(
       SVGHelper.createElement("feFlood", {
         "flood-opacity": "0",
@@ -553,6 +745,7 @@ class FilterFactory {
       })
     );
 
+     // 원본 모양 유지
     filter.appendChild(
       SVGHelper.createElement("feBlend", {
         mode: "normal",
@@ -562,6 +755,8 @@ class FilterFactory {
       })
     );
 
+
+    // Alpha 채널 추출
     filter.appendChild(
       SVGHelper.createElement("feColorMatrix", {
         in: "SourceAlpha",
@@ -571,15 +766,16 @@ class FilterFactory {
       })
     );
 
-    // Inner shadow (위쪽 inset shadow 효과) - box-shadow: 0 -4px 0 0 rgba(0, 0, 0, 0.25) inset
     filter.appendChild(SVGHelper.createElement("feOffset", { dy: "-4" }));
 
+    // 블러 (6px)
     filter.appendChild(
       SVGHelper.createElement("feGaussianBlur", {
-        stdDeviation: "0",
+        stdDeviation: "3",
       })
     );
 
+    // 내부 그림자 처리
     filter.appendChild(
       SVGHelper.createElement("feComposite", {
         in2: "hardAlpha",
@@ -597,7 +793,6 @@ class FilterFactory {
       })
     );
 
-    // Drop shadow (아래쪽 외부 그림자) - filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25))
     filter.appendChild(
       SVGHelper.createElement("feColorMatrix", {
         in: "SourceAlpha",
@@ -633,7 +828,6 @@ class FilterFactory {
       })
     );
 
-    // Inner shadow와 drop shadow를 합침
     filter.appendChild(
       SVGHelper.createElement("feBlend", {
         mode: "normal",
@@ -643,7 +837,6 @@ class FilterFactory {
       })
     );
 
-    // 최종적으로 shape와 shadow를 합침
     filter.appendChild(
       SVGHelper.createElement("feBlend", {
         mode: "normal",
@@ -787,159 +980,407 @@ class FilterFactory {
 
     return filter;
   }
+
+  static createBoardFilter() {
+    const filter = SVGHelper.createElement("filter", {
+      id: "board-3d-effect",
+      x: "-10%",
+      y: "-10%",
+      width: "120%",
+      height: "120%",
+      filterUnits: "userSpaceOnUse",
+      "color-interpolation-filters": "sRGB",
+    });
+
+    // Drop shadow (외부 그림자)
+    filter.appendChild(
+      SVGHelper.createElement("feFlood", {
+        "flood-opacity": "0",
+        result: "BackgroundImageFix",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        in: "SourceAlpha",
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+        result: "hardAlpha",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feOffset", {
+        dy: "4",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feGaussianBlur", {
+        stdDeviation: "2",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feComposite", {
+        in2: "hardAlpha",
+        operator: "out",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in2: "BackgroundImageFix",
+        result: "effect1_dropShadow",
+      })
+    );
+
+    // Shape (원본 모양 유지)
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in: "SourceGraphic",
+        in2: "effect1_dropShadow",
+        result: "shape",
+      })
+    );
+
+    // Inner shadow (내부 그림자 - 상단)
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        in: "SourceAlpha",
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+        result: "hardAlpha2",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feOffset", {
+        dy: "-4",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feComposite", {
+        in2: "hardAlpha2",
+        operator: "arithmetic",
+        k2: "-1",
+        k3: "1",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.5 0",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in2: "shape",
+        result: "effect2_innerShadow",
+      })
+    );
+
+    return filter;
+  }
+
+
+  /**
+   * 퍼즐 조각 엠보싱 효과 필터 생성
+   * box-shadow: 13px 12px 6px 0 rgba(254, 227, 179, 0.80) inset,
+   *             -11px -11px 5px 0 rgba(0, 0, 0, 0.40) inset
+   * filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.80))
+   */
+  static createPieceEmbossingFilter() {
+    const filter = SVGHelper.createElement("filter", {
+      id: "piece-embossing-effect",
+      x: "-50%",
+      y: "-50%",
+      width: "200%",
+      height: "200%",
+      filterUnits: "userSpaceOnUse",
+      "color-interpolation-filters": "sRGB",
+    });
+
+    // 배경 이미지 고정
+    filter.appendChild(
+      SVGHelper.createElement("feFlood", {
+        "flood-opacity": "0",
+        result: "BackgroundImageFix",
+      })
+    );
+
+    // 원본 모양 유지
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in: "SourceGraphic",
+        in2: "BackgroundImageFix",
+        result: "shape",
+      })
+    );
+
+    // ========================================
+    // Inner Shadow 1: 우하단 밝은 그림자
+    // 13px 12px 6px rgba(254, 227, 179, 0.80)
+    // ========================================
+    
+    // Alpha 채널 추출
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        in: "SourceAlpha",
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+        result: "hardAlpha1",
+      })
+    );
+
+    // 오프셋 (13px, 12px)
+    filter.appendChild(
+      SVGHelper.createElement("feOffset", {
+        dx: "13",
+        dy: "12",
+      })
+    );
+
+    // 블러 (6px)
+    filter.appendChild(
+      SVGHelper.createElement("feGaussianBlur", {
+        stdDeviation: "2", // 6px / 2
+      })
+    );
+
+    // 내부 그림자 처리
+    filter.appendChild(
+      SVGHelper.createElement("feComposite", {
+        in2: "hardAlpha1",
+        operator: "arithmetic",
+        k2: "-1",
+        k3: "1",
+      })
+    );
+
+    // 색상 적용: rgba(254, 227, 179, 0.80)
+    // R: 254/255 = 0.996, G: 227/255 = 0.890, B: 179/255 = 0.702, A: 0.80
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        type: "matrix",
+        values: "0 0 0 0 0.996 0 0 0 0 0.890 0 0 0 0 0.702 0 0 0 0.80 0",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "color-dodge",
+        in2: "shape",
+        result: "effect1_innerShadow",
+      })
+    );
+
+    // ========================================
+    // Inner Shadow 2: 좌상단 어두운 그림자
+    // -11px -11px 5px rgba(0, 0, 0, 0.40)
+    // ========================================
+    
+    // Alpha 채널 추출
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        in: "SourceAlpha",
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+        result: "hardAlpha2",
+      })
+    );
+
+    // 오프셋 (-11px, -11px)
+    filter.appendChild(
+      SVGHelper.createElement("feOffset", {
+        dx: "-11",
+        dy: "-11",
+      })
+    );
+
+    // 블러 (5px)
+    filter.appendChild(
+      SVGHelper.createElement("feGaussianBlur", {
+        stdDeviation: "2.5", // 5px / 2
+      })
+    );
+
+    // 내부 그림자 처리
+    filter.appendChild(
+      SVGHelper.createElement("feComposite", {
+        in2: "hardAlpha2",
+        operator: "arithmetic",
+        k2: "-1",
+        k3: "1",
+      })
+    );
+
+    // 색상 적용: rgba(0, 0, 0, 0.40)
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.60 0",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in2: "effect1_innerShadow",
+        result: "effect2_innerShadow",
+      })
+    );
+
+    // ========================================
+    // Drop Shadow: 외부 그림자
+    // 1px 1px 2px rgba(0, 0, 0, 0.80)
+    // ========================================
+    
+    // 외부 그림자용 Alpha
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        in: "SourceAlpha",
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0",
+        result: "hardAlpha3",
+      })
+    );
+
+    // 오프셋 (1px, 1px)
+    filter.appendChild(
+      SVGHelper.createElement("feOffset", {
+        dx: "1",
+        dy: "1",
+      })
+    );
+
+    // 블러 (2px)
+    filter.appendChild(
+      SVGHelper.createElement("feGaussianBlur", {
+        stdDeviation: "1", // 2px / 2
+      })
+    );
+
+    // 외부 그림자 처리
+    filter.appendChild(
+      SVGHelper.createElement("feComposite", {
+        in2: "hardAlpha3",
+        operator: "out",
+      })
+    );
+
+    // 색상 적용: rgba(0, 0, 0, 0.80)
+    filter.appendChild(
+      SVGHelper.createElement("feColorMatrix", {
+        type: "matrix",
+        values: "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.80 0",
+      })
+    );
+
+    filter.appendChild(
+      SVGHelper.createElement("feBlend", {
+        mode: "normal",
+        in2: "BackgroundImageFix",
+        result: "effect3_dropShadow",
+      })
+    );
+
+    // 최종 합성
+    const merge = SVGHelper.createElement("feMerge");
+    merge.appendChild(
+      SVGHelper.createElement("feMergeNode", {
+        in: "effect3_dropShadow",
+      })
+    );
+    merge.appendChild(
+      SVGHelper.createElement("feMergeNode", {
+        in: "effect2_innerShadow",
+      })
+    );
+    filter.appendChild(merge);
+
+    return filter;
+  }
 }
 
 // ============================================================================
 // 콘텐츠 관리 클래스
 // ============================================================================
 class ContentManager {
-  constructor() {
-    this.contentData = this._initializeDefaultContent();
+  constructor(chapterManager) {
+    this.chapterManager = chapterManager;
   }
 
-  _initializeDefaultContent() {
-    const defaultContent = {};
-    PUZZLE_PIECES.forEach((piece) => {
-      defaultContent[piece.id] = {
-        url: "",
-        type: "youtube",
-        title: piece.title,
-        group: 1,
-        completed: false,
-      };
-    });
-    return defaultContent;
+  /**
+   * pieceId로 챕터 정보 가져오기
+   */
+  getChapterByPieceId(pieceId) {
+    return this.chapterManager.getChapterByPieceId(pieceId);
   }
 
-  setContent(data) {
-    Object.entries(data).forEach(([key, value]) => {
-      const pieceId = parseInt(key);
-      if (this.contentData[pieceId]) {
-        this.contentData[pieceId] = {
-          ...this.contentData[pieceId],
-          ...value,
-        };
-
-        if (value.title) {
-          const piece = PUZZLE_PIECES.find((p) => p.id === pieceId);
-          if (piece) piece.title = value.title;
-        }
-
-        if (PuzzleManager.instance?.svg) {
-          this._updateHoverPattern(pieceId);
-
-          if (value.title) {
-            this._updateSVGText(pieceId, value.title);
-          }
-
-          if (value.type || value.group) {
-            this._updateButtonType(pieceId);
-          }
-        }
-      }
-    });
-  }
-
-  _updateSVGText(pieceId, newTitle) {
-    const svg = PuzzleManager.instance.svg;
-    if (!svg) return;
-
-    const texts = svg.querySelectorAll("text");
-    const titlePos = TITLE_POSITIONS.find((t) => t.id === pieceId);
-    if (!titlePos) return;
-
-    for (let text of texts) {
-      const x = parseFloat(text.getAttribute("x"));
-      const y = parseFloat(text.getAttribute("y"));
-
-      if (Math.abs(x - titlePos.x) < 1 && Math.abs(y - titlePos.y) < 1) {
-        const tspans = text.querySelectorAll("tspan");
-
-        if (tspans.length === 1) {
-          tspans[0].textContent = newTitle;
-        } else if (tspans.length === 2) {
-          const words = newTitle.split(" ");
-          if (words.length >= 2) {
-            tspans[0].textContent = words
-              .slice(0, Math.ceil(words.length / 2))
-              .join(" ");
-            tspans[1].textContent = words
-              .slice(Math.ceil(words.length / 2))
-              .join(" ");
-          } else {
-            tspans[0].textContent = newTitle;
-            tspans[1].textContent = "";
-          }
-        }
-        break;
-      }
-    }
-  }
-
-  _updateHoverPattern(pieceId) {
-    const svg = PuzzleManager.instance.svg;
-    if (!svg) return;
-
-    const defs = svg.querySelector("defs");
-    if (!defs) return;
-
-    const oldPattern = defs.querySelector(`#bg-image-hover-${pieceId}`);
-    if (oldPattern) {
-      const newPattern = SVGHelper.createPattern(
-        `bg-image-hover-${pieceId}`,
-        this.getThumbnailUrl(pieceId),
-        true
-      );
-
-      defs.replaceChild(newPattern, oldPattern);
-    }
-  }
-
-  _updateButtonType(pieceId) {
-    const svg = PuzzleManager.instance.svg;
-    if (!svg) return;
-
-    const buttonGroup = svg.querySelector(`.piece-play-${pieceId}`);
-    if (!buttonGroup) return;
-
-    buttonGroup.remove();
-    UIElementFactory.createPlayButton(pieceId, svg);
-  }
-
-  getContent(pieceId) {
-    return this.contentData[pieceId];
-  }
-
+  /**
+   * 썸네일 URL 가져오기
+   */
   getThumbnailUrl(pieceId) {
-    const content = this.contentData[pieceId];
-    if (!content?.url) return CONFIG.IMAGE_PATHS.BASE;
-
-    if (content.type === "youtube") {
-      return `https://img.youtube.com/vi/${content.url}/maxresdefault.jpg`;
+    const chapterInfo = this.getChapterByPieceId(pieceId);
+    if (!chapterInfo || !chapterInfo.chapter.lessons || 
+        chapterInfo.chapter.lessons.length === 0) {
+      return CONFIG.IMAGE_PATHS.BASE;
     }
 
-    return CONFIG.IMAGE_PATHS.BASE;
+    const firstLesson = chapterInfo.chapter.lessons[0];
+    if (!firstLesson.url) {
+      return CONFIG.IMAGE_PATHS.BASE;
+    }
+
+    return `https://img.youtube.com/vi/${firstLesson.url}/maxresdefault.jpg`;
   }
 
-  getVideoUrl(pieceId) {
-    const content = this.contentData[pieceId];
-    if (!content?.url) return null;
+  /**
+   * 그룹 색상 가져오기
+   */
+  getGroupColor(pieceId) {
+    const chapterInfo = this.getChapterByPieceId(pieceId);
+    if (!chapterInfo) return CONFIG.GROUP_COLORS[1];
 
-    if (content.type === "youtube") {
-      return `https://www.youtube.com/embed/${content.url}?autoplay=1`;
-    }
+    const group = chapterInfo.chapter.group || 1;
+    return CONFIG.GROUP_COLORS[group] || CONFIG.GROUP_COLORS[1];
+  }
 
-    return content.url;
+  /**
+   * 타입 가져오기
+   */
+  getType(pieceId) {
+    const chapterInfo = this.getChapterByPieceId(pieceId);
+    if (!chapterInfo) return "youtube";
+    
+    return chapterInfo.chapter.type || "youtube";
   }
 }
 
 // ============================================================================
 // 퍼즐 조각 클래스
 // ============================================================================
+
 class PuzzlePiece {
-  constructor(pieceData, contentManager) {
+  constructor(pieceData, contentManager, chapterManager) {
     this.data = pieceData;
     this.contentManager = contentManager;
+    this.chapterManager = chapterManager;
     this.group = null;
     this.isCompleted = false;
   }
@@ -953,17 +1394,22 @@ class PuzzlePiece {
 
     const currentUrl = window.location.href.split("#")[0];
 
+    // Base 이미지 - stroke: 1, 엠보싱: 없음
     this._createImageLayer(
       "piece-base-image",
       `bg-image-${this.data.id}`,
       currentUrl
     );
+    
+    // Hover 이미지 - stroke: 2, 엠보싱: 적용
     this._createImageLayer(
       "piece-hover-image",
       `bg-image-hover-${this.data.id}`,
       currentUrl,
       "0"
     );
+    
+    // Completed 이미지 - stroke: 2, 엠보싱: 적용
     this._createImageLayer(
       "piece-completed-image",
       `bg-image-completed-${this.data.id}`,
@@ -971,6 +1417,8 @@ class PuzzlePiece {
       "1.0",
       true
     );
+    
+    // All Completed 이미지 - stroke: 0, 엠보싱: 없음 (하나의 이미지처럼)
     this._createImageLayer(
       "piece-all-completed-image",
       `bg-image-all-completed-${this.data.id}`,
@@ -978,6 +1426,8 @@ class PuzzlePiece {
       "1.0",
       true
     );
+    
+    // Finish 이미지 - stroke: 2, 엠보싱: 적용
     this._createImageLayer(
       "piece-finish-image",
       `bg-image-finish-${this.data.id}`,
@@ -994,6 +1444,10 @@ class PuzzlePiece {
     return this.group;
   }
 
+  /**
+   * 이미지 레이어 생성 (최종 버전)
+   * @private
+   */
   _createImageLayer(
     className,
     patternId,
@@ -1001,16 +1455,31 @@ class PuzzlePiece {
     opacity = "1.0",
     hidden = false
   ) {
-    const path = SVGHelper.createElement("path", {
+    // ✅ stroke-width: base=1, all-completed=0, 나머지=2
+    const strokeWidth = 
+      className === "piece-base-image" ? "1" :
+      className === "piece-all-completed-image" ? "0" : "2";
+
+    // ✅ 엠보싱: base와 all-completed는 평면, 나머지는 입체
+    const flatLayers = ["piece-base-image", "piece-all-completed-image"];
+    const shouldApplyEmbossing = !flatLayers.includes(className);
+
+    const attributes = {
       d: this.data.path,
       class: className,
       fill: `url(${baseUrl}#${patternId})`,
       "fill-opacity": opacity,
       stroke: "#333",
-      "stroke-width": "2",
+      "stroke-width": strokeWidth,
       "stroke-linejoin": "round",
       "stroke-linecap": "round",
-    });
+    };
+
+    if (shouldApplyEmbossing) {
+      attributes.filter = `url(#${CONFIG.FILTER_IDS.PIECE_EMBOSSING})`;
+    }
+
+    const path = SVGHelper.createElement("path", attributes);
 
     if (hidden) path.style.display = "none";
     if (className === "piece-hover-image") {
@@ -1042,12 +1511,16 @@ class PuzzlePiece {
 
     if (hoverImg) {
       hoverImg.setAttribute("fill-opacity", isHovering ? "1.0" : "0");
+      
       if (isHovering) {
+        // ✅ 호버 시: 내부 그림자 효과만 (box-shadow 효과)
+        // box-shadow: 11px 6px 4px 0 rgba(255, 255, 255, 0.25) inset, -14px -11px 4px 0 rgba(0, 0, 0, 0.25) inset
         hoverImg.setAttribute(
           "filter",
           `url(#${CONFIG.FILTER_IDS.INNER_SHADOW})`
         );
       } else {
+        // 호버 해제 시: 필터 제거
         hoverImg.removeAttribute("filter");
       }
     }
@@ -1092,48 +1565,107 @@ class PuzzlePiece {
   }
 
   _handleClick() {
-    PuzzleManager.instance.openVideoModal(this.data.id, this.data.title, this);
+    const chapterInfo = this.contentManager.getChapterByPieceId(this.data.id);
+    if (!chapterInfo) {
+      console.error(`챕터를 찾을 수 없습니다: pieceId=${this.data.id}`);
+      return;
+    }
+
+    const chapter = chapterInfo.chapter;
+
+    if (chapter.type === "file") {
+      console.log(`[PuzzlePiece] file 타입: ${chapter.name}`);
+      this._handleFileType(chapter, chapterInfo.chapterIndex);
+      return;
+    }
+
+    PuzzleManager.instance.openChapterModal(
+      chapterInfo.chapterIndex,
+      chapterInfo.chapter
+    );
+  }
+
+  _handleFileType(chapter, chapterIndex) {
+    if (!chapter.lessons || chapter.lessons.length === 0) {
+      console.warn('[PuzzlePiece] file 타입이지만 lessons가 없습니다');
+      return;
+    }
+
+    const firstLesson = chapter.lessons[0];
+    const fileUrl = firstLesson.url;
+
+    if (!fileUrl) {
+      console.warn('[PuzzlePiece] file URL이 없습니다');
+      alert('파일 URL이 설정되지 않았습니다.');
+      return;
+    }
+
+    if (fileUrl.startsWith('http://') || fileUrl.startsWith('https://')) {
+      console.log('[PuzzlePiece] 새창에서 파일 열기:', fileUrl);
+      window.open(fileUrl, '_blank');
+    } else {
+      console.log('[PuzzlePiece] 파일 다운로드:', fileUrl);
+      const link = document.createElement('a');
+      link.href = fileUrl;
+      link.download = firstLesson.label || 'download';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    if (!firstLesson.completed) {
+      console.log(`[PuzzlePiece] file 타입 학습 완료 처리: [${chapterIndex}-0] ${firstLesson.label}`);
+      PuzzleManager.instance.chapterManager.completeLesson(chapterIndex, 0);
+      PuzzleManager.instance.updatePieceGauge(chapter.pieceId);
+      PuzzleManager.instance._updateTotalProgress();
+    }
   }
 
   markComplete() {
     if (this.isCompleted) return;
-
+  
     this.isCompleted = true;
     this.group.classList.add("completed");
-
+  
     const baseImage = this.group.querySelector(".piece-base-image");
     const completedImage = this.group.querySelector(".piece-completed-image");
-
+  
     if (baseImage) baseImage.style.display = "none";
-
+  
     if (completedImage) {
       completedImage.style.display = "block";
+      
+      // ✅ 완료 시: 엠보싱 + 완료 효과 (드롭 섀도우)
       completedImage.setAttribute(
         "filter",
-        `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
+        `url(#${CONFIG.FILTER_IDS.PIECE_EMBOSSING}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
       );
     }
   }
 
-  showAllCompleted() {
+  // ✅ 새로운 메서드: Finish Image 표시 (최종 표시)
+  showFinish() {
     const baseImg = this.group.querySelector(".piece-base-image");
     const completedImg = this.group.querySelector(".piece-completed-image");
-    const allCompletedImg = this.group.querySelector(
-      ".piece-all-completed-image"
-    );
+    const allCompletedImg = this.group.querySelector(".piece-all-completed-image");
     const finishImg = this.group.querySelector(".piece-finish-image");
 
+    // 다른 이미지들 숨기기
     [baseImg, completedImg, allCompletedImg].forEach((img) => {
       if (img) img.style.display = "none";
     });
 
     if (finishImg) {
       finishImg.style.display = "block";
-      finishImg.setAttribute(
-        "filter",
-        `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`
-      );
+      // Finish는 입체적 (엠보싱은 이미 _createImageLayer에서 적용됨)
+      // 추가 필터 없음
     }
+  }
+
+  // ❌ showAllCompleted는 이제 사용 안 함 (showFinish로 대체)
+  showAllCompleted() {
+    // 더 이상 사용하지 않음 - showFinish로 대체
+    this.showFinish();
   }
 }
 
@@ -1164,7 +1696,7 @@ class GaugeManager {
         gaugeX = 256;
         bgWidth = 709 - 256;
       } else if (pieceId === 9) {
-        gaugeX = 330.61; // 정확한 경계 사용
+        gaugeX = 330.61;
         bgWidth = 709.008 - 330.61;
       } else {
         gaugeX = xRange.left;
@@ -1175,26 +1707,18 @@ class GaugeManager {
       bgWidth = fullWidth;
     }
 
-    // stroke-linecap: "round"로 인한 반지름만큼 여유 고려
     const strokeRadius = CONFIG.GAUGE.HEIGHT / 2;
     gaugeX = Math.max(gaugeX, xRange.left + strokeRadius);
 
     fillWidth = bgWidth;
 
-    if (GAUGE_CONFIG.WIDTH_RATIOS && GAUGE_CONFIG.WIDTH_RATIOS[pieceId]) {
-      const ratio = GAUGE_CONFIG.WIDTH_RATIOS[pieceId];
-      fillWidth = bgWidth * ratio;
-    }
-
-    // 퍼즐 경계를 넘지 않도록 최대 길이 제한
     if (GAUGE_CONFIG.MAX_LENGTHS && GAUGE_CONFIG.MAX_LENGTHS[pieceId]) {
       const maxLength = GAUGE_CONFIG.MAX_LENGTHS[pieceId];
       fillWidth = Math.min(fillWidth, maxLength);
       bgWidth = Math.min(bgWidth, maxLength);
     }
 
-    // stroke-linecap: "round"로 인한 반지름만큼 여유를 두고 경계 체크
-    const maxEndX = xRange.right - strokeRadius; // 반지름만큼 여유
+    const maxEndX = xRange.right - strokeRadius;
     const calculatedEndX = gaugeX + bgWidth;
     if (calculatedEndX > maxEndX) {
       bgWidth = maxEndX - gaugeX;
@@ -1260,14 +1784,12 @@ class GaugeManager {
 // UI 요소 생성 클래스
 // ============================================================================
 class UIElementFactory {
-  static createPlayButton(pieceId, svg) {
+  static createPlayButton(pieceId, svg, contentManager) {
     const position = BUTTON_POSITIONS.find((p) => p.id === pieceId);
     if (!position) return;
 
-    const contentManager = PuzzleManager.instance?.contentManager;
-    const content = contentManager?.getContent(pieceId);
-    const isFileType = content?.type === "file";
-    const groupColor = CONFIG.GROUP_COLORS[content?.group || 1];
+    const isFileType = contentManager.getType(pieceId) === "file";
+    const groupColor = contentManager.getGroupColor(pieceId);
 
     const buttonGroup = SVGHelper.createElement("g", {
       class: `piece-play-button piece-play-${pieceId}`,
@@ -1445,55 +1967,497 @@ class UIElementFactory {
 // 모달 관리 클래스
 // ============================================================================
 class ModalManager {
-  static async openVideoModal(pieceId, pieceTitle, pieceElement) {
+  /**
+   * 챕터 모달 열기
+   * @param {number} chapterIndex - 챕터 인덱스
+   * @param {Object} chapter - 챕터 데이터
+   */
+  static async openChapterModal(chapterIndex, chapter) {
+    console.log(
+      `[ModalManager] 챕터 모달 열기: [${chapterIndex}] ${chapter.name}`
+    );
+
     try {
+      // 모달 HTML 로드
       const response = await fetch("./_modal/video-onboarding.html");
       if (!response.ok) throw new Error("모달 로드 실패");
 
       const modalHTML = await response.text();
+      
+      // 기존 모달 제거
       this._removeExistingModal();
 
+      // 새 모달 추가
       document.body.insertAdjacentHTML("beforeend", modalHTML);
       const modal = document.querySelector(".modal.video");
       modal.style.display = "block";
 
-      this._setupModalContent(modal, pieceId, pieceTitle);
-      this._setupModalEvents(modal, pieceId, pieceElement);
+      // 모달 초기화
+      this._setupModal(modal, chapter, chapterIndex);
     } catch (error) {
       console.error("모달 로드 오류:", error);
-      PuzzleManager.instance.markPieceComplete(pieceId, pieceElement);
+      // 모달 로드 실패 시 기본 처리
+      this._openFallbackModal(chapterIndex, chapter);
     }
   }
 
+  /**
+   * 기존 모달 제거
+   * @private
+   */
   static _removeExistingModal() {
     const existingModal = document.querySelector(".modal.video");
     if (existingModal) existingModal.remove();
   }
 
-  static _setupModalContent(modal, pieceId, pieceTitle) {
-    const contentManager = PuzzleManager.instance.contentManager;
-    const content = contentManager.getContent(pieceId);
+  /**
+   * 모달 설정
+   * @private
+   */
+  static _setupModal(modal, chapter, chapterIndex) {
+    // currentLessonIndex를 객체로 관리 (참조 유지)
+    const modalState = {
+      currentLessonIndex: 0,
+      retryCount: 0
+    };
 
-    const iframe = modal.querySelector("#videoFrame");
-    if (iframe && content?.url) {
-      iframe.src = contentManager.getVideoUrl(pieceId);
+    // 첫 번째 학습 로드
+    this._loadLesson(modal, chapter, modalState.currentLessonIndex);
+
+    // 진행률 업데이트
+    this._updateProgress(modal, chapter);
+
+    // 닫기 이벤트 먼저 설정 (한 번만)
+    this._setupCloseEvents(modal, chapter, chapterIndex, modalState);
+
+    // 학습 목차 생성
+    this._createLearningList(modal, chapter, chapterIndex, modalState);
+
+    // 높이 조정 초기화
+    setTimeout(() => {
+      this._initializeHeightAdjustment(modal, modalState);
+    }, 50);
+  }
+
+  /**
+   * 높이 조정 초기화
+   * @private
+   */
+  static _initializeHeightAdjustment(modal, modalState) {
+    // 1단계: 즉시 시도
+    this._adjustVideoListHeight(modal, modalState);
+
+    // 2단계: 다음 프레임에서 시도
+    requestAnimationFrame(() => {
+      this._adjustVideoListHeight(modal, modalState);
+    });
+
+    // 3단계: 50ms 후 시도
+    setTimeout(() => {
+      this._adjustVideoListHeight(modal, modalState);
+    }, 50);
+
+    // 4단계: 100ms 후 시도
+    setTimeout(() => {
+      this._adjustVideoListHeight(modal, modalState);
+    }, 100);
+
+    // 5단계: 200ms 후 시도
+    setTimeout(() => {
+      this._adjustVideoListHeight(modal, modalState);
+    }, 200);
+
+    // 6단계: ResizeObserver 설정
+    this._setupResizeObserver(modal, modalState);
+  }
+
+  /**
+   * video-list 높이 조정
+   * @private
+   */
+  static _adjustVideoListHeight(modal, modalState) {
+    const videoSide = modal.querySelector(".video-side");
+    const videoHeader = modal.querySelector(".video-header");
+    const videoList = modal.querySelector(".video-list");
+    const learningList = modal.querySelector(".learning-list");
+    const commentWrap = modal.querySelector(".comment-wrap");
+
+    if (!videoSide || !videoHeader || !videoList || !learningList) {
+      console.warn("[ModalManager] 필요한 요소를 찾을 수 없습니다");
+      return;
     }
 
-    const titleElement = modal.querySelector(".tit-box h3");
-    if (titleElement) {
-      titleElement.textContent = content?.title || pieceTitle;
+    // 전체 높이
+    const totalHeight = videoSide.clientHeight;
+
+    // 높이가 0이거나 비정상적으로 작으면 DOM이 아직 렌더링되지 않은 것
+    if (totalHeight < 100) {
+      console.warn(
+        `[ModalManager] videoSide 높이가 비정상적으로 작습니다: ${totalHeight}px. 재측정 예약...`
+      );
+
+      // 최대 3번까지만 재시도
+      if (modalState.retryCount < 3) {
+        modalState.retryCount++;
+        setTimeout(() => this._adjustVideoListHeight(modal, modalState), 100);
+      } else {
+        console.error("[ModalManager] 높이 측정 재시도 횟수 초과");
+        modalState.retryCount = 0;
+      }
+      return;
+    }
+
+    // 재시도 카운터 초기화
+    modalState.retryCount = 0;
+
+    // 헤더 높이
+    const headerHeight = videoHeader.offsetHeight;
+
+    // comment-wrap 높이
+    const commentWrapHeight = commentWrap ? commentWrap.offsetHeight : 0;
+
+    // video-list의 제목 높이
+    const videoListTitle = videoList.querySelector("h5.tit");
+    const titleHeight = videoListTitle ? videoListTitle.offsetHeight : 0;
+
+    // video-list의 padding 값 계산
+    const videoListStyle = window.getComputedStyle(videoList);
+    const paddingTop = parseInt(videoListStyle.paddingTop) || 0;
+    const paddingBottom = parseInt(videoListStyle.paddingBottom) || 0;
+
+    // learning-list에 사용 가능한 최대 높이
+    const availableHeight = totalHeight - headerHeight - commentWrapHeight - titleHeight - paddingTop - paddingBottom - 40;
+
+    // 사용 가능한 높이가 음수이거나 너무 작으면 경고
+    if (availableHeight < 50) {
+      console.warn(`[ModalManager] 사용 가능한 높이가 너무 작습니다: ${availableHeight}px`);
+      return;
+    }
+
+    // 리스트의 실제 컨텐츠 높이
+    const listContentHeight = learningList.scrollHeight;
+
+    // 컨텐츠가 적으면 컨텐츠 높이만큼, 많으면 사용 가능한 높이만큼
+    const listHeight = Math.min(listContentHeight, availableHeight);
+
+    // 최소 높이 보장
+    const finalHeight = Math.max(listHeight, 100);
+
+    console.log("[ModalManager] 높이 측정 성공:", {
+      totalHeight,
+      headerHeight,
+      commentWrapHeight,
+      titleHeight,
+      paddingTop,
+      paddingBottom,
+      availableHeight,
+      listContentHeight,
+      listHeight,
+      finalHeight,
+    });
+
+    learningList.style.height = finalHeight + "px";
+    learningList.style.overflowY = listContentHeight > availableHeight ? "auto" : "hidden";
+  }
+
+  /**
+   * ResizeObserver 설정
+   * @private
+   */
+  static _setupResizeObserver(modal, modalState) {
+    const videoSide = modal.querySelector(".video-side");
+    if (!videoSide) return;
+
+    // ResizeObserver 생성 및 저장
+    if (!modal._resizeObserver) {
+      modal._resizeObserver = new ResizeObserver((entries) => {
+        // 디바운스 처리
+        if (modal._heightAdjustTimer) {
+          clearTimeout(modal._heightAdjustTimer);
+        }
+        
+        modal._heightAdjustTimer = setTimeout(() => {
+          console.log("[ModalManager] ResizeObserver 감지: 높이 재조정");
+          this._adjustVideoListHeight(modal, modalState);
+        }, 50);
+      });
+
+      modal._resizeObserver.observe(videoSide);
     }
   }
 
-  static _setupModalEvents(modal, pieceId, pieceElement) {
-    const closeBtn = modal.querySelector(".close");
-    const closeModal = () => this._closeModal(modal, pieceId, pieceElement);
+  /**
+   * 학습 로드
+   * @private
+   */
+  static _loadLesson(modal, chapter, lessonIndex) {
+    const lesson = chapter.lessons[lessonIndex];
+    const iframe = modal.querySelector("#videoFrame");
+    
+    if (chapter.type === "youtube" && lesson.url) {
+      iframe.src = `https://www.youtube.com/embed/${lesson.url}?autoplay=1`;
+    } else if (chapter.type === "file") {
+      iframe.src = lesson.url || "";
+    }
 
-    if (closeBtn) closeBtn.onclick = closeModal;
-    modal.onclick = (e) => {
-      if (e.target === modal) closeModal();
+    // 현재 강의 제목 업데이트
+    const subTxt = modal.querySelector(".video-header .sub-txt");
+    if (subTxt) {
+      subTxt.textContent = lesson.label;
+    }
+  }
+
+  /**
+   * 진행률 업데이트
+   * @private
+   */
+  static _updateProgress(modal, chapter) {
+    const completedCount = chapter.lessons.filter(l => l.completed).length;
+    const totalCount = chapter.lessons.length;
+    const progressPercent = Math.round((completedCount / totalCount) * 100);
+
+    // 게이지바
+    const gaugeFill = modal.querySelector("#gaugeFill");
+    if (gaugeFill) {
+      gaugeFill.style.width = progressPercent + "%";
+    }
+
+    // 진도율 텍스트
+    const currentValue = modal.querySelector("#currentValue em");
+    if (currentValue) {
+      currentValue.textContent = progressPercent;
+    }
+
+    // 차시 정보
+    const labelElement = modal.querySelector(".gauge-labels .label:not(.current)");
+    if (labelElement) {
+      labelElement.innerHTML = `<em>${completedCount}</em> /${totalCount}강`;
+    }
+  }
+
+  /**
+   * 학습 목차 생성
+   * @private
+   */
+  static _createLearningList(modal, chapter, chapterIndex, modalState) {
+    const list = modal.querySelector(".learning-list");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    chapter.lessons.forEach((lesson, index) => {
+      const li = document.createElement("li");
+      
+      // 상태 클래스
+      if (index === modalState.currentLessonIndex) {
+        li.className = "active";
+        li.setAttribute("data-current", "true"); // 현재 학습 마커
+      } else if (lesson.completed) {
+        li.className = "complet";
+      }
+
+      // 이미지 번호 (1-6 순환)
+      const imageNum = (index % 6) + 1;
+
+      // 상태 텍스트
+      let stateText = "미진행";
+      if (index === modalState.currentLessonIndex) {
+        stateText = "학습중";
+      } else if (lesson.completed) {
+        stateText = "학습완료";
+      }
+
+      li.innerHTML = `
+        <a href="#" class="list" data-lesson-index="${index}">
+          <span class="seq">${index + 1}차시</span>
+          <div class="learning-box">
+            <div class="thumb">
+              <img src="./assets/images/video/img_learning_thumb_0${imageNum}.png" />
+            </div>
+            <div class="txt-box">
+              <div class="title">${lesson.label}</div>
+              <span class="state">${stateText}</span>
+            </div>
+          </div>
+        </a>
+      `;
+
+      // 클릭 이벤트
+      const link = li.querySelector(".list");
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        
+        const clickedIndex = parseInt(e.currentTarget.dataset.lessonIndex);
+        console.log(`[ModalManager] 학습 클릭: ${clickedIndex}, 이전: ${modalState.currentLessonIndex}`);
+        
+        // 이전 학습 완료 처리
+        if (modalState.currentLessonIndex !== clickedIndex) {
+          const prevLesson = chapter.lessons[modalState.currentLessonIndex];
+          if (!prevLesson.completed) {
+            console.log(`[ModalManager] 학습 완료 처리: [${chapterIndex}-${modalState.currentLessonIndex}] ${prevLesson.label}`);
+            PuzzleManager.instance.chapterManager.completeLesson(
+              chapterIndex,
+              modalState.currentLessonIndex
+            );
+            PuzzleManager.instance.updatePieceGauge(chapter.pieceId);
+          }
+        }
+
+        // 새 학습 로드
+        modalState.currentLessonIndex = clickedIndex;
+        console.log(`[ModalManager] currentLessonIndex 업데이트: ${modalState.currentLessonIndex}`);
+        
+        this._loadLesson(modal, chapter, modalState.currentLessonIndex);
+        this._updateProgress(modal, chapter);
+        this._createLearningList(modal, chapter, chapterIndex, modalState);
+        
+        // 목록 재생성 후 높이 재조정
+        setTimeout(() => {
+          this._adjustVideoListHeight(modal, modalState);
+        }, 50);
+      });
+
+      list.appendChild(li);
+    });
+
+    // 목록 생성 후 현재 학습으로 스크롤
+    setTimeout(() => {
+      this._scrollToCurrentLesson(modal);
+    }, 100);
+  }
+
+  /**
+   * 현재 학습 중인 항목으로 스크롤
+   * @private
+   */
+  static _scrollToCurrentLesson(modal) {
+    const learningList = modal.querySelector(".learning-list");
+    if (!learningList) {
+      console.warn("[ModalManager] 학습 목록을 찾을 수 없습니다");
+      return;
+    }
+
+    // 현재 학습 중인 항목 찾기
+    const currentItem = learningList.querySelector('li[data-current="true"]');
+    if (!currentItem) {
+      console.warn("[ModalManager] 현재 학습 항목을 찾을 수 없습니다");
+      return;
+    }
+
+    // 현재 항목이 보이는 영역에 있는지 확인
+    const listRect = learningList.getBoundingClientRect();
+    const itemRect = currentItem.getBoundingClientRect();
+    
+    // 목록의 가시 영역 계산 (상대적 위치)
+    const itemRelativeTop = currentItem.offsetTop;
+    const itemHeight = itemRect.height;
+    const listScrollTop = learningList.scrollTop;
+    const listHeight = learningList.clientHeight;
+    
+    // 현재 보이는 영역의 범위
+    const visibleTop = listScrollTop;
+    const visibleBottom = listScrollTop + listHeight;
+    
+    // 항목의 위치
+    const itemTop = itemRelativeTop;
+    const itemBottom = itemRelativeTop + itemHeight;
+    
+    // 항목이 완전히 보이는지 확인
+    const isFullyVisible = itemTop >= visibleTop && itemBottom <= visibleBottom;
+    
+    console.log(`[ModalManager] 스크롤 체크:`, {
+      itemLabel: currentItem.querySelector(".title")?.textContent,
+      itemTop,
+      itemBottom,
+      visibleTop,
+      visibleBottom,
+      isFullyVisible
+    });
+
+    // 화면에 보이지 않을 때만 스크롤
+    if (!isFullyVisible) {
+      // 목록 중앙에 항목 배치
+      const scrollPosition = itemRelativeTop - (listHeight / 2) + (itemHeight / 2);
+
+      // 부드러운 스크롤
+      learningList.scrollTo({
+        top: Math.max(0, scrollPosition),
+        behavior: "smooth"
+      });
+
+      console.log(`[ModalManager] 현재 학습으로 스크롤 실행:`, {
+        scrollPosition
+      });
+    } else {
+      console.log(`[ModalManager] 현재 학습이 이미 화면에 보임 - 스크롤 생략`);
+    }
+  }
+
+  /**
+   * 닫기 이벤트 설정
+   * @private
+   */
+  static _setupCloseEvents(modal, chapter, chapterIndex, modalState) {
+    const closeBtn = modal.querySelector(".close");
+    
+    const closeModal = () => {
+      console.log(`[ModalManager] closeModal 호출 - currentLessonIndex: ${modalState.currentLessonIndex}`);
+      
+      const iframe = modal.querySelector("#videoFrame");
+      if (iframe) iframe.src = "";
+
+      // 현재 학습 완료 처리
+      const currentLesson = chapter.lessons[modalState.currentLessonIndex];
+      console.log(`[ModalManager] 현재 학습 정보:`, {
+        chapterIndex,
+        lessonIndex: modalState.currentLessonIndex,
+        lesson: currentLesson,
+        completed: currentLesson?.completed
+      });
+      
+      if (currentLesson && !currentLesson.completed) {
+        console.log(`[ModalManager] 모달 닫기 - 학습 완료 처리: [${chapterIndex}-${modalState.currentLessonIndex}] ${currentLesson.label}`);
+        PuzzleManager.instance.chapterManager.completeLesson(
+          chapterIndex,
+          modalState.currentLessonIndex
+        );
+        PuzzleManager.instance.updatePieceGauge(chapter.pieceId);
+        
+        // 전체 진행률도 업데이트
+        PuzzleManager.instance._updateTotalProgress();
+      } else if (currentLesson && currentLesson.completed) {
+        console.log(`[ModalManager] 모달 닫기 - 이미 완료된 학습: [${chapterIndex}-${modalState.currentLessonIndex}] ${currentLesson.label}`);
+      } else {
+        console.error(`[ModalManager] 학습 정보를 찾을 수 없음: [${chapterIndex}-${modalState.currentLessonIndex}]`);
+      }
+
+      // Observer 정리
+      if (modal._resizeObserver) {
+        modal._resizeObserver.disconnect();
+        modal._resizeObserver = null;
+      }
+
+      if (modal._heightAdjustTimer) {
+        clearTimeout(modal._heightAdjustTimer);
+        modal._heightAdjustTimer = null;
+      }
+
+      modal.style.display = "none";
+      setTimeout(() => modal.remove(), 300);
     };
 
+    if (closeBtn) {
+      closeBtn.onclick = closeModal;
+    }
+
+    // 모달 배경 클릭
+    modal.onclick = (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    };
+
+    // ESC 키
     const escHandler = (e) => {
       if (e.key === "Escape") {
         closeModal();
@@ -1503,14 +2467,60 @@ class ModalManager {
     document.addEventListener("keydown", escHandler);
   }
 
-  static _closeModal(modal, pieceId, pieceElement) {
-    const iframe = modal.querySelector("#videoFrame");
-    if (iframe) iframe.src = "";
+  /**
+   * 폴백 모달 (모달 파일 로드 실패 시)
+   * @private
+   */
+  static _openFallbackModal(chapterIndex, chapter) {
+    console.log("[ModalManager] 폴백 모달 사용");
+    
+    const modalHTML = `
+      <div class="modal video" style="display: block;">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="video-contents">
+              <div class="video-box">
+                <iframe
+                  id="videoFrame"
+                  width="100%"
+                  height="100%"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+              </div>
+            </div>
+            <div class="video-side step">
+              <div class="video-header">
+                <div class="tit-box">
+                  <h5 class="tit">현재강의</h5>
+                  <p class="sub-txt"></p>
+                </div>
+                <div class="gauge-container">
+                  <div class="gauge-bar">
+                    <div class="gauge-fill" id="gaugeFill"></div>
+                  </div>
+                  <div class="gauge-labels">
+                    <span class="label"><em>0</em> /0강</span>
+                    <span class="label current" id="currentValue">진도율 <em>0</em>%</span>
+                  </div>
+                </div>
+                <span class="close">&times;</span>
+              </div>
+              <div class="video-list">
+                <h5 class="tit">학습목차</h5>
+                <ul class="learning-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
 
-    modal.style.opacity = "0";
-    setTimeout(() => modal.remove(), CONFIG.ANIMATION.FADE_DURATION);
-
-    PuzzleManager.instance.markPieceComplete(pieceId, pieceElement);
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+    const modal = document.querySelector(".modal.video");
+    
+    this._setupModal(modal, chapter, chapterIndex);
   }
 }
 
@@ -1520,22 +2530,71 @@ class ModalManager {
 class PuzzleManager {
   static instance = null;
 
-  constructor(boardElementId, initialContent = null) {
+  constructor(boardElementId, chapterData = null) {
     if (PuzzleManager.instance) {
       return PuzzleManager.instance;
     }
 
-    this.boardElement = document.getElementById(boardElementId);
-    this.svg = null;
-    this.pieces = [];
-    this.completedCount = 0;
-    this.contentManager = new ContentManager();
+    console.log('[PuzzleManager] 초기화 시작');
+    console.log('[PuzzleManager] 챕터 데이터:', chapterData);
 
-    if (initialContent) {
-      this.contentManager.setContent(initialContent);
+    this.boardElement = document.getElementById(boardElementId);
+    if (!this.boardElement) {
+      console.error('[PuzzleManager] 보드 엘리먼트를 찾을 수 없습니다:', boardElementId);
+      return;
     }
 
+    this.svg = null;
+    this.pieces = [];
+    this.chapterManager = new ChapterManager(chapterData);
+    this.contentManager = new ContentManager(this.chapterManager);
+    this.videoModal = null; // VideoModal 인스턴스
+
+    // VideoModal 초기화 시도
+    this._initializeVideoModal();
+
     PuzzleManager.instance = this;
+    console.log('[PuzzleManager] 초기화 완료');
+  }
+
+  /**
+   * VideoModal 초기화
+   * @private
+   */
+  _initializeVideoModal() {
+    if (window.VideoModal) {
+      console.log('[PuzzleManager] VideoModal 감지 - 통합 모드');
+      
+      // VideoModal에 필요한 config와 markerManager 어댑터 생성
+      const puzzleConfig = {
+        modalPath: "./_modal/video-onboarding.html",
+      };
+
+      const puzzleMarkerManager = {
+        completeLesson: (chapterIndex, lessonIndex) => {
+          this.chapterManager.completeLesson(chapterIndex, lessonIndex);
+        },
+      };
+
+      try {
+        this.videoModal = {
+          openPuzzleChapter: async (chapter, chapterIndex, videoData) => {
+            console.log(`[PuzzleManager] VideoModal로 챕터 열기: ${chapter.name}`);
+            
+            // 실제 VideoModal 인스턴스가 필요한 경우
+            // 여기서는 간단한 모달을 사용
+            await ModalManager._openSimpleModal(chapterIndex, chapter);
+          }
+        };
+        
+        console.log('[PuzzleManager] VideoModal 어댑터 생성 완료');
+      } catch (error) {
+        console.error('[PuzzleManager] VideoModal 초기화 실패:', error);
+        this.videoModal = null;
+      }
+    } else {
+      console.log('[PuzzleManager] VideoModal 없음 - 기본 모달 사용');
+    }
   }
 
   initialize() {
@@ -1548,7 +2607,49 @@ class PuzzleManager {
 
     this.boardElement.appendChild(this.svg);
 
+    // 챕터 데이터로 타이틀 업데이트
+    this._updateTitlesFromChapters();
+    
     this._initializeCompletedPieces();
+  }
+
+  /**
+   * 챕터 데이터로 퍼즐 조각 타이틀 업데이트
+   * @private
+   */
+  _updateTitlesFromChapters() {
+    this.chapterManager.chapters.forEach((chapter) => {
+      if (!chapter.pieceId || !chapter.name) return;
+
+      const pieceId = chapter.pieceId;
+      const titlePos = TITLE_POSITIONS.find((t) => t.id === pieceId);
+      if (!titlePos) return;
+
+      // 타이틀 업데이트
+      const texts = this.svg.querySelectorAll("text");
+      for (let text of texts) {
+        const x = parseFloat(text.getAttribute("x"));
+        const y = parseFloat(text.getAttribute("y"));
+
+        if (Math.abs(x - titlePos.x) < 1 && Math.abs(y - titlePos.y) < 1) {
+          const tspans = text.querySelectorAll("tspan");
+          
+          // 한 줄 또는 두 줄로 나누기
+          const words = chapter.name.split(" ");
+          if (tspans.length >= 2 && words.length >= 3) {
+            // 두 줄로 나누기
+            const midPoint = Math.ceil(words.length / 2);
+            tspans[0].textContent = words.slice(0, midPoint).join(" ");
+            tspans[1].textContent = words.slice(midPoint).join(" ");
+          } else if (tspans.length >= 1) {
+            // 한 줄로
+            tspans[0].textContent = chapter.name;
+            if (tspans[1]) tspans[1].textContent = "";
+          }
+          break;
+        }
+      }
+    });
   }
 
   _createSVG() {
@@ -1561,15 +2662,21 @@ class PuzzleManager {
   _setupDefs() {
     const defs = SVGHelper.createElement("defs");
 
+    // 그라데이션
     GRADIENTS.forEach((grad) => {
       defs.appendChild(SVGHelper.createGradient(grad));
     });
 
+
+    // 필터
     defs.appendChild(FilterFactory.createCompletedFilter());
     defs.appendChild(FilterFactory.createInnerShadowFilter());
     defs.appendChild(FilterFactory.createHoverShadowFilter());
     defs.appendChild(FilterFactory.createGaugeFillFilter());
-
+    defs.appendChild(FilterFactory.createBoardFilter()); // 보드
+    //  3D 효과 필터
+    defs.appendChild(FilterFactory.createPieceEmbossingFilter());
+    
     FilterFactory.createPlayButtonFilters().forEach((filter) => {
       defs.appendChild(filter);
     });
@@ -1626,6 +2733,7 @@ class PuzzleManager {
       const path = SVGHelper.createElement("path", {
         d: boardData.d,
         fill: boardData.fill,
+        filter: "url(#board-3d-effect)", // 3D 효과 필터 적용
       });
       this.svg.appendChild(path);
     });
@@ -1633,7 +2741,11 @@ class PuzzleManager {
 
   _createPuzzlePieces() {
     PUZZLE_PIECES.forEach((pieceData) => {
-      const piece = new PuzzlePiece(pieceData, this.contentManager);
+      const piece = new PuzzlePiece(
+        pieceData,
+        this.contentManager,
+        this.chapterManager
+      );
       this.pieces.push(piece);
       this.svg.appendChild(piece.createElement());
     });
@@ -1641,49 +2753,73 @@ class PuzzleManager {
 
   _createPlayButtonsAndGauges() {
     PUZZLE_PIECES.forEach((piece) => {
-      UIElementFactory.createPlayButton(piece.id, this.svg);
+      UIElementFactory.createPlayButton(
+        piece.id,
+        this.svg,
+        this.contentManager
+      );
       GaugeManager.createGauge(piece.id, this.svg);
     });
   }
 
-  setContent(data) {
-    this.contentManager.setContent(data);
+  /**
+   * 챕터 모달 열기
+   */
+  openChapterModal(chapterIndex, chapter) {
+    ModalManager.openChapterModal(chapterIndex, chapter);
   }
 
-  updateGauge(pieceId, progress) {
+  /**
+   * 퍼즐 조각의 게이지 업데이트 (completed 기반)
+   */
+  updatePieceGauge(pieceId) {
+    const chapterInfo = this.contentManager.getChapterByPieceId(pieceId);
+    if (!chapterInfo) return;
+
+    const progress = this.chapterManager.getChapterProgress(
+      chapterInfo.chapterIndex
+    );
+    
+    console.log(
+      `[PuzzleManager] 게이지 업데이트: piece=${pieceId}, progress=${progress}%`
+    );
+    
     GaugeManager.updateGauge(pieceId, progress);
-  }
 
-  openVideoModal(pieceId, pieceTitle, pieceElement) {
-    ModalManager.openVideoModal(pieceId, pieceTitle, pieceElement);
-  }
-
-  markPieceComplete(pieceId, pieceElement) {
-    const piece = this.pieces.find((p) => p.data.id === pieceId);
-    if (!piece || piece.isCompleted) return;
-
-    piece.markComplete();
-    this.completedCount++;
-    this._updateProgress();
-
-    // 완료된 퍼즐의 게이지를 100%로 업데이트
-    this.updateGauge(pieceId, 100);
-
-    if (this.completedCount === PUZZLE_PIECES.length) {
-      this._handleAllComplete();
+    // 챕터가 완료되면 퍼즐 조각 완료 표시
+    if (this.chapterManager.isChapterCompleted(chapterInfo.chapterIndex)) {
+      const piece = this.pieces.find((p) => p.data.id === pieceId);
+      if (piece && !piece.isCompleted) {
+        console.log(`[PuzzleManager] 퍼즐 조각 완료: piece=${pieceId}`);
+        piece.markComplete();
+        this._checkAllCompleted();
+      }
     }
   }
 
-  _updateProgress() {
-    const percentage = (this.completedCount / PUZZLE_PIECES.length) * 100;
+  /**
+   * 전체 진행률 업데이트
+   */
+  _updateTotalProgress() {
+    const percentage = this.chapterManager.getTotalProgress();
 
     const progressFill = document.getElementById("progressFill");
-    const completedCount = document.getElementById("completedCount");
     const progressPercent = document.getElementById("progressPercent");
 
     if (progressFill) progressFill.style.width = percentage + "%";
-    if (completedCount) completedCount.textContent = this.completedCount;
     if (progressPercent) progressPercent.textContent = Math.round(percentage);
+
+    console.log(`[PuzzleManager] 전체 진행률: ${percentage}%`);
+  }
+
+  /**
+   * 모든 퍼즐 완료 확인
+   */
+  _checkAllCompleted() {
+    if (this.chapterManager.isAllCompleted()) {
+      console.log("[PuzzleManager] 모든 챕터 완료!");
+      this._handleAllComplete();
+    }
   }
 
   _handleAllComplete() {
@@ -1817,15 +2953,43 @@ class PuzzleManager {
     pointer-events: none;
     z-index: 9999;
     opacity: 0;
-    transition: opacity 1s ease;
+    animation: completionFadeIn 0.5s ease forwards, completionPulse 2.5s ease-in-out 0.5s infinite;
   `;
+
+    // CSS 애니메이션 스타일 추가
+    if (!document.getElementById('completion-animation-styles')) {
+      const style = document.createElement('style');
+      style.id = 'completion-animation-styles';
+      style.textContent = `
+        @keyframes completionFadeIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes completionPulse {
+          0%, 100% {
+            transform: scale(1);
+            filter: drop-shadow(0 0 20px rgba(255, 235, 59, 0.6));
+          }
+          50% {
+            transform: scale(1.02);
+            filter: drop-shadow(0 0 35px rgba(255, 235, 59, 0.9)) drop-shadow(0 0 50px rgba(255, 193, 7, 0.5));
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
 
     const svg = SVGHelper.createElement("svg", {
       viewBox: CONFIG.SVG.VIEWBOX,
       style: `
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 0 23.2px rgba(251, 255, 0, 0.80));
     `,
     });
 
@@ -1836,19 +3000,37 @@ class PuzzleManager {
       false
     );
     defs.appendChild(completedPattern);
-    defs.appendChild(FilterFactory.createInnerShadowFilter());
-    defs.appendChild(FilterFactory.createCompletedFilter());
     svg.appendChild(defs);
 
     const boardGroup = SVGHelper.createElement("g");
+    boardGroup.style.cssText = `
+      animation: completionGlow 2.5s ease-in-out infinite;
+    `;
+
+    // 글로우 애니메이션 스타일 추가
+    if (!document.getElementById('completion-glow-styles')) {
+      const glowStyle = document.createElement('style');
+      glowStyle.id = 'completion-glow-styles';
+      glowStyle.textContent = `
+        @keyframes completionGlow {
+          0%, 100% {
+            filter: drop-shadow(0 0 15px rgba(255, 235, 59, 0.4));
+          }
+          50% {
+            filter: drop-shadow(0 0 30px rgba(255, 235, 59, 0.8)) drop-shadow(0 0 45px rgba(255, 193, 7, 0.4));
+          }
+        }
+      `;
+      document.head.appendChild(glowStyle);
+    }
 
     PUZZLE_PIECES.forEach((piece) => {
       const path = SVGHelper.createElement("path", {
         d: piece.path,
         fill: "url(#completion-animation-pattern)",
         stroke: "#333",
-        "stroke-width": "2",
-        filter: `url(#${CONFIG.FILTER_IDS.INNER_SHADOW}) url(#${CONFIG.FILTER_IDS.COMPLETED})`,
+        "stroke-width": "0",  // ✅ stroke: 0 (하나의 이미지처럼)
+        // ✅ 엠보싱 없음 (필터 적용 안 함)
       });
       boardGroup.appendChild(path);
     });
@@ -1857,21 +3039,38 @@ class PuzzleManager {
     animationContainer.appendChild(svg);
     document.body.appendChild(animationContainer);
 
+    // 페이드 아웃 애니메이션
     setTimeout(() => {
-      animationContainer.style.opacity = "1";
-    }, 100);
-
-    setTimeout(() => {
-      animationContainer.style.opacity = "0";
+      animationContainer.style.animation = 'completionFadeOut 0.5s ease forwards';
+      
+      // 페이드 아웃 애니메이션 스타일 추가
+      if (!document.getElementById('completion-fadeout-styles')) {
+        const fadeOutStyle = document.createElement('style');
+        fadeOutStyle.id = 'completion-fadeout-styles';
+        fadeOutStyle.textContent = `
+          @keyframes completionFadeOut {
+            0% {
+              opacity: 1;
+              transform: scale(1);
+            }
+            100% {
+              opacity: 0;
+              transform: scale(0.98);
+            }
+          }
+        `;
+        document.head.appendChild(fadeOutStyle);
+      }
     }, 3000);
 
     setTimeout(() => {
       animationContainer.remove();
 
+      // ✅ 애니메이션 후 Finish Image 표시
       this.pieces.forEach((piece) => {
-        piece.showAllCompleted();
+        piece.showFinish();  // ✅ showAllCompleted → showFinish 변경
       });
-    }, 3100);
+    }, 3500);
   }
 
   _showCelebration() {
@@ -1904,68 +3103,52 @@ class PuzzleManager {
     }
   }
 
-  initializeWithCompletedPieces(completedPieceIds) {
-    completedPieceIds.forEach((pieceId) => {
-      const piece = this.pieces.find((p) => p.data.id === pieceId);
-      if (piece) {
-        piece.markComplete();
-        this.completedCount++;
-        // 완료된 퍼즐의 게이지를 100%로 업데이트
-        this.updateGauge(pieceId, 100);
-      }
-    });
-    this._updateProgress();
-  }
-
   _initializeCompletedPieces() {
-    const completedPieces = [];
-    PUZZLE_PIECES.forEach((puzzlePiece) => {
-      const pieceId = puzzlePiece.id;
-      const content = this.contentManager.getContent(pieceId);
-      
-      // 완료된 퍼즐은 완료 리스트에 추가
-      if (content?.completed === true) {
-        completedPieces.push(pieceId);
-        // 완료된 퍼즐의 게이지를 100%로 설정
-        this.updateGauge(pieceId, 100);
-      } else {
-        // 미완료 퍼즐의 게이지를 0%로 초기화 (보이도록)
-        this.updateGauge(pieceId, 0);
+    console.log('[PuzzleManager] 완료 상태 초기화 시작');
+    
+    // 각 챕터의 완료 상태 확인
+    this.chapterManager.chapters.forEach((chapter, chapterIndex) => {
+      if (!chapter.pieceId) {
+        console.warn(`[PuzzleManager] 챕터 ${chapterIndex}에 pieceId가 없습니다`);
+        return;
+      }
+
+      // 게이지 초기화
+      const progress = this.chapterManager.getChapterProgress(chapterIndex);
+      console.log(`[PuzzleManager] 챕터 ${chapterIndex} (piece ${chapter.pieceId}): ${progress}% 진행`);
+      GaugeManager.updateGauge(chapter.pieceId, progress);
+
+      // 완료된 챕터의 퍼즐 조각 완료 표시
+      if (this.chapterManager.isChapterCompleted(chapterIndex)) {
+        const piece = this.pieces.find((p) => p.data.id === chapter.pieceId);
+        if (piece) {
+          console.log(`[PuzzleManager] 퍼즐 조각 ${chapter.pieceId} 완료 표시`);
+          piece.markComplete();
+        }
       }
     });
 
-    if (completedPieces.length > 0) {
-      this.initializeWithCompletedPieces(completedPieces);
-
-      if (this.completedCount === PUZZLE_PIECES.length) {
-        this.boardElement.classList.add("all-completed");
-
-        this.pieces.forEach((piece) => {
-          piece.showAllCompleted();
-        });
-      }
+    // 모든 챕터가 완료되었으면 완료 상태 표시
+    if (this.chapterManager.isAllCompleted()) {
+      console.log('[PuzzleManager] 모든 챕터 완료!');
+      this.boardElement.classList.add("all-completed");
+      this.pieces.forEach((piece) => {
+        piece.showFinish();  // ✅ showAllCompleted → showFinish 변경
+      });
     }
+
+    // 전체 진행률 업데이트
+    this._updateTotalProgress();
+    console.log('[PuzzleManager] 완료 상태 초기화 종료');
   }
 }
 
 // ============================================================================
-// 전역 함수 (하위 호환성)
+// 전역 함수
 // ============================================================================
-function setPuzzleContent(data) {
+function updatePieceGaugeByCompletion(pieceId) {
   if (PuzzleManager.instance) {
-    PuzzleManager.instance.setContent(data);
-  }
-}
-
-function updatePieceGauge(pieceId, progress) {
-  if (PuzzleManager.instance) {
-    PuzzleManager.instance.updateGauge(pieceId, progress);
-  }
-}
-
-function initializeProgress(completedPieces) {
-  if (PuzzleManager.instance) {
-    PuzzleManager.instance.initializeWithCompletedPieces(completedPieces);
+    PuzzleManager.instance.updatePieceGauge(pieceId);
   }
 }
 
@@ -1985,23 +3168,22 @@ function initializeOverlay() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const initialContent = window.puzzleContentData || null;
+  const chapterData = window.puzzleChapterData || null;
 
-  const puzzleManager = new PuzzleManager("puzzleBoard", initialContent);
+  const puzzleManager = new PuzzleManager("puzzleBoard", chapterData);
   puzzleManager.initialize();
   initializeOverlay();
 });
 
 // ============================================================================
-// Export (모듈로 사용할 경우)
+// Export
 // ============================================================================
 if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     PuzzleManager,
+    ChapterManager,
     ContentManager,
     GaugeManager,
-    setPuzzleContent,
-    updatePieceGauge,
-    initializeProgress,
+    updatePieceGaugeByCompletion,
   };
 }
