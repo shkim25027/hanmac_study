@@ -96,63 +96,62 @@ const PUZZLE_PIECES = [
   {
     id: 1,
     title: "왜 다윈인인가 (최재천 교수)",
-    // 원본: M256.658 780V651.625H22V523H709V780H256.658Z
-    // Stroke 보정: 상하좌우 각 1px 안쪽
-    path: "M257.658 779V651.625H23V524H708V779H257.658Z",
+    // 바로세운_퍼즐판.svg line 14
+    path: "M256.658 780V651.625H22V523H709V780H256.658Z",
   },
   {
     id: 2,
     title: "새로운 시대 준비된 우리",
-    // 원본: M709.158 11H1162L1161.99 268H709L709.158 11Z
-    path: "M710.158 12H1161L1160.99 267H710L710.158 12Z",
+    // 바로세운_퍼즐판.svg line 16
+    path: "M709 11H1162L1161.99 268H709V11Z",
   },
   {
     id: 3,
     title: "기술개발센터소개",
-    // 원본: M1162.16 11H1617L1616.99 268H1162L1162.16 11Z
-    path: "M1163.16 12H1616L1615.99 267H1163L1163.16 12Z",
+    // 바로세운_퍼즐판.svg line 17
+    path: "M1162 11H1615L1614.99 268H1162V11Z",
   },
   {
     id: 4,
     title: "건설산업의 디지털 전환을",
-    // 원본: M1162.16 268H1615L1614.99 523H1162L1162.16 268Z
-    path: "M1163.16 269H1614L1613.99 522H1163L1163.16 269Z",
+    // 바로세운_퍼즐판.svg line 19
+    path: "M1162 268H1615L1614.99 523H1162V268Z",
   },
   {
     id: 5,
     title: "상용 S/W 소개",
-    // 원본: M709.158 268H1162L1161.99 523H709L709.158 268Z
-    path: "M710.158 269H1161L1160.99 522H710L710.158 269Z",
+    // 바로세운_퍼즐판.svg line 18
+    path: "M709 268H1162L1161.99 523H709V268Z",
   },
   {
     id: 6,
     title: "축적의 시간",
-    // 원본: M709.158 523H1162L1161.99 780H709L709.158 523Z
-    path: "M710.158 524H1161L1160.99 779H710L710.158 524Z",
+    // 바로세운_퍼즐판.svg line 21
+    path: "M709 523H1162L1161.99 780H709V523Z",
   },
   {
     id: 7,
     title: "회사생활 (경력)",
-    // 원본: M1162.16 523H1615L1614.99 780H1162L1162.16 523Z
-    path: "M1163.16 524H1614L1613.99 779H1163L1163.16 524Z",
+    // 바로세운_퍼즐판.svg line 22
+    path: "M1162 523H1615L1614.99 780H1162V523Z",
   },
   {
     id: 8,
     title: "회사생활 (신규입사자편)",
-    // 원본: M1615.08 268H1853L1852.99 617H1615L1615.08 268Z
-    path: "M1616.08 269H1852L1851.99 616H1616L1616.08 269Z",
+    // 바로세운_퍼즐판.svg line 20
+    path: "M1615 268H1853L1852.99 617H1615V268Z",
   },
   {
     id: 9,
     title: "한맥가족 소개 및 경영이념",
-    // 원본: M256.008 11L256.132 267H330.61L330.618 523H709.008L708.876 11H256.008Z
-    path: "M257.008 12L257.132 266H329.61L329.618 522H708.008L707.876 12H257.008Z",
+    // 바로세운_퍼즐판.svg line 23
+    path: "M256 11V267H330V523H709V11H256Z",
   },
   {
     id: 10,
     title: "삼안 소개",
-    // 원본: M330.5 267H21.5V523H330.5V267Z
-    path: "M329.5 268H22.5V522H329.5V268Z",
+    // 바로세운_퍼즐판.svg line 15
+    path: "M330 267H22L22.4984 523H330V267Z",
   },
 ];
 
@@ -1457,11 +1456,11 @@ class PuzzlePiece {
   ) {
     // ✅ stroke-width: base=1, all-completed=0, 나머지=2
     const strokeWidth = 
-      className === "piece-base-image" ? "0" :
-      className === "piece-all-completed-image" ? "0" : "1";
+      className === "piece-base-image" ? "2" :
+      className === "piece-all-completed-image" ? "0" : "2";
 
-    // ✅ 엠보싱: base와 all-completed는 평면, 나머지는 입체
-    const flatLayers = ["piece-base-image", "piece-all-completed-image"];
+    // ✅ 엠보싱: base, all-completed, hover-image는 평면, 나머지는 입체
+    const flatLayers = ["piece-base-image", "piece-all-completed-image", "piece-hover-image"];
     const shouldApplyEmbossing = !flatLayers.includes(className);
 
     const attributes = {
