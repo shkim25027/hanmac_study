@@ -230,7 +230,7 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
         text-align: center;
         gap: 12px;
         width: max-content;
-       
+        margin: auto;
         @include flex(column, center, center);
 
         button {
@@ -309,6 +309,25 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
       }
     }
 
+    &-cards-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      align-items: center;
+      justify-items: center;
+      height: 100%;
+      column-gap: 10%;
+    }
+
+    &-card {
+      &:nth-child(3) {
+        margin-left: -30%;
+      }
+
+      &:nth-child(4) {
+        margin-right: -30%;
+      }
+    }
   }
 
   .my-learning {

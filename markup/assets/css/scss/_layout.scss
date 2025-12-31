@@ -1,35 +1,6 @@
 @charset "UTF-8";
 
 @use "base" as *;
-@use "sass:map";
-
-// scrollbar-style mixin (common.scss에서 가져옴)
-$scrollbar-width: 7px;
-$scrollbar-height: 10px;
-
-@mixin scrollbar-style(
-  $width: $scrollbar-width,
-  $height: $scrollbar-height,
-  $thumb-color: var(--bg-scrollbar-thumb),
-  $track-color: var(--bg-scrollbar-track)
-) {
-  &::-webkit-scrollbar {
-    height: $height;
-    width: $width;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: $thumb-color;
-    border-radius: 8px;
-    background-clip: padding-box;
-    border-top: 1px solid transparent;
-    border-bottom: 1px solid transparent;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: $track-color;
-  }
-}
 
 // html.is-locked,
 html {

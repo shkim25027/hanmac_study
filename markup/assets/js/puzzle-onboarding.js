@@ -74,7 +74,7 @@ const DEFAULT_CONFIG = {
   GAUGE: {
     HEIGHT: 7,
     RADIUS: 2,
-    VERTICAL_OFFSET: -7,
+    VERTICAL_OFFSET: -10,
     BG_COLOR: "#A0A0A0",
     BG_OPACITY: 0.4,
     FILL_COLOR: "#D74800",
@@ -1457,8 +1457,8 @@ class PuzzlePiece {
   ) {
     // ✅ stroke-width: base=1, all-completed=0, 나머지=2
     const strokeWidth = 
-      className === "piece-base-image" ? "1" :
-      className === "piece-all-completed-image" ? "0" : "2";
+      className === "piece-base-image" ? "0" :
+      className === "piece-all-completed-image" ? "0" : "1";
 
     // ✅ 엠보싱: base와 all-completed는 평면, 나머지는 입체
     const flatLayers = ["piece-base-image", "piece-all-completed-image"];
@@ -1511,20 +1511,8 @@ class PuzzlePiece {
 
     if (hoverImg) {
       hoverImg.setAttribute("fill-opacity", isHovering ? "1.0" : "0");
-      
-      if (isHovering) {
-        // 호버 시: 엠보싱 + 내부 그림자
-        hoverImg.setAttribute(
-          "filter",
-          `url(#${CONFIG.FILTER_IDS.PIECE_EMBOSSING}) url(#${CONFIG.FILTER_IDS.INNER_SHADOW})`
-        );
-      } else {
-        // 호버 해제 시: 엠보싱만
-        hoverImg.setAttribute(
-          "filter",
-          `url(#${CONFIG.FILTER_IDS.PIECE_EMBOSSING})`
-        );
-      }
+      // 호버 시 필터 완전 제거 (평면 효과)
+      hoverImg.setAttribute("filter", "");
     }
 
     if (overlayBase) {
@@ -1689,43 +1677,58 @@ class GaugeManager {
 
     const fullWidth = xRange.right - xRange.left;
 
-    let gaugeX;
-    let bgWidth;
-    let fillWidth;
+    // 초기 생성 시에는 EMBOSSING_INSET을 적용하지 않음 (전체 영역 사용)
+    // 완료 시에는 updateGauge에서 EMBOSSING_INSET을 적용
+    const EMBOSSING_INSET = 0; // 초기에는 0, 완료 시 updateGauge에서 조정
 
-    if (xRange.align === "right") {
-      if (pieceId === 1) {
-        gaugeX = 256;
-        bgWidth = 709 - 256;
-      } else if (pieceId === 9) {
-        gaugeX = 330.61;
-        bgWidth = 709.008 - 330.61;
-      } else {
-        gaugeX = xRange.left;
-        bgWidth = fullWidth;
-      }
-    } else {
-      gaugeX = xRange.left;
-      bgWidth = fullWidth;
-    }
-
-    const strokeRadius = CONFIG.GAUGE.HEIGHT / 2;
-    gaugeX = Math.max(gaugeX, xRange.left + strokeRadius);
-
-    fillWidth = bgWidth;
-
+    // 게이지 너비 결정 (MAX_LENGTHS가 있으면 사용, 없으면 fullWidth 사용)
+    let bgWidth = fullWidth;
     if (GAUGE_CONFIG.MAX_LENGTHS && GAUGE_CONFIG.MAX_LENGTHS[pieceId]) {
-      const maxLength = GAUGE_CONFIG.MAX_LENGTHS[pieceId];
-      fillWidth = Math.min(fillWidth, maxLength);
-      bgWidth = Math.min(bgWidth, maxLength);
+      bgWidth = GAUGE_CONFIG.MAX_LENGTHS[pieceId];
     }
 
-    const maxEndX = xRange.right - strokeRadius;
+    // 1번 피스는 하단 영역 안쪽 중앙에 배치
+    let centerX;
+    if (pieceId === 1) {
+      // 하단 영역: 256부터 right까지의 영역의 중앙
+      const bottomAreaLeft = 256;
+      const bottomAreaRight = xRange.right;
+      centerX = (bottomAreaLeft + bottomAreaRight) / 2;
+    } else {
+      // 다른 피스는 전체 xRange의 중앙
+      centerX = (xRange.left + xRange.right) / 2;
+    }
+    
+    // 중앙 정렬: centerX에서 bgWidth의 절반을 빼서 시작점 계산
+    let gaugeX = centerX - (bgWidth / 2);
+
+    // strokeRadius 고려하여 최소 여백 확보
+    const strokeRadius = CONFIG.GAUGE.HEIGHT / 2;
+    const minMargin = strokeRadius;
+    
+    // 왼쪽 경계 확인 및 조정
+    if (gaugeX < xRange.left + minMargin) {
+      gaugeX = xRange.left + minMargin;
+      // 오른쪽 경계도 확인하여 너비 조정
+      const maxEndX = xRange.right - minMargin;
+      bgWidth = Math.min(bgWidth, maxEndX - gaugeX);
+    }
+    
+    // 오른쪽 경계 확인 및 조정
     const calculatedEndX = gaugeX + bgWidth;
+    const maxEndX = xRange.right - minMargin;
     if (calculatedEndX > maxEndX) {
       bgWidth = maxEndX - gaugeX;
-      fillWidth = Math.min(fillWidth, bgWidth);
+      // 너비가 줄어들었으므로 다시 중앙 정렬
+      gaugeX = centerX - (bgWidth / 2);
+      // 다시 왼쪽 경계 확인
+      if (gaugeX < xRange.left + minMargin) {
+        gaugeX = xRange.left + minMargin;
+        bgWidth = maxEndX - gaugeX;
+      }
     }
+
+    let fillWidth = bgWidth;
 
     const bgLine = SVGHelper.createElement("line", {
       x1: gaugeX,
@@ -1737,6 +1740,8 @@ class GaugeManager {
       "stroke-linecap": "round",
       opacity: CONFIG.GAUGE.BG_OPACITY,
       class: "gauge-bg-line",
+      "data-original-x1": gaugeX, // 원본 좌표 저장
+      "data-original-x2": gaugeX + bgWidth, // 원본 좌표 저장
     });
     bgLine.style.mixBlendMode = "multiply";
     gaugeGroup.appendChild(bgLine);
@@ -1752,6 +1757,7 @@ class GaugeManager {
       class: "gauge-fill-line",
       filter: "url(#gauge-fill-inner-shadow)",
       "data-gauge-length": fillWidth,
+      "data-original-x1": gaugeX, // 원본 시작점 저장
     });
 
     fillLine.style.strokeDasharray = `${fillWidth}`;
@@ -1762,19 +1768,78 @@ class GaugeManager {
     svg.appendChild(gaugeGroup);
   }
 
-  static updateGauge(pieceId, progress) {
+  static updateGauge(pieceId, progress, isCompleted = false) {
     progress = Math.max(0, Math.min(100, progress));
 
     const fillLine = document.querySelector(
       `.piece-gauge-${pieceId} .gauge-fill-line`
     );
+    const bgLine = document.querySelector(
+      `.piece-gauge-${pieceId} .gauge-bg-line`
+    );
 
     if (!fillLine) return;
 
-    const gaugeLength = parseFloat(fillLine.getAttribute("data-gauge-length"));
-    if (!gaugeLength || isNaN(gaugeLength)) return;
+    // 원본 길이 가져오기
+    let originalLength = parseFloat(fillLine.getAttribute("data-original-length"));
+    if (!originalLength || isNaN(originalLength)) {
+      originalLength = parseFloat(fillLine.getAttribute("data-gauge-length"));
+      fillLine.setAttribute("data-original-length", originalLength);
+    }
 
-    const offset = gaugeLength * (1 - progress / 100);
+    // 완료 시에만 EMBOSSING_INSET 적용
+    const EMBOSSING_INSET = isCompleted ? 8 : 0;
+    const adjustedLength = originalLength - (EMBOSSING_INSET * 2);
+
+    // 원본 시작점 가져오기
+    let originalX1 = parseFloat(fillLine.getAttribute("data-original-x1"));
+    if (!originalX1 || isNaN(originalX1)) {
+      originalX1 = parseFloat(fillLine.getAttribute("x1"));
+      fillLine.setAttribute("data-original-x1", originalX1);
+    }
+
+    // 중앙 정렬 유지: 원본 중앙에서 조정된 길이의 절반씩 빼고 더함
+    const originalX2 = originalX1 + originalLength;
+    const originalCenterX = (originalX1 + originalX2) / 2;
+    const newX1 = originalCenterX - (adjustedLength / 2);
+    const newX2 = originalCenterX + (adjustedLength / 2);
+
+    // 게이지 길이 및 위치 업데이트
+    fillLine.setAttribute("data-gauge-length", adjustedLength);
+    fillLine.setAttribute("x1", newX1);
+    fillLine.setAttribute("x2", newX2);
+    fillLine.style.strokeDasharray = `${adjustedLength}`;
+
+    // 배경 라인도 조정 (중앙 정렬 유지)
+    if (bgLine) {
+      let originalX1 = parseFloat(bgLine.getAttribute("data-original-x1"));
+      let originalX2 = parseFloat(bgLine.getAttribute("data-original-x2"));
+      
+      // 원본 좌표가 없으면 현재 좌표를 원본으로 저장
+      if (!originalX1 || isNaN(originalX1)) {
+        originalX1 = parseFloat(bgLine.getAttribute("x1"));
+        originalX2 = parseFloat(bgLine.getAttribute("x2"));
+        bgLine.setAttribute("data-original-x1", originalX1);
+        bgLine.setAttribute("data-original-x2", originalX2);
+      }
+      
+      if (isCompleted) {
+        // 중앙 정렬 유지: 원본 중앙에서 조정된 너비의 절반씩 빼고 더함
+        const originalCenterX = (originalX1 + originalX2) / 2;
+        const adjustedBgWidth = (originalX2 - originalX1) - (EMBOSSING_INSET * 2);
+        const newX1 = originalCenterX - (adjustedBgWidth / 2);
+        const newX2 = originalCenterX + (adjustedBgWidth / 2);
+        
+        bgLine.setAttribute("x1", newX1);
+        bgLine.setAttribute("x2", newX2);
+      } else {
+        // 완료되지 않았으면 원본 좌표로 복원
+        bgLine.setAttribute("x1", originalX1);
+        bgLine.setAttribute("x2", originalX2);
+      }
+    }
+
+    const offset = adjustedLength * (1 - progress / 100);
 
     requestAnimationFrame(() => {
       fillLine.style.strokeDashoffset = `${offset}`;
@@ -2782,14 +2847,19 @@ class PuzzleManager {
       chapterInfo.chapterIndex
     );
     
-    console.log(
-      `[PuzzleManager] 게이지 업데이트: piece=${pieceId}, progress=${progress}%`
+    // 완료 상태 확인
+    const isCompleted = this.chapterManager.isChapterCompleted(
+      chapterInfo.chapterIndex
     );
     
-    GaugeManager.updateGauge(pieceId, progress);
+    console.log(
+      `[PuzzleManager] 게이지 업데이트: piece=${pieceId}, progress=${progress}%, completed=${isCompleted}`
+    );
+    
+    GaugeManager.updateGauge(pieceId, progress, isCompleted);
 
     // 챕터가 완료되면 퍼즐 조각 완료 표시
-    if (this.chapterManager.isChapterCompleted(chapterInfo.chapterIndex)) {
+    if (isCompleted) {
       const piece = this.pieces.find((p) => p.data.id === pieceId);
       if (piece && !piece.isCompleted) {
         console.log(`[PuzzleManager] 퍼즐 조각 완료: piece=${pieceId}`);
@@ -3117,8 +3187,9 @@ class PuzzleManager {
 
       // 게이지 초기화
       const progress = this.chapterManager.getChapterProgress(chapterIndex);
-      console.log(`[PuzzleManager] 챕터 ${chapterIndex} (piece ${chapter.pieceId}): ${progress}% 진행`);
-      GaugeManager.updateGauge(chapter.pieceId, progress);
+      const isCompleted = this.chapterManager.isChapterCompleted(chapterIndex);
+      console.log(`[PuzzleManager] 챕터 ${chapterIndex} (piece ${chapter.pieceId}): ${progress}% 진행, completed=${isCompleted}`);
+      GaugeManager.updateGauge(chapter.pieceId, progress, isCompleted);
 
       // 완료된 챕터의 퍼즐 조각 완료 표시
       if (this.chapterManager.isChapterCompleted(chapterIndex)) {
