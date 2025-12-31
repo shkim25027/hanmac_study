@@ -564,6 +564,7 @@ h5 {
 
           .video-list {
             padding-top: 20px;
+     
           }
         }
       }
@@ -593,7 +594,7 @@ h5 {
       &-list {
         overflow-y: auto;
         align-self: start;
-
+        @include scrollbar-light();
         .tit {
           color: #fff;
           margin-bottom: 8px;
