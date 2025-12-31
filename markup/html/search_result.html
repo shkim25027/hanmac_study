@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
+  </head>
+  <body>
+    <div class="wrap search-result">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+        <div class="search-result-wrap">
+          <!-- 검색 결과 헤더 -->
+          <div class="search-result-header">
+            <h2 class="page-title">검색결과</h2>
+            <p class="search-summary">
+              '<em>AI</em>' '<em>테크</em>'에 대한 검색결과가 <em>24</em>건 있습니다.
+            </p>
+          </div>
+
+          <!-- 필터 탭 -->
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">
+              전체 <span class="count">24</span>
+            </button>
+            <button class="filter-tab" data-filter="leadership">
+              리더십 <span class="count">21</span>
+            </button>
+            <button class="filter-tab" data-filter="insight">
+              인사이트 <span class="count">3</span>
+            </button>
+            <button class="filter-tab" data-filter="viewed">
+              <i class="ico-check"></i> 시청한 콘텐츠 <span class="count">1</span>
+            </button>
+            <button class="filter-tab" data-filter="saved">
+              <i class="ico-heart"></i> 저장한 콘텐츠 <span class="count">3</span>
+            </button>
+          </div>
+
+          <!-- 검색 결과 섹션 -->
+          <div class="search-sections">
+            <!-- 리더십 섹션 -->
+            <section class="content-section" data-section="leadership">
+              <div class="section-header">
+                <h3 class="section-title">리더십 <span class="section-count">21</span></h3>
+                <button class="btn-more">더보기 +</button>
+              </div>
+              <div class="video-cards-container">
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk1" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk1">
+                      </label>
+                      <div class="category leader">인사이트</div>
+                      <div class="title">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 방법 | 최재천의 관계</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk2" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk2">
+                      </label>
+                      <div class="category leader">인사이트</div>
+                      <div class="title">사고실험 가장 쉽게 설명해드립니다 조선제일검 이재용 회계사 한국에서 가장 유명한 회계사의 조언</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk3" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk3" checked>
+                      </label>
+                      <div class="category leader">인사이트</div>
+                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk4" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk4" checked>
+                      </label>
+                      <div class="category leader">인사이트</div>
+                      <div class="title">새비시 울음에 답하세요! 상대의 숨은 욕구를 찾아내는 것, 거기서 시작해야 됩니다 백영재 | 인류학 박사, &lt;씩데이터&gt;저자</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <!-- 인사이트 섹션 -->
+            <section class="content-section" data-section="insight">
+              <div class="section-header">
+                <h3 class="section-title">인사이트 <span class="section-count">3</span></h3>
+                <button class="btn-more">더보기 +</button>
+              </div>
+              <div class="video-cards-container">
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk5" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk5">
+                      </label>
+                      <div class="category insight">인사이트</div>
+                      <div class="title">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 방법 | 최재천의 관계</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk6" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk6">
+                      </label>
+                      <div class="category insight">인사이트</div>
+                      <div class="title">사고실험 가장 쉽게 설명해드립니다 조선제일검 이재용 회계사 한국에서 가장 유명한 회계사의 조언</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk7" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk7" checked>
+                      </label>
+                      <div class="category insight">인사이트</div>
+                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <!-- 시청한 콘텐츠 섹션 -->
+            <section class="content-section" data-section="viewed">
+              <div class="section-header">
+                <h3 class="section-title">
+                  <i class="ico-check"></i> 시청한 콘텐츠 <span class="section-count">1</span>
+                </h3>
+                <button class="btn-more">더보기 +</button>
+              </div>
+              <div class="video-cards-container">
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk8" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk8" checked>
+                      </label>
+                      <div class="category leader">인사이트</div>
+                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <!-- 저장한 콘텐츠 섹션 -->
+            <section class="content-section" data-section="saved">
+              <div class="section-header">
+                <h3 class="section-title">
+                  <i class="ico-heart"></i> 저장한 콘텐츠 <span class="section-count">3</span>
+                </h3>
+                <button class="btn-more">더보기 +</button>
+              </div>
+              <div class="video-cards-container">
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk9" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk9" checked>
+                      </label>
+                      <div class="category leader">인사이트</div>
+                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk10" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk10" checked>
+                      </label>
+                      <div class="category leader">인사이트</div>
+                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div class="video-card">
+                  <a href="#" class="card">
+                    <div class="thumb">
+                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
+                    </div>
+                    <div class="txt-box">
+                      <label class="bookmark" for="like_chk11" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_chk11" checked>
+                      </label>
+                      <div class="category leader">인사이트</div>
+                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
+                      <div class="author">
+                        <span class="key-badge">웰니스 협업</span>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <!-- // container -->
+    </div>
+
+    <script>
+      // 상단 라운드 유지 - 페이지 로드 즉시 실행 (다른 스크립트보다 먼저)
+      (function() {
+        const container = document.querySelector('.search-result .container');
+        if (container) {
+          const targetClipPath = 'inset(0 0 0 0 round 30px 30px 0 0)';
+          
+          // 즉시 clip-path 설정
+          container.style.clipPath = targetClipPath;
+          
+          // 지속적으로 clip-path 유지
+          function maintainRoundCorners() {
+            const currentClipPath = container.style.clipPath || '';
+            if (currentClipPath !== targetClipPath && !currentClipPath.includes('30px')) {
+              container.style.clipPath = targetClipPath;
+            }
+            requestAnimationFrame(maintainRoundCorners);
+          }
+          
+          // 스크롤 이벤트로 clip-path 고정
+          container.addEventListener('scroll', function() {
+            this.style.clipPath = targetClipPath;
+          }, { passive: true, capture: true });
+          
+          // MutationObserver로 style 변경 감지
+          const observer = new MutationObserver(function() {
+            if (container.style.clipPath !== targetClipPath) {
+              container.style.clipPath = targetClipPath;
+            }
+          });
+          
+          observer.observe(container, {
+            attributes: true,
+            attributeFilter: ['style'],
+            attributeOldValue: true
+          });
+          
+          // requestAnimationFrame 시작
+          maintainRoundCorners();
+        }
+      })();
+
+      // 검색어를 헤더 검색창에 표시
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('.input-group input[type="text"]');
+        const clearBtn = document.querySelector('.btn-clear');
+        
+        if (searchInput) {
+          // 검색어 앞에 "Q " 접두사 추가
+          searchInput.value = 'Q AI 테크';
+          // 검색어가 있을 때 X 버튼 표시
+          if (clearBtn) {
+            clearBtn.style.display = 'block';
+          }
+        }
+        
+        // X 버튼 클릭 시 검색어 지우기
+        if (clearBtn) {
+          clearBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (searchInput) {
+              searchInput.value = '';
+              clearBtn.style.display = 'none';
+            }
+          });
+        }
+        
+        // 검색어 입력 시 X 버튼 표시/숨김
+        if (searchInput) {
+          searchInput.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+              if (clearBtn) clearBtn.style.display = 'block';
+            } else {
+              if (clearBtn) clearBtn.style.display = 'none';
+            }
+          });
+        }
+
+        // 필터 탭 클릭 이벤트
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        filterTabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            filterTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            const filter = this.dataset.filter;
+            const sections = document.querySelectorAll('.content-section');
+            
+            if (filter === 'all') {
+              sections.forEach(section => section.style.display = 'block');
+            } else {
+              sections.forEach(section => {
+                if (section.dataset.section === filter) {
+                  section.style.display = 'block';
+                } else {
+                  section.style.display = 'none';
+                }
+              });
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

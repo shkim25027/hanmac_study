@@ -1,0 +1,174 @@
+@charset "UTF-8";
+
+@use "base" as *;
+
+// =======================================
+// Search Result Page Styles
+// =======================================
+.search-result {
+  // wrap의 overflow: hidden 오버라이드하여 스크롤 가능하게
+  overflow: visible !important;
+  // background-attachment: fixed도 오버라이드 (스크롤 성능 개선)
+  background-attachment: scroll !important;
+  
+  .search-result-wrap {
+    max-width: 1720px;
+    margin: 0 auto;
+    padding: 40px 140px 80px;
+    
+    @include mq("desktop-hd", max) {
+      padding: 40px 7.2916% 80px;
+    }
+  }
+
+  // 검색 결과 헤더
+  .search-result-header {
+    margin-bottom: 32px;
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .search-summary {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+
+      em {
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  // 필터 탭
+  .filter-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+
+    .filter-tab {
+      position: relative;
+      padding: 12px 20px;
+      border-radius: 24px;
+      border: 1px solid var(--border-keyword-base);
+      background: var(--bg-keyword-base);
+      color: var(--text-keyword-base);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      @include flex(row, center, center);
+      gap: 6px;
+
+      .ico-check,
+      .ico-heart {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+      }
+
+      .ico-check {
+        @include bgImg("../images/ico/ico_check.svg", contain, center);
+      }
+
+      .ico-heart {
+        @include bgImg("../images/ico/ico_like.svg", contain, center);
+      }
+
+      .count {
+        font-weight: 700;
+      }
+
+      &:hover {
+        background: var(--bg-keyword-primary-hover);
+        border-color: var(--border-keyword-primary-hover);
+        color: var(--text-keyword-secondary);
+      }
+
+      &.active {
+        background: var(--bg-keyword-primary);
+        border-color: var(--border-keyword-primary);
+        color: var(--text-keyword-primary);
+        font-weight: 700;
+      }
+    }
+  }
+
+  // 콘텐츠 섹션
+  .search-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .content-section {
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+
+      .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-primary);
+        @include flex(row, center, center);
+        gap: 8px;
+
+        .ico-check,
+        .ico-heart {
+          display: inline-block;
+          width: 16px;
+          height: 16px;
+        }
+
+        .ico-check {
+          @include bgImg("../images/ico/ico_check.svg", contain, center);
+        }
+
+        .ico-heart {
+          @include bgImg("../images/ico/ico_like.svg", contain, center);
+        }
+
+        .section-count {
+          font-size: 20px;
+          font-weight: 500;
+          color: var(--text-secondary);
+        }
+      }
+
+      .btn-more {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 8px 12px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: var(--bg-keyword-base);
+          color: var(--text-primary);
+        }
+      }
+    }
+
+    .video-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+
+      @include mq("tablet", max) {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+}
+

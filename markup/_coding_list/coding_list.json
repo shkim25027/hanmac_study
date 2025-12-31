@@ -52,6 +52,12 @@
       "법정교육": {
         "법정교육": ["../learning.html", "mainframe", "컨펌대기", ""],
         "법정교육_학습중": ["../learning_2.html", "mainframe", "컨펌대기", ""]
+      },
+      "마이페이지": {
+        "마이페이지": ["../mypage.html", "mainframe", "컨펌대기", ""]
+      },
+      "검색" :{
+        "검색 결과": ["../search_result.html", "mainframe", "컨펌대기", ""]
       }
     }
   }

@@ -124,6 +124,23 @@ html {
       top: 50%;
       right: 16px;
       translate: 0 -50%;
+      width: 16px;
+      height: 16px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: none;
+      @include bgImg("../images/ico/ico_remove.svg", contain, center);
+      
+      &:hover {
+        opacity: 0.7;
+      }
+      
+      // 검색어가 있을 때 표시
+      .input-group:has(input[value]:not([value=""])) &,
+      .input-group:has(input:not(:placeholder-shown)) & {
+        display: block;
+      }
     }
   }
 }

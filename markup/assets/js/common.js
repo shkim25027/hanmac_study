@@ -103,6 +103,12 @@ function initContainerScrollEffect() {
   const container = document.querySelector(".container");
   if (!container) return;
 
+  // 검색 결과 페이지에서는 이 효과를 적용하지 않음 (상단 라운드 유지)
+  const wrap = container.closest(".wrap");
+  if (wrap && wrap.classList.contains("search-result")) {
+    return;
+  }
+
   const borderRadius = 30; // border-radius 값
   const scrollThreshold = 100; // border-radius가 완전히 펼쳐지는 스크롤 거리
 
@@ -119,7 +125,7 @@ function initContainerScrollEffect() {
 
 // DOMContentLoaded 시 초기화
 document.addEventListener("DOMContentLoaded", () => {
-  initContainerScrollEffect();
+ // initContainerScrollEffect();
 });
 
 function includehtml() {
