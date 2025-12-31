@@ -247,7 +247,7 @@ $chapter-widths: (
 
         &.completed {
           .piece-overlay-base {
-            fill: #D9D9D9;
+            fill: #D9D9D9; 
             fill-opacity: 0.5;
           }
 
@@ -519,14 +519,18 @@ $chapter-widths: (
     &-card {
       position: relative;
       @include transition(all, 0.3s, ease);
-
+      @for $i from 1 through 5 {
+        &:nth-child(#{$i}) {
+          transform: scale(1 + ($i - 1) * 0.1);
+        }
+      }
       &-inner {
         position: relative;
         background: white;
         border-radius: 8px;
         padding: 0;
         @include transition(all, 0.3s, ease);
-
+        &::before,
         &::after {
           @include pseudo(block, absolute, "");
           bottom: -14px;
@@ -608,20 +612,29 @@ $chapter-widths: (
         .card-play-button {
           width: calc(54px / 328px * 100%);
         }
+        
       }
 
       // Completed state (beige/orange)
       &.completed {
         @for $i from 2 through 5 {
           &:nth-child(#{$i}) {
-            .chapter-card-inner {
-              &::before {
-                transform: scale(1 + ($i - 1) * 0.1);
-              }
+            .card-stamp{
+              transform: scale(1 + ($i - 1) * 0.1);
             }
           }
+          
         }
-
+        .card-stamp{
+          @include pseudo(block, absolute, " ");
+          top: 0;
+          right: 0;
+          translate: 50% -30%;
+          width: 60px;
+          aspect-ratio: 1 / 1;
+          @include bgImg("../images/learning/img_stamp.svg", contain, center);
+          z-index: 1;
+        }
         .chapter-card-inner {
           border-radius: 10px;
           background: linear-gradient(
@@ -631,16 +644,6 @@ $chapter-widths: (
             )
             #fff;
 
-          &::before {
-            @include pseudo(block, absolute, " ");
-            top: 0;
-            right: 0;
-            translate: 50% -30%;
-            width: 60px;
-            aspect-ratio: 1 / 1;
-            @include bgImg("../images/learning/img_stamp.svg", contain, center);
-            z-index: 1;
-          }
 
           &::after {
             border-top-color: #f9f4f1;

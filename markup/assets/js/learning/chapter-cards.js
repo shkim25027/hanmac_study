@@ -165,6 +165,11 @@ class ChapterCardManager {
     title.textContent = chapter.name;
     inner.appendChild(title);
 
+    // 스탬프
+    const stamp = document.createElement("div");
+    stamp.className ="card-stamp";
+    inner.appendChild(stamp);
+
     // 그림자
     const shadow = document.createElement("div");
     shadow.className = "shadow-effect";

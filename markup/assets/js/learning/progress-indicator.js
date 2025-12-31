@@ -196,6 +196,18 @@ class ProgressIndicator {
   _updateStateIndicator(currentProgress) {
     if (!this.stateIndicator || !this.config.averageProgress) return;
 
+    // 모든 챕터가 완료되었는지 확인
+    if (this.config.chapters && this.config.chapters.length > 0) {
+      const allChaptersCompleted = this.config.chapters.every(
+        (chapter) => chapter.completed === true
+      );
+      if (allChaptersCompleted) {
+        this.stateIndicator.style.display = "none";
+        console.log(`[ProgressIndicator] 모든 챕터 완료: 상태 이미지 숨김`);
+        return;
+      }
+    }
+
     const threshold = this.config.averageProgress.threshold;
     let stateImage = "";
     let stateType = "";
@@ -283,6 +295,18 @@ class ProgressIndicator {
    */
   _positionStateIndicatorOnMarker(currentProgress) {
     if (!this.stateIndicator) return;
+
+    // 모든 챕터가 완료되었는지 확인
+    if (this.config.chapters && this.config.chapters.length > 0) {
+      const allChaptersCompleted = this.config.chapters.every(
+        (chapter) => chapter.completed === true
+      );
+      if (allChaptersCompleted) {
+        this.stateIndicator.style.display = "none";
+        console.log(`[ProgressIndicator] 모든 챕터 완료: 상태 이미지 숨김`);
+        return;
+      }
+    }
 
     const allMarkers = this.config.getAllMarkers();
     // 실제 강의만 카운트 (챕터 제외)
@@ -383,6 +407,21 @@ class ProgressIndicator {
       // transition 중 실시간으로 위치 업데이트
       const updatePosition = () => {
         if (!this.stateIndicator || !maskPath) return;
+
+        // 모든 챕터가 완료되었는지 확인
+        if (this.config.chapters && this.config.chapters.length > 0) {
+          const allChaptersCompleted = this.config.chapters.every(
+            (chapter) => chapter.completed === true
+          );
+          if (allChaptersCompleted) {
+            this.stateIndicator.style.display = "none";
+            if (this.animationFrameId) {
+              cancelAnimationFrame(this.animationFrameId);
+              this.animationFrameId = null;
+            }
+            return;
+          }
+        }
 
         // maskPath의 현재 stroke-dashoffset을 확인하여 진행률 계산
         // stroke-dashoffset이 줄어들수록 더 많이 채워짐

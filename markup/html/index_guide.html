@@ -74,10 +74,13 @@
           <!-- keyword modal -->
           @@include("_modal/keyword.html")
           <!-- // keyword modal -->
+
+        
         </div>
       </div>
 
       <!-- // container -->
+      @@include("./guide.html")
     </div>
     <script src="./assets/js/main/VideoCardRenderer.js"></script>
     <script src="./assets/js/main/VideoSlider.js"></script>
@@ -240,6 +243,23 @@
 
       // 예시: 학습 시간 업데이트 (35분)
       gauge.update(25);
+
+      // ========================================
+      // MultiGuide 초기화 (게이지 초기화 후)
+      // ========================================
+      // 게이지와 모든 요소가 준비된 후 MultiGuide 초기화
+      setTimeout(() => {
+        console.log("[index_guide] MultiGuide 초기화 시도...");
+        console.log("[index_guide] window.initMultiGuide 존재:", typeof window.initMultiGuide);
+        console.log("[index_guide] .guide-wrap 존재:", document.querySelector(".guide-wrap") !== null);
+        
+        if (window.initMultiGuide) {
+          window.initMultiGuide();
+        } else {
+          console.warn("[index_guide] ❌ MultiGuide 초기화 함수를 찾을 수 없습니다.");
+          console.warn("[index_guide] guide.html이 제대로 include되었는지 확인하세요.");
+        }
+      }, 1000);
 
       // ========================================
       // 키워드 모달 기능
