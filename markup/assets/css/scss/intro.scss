@@ -29,6 +29,7 @@
     color: var(--text-intro-base);
     border-radius: 0;
     border: none;
+    top: 0;
     @include flex(column);
   }
   /* Text Area - 고정 위치 */
