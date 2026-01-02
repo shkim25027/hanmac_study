@@ -1454,43 +1454,47 @@ class PuzzlePiece {
     opacity = "1.0",
     hidden = false
   ) {
+    // ✅ stroke-width: base=2, all-completed=0, 나머지=2
+    // completed-image도 base-image와 동일한 stroke-width로 설정하여 일관성 유지
     const strokeWidth = 
       className === "piece-base-image" ? "2" :
       className === "piece-all-completed-image" ? "0" :
-      className === "piece-completed-image" ? "2" :  // ✅ base-image와 동일한 stroke-width
-      className === "piece-finish-image" ? "4" : "2";
-  
+      className === "piece-completed-image" ? "2" :
+      className === "piece-finish-image" ? "2" : "2";
+
+    // ✅ 엠보싱: base, all-completed, hover-image는 평면, 나머지는 입체
     const flatLayers = ["piece-base-image", "piece-all-completed-image", "piece-hover-image"];
     const shouldApplyEmbossing = !flatLayers.includes(className);
-  
+
     const attributes = {
       d: this.data.path,
       class: className,
       fill: `url(${baseUrl}#${patternId})`,
       "fill-opacity": opacity,
-      stroke: "#000",
+      stroke: "#333",
       "stroke-width": strokeWidth,
       "stroke-linejoin": "round",
       "stroke-linecap": "round",
     };
-  
+
     if (shouldApplyEmbossing) {
       attributes.filter = `url(#${CONFIG.FILTER_IDS.PIECE_EMBOSSING})`;
+      // mask 제거: stroke도 보이도록 함 (엠보싱 효과는 필터 자체에서 적용)
     }
-  
+
+    // completed-image에 clipPath 적용하여 base-image 영역 밖으로 나가지 않도록
+    // mask는 제거하여 stroke도 보이도록 함
     if (className === "piece-completed-image") {
-      // clipPath만 사용하여 base 이미지 경계를 벗어나지 않게 함
-      // mask는 제거하여 stroke도 보이도록 함 (base-image와 동일한 stroke 표시)
       attributes["clip-path"] = `url(#clip-piece-${this.data.id})`;
     }
-  
+
     const path = SVGHelper.createElement("path", attributes);
-  
+
     if (hidden) path.style.display = "none";
     if (className === "piece-hover-image") {
       path.style.transition = CONFIG.ANIMATION.HOVER_TRANSITION;
     }
-  
+
     this.group.appendChild(path);
   }
 
@@ -1625,20 +1629,19 @@ class PuzzlePiece {
     const baseImage = this.group.querySelector(".piece-base-image");
     const completedImage = this.group.querySelector(".piece-completed-image");
   
-    // ✅ base 이미지를 완전히 숨기고 completed 이미지만 표시
-    if (baseImage) {
-      baseImage.style.display = "none";
-    }
+    if (baseImage) baseImage.style.display = "none";
   
     if (completedImage) {
       completedImage.style.display = "block";
+      
+      // ✅ 완료 시: 엠보싱만 적용 (completed-effect 제거)
       completedImage.setAttribute(
         "filter",
         `url(#${CONFIG.FILTER_IDS.PIECE_EMBOSSING})`
       );
     }
   }
-  
+
   // ✅ 새로운 메서드: Finish Image 표시 (최종 표시)
   showFinish() {
     const baseImg = this.group.querySelector(".piece-base-image");
@@ -2807,7 +2810,7 @@ class PuzzleManager {
       clipPath.appendChild(clipPathElement);
       defs.appendChild(clipPath);
 
-      // mask 제거: completed-image도 base-image와 동일한 stroke를 표시하도록 함
+      // mask 제거: stroke도 보이도록 함
     });
 
     this.svg.appendChild(defs);
