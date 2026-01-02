@@ -21,8 +21,6 @@ class GaugeManager {
 
     if (this.pathLength === 0) {
       this.pathLength = this.maskPath.getTotalLength();
-      this.maskPath.style.strokeDasharray = this.pathLength;
-      this.maskPath.style.strokeDashoffset = this.pathLength;
     }
 
     let targetPathPercent;
@@ -39,6 +37,11 @@ class GaugeManager {
     // pathPercent가 0이면 시작점, 1이면 끝점
     const targetLength = this.pathLength * targetPathPercent;
     const targetOffset = this.pathLength - targetLength;
+    
+    // stroke-dasharray를 pathLength로 설정하여 gap이 없도록 함
+    // [dash, gap] 형태에서 gap을 0으로 설정하면 연속된 선이 됨
+    // setAttribute를 사용하여 인라인 스타일을 확실하게 덮어쓰기
+    this.maskPath.setAttribute('stroke-dasharray', `${this.pathLength} 0`);
     
     // 애니메이션을 위한 transition 추가 (처음 한 번만)
     if (!this.maskPath.style.transition) {

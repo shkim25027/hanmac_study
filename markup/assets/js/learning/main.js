@@ -76,10 +76,24 @@ class LearningApp {
         LEARNING_CONFIG
       );
       
+      // 실제 강의만 카운트 (챕터 제외)
+      const learningMarkers = this.markerManager.allMarkers.filter(
+        (m) => m.isLearningContent !== false
+      );
+      const completedLearningCount = learningMarkers.filter(
+        (m) => m.completed
+      ).length;
+      
       // 마커의 실제 DOM 위치를 찾아서 가장 가까운 pathPercent 계산
       let initialPathPercent = 0;
       
-      if (targetMarkerConfig) {
+      // 100% 완료 시 게이지바를 100%로 설정
+      if (completedLearningCount >= learningMarkers.length) {
+        initialPathPercent = 1.0; // 100% 완료
+        console.log(
+          `[LearningApp] 초기 진행률: 모든 학습 완료, 게이지바 100%로 설정`
+        );
+      } else if (targetMarkerConfig) {
         // 타겟 마커 찾기 (pathPercent와 label로 비교)
         const targetMarker = this.markerManager.markers.find(
           (m) =>
@@ -89,21 +103,29 @@ class LearningApp {
         );
         
         if (targetMarker && targetMarker.element) {
-          // 마커의 실제 DOM 위치 가져오기
-          const markerLeft = parseFloat(targetMarker.element.style.left) || 0;
-          const markerTop = parseFloat(targetMarker.element.style.top) || 0;
-          
-          // maskPath에서 마커 위치에 가장 가까운 지점 찾기
-          initialPathPercent = this.gauge.findClosestPathPercent(markerLeft, markerTop);
-          
-          console.log(
-            `[LearningApp] 초기 진행률: 마커 실제 위치 (${markerLeft.toFixed(2)}%, ${markerTop.toFixed(2)}%) → pathPercent: ${initialPathPercent.toFixed(4)}`
-          );
+          // gaugePercent가 있으면 우선 사용, 없으면 마커의 실제 DOM 위치 기반으로 계산
+          if (targetMarkerConfig.gaugePercent !== undefined) {
+            initialPathPercent = targetMarkerConfig.gaugePercent;
+            console.log(
+              `[LearningApp] 초기 진행률: gaugePercent 사용: ${(initialPathPercent * 100).toFixed(1)}%`
+            );
+          } else {
+            // 마커의 실제 DOM 위치 가져오기
+            const markerLeft = parseFloat(targetMarker.element.style.left) || 0;
+            const markerTop = parseFloat(targetMarker.element.style.top) || 0;
+            
+            // maskPath에서 마커 위치에 가장 가까운 지점 찾기
+            initialPathPercent = this.gauge.findClosestPathPercent(markerLeft, markerTop);
+            
+            console.log(
+              `[LearningApp] 초기 진행률: 마커 실제 위치 (${markerLeft.toFixed(2)}%, ${markerTop.toFixed(2)}%) → pathPercent: ${initialPathPercent.toFixed(4)}`
+            );
+          }
         } else {
-          // 마커를 찾을 수 없는 경우 pathPercent 직접 사용
-          initialPathPercent = targetMarkerConfig.pathPercent || 0;
+          // 마커를 찾을 수 없는 경우 gaugePercent 우선 사용, 없으면 pathPercent 사용
+          initialPathPercent = targetMarkerConfig.gaugePercent !== undefined ? targetMarkerConfig.gaugePercent : (targetMarkerConfig.pathPercent || 0);
           console.log(
-            `[LearningApp] 초기 진행률: 마커를 찾을 수 없음, pathPercent 직접 사용: ${(initialPathPercent * 100).toFixed(1)}%`
+            `[LearningApp] 초기 진행률: 마커를 찾을 수 없음, ${targetMarkerConfig.gaugePercent !== undefined ? 'gaugePercent' : 'pathPercent'} 직접 사용: ${(initialPathPercent * 100).toFixed(1)}%`
           );
         }
       }

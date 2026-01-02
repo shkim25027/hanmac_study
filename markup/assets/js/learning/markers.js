@@ -433,24 +433,40 @@ class MarkerManager {
         )
       : null;
 
-    if (targetMarker && targetMarker.element) {
-      // 마커의 실제 DOM 위치 가져오기
-      const markerLeft = parseFloat(targetMarker.element.style.left) || 0;
-      const markerTop = parseFloat(targetMarker.element.style.top) || 0;
-      
-      // maskPath에서 마커 위치에 가장 가까운 지점 찾기
-      targetPathPercent = this.gaugeManager.findClosestPathPercent(markerLeft, markerTop);
-      
-      progressPercent = targetPathPercent * 100; // 로그용
+    // 100% 완료 시 게이지바를 100%로 채움
+    if (completedLearningCount >= learningMarkers.length) {
+      targetPathPercent = 1.0; // 100% 완료
+      progressPercent = 100;
       console.log(
-        `[MarkerManager] 마커 실제 위치 기반: (${markerLeft.toFixed(2)}%, ${markerTop.toFixed(2)}%) → pathPercent: ${targetPathPercent.toFixed(4)} (${progressPercent.toFixed(1)}%)`
+        `[MarkerManager] 모든 학습 완료: 게이지바 100%로 설정`
       );
+    } else if (targetMarker && targetMarker.element) {
+      // gaugePercent가 있으면 우선 사용, 없으면 마커의 실제 DOM 위치 기반으로 계산
+      if (targetConfig.gaugePercent !== undefined) {
+        targetPathPercent = targetConfig.gaugePercent;
+        progressPercent = targetPathPercent * 100;
+        console.log(
+          `[MarkerManager] gaugePercent 사용: ${progressPercent.toFixed(1)}%`
+        );
+      } else {
+        // 마커의 실제 DOM 위치 가져오기
+        const markerLeft = parseFloat(targetMarker.element.style.left) || 0;
+        const markerTop = parseFloat(targetMarker.element.style.top) || 0;
+        
+        // maskPath에서 마커 위치에 가장 가까운 지점 찾기
+        targetPathPercent = this.gaugeManager.findClosestPathPercent(markerLeft, markerTop);
+        
+        progressPercent = targetPathPercent * 100; // 로그용
+        console.log(
+          `[MarkerManager] 마커 실제 위치 기반: (${markerLeft.toFixed(2)}%, ${markerTop.toFixed(2)}%) → pathPercent: ${targetPathPercent.toFixed(4)} (${progressPercent.toFixed(1)}%)`
+        );
+      }
     } else if (targetConfig) {
-      // 마커를 찾을 수 없는 경우 pathPercent 직접 사용
-      targetPathPercent = targetConfig.pathPercent || 0;
+      // 마커를 찾을 수 없는 경우 gaugePercent 우선 사용, 없으면 pathPercent 사용
+      targetPathPercent = targetConfig.gaugePercent !== undefined ? targetConfig.gaugePercent : (targetConfig.pathPercent || 0);
       progressPercent = targetPathPercent * 100;
       console.log(
-        `[MarkerManager] 마커를 찾을 수 없음, pathPercent 직접 사용: ${progressPercent.toFixed(1)}%`
+        `[MarkerManager] 마커를 찾을 수 없음, ${targetConfig.gaugePercent !== undefined ? 'gaugePercent' : 'pathPercent'} 직접 사용: ${progressPercent.toFixed(1)}%`
       );
     }
 

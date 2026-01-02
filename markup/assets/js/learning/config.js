@@ -9,11 +9,13 @@ const LEARNING_CONFIG = {
       name: "개인정보보호",
       type: "chapter",
       pathPercent: 0.108,
+      gaugePercent: 0.108, // 게이지 라인 위치 (없으면 pathPercent 사용)
       url: "OXTYn3JkkCQ",
       completed: false, // 하위 lessons가 모두 완료되면 자동으로 true
       lessons: [
         {
           pathPercent: 0.137,
+          gaugePercent: 0.137, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "개인정보보호 1",
           url: "OXTYn3JkkCQ",
@@ -21,6 +23,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.159,
+          gaugePercent: 0.156, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "개인정보보호 2",
           url: "OXTYn3JkkCQ",
@@ -28,6 +31,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.182,
+          gaugePercent: 0.178, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "개인정보보호 3",
           url: "OXTYn3JkkCQ",
@@ -35,6 +39,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.205,
+          gaugePercent: 0.202, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "개인정보보호 4",
           url: "OXTYn3JkkCQ",
@@ -42,6 +47,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.228,
+          gaugePercent: 0.226, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "개인정보보호 5",
           url: "OXTYn3JkkCQ",
@@ -49,6 +55,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.25,
+          gaugePercent: 0.246, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "개인정보보호 6",
           url: "OXTYn3JkkCQ",
@@ -56,6 +63,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.272,
+          gaugePercent: 0.268, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "개인정보보호 7",
           url: "OXTYn3JkkCQ",
@@ -63,6 +71,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.298,
+          gaugePercent: 0.296, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "개인정보보호 8",
           url: "OXTYn3JkkCQ",
@@ -75,11 +84,13 @@ const LEARNING_CONFIG = {
       name: "직장내 괴롭힘 예방",
       type: "chapter",
       pathPercent: 0.325,
+      gaugePercent: 0.325, // 게이지 라인 위치 (없으면 pathPercent 사용)
       url: "OXTYn3JkkCQ",
       completed: false,
       lessons: [
         {
           pathPercent: 0.367,
+          gaugePercent: 0.358, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "직장내 괴롭힘 예방 1",
           url: "OXTYn3JkkCQ",
@@ -87,6 +98,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.41,
+          gaugePercent: 0.40, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "직장내 괴롭힘 예방 2",
           url: "OXTYn3JkkCQ",
@@ -99,11 +111,13 @@ const LEARNING_CONFIG = {
       name: "장애인 인식 개선",
       type: "chapter",
       pathPercent: 0.442,
+      gaugePercent: 0.442, // 게이지 라인 위치 (없으면 pathPercent 사용)
       url: "OXTYn3JkkCQ",
       completed: false,
       lessons: [
         {
           pathPercent: 0.486,
+          gaugePercent: 0.476, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "장애인 인식 개선 1",
           url: "OXTYn3JkkCQ",
@@ -111,6 +125,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.531,
+          gaugePercent: 0.526, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "장애인 인식 개선 2",
           url: "OXTYn3JkkCQ",
@@ -123,11 +138,13 @@ const LEARNING_CONFIG = {
       name: "성희롱 예방 교육",
       type: "chapter",
       pathPercent: 0.555,
+      gaugePercent: 0.555, // 게이지 라인 위치 (없으면 pathPercent 사용)
       url: "OXTYn3JkkCQ",
       completed: false,
       lessons: [
         {
           pathPercent: 0.585,
+          gaugePercent: 0.582, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "성희롱 예방 교육 1", 
           url: "OXTYn3JkkCQ",
@@ -135,6 +152,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.635,
+          gaugePercent: 0.632, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "성희롱 예방 교육 2",
           url: "OXTYn3JkkCQ",
@@ -147,11 +165,13 @@ const LEARNING_CONFIG = {
       name: "산업안전 보건",
       type: "chapter",
       pathPercent: 0.67,
+      gaugePercent: 0.67, // 게이지 라인 위치 (없으면 pathPercent 사용)
       url: "OXTYn3JkkCQ",
       completed: false,
       lessons: [
         {
           pathPercent: 0.69,
+          gaugePercent: 0.686, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "산업안전 보건 1",
           url: "OXTYn3JkkCQ",
@@ -159,6 +179,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.718,
+          gaugePercent: 0.71, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "산업안전 보건 2",
           url: "OXTYn3JkkCQ",
@@ -166,6 +187,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.736,
+          gaugePercent: 0.728, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "산업안전 보건 3",
           url: "OXTYn3JkkCQ",
@@ -173,6 +195,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.785,
+          gaugePercent: 0.778, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "산업안전 보건 4",
           url: "OXTYn3JkkCQ",
@@ -180,6 +203,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.82,
+          gaugePercent: 0.812, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "산업안전 보건 5",
           url: "OXTYn3JkkCQ",
@@ -187,6 +211,7 @@ const LEARNING_CONFIG = {
         },
         {
           pathPercent: 0.86,
+          gaugePercent: 0.85, // 게이지 라인 위치 (없으면 pathPercent 사용)
           type: "normal",
           label: "산업안전 보건 6",
           url: "OXTYn3JkkCQ",
@@ -258,6 +283,7 @@ const LEARNING_CONFIG = {
       // 챕터 자체를 마커로 추가 (시작점 표시용, 클릭 불가)
       markers.push({
         pathPercent: chapter.pathPercent,
+        gaugePercent: chapter.gaugePercent !== undefined ? chapter.gaugePercent : chapter.pathPercent, // gaugePercent가 없으면 pathPercent 사용
         type: chapter.type,
         label: chapter.name,
         url: chapter.url,
@@ -272,6 +298,7 @@ const LEARNING_CONFIG = {
       chapter.lessons.forEach((lesson) => {
         markers.push({
           ...lesson,
+          gaugePercent: lesson.gaugePercent !== undefined ? lesson.gaugePercent : lesson.pathPercent, // gaugePercent가 없으면 pathPercent 사용
           chapterId: chapter.id,
           isChapterMarker: false,
           isLearningContent: true, // 실제 강의

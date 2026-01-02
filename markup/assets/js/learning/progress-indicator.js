@@ -422,39 +422,15 @@ class ProgressIndicator {
             return;
           }
         }
-
-        // maskPath의 현재 stroke-dashoffset을 확인하여 진행률 계산
-        // stroke-dashoffset이 줄어들수록 더 많이 채워짐
-        // 초기값은 pathLength이고, 0에 가까울수록 더 많이 채워짐
-        let currentOffset = parseFloat(maskPath.style.strokeDashoffset);
-        
-        // style에서 가져올 수 없으면 computed style 시도
-        if (isNaN(currentOffset)) {
-          const computedStyle = window.getComputedStyle(maskPath);
-          currentOffset = parseFloat(computedStyle.strokeDashoffset);
-        }
-        
-        if (isNaN(currentOffset) || currentOffset === maskPathLength) {
-          // offset이 없거나 초기 상태면 (0% 채워짐) 숨김
-          this.stateIndicator.style.display = "none";
-          this.animationFrameId = requestAnimationFrame(updatePosition);
-          return;
-        }
         
         // state-indicator 표시
         if (this.stateIndicator.style.display === "none") {
           this.stateIndicator.style.display = "";
         }
 
-        // 채워진 길이 = 전체 길이 - 현재 offset
-        // maskPath는 아래에서 위로 채워지므로, 채워진 길이만큼 시작점부터 이동
-        const filledLength = Math.max(
-          0,
-          Math.min(maskPathLength, maskPathLength - currentOffset)
-        );
-
-        // maskPath 경로상의 해당 위치 계산 (채워진 부분의 끝 지점)
-        const point = maskPath.getPointAtLength(filledLength);
+        // 마커의 pathPercent를 사용하여 위치 계산 (게이지 라인이 아닌 마커 위치)
+        const markerPathPercent = targetLearningMarker.pathPercent || 0;
+        const point = maskPath.getPointAtLength(maskPathLength * markerPathPercent);
 
         const viewBox = this.gaugeSvg.viewBox.baseVal;
 
@@ -525,39 +501,33 @@ class ProgressIndicator {
           top: percentY,
         };
 
-        // transition이 끝날 때까지 계속 업데이트
-        this.animationFrameId = requestAnimationFrame(updatePosition);
-      };
-
-      // transition 시작
-      updatePosition();
-
-      // transition이 끝나면 애니메이션 중지
-      const handleTransitionEnd = () => {
+        // pathPercent 기반이므로 한 번만 업데이트하고 종료
         if (this.animationFrameId) {
           cancelAnimationFrame(this.animationFrameId);
           this.animationFrameId = null;
         }
-        maskPath.removeEventListener("transitionend", handleTransitionEnd);
       };
 
-      maskPath.addEventListener("transitionend", handleTransitionEnd, {
-        once: true,
-      });
+      // 위치 업데이트 실행
+      updatePosition();
     } else {
-      // maskPath가 없으면 마커 위치 사용
-      const markerLeft = parseFloat(targetMarker.style.left) || 0;
-      const markerTop = parseFloat(targetMarker.style.top) || 0;
+      // maskPath가 없으면 pathPercent 기반으로 위치 계산
+      const markerPathPercent = targetLearningMarker.pathPercent || 0;
+      const point = this.gaugeManager.getPointAtPercent(markerPathPercent);
+      const viewBox = this.gaugeSvg.viewBox.baseVal;
+      
+      const percentX = (point.x / viewBox.width) * 100;
+      const percentY = (point.y / viewBox.height) * 100;
 
       this.stateIndicator.style.position = "absolute";
-      this.stateIndicator.style.left = `${markerLeft}%`;
-      this.stateIndicator.style.top = `${markerTop}%`;
+      this.stateIndicator.style.left = `${percentX}%`;
+      this.stateIndicator.style.top = `${percentY}%`;
       this.stateIndicator.style.zIndex = "9";
       this.stateIndicator.style.pointerEvents = "none";
 
       this.lastIndicatorPosition = {
-        left: markerLeft,
-        top: markerTop,
+        left: percentX,
+        top: percentY,
       };
     }
 
