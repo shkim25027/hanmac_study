@@ -154,6 +154,22 @@ const PUZZLE_PIECES = [
   },
 ];
 
+// PUZZLE_PIECES 정의 바로 아래에 추가
+const BOUNDARY_LINES = [
+  // 수직 경계선들 (세로)
+  { x1: 709, y1: 11, x2: 709, y2: 780, label: "vertical-709" },
+  { x1: 1162, y1: 11, x2: 1162, y2: 780, label: "vertical-1162" },
+  { x1: 1615, y1: 268, x2: 1615, y2: 617, label: "vertical-1615" },
+  { x1: 330, y1: 267, x2: 330, y2: 523, label: "vertical-330" },
+  { x1: 256, y1: 11, x2: 256, y2: 267, label: "vertical-256-top" },
+  
+  // 수평 경계선들 (가로)
+  { x1: 709, y1: 268, x2: 1615, y2: 268, label: "horizontal-268" },
+  { x1: 22, y1: 523, x2: 1615, y2: 523, label: "horizontal-523" },
+  { x1: 256, y1: 651.625, x2: 709, y2: 651.625, label: "horizontal-651" },
+  { x1: 256, y1: 267, x2: 330, y2: 267, label: "horizontal-267" },
+];
+
 const BOARD_PATHS = [
   {
     d: "M1866 258C1866 263.523 1861.52 268 1856 268L709 268L709 9.99991C709 4.47706 713.477 -0.000100757 719 -0.000100274L1856 -8.74227e-07C1861.52 -3.91404e-07 1866 4.47715 1866 10L1866 258Z",
@@ -1443,7 +1459,7 @@ class PuzzlePiece {
       className === "piece-base-image" ? "2" :
       className === "piece-all-completed-image" ? "0" :
       className === "piece-completed-image" ? "2" :
-      className === "piece-finish-image" ? "4" : "2";
+      className === "piece-finish-image" ? "2" : "2";
   
     // ✅ 모든 레이어에서 stroke 색상을 #333 (검은색)으로 통일
     const strokeColor = "#000";
@@ -2024,6 +2040,36 @@ class UIElementFactory {
       svg.appendChild(text);
     });
   }
+
+  /**
+ * 퍼즐 조각 경계선 생성
+ */
+static createBoundaryLines(svg) {
+  const boundaryGroup = SVGHelper.createElement("g", {
+    class: "puzzle-boundaries",
+    id: "puzzleBoundaries",
+    style: "pointer-events: none;", // 클릭 이벤트 차단
+  });
+
+  BOUNDARY_LINES.forEach((boundary) => {
+    const line = SVGHelper.createElement("line", {
+      x1: boundary.x1,
+      y1: boundary.y1,
+      x2: boundary.x2,
+      y2: boundary.y2,
+      stroke: "#000000", // 검은색
+      "stroke-width": "2",
+      "stroke-linecap": "butt",
+      "stroke-opacity": "0.8", // 약간 투명하게
+      class: "boundary-line",
+      "data-boundary": boundary.label,
+    });
+
+    boundaryGroup.appendChild(line);
+  });
+
+  svg.appendChild(boundaryGroup);
+}
 }
 
 // ============================================================================
@@ -2665,11 +2711,15 @@ class PuzzleManager {
     this._setupDefs();
     this._createBoardBackground();
     this._createPuzzlePieces();
+    
+    // ✅ 경계선 추가 (타이틀과 버튼 전에 추가하여 아래에 배치)
+    UIElementFactory.createBoundaryLines(this.svg);
+    
     UIElementFactory.createTitles(this.svg);
     this._createPlayButtonsAndGauges();
-
+  
     this.boardElement.appendChild(this.svg);
-
+  
     // 챕터 데이터로 타이틀 업데이트
     this._updateTitlesFromChapters();
     
@@ -2903,15 +2953,22 @@ class PuzzleManager {
 
   _handleAllComplete() {
     this._showCompletionAnimation();
-
+  
     setTimeout(() => {
       this._showRibbonAnimation();
     }, 500);
-
+  
     setTimeout(() => {
       this.boardElement.classList.add("all-completed");
+      
+      // ✅ 경계선 숨기기
+      const boundaries = this.svg.querySelector("#puzzleBoundaries");
+      if (boundaries) {
+        boundaries.style.opacity = "0";
+        boundaries.style.transition = "opacity 0.5s ease";
+      }
     }, 3100);
-
+  
     this._showCelebration();
   }
 
