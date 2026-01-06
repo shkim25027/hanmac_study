@@ -1632,23 +1632,22 @@ class PuzzlePiece {
   }
   
   // ✅ 새로운 메서드: Finish Image 표시 (최종 표시)
-  showFinish() {
-    const baseImg = this.group.querySelector(".piece-base-image");
-    const completedImg = this.group.querySelector(".piece-completed-image");
-    const allCompletedImg = this.group.querySelector(".piece-all-completed-image");
-    const finishImg = this.group.querySelector(".piece-finish-image");
+showFinish() {
+  const baseImg = this.group.querySelector(".piece-base-image");
+  const completedImg = this.group.querySelector(".piece-completed-image");
+  const allCompletedImg = this.group.querySelector(".piece-all-completed-image");
+  const finishImg = this.group.querySelector(".piece-finish-image");
 
-    // COMPLETION_MODE에 관계없이 COMPLETED와 동일하게 all-completed-image 표시 (필터 없음)
-    if (baseImg) baseImg.style.display = "none";
-    if (completedImg) completedImg.style.display = "none";
-    if (finishImg) finishImg.style.display = "none";
+  // 모든 이미지 숨기기
+  if (baseImg) baseImg.style.display = "none";
+  if (completedImg) completedImg.style.display = "none";
+  if (allCompletedImg) allCompletedImg.style.display = "none";
 
-    if (allCompletedImg) {
-      allCompletedImg.style.display = "block";
-      // all-completed-image는 flatLayers에 포함되어 있어서 필터가 적용되지 않음
-    }
+  // ✅ FINISH 이미지 표시 (bg_piece_finish.png - COMPLETED 이미지)
+  if (finishImg) {
+    finishImg.style.display = "block";
   }
-
+}
   // ❌ showAllCompleted는 이제 사용 안 함 (showFinish로 대체)
   showAllCompleted() {
     // 더 이상 사용하지 않음 - showFinish로 대체
@@ -3147,9 +3146,11 @@ class PuzzleManager {
       animationContainer.remove();
 
       // ✅ 애니메이션 후 Finish Image 표시
+      console.log('[PuzzleManager] 애니메이션 종료 - showFinish 호출 시작');
       this.pieces.forEach((piece) => {
         piece.showFinish();  // ✅ showAllCompleted → showFinish 변경
       });
+      console.log('[PuzzleManager] 애니메이션 종료 - showFinish 호출 완료');
     }, 3500);
   }
 
