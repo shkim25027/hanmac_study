@@ -166,7 +166,6 @@ const BOUNDARY_LINES = [
   // 수평 경계선들 (가로)
   { x1: 709, y1: 268, x2: 1615, y2: 268, label: "horizontal-268" },
   { x1: 22, y1: 523, x2: 1615, y2: 523, label: "horizontal-523" },
-  { x1: 256, y1: 651.625, x2: 709, y2: 651.625, label: "horizontal-651" },
   { x1: 256, y1: 267, x2: 330, y2: 267, label: "horizontal-267" },
 ];
 
