@@ -12,8 +12,9 @@ class GaugeManager {
    * 진행률 설정
    * @param {number} percent - 진행률 (0-100) 또는 pathPercent (0-1)
    * @param {boolean} isPathPercent - percent가 pathPercent인지 여부 (기본값: false)
+   * @param {boolean} animate - 애니메이션 적용 여부 (기본값: true)
    */
-  setProgress(percent, isPathPercent = false) {
+  setProgress(percent, isPathPercent = false, animate = true) {
     if (!this.maskPath) {
       console.warn("[GaugeManager] maskPath를 찾을 수 없습니다");
       return;
@@ -38,21 +39,42 @@ class GaugeManager {
     const targetLength = this.pathLength * targetPathPercent;
     const targetOffset = this.pathLength - targetLength;
     
+    // 애니메이션 처리
+    if (animate) {
+      // 애니메이션을 위한 transition 추가
+      if (!this.maskPath.style.transition) {
+        this.maskPath.style.transition = "stroke-dashoffset 0.8s ease-out";
+      }
+    } else {
+      // 초기 로딩 시 애니메이션 없이 즉시 적용
+      // transition을 먼저 none으로 설정하여 이전 애니메이션 방지
+      this.maskPath.style.transition = "none";
+      
+      // 강제로 레이아웃 계산하여 transition 변경사항 즉시 적용
+      void this.maskPath.offsetHeight;
+    }
+    
     // stroke-dasharray를 pathLength로 설정하여 gap이 없도록 함
     // [dash, gap] 형태에서 gap을 0으로 설정하면 연속된 선이 됨
     // setAttribute를 사용하여 인라인 스타일을 확실하게 덮어쓰기
     this.maskPath.setAttribute('stroke-dasharray', `${this.pathLength} 0`);
     
-    // 애니메이션을 위한 transition 추가 (처음 한 번만)
-    if (!this.maskPath.style.transition) {
-      this.maskPath.style.transition = "stroke-dashoffset 0.8s ease-out";
-    }
-    
-    // offset 업데이트 (transition으로 자연스럽게 애니메이션됨)
+    // offset 업데이트
     this.maskPath.style.strokeDashoffset = targetOffset;
     
+    // 애니메이션 비활성화 후 다음 업데이트를 위해 transition 복원
+    if (!animate) {
+      // 강제로 레이아웃 계산하여 값 변경사항 즉시 적용
+      void this.maskPath.offsetHeight;
+      
+      // 다음 프레임에서 transition 복원 (현재 변경사항 적용 후)
+      requestAnimationFrame(() => {
+        this.maskPath.style.transition = "stroke-dashoffset 0.8s ease-out";
+      });
+    }
+    
     console.log(
-      `[GaugeManager] setProgress: pathPercent=${targetPathPercent.toFixed(4)}, targetOffset=${targetOffset.toFixed(2)}, pathLength=${this.pathLength.toFixed(2)}`
+      `[GaugeManager] setProgress: pathPercent=${targetPathPercent.toFixed(4)}, targetOffset=${targetOffset.toFixed(2)}, pathLength=${this.pathLength.toFixed(2)}, animate=${animate}`
     );
   }
 

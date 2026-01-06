@@ -130,8 +130,8 @@ class LearningApp {
         }
       }
       
-      // 마커 실제 위치에 가장 가까운 pathPercent를 사용하여 채움
-      this.gauge.setProgress(initialPathPercent, true);
+      // 마커 실제 위치에 가장 가까운 pathPercent를 사용하여 채움 (초기 로딩 시 애니메이션 없음)
+      this.gauge.setProgress(initialPathPercent, true, false);
 
       // 진행률 표시 업데이트
       this.progressIndicator.updateProgress(this.markerManager.allMarkers);
