@@ -1,0 +1,531 @@
+@charset "UTF-8";
+
+@use "base" as *;
+
+// =======================================
+// Learning Objectives Page Styles
+// =======================================
+
+.study {
+  .study-container {
+    display: flex;
+    gap: 40px;
+    margin: 0 auto;
+    padding: 40px 60px;
+    position: relative;
+    background: linear-gradient(180deg, #F9F6F0 0%, #E6DDCC 100%);
+
+    &::before {
+      @include pseudo(block, absolute, " ");
+      top: 0;
+      right: 0;
+      width: 30.8333%;
+      padding-top: 90.54054%;
+      @include bgImg("../images/myclass/bg_lo.png", contain, 0 0);
+      pointer-events: none;
+      z-index: 0;
+      mix-blend-mode: multiply;
+    }
+  }
+  .page-title {
+    margin-bottom: 72px;
+  }
+
+  // =======================================
+  // Left Sidebar
+  // =======================================
+  .study-sidebar {
+    flex-shrink: 0;
+    width: 380px;
+    position: sticky;
+    top: 40px;
+    height: fit-content;
+    z-index: 1;
+
+    .sidebar-content {
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 20px;
+      padding: 32px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    // 사용자 순위 정보
+    .user-rank-info {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+      .rank-header {
+        @include flex(row, flex-start, center);
+        gap: 12px;
+
+        .ico-trophy {
+          @include svgIcon("../images/ico/ico_trophy.svg", 32px);
+          flex-shrink: 0;
+        }
+
+        .rank-text {
+          font-size: 16px;
+          line-height: 1.5;
+          color: var(--text-base);
+
+          strong {
+            font-weight: 700;
+            color: var(--text-primary);
+          }
+
+          em {
+            font-style: normal;
+            font-weight: 700;
+            color: var(--text-accent);
+            margin: 0 4px;
+          }
+
+          small {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 400;
+          }
+        }
+      }
+    }
+
+    // 분기 선택
+    .quarter-selector {
+      margin-bottom: 32px;
+
+      .year-select {
+        margin-bottom: 12px;
+
+        .btn-year {
+          width: 100%;
+          padding: 12px 16px;
+          background: #fff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--text-primary);
+          cursor: pointer;
+          @include flex(row, space-between, center);
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: #f5f5f5;
+            border-color: rgba(0, 0, 0, 0.2);
+          }
+
+          .ico-arrow-down {
+            @include svgIcon("../images/ico/ico_arrow_down.svg", 16px);
+          }
+        }
+      }
+
+      .quarter-select {
+        .btn-quarter {
+          width: 100%;
+          padding: 12px 16px;
+          background: #fff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--text-secondary);
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &.active {
+            background: var(--text-accent);
+            color: #fff;
+            border-color: var(--text-accent);
+          }
+
+          &:hover:not(.active) {
+            background: #f5f5f5;
+            border-color: rgba(0, 0, 0, 0.2);
+          }
+        }
+      }
+    }
+
+    // 학습 목표
+    .learning-goal {
+      .goal-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        line-height: 1.4;
+
+        .emoji {
+          font-style: normal;
+          margin-left: 4px;
+        }
+      }
+
+      .goal-description {
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+      }
+
+      .btn-change-goal {
+        width: 100%;
+        padding: 12px 20px;
+        background: var(--text-accent);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #e55000;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(255, 92, 0, 0.3);
+        }
+      }
+    }
+  }
+
+  // =======================================
+  // Main Content Area
+  // =======================================
+  .study-main {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+
+    // 헤더 영역
+    .study-header {
+      margin-bottom: 40px;
+
+      .study-title {
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.4;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+
+        em {
+          font-style: normal;
+          color: var(--text-accent);
+        }
+      }
+
+      .study-countdown {
+        font-size: 18px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+
+        small {
+          font-size: 16px;
+          color: var(--text-base);
+        }
+      }
+    }
+
+    // 학습 모듈 그리드
+    .study-modules {
+      margin-bottom: 40px;
+
+      .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 32px 24px;
+      }
+    }
+
+    // 모듈 카드
+    .module-card {
+      position: relative;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      &:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+
+        .card-thumbnail {
+          img {
+            transform: scale(1.05);
+          }
+        }
+      }
+
+      // 카드별 색상 테두리
+      &.card-color-teal {
+        border-top: 4px solid #4db6ac; // teal
+      }
+
+      &.card-color-pink {
+        border-top: 4px solid #f48fb1; // pink
+      }
+
+      &.card-color-blue {
+        border-top: 4px solid #81d4fa; // light blue
+      }
+
+      &.card-color-yellow {
+        border-top: 4px solid #ffeb3b; // yellow
+      }
+
+      &.card-color-green {
+        border-top: 4px solid #a5d6a7; // light green
+      }
+
+      &.card-color-beige {
+        border-top: 4px solid #d7ccc8; // beige
+      }
+
+      .card-thumbnail {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        background: #f5f5f5;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+      }
+
+      .card-content {
+        padding: 20px 24px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .card-category {
+          display: inline-block;
+          font-size: 12px;
+          font-weight: 600;
+          color: var(--text-secondary);
+          margin-bottom: 8px;
+          padding: 4px 12px;
+          background: rgba(0, 0, 0, 0.04);
+          border-radius: 12px;
+        }
+
+        .card-title {
+          font-size: 20px;
+          font-weight: 700;
+          line-height: 1.4;
+          color: var(--text-primary);
+          margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+          font-size: 14px;
+          line-height: 1.5;
+          color: var(--text-base);
+          margin-bottom: 8px;
+          font-weight: 500;
+        }
+
+        .card-description {
+          font-size: 13px;
+          line-height: 1.5;
+          color: var(--text-secondary);
+          margin-bottom: 16px;
+        }
+
+        // CHECK! 섹션
+        .card-check {
+          margin-top: auto;
+          padding-top: 16px;
+          border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+          .check-title {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-accent);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .check-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+
+            li {
+              position: relative;
+              padding-left: 20px;
+              font-size: 12px;
+              line-height: 1.6;
+              color: var(--text-secondary);
+              margin-bottom: 6px;
+
+              &:last-child {
+                margin-bottom: 0;
+              }
+
+              &::before {
+                content: "•";
+                position: absolute;
+                left: 0;
+                color: var(--text-accent);
+                font-weight: 700;
+                font-size: 16px;
+                line-height: 1.2;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 하단 태그 필터
+    .study-tags {
+      @include flex(row, flex-start, center);
+      gap: 16px;
+      padding: 20px 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+
+      .tag-quarter {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        padding: 8px 16px;
+        background: rgba(255, 92, 0, 0.1);
+        border-radius: 12px;
+      }
+
+      .tag-list {
+        @include flex(row, flex-start, center);
+        gap: 12px;
+        flex-wrap: wrap;
+
+        .tag-item {
+          padding: 8px 20px;
+          background: #fff;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--text-secondary);
+          cursor: pointer;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: #f5f5f5;
+            border-color: rgba(0, 0, 0, 0.2);
+          }
+
+          &.active {
+            background: var(--text-accent);
+            color: #fff;
+            border-color: var(--text-accent);
+          }
+        }
+      }
+    }
+  }
+}
+
+// =======================================
+// Responsive Design
+// =======================================
+@media (max-width: 1400px) {
+  .study {
+    .study-container {
+      padding: 32px 40px;
+      gap: 32px;
+    }
+
+    .study-sidebar {
+      width: 320px;
+    }
+
+    .study-main {
+      .modules-grid {
+        gap: 24px 20px;
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .study {
+    .study-container {
+      flex-direction: column;
+      padding: 24px 32px;
+    }
+
+    .study-sidebar {
+      width: 100%;
+      position: relative;
+      top: 0;
+
+      .sidebar-content {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+
+      .user-rank-info,
+      .quarter-selector,
+      .learning-goal {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+    }
+
+    .study-main {
+      .modules-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .study {
+    .study-container {
+      padding: 20px 24px;
+    }
+
+    .study-sidebar {
+      .sidebar-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+
+    .study-main {
+      .study-header {
+        .study-title {
+          font-size: 24px;
+        }
+
+        .study-countdown {
+          font-size: 16px;
+        }
+      }
+
+      .modules-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+  }
+}
+

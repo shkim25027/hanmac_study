@@ -15,8 +15,32 @@ function initializeIntroPage() {
   // 이벤트 리스너 등록
   initEventListeners();
 
-  // 타이핑 애니메이션 시작
-  setTimeout(typeName, 800);
+  // typedIndex 초기화 및 typedName 요소 초기화
+  if (typeof INTRO_STATE !== 'undefined') {
+    INTRO_STATE.typedIndex = 0;
+  }
+  const typedNameEl = document.getElementById("typedName");
+  if (typedNameEl) {
+    typedNameEl.textContent = "";
+  }
+  const cursorEl = document.getElementById("cursor");
+  if (cursorEl) {
+    cursorEl.style.opacity = "1";
+  }
+
+  // 타이핑 애니메이션 시작 (INTRO_CONFIG가 준비된 후)
+  setTimeout(() => {
+    if (typeof INTRO_CONFIG !== 'undefined' && typeof INTRO_STATE !== 'undefined' && INTRO_CONFIG.fullName) {
+      // text-ani 섹션 표시 (CSS에서 display: none이므로 animating 클래스 추가)
+      const textAniSection = document.querySelector('.text-ani');
+      if (textAniSection) {
+        textAniSection.classList.add('animating');
+      }
+      
+      INTRO_STATE.typedIndex = 0;
+      typeName();
+    }
+  }, 800);
 }
 
 // DOM이 로드되면 초기화 실행
@@ -48,6 +72,12 @@ function restartIntroWithName(name) {
   document.getElementById("typedName").textContent = "";
   document.getElementById("cursor").style.opacity = "1";
   document.getElementById("welcome").innerHTML = "";
+
+  // text-ani 섹션 표시
+  const textAniSection = document.querySelector('.text-ani');
+  if (textAniSection) {
+    textAniSection.classList.add('animating');
+  }
 
   // 섹션 1로 이동
   goToSection(0);

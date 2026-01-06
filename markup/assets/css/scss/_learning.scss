@@ -113,48 +113,6 @@ $chapter-widths: (
   }
 }
 
-// =======================================
-// Page Title Styles
-// =======================================
-.lessons,
-.onboarding {
-  .page-title {
-    padding-top: 74px;
-    text-align: center;
-
-    p {
-      font-size: 40px;
-      font-weight: 400;
-
-      &.fw-b {
-        font-weight: 700;
-      }
-
-      em {
-        font-weight: 700;
-        color: var(--text-title-accent);
-      }
-
-      small {
-        font-size: 32px;
-        font-weight: 400;
-      }
-    }
-
-    h3 {
-      font-size: 32px;
-      font-weight: 300;
-
-      span {
-        font-weight: 400;
-      }
-
-      em {
-        font-weight: 500;
-      }
-    }
-  }
-}
 
 // =======================================
 // Onboarding Styles

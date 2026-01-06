@@ -7,13 +7,34 @@
  * Section 1: 이름 타이핑 애니메이션
  */
 function typeName() {
+  // 안전성 검사
+  if (typeof INTRO_CONFIG === 'undefined' || typeof INTRO_STATE === 'undefined') {
+    console.error('INTRO_CONFIG or INTRO_STATE is not defined');
+    return;
+  }
+
+  const typedNameEl = document.getElementById("typedName");
+  const cursorEl = document.getElementById("cursor");
+  
+  if (!typedNameEl) {
+    console.error('typedName element not found');
+    return;
+  }
+
+  if (!INTRO_CONFIG.fullName || INTRO_CONFIG.fullName.length === 0) {
+    console.error('INTRO_CONFIG.fullName is empty');
+    return;
+  }
+
   if (INTRO_STATE.typedIndex < INTRO_CONFIG.fullName.length) {
-    document.getElementById("typedName").textContent =
-      INTRO_CONFIG.fullName.slice(0, INTRO_STATE.typedIndex + 1);
+    const currentText = INTRO_CONFIG.fullName.slice(0, INTRO_STATE.typedIndex + 1);
+    typedNameEl.textContent = currentText;
     INTRO_STATE.typedIndex++;
     setTimeout(typeName, INTRO_CONFIG.typingSpeed);
   } else {
-    document.getElementById("cursor").style.opacity = "0";
+    if (cursorEl) {
+      cursorEl.style.opacity = "0";
+    }
     setTimeout(animateWelcome, 600);
   }
 }
