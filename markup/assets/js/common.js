@@ -126,7 +126,35 @@ function initContainerScrollEffect() {
 // DOMContentLoaded 시 초기화
 document.addEventListener("DOMContentLoaded", () => {
  // initContainerScrollEffect();
+ 
+ // 현재 페이지에 따라 네비게이션 active 클래스 추가
+ setActiveNavigation();
 });
+
+// 현재 페이지에 따라 네비게이션 active 클래스 설정
+function setActiveNavigation() {
+  const currentPath = window.location.pathname;
+  const navItems = document.querySelectorAll('.nav-group .depth01 > li');
+  
+  navItems.forEach((li) => {
+    const link = li.querySelector('a');
+    if (!link) return;
+    
+    const href = link.getAttribute('href');
+    if (!href) return;
+    
+    // 현재 경로와 링크의 href를 비교
+    // onboarding.html이 포함되어 있으면 active 클래스 추가
+    if (currentPath.includes('onboarding.html') && href.includes('onboarding.html')) {
+      li.classList.add('active');
+    } else if (currentPath.includes('learning.html') && href.includes('learning.html')) {
+      li.classList.add('active');
+    } else {
+      // 다른 페이지에서는 active 제거 (필요한 경우)
+      li.classList.remove('active');
+    }
+  });
+}
 
 function includehtml() {
   var allElements = document.querySelectorAll("[data-include-path]");

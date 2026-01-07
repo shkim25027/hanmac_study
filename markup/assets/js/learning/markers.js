@@ -29,19 +29,26 @@ class MarkerManager {
     const startLineImg = document.querySelector(".start-line img");
     if (!startLineImg) return;
 
-    // 완료된 학습이 1개 이상 있으면 on, 없으면 off
-    const hasCompletedLessons = this.allMarkers.some(
-      (marker) => marker.completed
+    // 실제 강의만 카운트 (챕터 제외)
+    const learningMarkers = this.allMarkers.filter(
+      (m) => m.isLearningContent !== false
     );
-    const imagePath = hasCompletedLessons
+    const completedCount = learningMarkers.filter((m) => m.completed).length;
+    const allCompleted = completedCount >= learningMarkers.length;
+
+    // 완료된 학습이 1개 이상 있고, 모든 학습이 완료되지 않았으면 on
+    // 완료된 학습이 없거나, 모든 학습이 완료되었으면 off
+    const hasCompletedLessons = completedCount > 0;
+    const shouldShowOn = hasCompletedLessons && !allCompleted;
+    
+    const imagePath = shouldShowOn
       ? "./assets/images/learning/img_start_on.svg"
       : "./assets/images/learning/img_start_off.svg";
 
     startLineImg.src = imagePath;
 
-    const completedCount = this.allMarkers.filter((m) => m.completed).length;
     console.log(
-      `[MarkerManager] Start-line 상태: ${hasCompletedLessons ? "ON" : "OFF"} (완료된 학습 ${completedCount}/${this.allMarkers.length}개)`
+      `[MarkerManager] Start-line 상태: ${shouldShowOn ? "ON" : "OFF"} (완료된 학습 ${completedCount}/${learningMarkers.length}개, 전체 완료: ${allCompleted})`
     );
   }
 

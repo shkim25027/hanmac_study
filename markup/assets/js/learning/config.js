@@ -223,7 +223,7 @@ const LEARNING_CONFIG = {
 
   // 평균 학습량 설정 (전체 학습 항목 대비 %)
   averageProgress: {
-    threshold: 60, // 평균 학습량: 전체의 70% 
+    threshold: 60, // 평균 학습량: 전체의 60% 
   }, 
 
   // 마커 이미지 경로
