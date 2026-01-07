@@ -1757,23 +1757,20 @@ class GaugeManager {
     bgLine.style.mixBlendMode = "multiply";
     gaugeGroup.appendChild(bgLine);
 
-    const fillLine = SVGHelper.createElement("line", {
-      x1: gaugeX,
-      y1: gaugeY + CONFIG.GAUGE.HEIGHT / 2,
-      x2: gaugeX + fillWidth,
-      y2: gaugeY + CONFIG.GAUGE.HEIGHT / 2,
-      stroke: CONFIG.GAUGE.FILL_COLOR,
-      "stroke-width": CONFIG.GAUGE.HEIGHT,
-      "stroke-linecap": "round",
+    const fillLine = SVGHelper.createElement("rect", {
+      x: gaugeX,
+      y: gaugeY,
+      width: 0,
+      height: CONFIG.GAUGE.HEIGHT,
+      rx: CONFIG.GAUGE.RADIUS,
+      fill: CONFIG.GAUGE.FILL_COLOR,
       class: "gauge-fill-line",
       filter: "url(#gauge-fill-inner-shadow)",
       "data-gauge-length": Math.round(fillWidth), // 반올림하여 정수로 저장
       "data-original-x1": gaugeX, // 원본 시작점 저장
     });
 
-    fillLine.style.strokeDasharray = `${fillWidth}`;
-    fillLine.style.strokeDashoffset = `${fillWidth}`;
-    fillLine.style.transition = "stroke-dashoffset 0.6s ease-out";
+    fillLine.style.transition = "width 0.6s ease-out";
 
     gaugeGroup.appendChild(fillLine);
     svg.appendChild(gaugeGroup);
@@ -1812,14 +1809,11 @@ class GaugeManager {
     // 중앙 정렬 유지: 원본 중앙에서 조정된 길이의 절반씩 빼고 더함
     const originalX2 = originalX1 + originalLength;
     const originalCenterX = (originalX1 + originalX2) / 2;
-    const newX1 = originalCenterX - (adjustedLength / 2);
-    const newX2 = originalCenterX + (adjustedLength / 2);
+    const newX = originalCenterX - (adjustedLength / 2);
 
     // 게이지 길이 및 위치 업데이트
     fillLine.setAttribute("data-gauge-length", Math.round(adjustedLength)); // 반올림하여 정수로 저장
-    fillLine.setAttribute("x1", newX1);
-    fillLine.setAttribute("x2", newX2);
-    fillLine.style.strokeDasharray = `${adjustedLength}`;
+    fillLine.setAttribute("x", newX);
 
     // 배경 라인도 조정 (중앙 정렬 유지)
     if (bgLine) {
@@ -1850,10 +1844,10 @@ class GaugeManager {
       }
     }
 
-    const offset = adjustedLength * (1 - progress / 100);
+    const newWidth = adjustedLength * (progress / 100);
 
     requestAnimationFrame(() => {
-      fillLine.style.strokeDashoffset = `${offset}`;
+      fillLine.style.width = `${newWidth}px`;
     });
   }
 }
