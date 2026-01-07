@@ -579,25 +579,30 @@ class VideoModal {
    */
   _initializeHeightAdjustment() {
     // 1단계: 즉시 시도
+    this._adjustModalContentHeight();
     this._adjustLearningListHeight();
 
     // 2단계: 다음 프레임에서 시도
     requestAnimationFrame(() => {
+      this._adjustModalContentHeight();
       this._adjustLearningListHeight();
     });
 
     // 3단계: 50ms 후 시도
     setTimeout(() => {
+      this._adjustModalContentHeight();
       this._adjustLearningListHeight();
     }, 50);
 
     // 4단계: 100ms 후 시도
     setTimeout(() => {
+      this._adjustModalContentHeight();
       this._adjustLearningListHeight();
     }, 100);
 
     // 5단계: 200ms 후 시도
     setTimeout(() => {
+      this._adjustModalContentHeight();
       this._adjustLearningListHeight();
     }, 200);
 
@@ -609,6 +614,53 @@ class VideoModal {
 
     // 8단계: 이미지 로딩 대기
     this._waitForImagesAndAdjust();
+  }
+
+  /**
+   * 모달 컨텐츠 높이 조정
+   * 높이가 화면 높이의 80% 이상일 때만 조절하고, 아닐 경우 80%로 유지
+   * @private
+   */
+  _adjustModalContentHeight() {
+    const modalContent = this.currentModal?.querySelector(".modal-content");
+    if (!modalContent) {
+      console.warn("modal-content 요소를 찾을 수 없습니다");
+      return;
+    }
+
+    // 화면 높이의 80% 계산
+    const viewportHeight = window.innerHeight;
+    const maxHeight = viewportHeight * 0.8;
+
+    // 현재 모달 컨텐츠의 실제 높이 (스타일이 적용되기 전의 자연스러운 높이)
+    // 높이 스타일을 임시로 제거하여 실제 컨텐츠 높이 측정
+    const originalHeight = modalContent.style.height;
+    const originalMaxHeight = modalContent.style.maxHeight;
+    modalContent.style.height = "auto";
+    modalContent.style.maxHeight = "none";
+    const actualHeight = modalContent.scrollHeight;
+    modalContent.style.height = originalHeight;
+    modalContent.style.maxHeight = originalMaxHeight;
+
+    // 실제 높이가 80% 이상이면 조절하지 않고 그대로 유지, 그렇지 않으면 80%로 설정
+    if (actualHeight >= maxHeight) {
+      // 80% 이상이면 높이를 조절하지 않음 (스타일 제거하여 자연스러운 높이 유지)
+      modalContent.style.height = "auto";
+      modalContent.style.maxHeight = maxHeight + "px";
+      modalContent.style.overflowY = "auto";
+    } else {
+      // 80% 미만이면 80%로 설정
+      modalContent.style.height = maxHeight + "px";
+      modalContent.style.maxHeight = maxHeight + "px";
+      modalContent.style.overflowY = "auto";
+    }
+
+    console.log("모달 컨텐츠 높이 조정:", {
+      viewportHeight,
+      maxHeight,
+      actualHeight,
+      finalHeight: modalContent.style.height,
+    });
   }
 
   /**
@@ -693,6 +745,7 @@ class VideoModal {
   _setupResizeObserver() {
     const videoSide = this.currentModal?.querySelector(".video-side");
     const gaugeWrap = this.currentModal?.querySelector(".gauge-wrap");
+    const modalContent = this.currentModal?.querySelector(".modal-content");
 
     if (!videoSide) return;
 
@@ -706,6 +759,7 @@ class VideoModal {
       clearTimeout(this.heightAdjustTimer);
       this.heightAdjustTimer = setTimeout(() => {
         console.log("ResizeObserver 감지: 높이 재조정");
+        this._adjustModalContentHeight();
         this._adjustLearningListHeight();
       }, 50);
     });
@@ -714,6 +768,20 @@ class VideoModal {
     if (gaugeWrap) {
       this.resizeObserver.observe(gaugeWrap);
     }
+    if (modalContent) {
+      this.resizeObserver.observe(modalContent);
+    }
+
+    // window resize 이벤트도 감지
+    this._windowResizeHandler = () => {
+      clearTimeout(this.heightAdjustTimer);
+      this.heightAdjustTimer = setTimeout(() => {
+        console.log("Window resize 감지: 높이 재조정");
+        this._adjustModalContentHeight();
+        this._adjustLearningListHeight();
+      }, 50);
+    };
+    window.addEventListener("resize", this._windowResizeHandler);
   }
 
   /**
@@ -735,6 +803,7 @@ class VideoModal {
       clearTimeout(this.heightAdjustTimer);
       this.heightAdjustTimer = setTimeout(() => {
         console.log("MutationObserver 감지: 높이 재조정");
+        this._adjustModalContentHeight();
         this._adjustLearningListHeight();
       }, 50);
     });
@@ -785,6 +854,7 @@ class VideoModal {
     await Promise.all(imagePromises);
 
     console.log("모든 이미지 로딩 완료: 높이 재조정");
+    this._adjustModalContentHeight();
     this._adjustLearningListHeight();
 
     // 이미지 로딩 후 다시 스크롤 (높이가 변경될 수 있으므로)
@@ -915,6 +985,12 @@ class VideoModal {
       if (this.heightAdjustTimer) {
         clearTimeout(this.heightAdjustTimer);
         this.heightAdjustTimer = null;
+      }
+
+      // window resize 이벤트 리스너 제거
+      if (this._windowResizeHandler) {
+        window.removeEventListener("resize", this._windowResizeHandler);
+        this._windowResizeHandler = null;
       }
 
       // 재시도 카운터 초기화
