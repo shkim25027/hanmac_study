@@ -502,11 +502,52 @@ class MarkerManager {
   }
 
   /**
+   * 수강완료 시 page-title 업데이트
+   * @private
+   */
+  _updatePageTitleOnCompletion() {
+    const pageTitle = document.querySelector(".page-title");
+    if (!pageTitle) return;
+
+    // 현재 이름 추출 (h3 em 태그에서)
+    const h3 = pageTitle.querySelector("h3");
+    const em = h3?.querySelector("em");
+    let userName = "";
+    
+    if (em) {
+      // "님" 제거하여 이름만 추출
+      userName = em.textContent.replace(/님$/, "").trim();
+    }
+
+    // h3 업데이트
+    if (h3) {
+      h3.innerHTML = `
+        <span><em>${userName}</em>님,</span> 수고하셨습니다.
+      `;
+    }
+
+    // p 태그 업데이트
+    const p = pageTitle.querySelector("p");
+    if (p) {
+      const currentYear = new Date().getFullYear();
+      p.innerHTML = `
+        <em>${currentYear}년 법정의무교육</em> 시청을
+        완료하셨습니다.
+      `;
+    }
+
+    console.log("[MarkerManager] page-title 업데이트 완료");
+  }
+
+  /**
    * 학습 완료 배경 표시
    * @private
    */
   _showCompletionAnimation() {
     console.log("[MarkerManager] 🎉 모든 학습 완료! 완료 배경 표시");
+
+    // page-title 업데이트
+    this._updatePageTitleOnCompletion();
 
     // 기존 완료 배경이 있으면 제거
     const existingBg = document.querySelector(".completion-background");
@@ -693,6 +734,9 @@ class MarkerManager {
    */
   _showCompletionBackgroundStatic() {
     console.log("[MarkerManager] 학습 완료 상태 - 배경 표시");
+
+    // page-title 업데이트
+    this._updatePageTitleOnCompletion();
 
     // 기존 완료 배경이 있으면 제거
     const existingBg = document.querySelector(".completion-background");
