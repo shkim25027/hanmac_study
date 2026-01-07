@@ -14,6 +14,7 @@ class VideoModal {
     this.mutationObserver = null;
     this.heightAdjustTimer = null;
     this._retryCount = 0;
+    this._isAdjustingHeight = false; // 높이 조정 중 플래그
 
     this._setupKeyboardEvents();
   }
@@ -499,13 +500,21 @@ class VideoModal {
    * @private
    */
   _show(modalElement) {
+    // 모달을 먼저 숨긴 상태로 표시 (높이 조정이 보이지 않도록)
+    modalElement.style.display = "block";
+    modalElement.style.visibility = "hidden";
+    modalElement.style.opacity = "0";
+    
     setTimeout(() => {
-      modalElement.style.display = "block";
-      setTimeout(() => {
-        this._setupCloseEvents(modalElement);
-        this._initializeHeightAdjustment(); // 높이 조정 초기화
+      this._setupCloseEvents(modalElement);
+      // 높이 조정 완료 후 모달 표시
+      this._initializeHeightAdjustment(() => {
+        // 높이 조정 완료 후 모달을 보이게 함
+        modalElement.style.visibility = "visible";
+        modalElement.style.opacity = "1";
+        modalElement.style.transition = "opacity 0.3s ease";
         this._scrollToCurrentLesson(); // 현재 학습으로 스크롤
-      }, 100);
+      });
     }, 50);
   }
 
@@ -576,8 +585,9 @@ class VideoModal {
   /**
    * 높이 조정 초기화
    * @private
+   * @param {Function} onComplete - 높이 조정 완료 후 실행할 콜백
    */
-  _initializeHeightAdjustment() {
+  _initializeHeightAdjustment(onComplete) {
     // 1단계: 즉시 시도
     this._adjustModalContentHeight();
     this._adjustLearningListHeight();
@@ -600,10 +610,15 @@ class VideoModal {
       this._adjustLearningListHeight();
     }, 100);
 
-    // 5단계: 200ms 후 시도
+    // 5단계: 200ms 후 시도 (높이 조정 완료로 간주)
     setTimeout(() => {
       this._adjustModalContentHeight();
       this._adjustLearningListHeight();
+      
+      // 높이 조정 완료 콜백 실행
+      if (onComplete && typeof onComplete === 'function') {
+        onComplete();
+      }
     }, 200);
 
     // 6단계: ResizeObserver 설정
@@ -612,7 +627,7 @@ class VideoModal {
     // 7단계: MutationObserver 설정
     this._setupMutationObserver();
 
-    // 8단계: 이미지 로딩 대기
+    // 8단계: 이미지 로딩 대기 (이미지 로딩 후에도 높이 재조정)
     this._waitForImagesAndAdjust();
   }
 
@@ -635,23 +650,18 @@ class VideoModal {
     // 현재 모달 컨텐츠의 실제 높이 (스타일이 적용되기 전의 자연스러운 높이)
     // 높이 스타일을 임시로 제거하여 실제 컨텐츠 높이 측정
     const originalHeight = modalContent.style.height;
-    const originalMaxHeight = modalContent.style.maxHeight;
     modalContent.style.height = "auto";
-    modalContent.style.maxHeight = "none";
     const actualHeight = modalContent.scrollHeight;
     modalContent.style.height = originalHeight;
-    modalContent.style.maxHeight = originalMaxHeight;
 
     // 실제 높이가 80% 이상이면 조절하지 않고 그대로 유지, 그렇지 않으면 80%로 설정
     if (actualHeight >= maxHeight) {
       // 80% 이상이면 높이를 조절하지 않음 (스타일 제거하여 자연스러운 높이 유지)
       modalContent.style.height = "auto";
-      modalContent.style.maxHeight = maxHeight + "px";
       modalContent.style.overflowY = "auto";
     } else {
       // 80% 미만이면 80%로 설정
       modalContent.style.height = maxHeight + "px";
-      modalContent.style.maxHeight = maxHeight + "px";
       modalContent.style.overflowY = "auto";
     }
 
@@ -675,8 +685,15 @@ class VideoModal {
 
     if (!videoSide || !videoHeader || !learningList) {
       console.warn("필요한 요소를 찾을 수 없습니다");
+      this._isAdjustingHeight = false; // 실패 시 플래그 해제
       return;
     }
+
+    // 높이 조정 중 플래그 설정
+    this._isAdjustingHeight = true;
+
+    // 스크롤 위치 저장
+    const savedScrollTop = learningList.scrollTop;
 
     // 전체 높이
     const totalHeight = videoSide.clientHeight;
@@ -690,10 +707,12 @@ class VideoModal {
       // 최대 3번까지만 재시도
       if (this._retryCount < 3) {
         this._retryCount++;
+        this._isAdjustingHeight = false; // 재시도 전 플래그 해제
         setTimeout(() => this._adjustLearningListHeight(), 100);
       } else {
         console.error("높이 측정 재시도 횟수 초과");
         this._retryCount = 0;
+        this._isAdjustingHeight = false; // 실패 시 플래그 해제
       }
       return;
     }
@@ -711,17 +730,45 @@ class VideoModal {
     // 사용 가능한 높이가 음수이거나 너무 작으면 경고
     if (availableHeight < 50) {
       console.warn(`사용 가능한 높이가 너무 작습니다: ${availableHeight}px`);
+      this._isAdjustingHeight = false; // 실패 시 플래그 해제
       return;
     }
 
-    // 리스트의 실제 컨텐츠 높이
+    // 현재 설정된 높이 확인
+    const currentHeight = learningList.style.height
+      ? parseInt(learningList.style.height)
+      : learningList.offsetHeight;
+
+    // 리스트의 실제 컨텐츠 높이 (스타일 제거 후 측정)
+    const originalHeight = learningList.style.height;
+    learningList.style.height = "auto";
     const listContentHeight = learningList.scrollHeight;
+    learningList.style.height = originalHeight;
 
     // 컨텐츠가 적으면 컨텐츠 높이만큼, 많으면 사용 가능한 높이만큼
     const listHeight = Math.min(listContentHeight, availableHeight);
 
     // 최소 높이 보장
     const finalHeight = Math.max(listHeight, 100);
+
+    // 컨텐츠 높이를 CSS 변수로 설정 (::before 요소에서 사용)
+    learningList.style.setProperty("--scroll-height", listContentHeight + "px");
+
+    // 높이가 실제로 변경되는 경우에만 스타일 업데이트
+    const heightChanged = Math.abs(currentHeight - finalHeight) > 1;
+
+    if (heightChanged) {
+      learningList.style.height = finalHeight + "px";
+      learningList.style.overflowY =
+        listContentHeight > availableHeight ? "auto" : "hidden";
+    }
+
+    // 스크롤 위치 복원 (높이 변경 여부와 관계없이)
+    requestAnimationFrame(() => {
+      learningList.scrollTop = savedScrollTop;
+      // 높이 조정 완료 후 플래그 해제
+      this._isAdjustingHeight = false;
+    });
 
     console.log("높이 측정 성공:", {
       totalHeight,
@@ -731,11 +778,10 @@ class VideoModal {
       listContentHeight,
       listHeight,
       finalHeight,
+      currentHeight,
+      heightChanged,
+      savedScrollTop,
     });
-
-    learningList.style.height = finalHeight + "px";
-    learningList.style.overflowY =
-      listContentHeight > availableHeight ? "auto" : "hidden";
   }
 
   /**
@@ -799,6 +845,30 @@ class VideoModal {
     }
 
     this.mutationObserver = new MutationObserver((mutations) => {
+      // 높이 조정 중이면 무시 (무한 루프 방지)
+      if (this._isAdjustingHeight) {
+        return;
+      }
+
+      // learning-list의 style 속성 변경은 무시 (우리가 조정한 것)
+      const hasRelevantChange = mutations.some((mutation) => {
+        // learning-list 자체의 style 변경은 무시
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "style" &&
+          mutation.target === learningList
+        ) {
+          return false;
+        }
+        // childList 변경이나 다른 요소의 변경만 감지
+        return mutation.type === "childList" || 
+               (mutation.type === "attributes" && mutation.target !== learningList);
+      });
+
+      if (!hasRelevantChange) {
+        return;
+      }
+
       // 디바운스 처리
       clearTimeout(this.heightAdjustTimer);
       this.heightAdjustTimer = setTimeout(() => {

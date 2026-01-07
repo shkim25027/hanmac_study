@@ -2068,6 +2068,9 @@ static createBoundaryLines(svg) {
 // ============================================================================
 // 모달 관리 클래스
 // ============================================================================
+// ============================================================================
+// 모달 관리 클래스 (개선 버전)
+// ============================================================================
 class ModalManager {
   /**
    * 챕터 모달 열기
@@ -2092,13 +2095,18 @@ class ModalManager {
       // 새 모달 추가
       document.body.insertAdjacentHTML("beforeend", modalHTML);
       const modal = document.querySelector(".modal.video");
+      
+      // ✅ 모달을 먼저 숨긴 상태로 표시 (높이 조정이 보이지 않도록)
       modal.style.display = "block";
+      modal.style.visibility = "hidden";
+      modal.style.opacity = "0";
 
       // 모달 초기화
-      this._setupModal(modal, chapter, chapterIndex);
+      setTimeout(() => {
+        this._setupModal(modal, chapter, chapterIndex);
+      }, 50);
     } catch (error) {
       console.error("모달 로드 오류:", error);
-      // 모달 로드 실패 시 기본 처리
       this._openFallbackModal(chapterIndex, chapter);
     }
   }
@@ -2109,7 +2117,19 @@ class ModalManager {
    */
   static _removeExistingModal() {
     const existingModal = document.querySelector(".modal.video");
-    if (existingModal) existingModal.remove();
+    if (existingModal) {
+      // Observer들 정리
+      if (existingModal._resizeObserver) {
+        existingModal._resizeObserver.disconnect();
+      }
+      if (existingModal._mutationObserver) {
+        existingModal._mutationObserver.disconnect();
+      }
+      if (existingModal._heightAdjustTimer) {
+        clearTimeout(existingModal._heightAdjustTimer);
+      }
+      existingModal.remove();
+    }
   }
 
   /**
@@ -2117,35 +2137,51 @@ class ModalManager {
    * @private
    */
   static _setupModal(modal, chapter, chapterIndex) {
-    // currentLessonIndex를 객체로 관리 (참조 유지)
+    // 모달 상태 객체 생성
     const modalState = {
       currentLessonIndex: 0,
-      retryCount: 0
+      retryCount: 0,
+      isVisible: false,
+      isAdjustingHeight: false, // ✅ 높이 조정 중 플래그
     };
-
+  
     // 첫 번째 학습 로드
     this._loadLesson(modal, chapter, modalState.currentLessonIndex);
-
+  
     // 진행률 업데이트
     this._updateProgress(modal, chapter);
-
-    // 닫기 이벤트 먼저 설정 (한 번만)
+  
+    // 닫기 이벤트 먼저 설정
     this._setupCloseEvents(modal, chapter, chapterIndex, modalState);
-
+  
     // 학습 목차 생성
     this._createLearningList(modal, chapter, chapterIndex, modalState);
-
-    // 높이 조정 초기화
-    setTimeout(() => {
-      this._initializeHeightAdjustment(modal, modalState);
-    }, 50);
+  
+    // ✅ 높이 조정 후 모달 표시
+    this._initializeHeightAdjustment(modal, modalState, () => {
+      // 높이 조정 완료 후 모달을 보이게 함
+      modal.style.visibility = "visible";
+      modal.style.opacity = "1";
+      modal.style.transition = "opacity 0.3s ease";
+      modalState.isVisible = true;
+      
+      // 현재 학습으로 스크롤
+      setTimeout(() => {
+        this._scrollToCurrentLesson(modal);
+      }, 100);
+    });
   }
+
+  // ============================================================================
+  // 높이 조정 시스템 (VideoModal 방식 적용)
+  // ============================================================================
 
   /**
    * 높이 조정 초기화
    * @private
+   * @param {Function} onComplete - 높이 조정 완료 후 실행할 콜백
    */
-  static _initializeHeightAdjustment(modal, modalState) {
+  static _initializeHeightAdjustment(modal, modalState, onComplete) {
     // 1단계: 즉시 시도
     this._adjustVideoListHeight(modal, modalState);
 
@@ -2164,18 +2200,30 @@ class ModalManager {
       this._adjustVideoListHeight(modal, modalState);
     }, 100);
 
-    // 5단계: 200ms 후 시도
+    // 5단계: 200ms 후 시도 (높이 조정 완료로 간주)
     setTimeout(() => {
       this._adjustVideoListHeight(modal, modalState);
+      
+      // 높이 조정 완료 콜백 실행
+      if (onComplete && typeof onComplete === 'function') {
+        onComplete();
+      }
     }, 200);
 
     // 6단계: ResizeObserver 설정
     this._setupResizeObserver(modal, modalState);
+
+    // 7단계: MutationObserver 설정
+    this._setupMutationObserver(modal, modalState);
+
+    // 8단계: 이미지 로딩 대기
+    this._waitForImagesAndAdjust(modal, modalState);
   }
 
   /**
-   * video-list 높이 조정
+   * video-list 높이 조정 (개선 버전)
    * @private
+   * @returns {boolean} 성공 여부
    */
   static _adjustVideoListHeight(modal, modalState) {
     const videoSide = modal.querySelector(".video-side");
@@ -2186,8 +2234,15 @@ class ModalManager {
 
     if (!videoSide || !videoHeader || !videoList || !learningList) {
       console.warn("[ModalManager] 필요한 요소를 찾을 수 없습니다");
-      return;
+      modalState.isAdjustingHeight = false;
+      return false;
     }
+
+    // ✅ 높이 조정 중 플래그 설정
+    modalState.isAdjustingHeight = true;
+
+    // ✅ 스크롤 위치 저장
+    const savedScrollTop = learningList.scrollTop;
 
     // 전체 높이
     const totalHeight = videoSide.clientHeight;
@@ -2201,12 +2256,14 @@ class ModalManager {
       // 최대 3번까지만 재시도
       if (modalState.retryCount < 3) {
         modalState.retryCount++;
+        modalState.isAdjustingHeight = false;
         setTimeout(() => this._adjustVideoListHeight(modal, modalState), 100);
       } else {
         console.error("[ModalManager] 높이 측정 재시도 횟수 초과");
         modalState.retryCount = 0;
+        modalState.isAdjustingHeight = false;
       }
-      return;
+      return false;
     }
 
     // 재시도 카운터 초기화
@@ -2227,23 +2284,49 @@ class ModalManager {
     const paddingTop = parseInt(videoListStyle.paddingTop) || 0;
     const paddingBottom = parseInt(videoListStyle.paddingBottom) || 0;
 
+    // comment-info 존재 여부 확인
+    const commentInfo = modal.querySelector(".comment-info");
+    const commentInfoOffset = commentInfo ? 40 : 0;
+
     // learning-list에 사용 가능한 최대 높이
-    const availableHeight = totalHeight - headerHeight - commentWrapHeight - titleHeight - paddingTop - paddingBottom - 40 - 20;
+    const availableHeight = totalHeight - headerHeight - commentWrapHeight - 
+                           titleHeight - paddingTop - paddingBottom - 
+                           commentInfoOffset - 20;
 
     // 사용 가능한 높이가 음수이거나 너무 작으면 경고
     if (availableHeight < 50) {
-      console.warn(`[ModalManager] 사용 가능한 높이가 너무 작습니다: ${availableHeight}px`);
-      return;
+      console.warn(
+        `[ModalManager] 사용 가능한 높이가 너무 작습니다: ${availableHeight}px`
+      );
+      modalState.isAdjustingHeight = false;
+      return false;
     }
 
-    // 리스트의 실제 컨텐츠 높이
+    // ✅ 리스트의 실제 컨텐츠 높이 측정 (스타일 제거 후)
+    const originalHeight = learningList.style.height;
+    const originalOverflow = learningList.style.overflowY;
+    
+    learningList.style.height = 'auto';
+    learningList.style.overflowY = 'visible';
+    
     const listContentHeight = learningList.scrollHeight;
+    
+    learningList.style.height = originalHeight;
+    learningList.style.overflowY = originalOverflow;
 
     // 컨텐츠가 적으면 컨텐츠 높이만큼, 많으면 사용 가능한 높이만큼
     const listHeight = Math.min(listContentHeight, availableHeight);
 
     // 최소 높이 보장
     const finalHeight = Math.max(listHeight, 100);
+
+    // ✅ 현재 설정된 높이 확인
+    const currentHeight = learningList.style.height
+      ? parseInt(learningList.style.height)
+      : learningList.offsetHeight;
+
+    // 스크롤 필요 여부 확인
+    const needsScroll = listContentHeight > availableHeight;
 
     console.log("[ModalManager] 높이 측정 성공:", {
       totalHeight,
@@ -2256,10 +2339,30 @@ class ModalManager {
       listContentHeight,
       listHeight,
       finalHeight,
+      currentHeight,
+      needsScroll,
+      savedScrollTop,
     });
 
-    learningList.style.height = finalHeight + "px";
-    learningList.style.overflowY = listContentHeight > availableHeight ? "auto" : "hidden";
+    // ✅ 높이가 실제로 변경되는 경우에만 스타일 업데이트
+    const heightChanged = Math.abs(currentHeight - finalHeight) > 1;
+
+    if (heightChanged) {
+      learningList.style.height = finalHeight + "px";
+      learningList.style.overflowY = needsScroll ? "auto" : "hidden";
+    }
+
+    // ✅ 컨텐츠 높이를 CSS 변수로 설정 (::before 요소에서 사용)
+    learningList.style.setProperty('--scroll-height', `${listContentHeight}px`);
+
+    // ✅ 스크롤 위치 복원 (높이 변경 여부와 관계없이)
+    requestAnimationFrame(() => {
+      learningList.scrollTop = savedScrollTop;
+      // 높이 조정 완료 후 플래그 해제
+      modalState.isAdjustingHeight = false;
+    });
+    
+    return true;
   }
 
   /**
@@ -2268,6 +2371,8 @@ class ModalManager {
    */
   static _setupResizeObserver(modal, modalState) {
     const videoSide = modal.querySelector(".video-side");
+    const commentWrap = modal.querySelector(".comment-wrap");
+
     if (!videoSide) return;
 
     // ResizeObserver 생성 및 저장
@@ -2285,8 +2390,187 @@ class ModalManager {
       });
 
       modal._resizeObserver.observe(videoSide);
+      if (commentWrap) {
+        modal._resizeObserver.observe(commentWrap);
+      }
+    }
+
+    // ✅ window resize 이벤트도 감지
+    if (!modal._windowResizeHandler) {
+      modal._windowResizeHandler = () => {
+        if (modal._heightAdjustTimer) {
+          clearTimeout(modal._heightAdjustTimer);
+        }
+        modal._heightAdjustTimer = setTimeout(() => {
+          console.log("[ModalManager] Window resize 감지: 높이 재조정");
+          this._adjustVideoListHeight(modal, modalState);
+        }, 50);
+      };
+      window.addEventListener("resize", modal._windowResizeHandler);
     }
   }
+
+  /**
+   * MutationObserver 설정 (새로 추가)
+   * @private
+   */
+  static _setupMutationObserver(modal, modalState) {
+    const learningList = modal.querySelector(".learning-list");
+
+    if (!learningList) return;
+
+    if (!modal._mutationObserver) {
+      modal._mutationObserver = new MutationObserver((mutations) => {
+        // ✅ 높이 조정 중이면 무시 (무한 루프 방지)
+        if (modalState.isAdjustingHeight) {
+          return;
+        }
+
+        // learning-list의 style 속성 변경은 무시 (우리가 조정한 것)
+        const hasRelevantChange = mutations.some((mutation) => {
+          // learning-list 자체의 style 변경은 무시
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "style" &&
+            mutation.target === learningList
+          ) {
+            return false;
+          }
+          // childList 변경이나 다른 요소의 변경만 감지
+          return mutation.type === "childList" || 
+                 (mutation.type === "attributes" && mutation.target !== learningList);
+        });
+
+        if (!hasRelevantChange) {
+          return;
+        }
+
+        // 디바운스 처리
+        if (modal._heightAdjustTimer) {
+          clearTimeout(modal._heightAdjustTimer);
+        }
+        modal._heightAdjustTimer = setTimeout(() => {
+          console.log("[ModalManager] MutationObserver 감지: 높이 재조정");
+          this._adjustVideoListHeight(modal, modalState);
+        }, 50);
+      });
+
+      modal._mutationObserver.observe(learningList, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["style", "class"],
+      });
+    }
+  }
+
+  /**
+   * 이미지 로딩 대기 후 높이 조정 (새로 추가)
+   * @private
+   */
+  static async _waitForImagesAndAdjust(modal, modalState) {
+    const learningList = modal.querySelector(".learning-list");
+    if (!learningList) return;
+
+    const images = learningList.querySelectorAll("img");
+
+    if (images.length === 0) {
+      console.log("[ModalManager] 학습 목록에 이미지 없음");
+      return;
+    }
+
+    console.log(`[ModalManager] 이미지 ${images.length}개 로딩 대기 중...`);
+
+    const imagePromises = Array.from(images).map((img) => {
+      if (img.complete) return Promise.resolve();
+
+      return new Promise((resolve) => {
+        img.onload = () => {
+          console.log("[ModalManager] 이미지 로드 완료:", img.src);
+          resolve();
+        };
+        img.onerror = () => {
+          console.warn("[ModalManager] 이미지 로드 실패:", img.src);
+          resolve();
+        };
+
+        // 10초 타임아웃
+        setTimeout(resolve, 10000);
+      });
+    });
+
+    await Promise.all(imagePromises);
+
+    console.log("[ModalManager] 모든 이미지 로딩 완료: 높이 재조정");
+    this._adjustVideoListHeight(modal, modalState);
+
+    // 이미지 로딩 후 다시 스크롤
+    setTimeout(() => {
+      this._scrollToCurrentLesson(modal);
+    }, 100);
+  }
+
+  // ============================================================================
+  // 스크롤 관리 (개선 버전)
+  // ============================================================================
+
+  /**
+   * 현재 학습 중인 항목으로 스크롤 (개선 버전)
+   * @private
+   */
+  static _scrollToCurrentLesson(modal) {
+    const learningList = modal.querySelector(".learning-list");
+    if (!learningList) {
+      console.warn("[ModalManager] 학습 목록을 찾을 수 없습니다");
+      return;
+    }
+
+    // 현재 학습 중인 항목 찾기
+    const currentItem = learningList.querySelector('li[data-current="true"]');
+    if (!currentItem) {
+      console.warn("[ModalManager] 현재 학습 항목을 찾을 수 없습니다");
+      return;
+    }
+
+    // 스크롤 위치 계산
+    const listRect = learningList.getBoundingClientRect();
+    const itemRect = currentItem.getBoundingClientRect();
+
+    // 목록 중앙에 현재 항목이 오도록 스크롤
+    const scrollOffset =
+      itemRect.top - listRect.top - listRect.height / 2 + itemRect.height / 2;
+
+    // 부드러운 스크롤
+    learningList.scrollTo({
+      top: learningList.scrollTop + scrollOffset,
+      behavior: "smooth",
+    });
+
+    console.log(`[ModalManager] 현재 학습으로 스크롤 이동:`, {
+      currentItem: currentItem.querySelector(".title")?.textContent,
+      scrollOffset,
+    });
+
+    // ✅ 시각적 강조 효과 (선택사항)
+    this._highlightCurrentLesson(currentItem);
+  }
+
+  /**
+   * 현재 학습 항목 시각적 강조 (새로 추가)
+   * @private
+   */
+  static _highlightCurrentLesson(currentItem) {
+    // 간단한 강조 효과
+    currentItem.style.transition = "all 0.3s ease";
+
+    setTimeout(() => {
+      currentItem.style.transition = "";
+    }, 1000);
+  }
+
+  // ============================================================================
+  // 기존 메서드들
+  // ============================================================================
 
   /**
    * 학습 로드
@@ -2353,7 +2637,7 @@ class ModalManager {
       // 상태 클래스
       if (index === modalState.currentLessonIndex) {
         li.className = "active";
-        li.setAttribute("data-current", "true"); // 현재 학습 마커
+        li.setAttribute("data-current", "true");
       } else if (lesson.completed) {
         li.className = "complet";
       }
@@ -2413,86 +2697,17 @@ class ModalManager {
         this._updateProgress(modal, chapter);
         this._createLearningList(modal, chapter, chapterIndex, modalState);
         
-        // 목록 재생성 후 높이 재조정
+        // ✅ 목록 재생성 후 높이 재조정 및 스크롤
         setTimeout(() => {
           this._adjustVideoListHeight(modal, modalState);
+          setTimeout(() => {
+            this._scrollToCurrentLesson(modal);
+          }, 100);
         }, 50);
       });
 
       list.appendChild(li);
     });
-
-    // 목록 생성 후 현재 학습으로 스크롤
-    setTimeout(() => {
-      this._scrollToCurrentLesson(modal);
-    }, 100);
-  }
-
-  /**
-   * 현재 학습 중인 항목으로 스크롤
-   * @private
-   */
-  static _scrollToCurrentLesson(modal) {
-    const learningList = modal.querySelector(".learning-list");
-    if (!learningList) {
-      console.warn("[ModalManager] 학습 목록을 찾을 수 없습니다");
-      return;
-    }
-
-    // 현재 학습 중인 항목 찾기
-    const currentItem = learningList.querySelector('li[data-current="true"]');
-    if (!currentItem) {
-      console.warn("[ModalManager] 현재 학습 항목을 찾을 수 없습니다");
-      return;
-    }
-
-    // 현재 항목이 보이는 영역에 있는지 확인
-    const listRect = learningList.getBoundingClientRect();
-    const itemRect = currentItem.getBoundingClientRect();
-    
-    // 목록의 가시 영역 계산 (상대적 위치)
-    const itemRelativeTop = currentItem.offsetTop;
-    const itemHeight = itemRect.height;
-    const listScrollTop = learningList.scrollTop;
-    const listHeight = learningList.clientHeight;
-    
-    // 현재 보이는 영역의 범위
-    const visibleTop = listScrollTop;
-    const visibleBottom = listScrollTop + listHeight;
-    
-    // 항목의 위치
-    const itemTop = itemRelativeTop;
-    const itemBottom = itemRelativeTop + itemHeight;
-    
-    // 항목이 완전히 보이는지 확인
-    const isFullyVisible = itemTop >= visibleTop && itemBottom <= visibleBottom;
-    
-    console.log(`[ModalManager] 스크롤 체크:`, {
-      itemLabel: currentItem.querySelector(".title")?.textContent,
-      itemTop,
-      itemBottom,
-      visibleTop,
-      visibleBottom,
-      isFullyVisible
-    });
-
-    // 화면에 보이지 않을 때만 스크롤
-    if (!isFullyVisible) {
-      // 목록 중앙에 항목 배치
-      const scrollPosition = itemRelativeTop - (listHeight / 2) + (itemHeight / 2);
-
-      // 부드러운 스크롤
-      learningList.scrollTo({
-        top: Math.max(0, scrollPosition),
-        behavior: "smooth"
-      });
-
-      console.log(`[ModalManager] 현재 학습으로 스크롤 실행:`, {
-        scrollPosition
-      });
-    } else {
-      console.log(`[ModalManager] 현재 학습이 이미 화면에 보임 - 스크롤 생략`);
-    }
   }
 
   /**
@@ -2524,8 +2739,6 @@ class ModalManager {
           modalState.currentLessonIndex
         );
         PuzzleManager.instance.updatePieceGauge(chapter.pieceId);
-        
-        // 전체 진행률도 업데이트
         PuzzleManager.instance._updateTotalProgress();
       } else if (currentLesson && currentLesson.completed) {
         console.log(`[ModalManager] 모달 닫기 - 이미 완료된 학습: [${chapterIndex}-${modalState.currentLessonIndex}] ${currentLesson.label}`);
@@ -2533,15 +2746,25 @@ class ModalManager {
         console.error(`[ModalManager] 학습 정보를 찾을 수 없음: [${chapterIndex}-${modalState.currentLessonIndex}]`);
       }
 
-      // Observer 정리
+      // ✅ Observer 및 이벤트 리스너 정리
       if (modal._resizeObserver) {
         modal._resizeObserver.disconnect();
         modal._resizeObserver = null;
       }
 
+      if (modal._mutationObserver) {
+        modal._mutationObserver.disconnect();
+        modal._mutationObserver = null;
+      }
+
       if (modal._heightAdjustTimer) {
         clearTimeout(modal._heightAdjustTimer);
         modal._heightAdjustTimer = null;
+      }
+
+      if (modal._windowResizeHandler) {
+        window.removeEventListener("resize", modal._windowResizeHandler);
+        modal._windowResizeHandler = null;
       }
 
       modal.style.display = "none";

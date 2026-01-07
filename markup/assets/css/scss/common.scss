@@ -15,7 +15,7 @@
 $modal-width: 470px;
 $modal-min-height: 500px;
 $video-modal-width: 1720px;
-$video-modal-height: 800px;
+$video-modal-height: 900px;
 $video-sidebar-width: 437px;
 
 // =======================================
@@ -609,7 +609,7 @@ h5 {
         @include pseudo(block, absolute, "");
         left: 56px;
         width: 1px;
-        height: calc(100% - 5px);
+        height: var(--scroll-height, calc(100% - 5px));
         opacity: 0.2;
         background: linear-gradient(
           180deg,
