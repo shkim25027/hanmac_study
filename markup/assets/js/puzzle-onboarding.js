@@ -2228,7 +2228,7 @@ class ModalManager {
     const paddingBottom = parseInt(videoListStyle.paddingBottom) || 0;
 
     // learning-list에 사용 가능한 최대 높이
-    const availableHeight = totalHeight - headerHeight - commentWrapHeight - titleHeight - paddingTop - paddingBottom - 40;
+    const availableHeight = totalHeight - headerHeight - commentWrapHeight - titleHeight - paddingTop - paddingBottom - 40 - 20;
 
     // 사용 가능한 높이가 음수이거나 너무 작으면 경고
     if (availableHeight < 50) {

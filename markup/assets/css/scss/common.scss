@@ -15,7 +15,7 @@
 $modal-width: 470px;
 $modal-min-height: 500px;
 $video-modal-width: 1720px;
-$video-modal-height: 900px;
+$video-modal-height: 800px;
 $video-sidebar-width: 437px;
 
 // =======================================
@@ -359,7 +359,7 @@ h5 {
 
     .modal {
       &-content {
-        width: 89.5833%;
+        width: 72.9166%;
         max-width: $video-modal-width;
         max-height: $video-modal-height;
         padding: 0;
@@ -372,6 +372,7 @@ h5 {
       &-body {
         display: grid;
         grid-template-columns: 1fr $video-sidebar-width;
+        height: 100%;
       }
     }
 
@@ -448,7 +449,7 @@ h5 {
           padding: 22px 0;
           font-size: 14px;
           font-weight: 500;
-          color: var(--text-vodeo-secondary);
+          color: var(--text-video-secondary);
         }
       }
 

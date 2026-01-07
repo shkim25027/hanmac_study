@@ -722,7 +722,7 @@ class MarkerManager {
           top: 0;
           left: 0;
           width: 100%;
-          height: 60%;
+          height: 70%;
           background: linear-gradient(180deg, #f9f5f2 0%, #ece3d2 100%);
           z-index: 0;
           pointer-events: none;
