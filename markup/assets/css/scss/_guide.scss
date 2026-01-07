@@ -146,23 +146,27 @@
        }
       }
       &.notice{
-        width: 120px;
-        translate: -105% 0;
+        width: 122px;
+        translate: -106% 0;
         &::before{
           right: 32px;
         }
         &::after{
             right: 25.5px;
         }
+
       }
       &.mypage{
-        width: 165px;
-        translate: 10% 0;
+        width: 168px;
+        translate: 8% 0;
         &::before{
           left: 22px;
         }
         &::after{
           left: 15.5px;
+        }
+        .guide-tooltip-description {
+          letter-spacing: -0.064em;
         }
       }
       &.change {
