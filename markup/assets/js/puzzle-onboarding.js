@@ -1749,10 +1749,11 @@ class GaugeManager {
       stroke: CONFIG.GAUGE.BG_COLOR,
       "stroke-width": CONFIG.GAUGE.HEIGHT,
       "stroke-linecap": "round",
-      opacity: CONFIG.GAUGE.BG_OPACITY,
+      opacity: 0, // 초기에는 학습 내용이 없으므로 opacity 0
       class: "gauge-bg-line",
       "data-original-x1": gaugeX, // 원본 좌표 저장
       "data-original-x2": gaugeX + bgWidth, // 원본 좌표 저장
+      "data-original-opacity": CONFIG.GAUGE.BG_OPACITY, // 원본 opacity 저장
     });
     bgLine.style.mixBlendMode = "multiply";
     gaugeGroup.appendChild(bgLine);
@@ -1826,6 +1827,20 @@ class GaugeManager {
         originalX2 = parseFloat(bgLine.getAttribute("x2"));
         bgLine.setAttribute("data-original-x1", originalX1);
         bgLine.setAttribute("data-original-x2", originalX2);
+      }
+      
+      // 원본 opacity 가져오기
+      let originalOpacity = parseFloat(bgLine.getAttribute("data-original-opacity"));
+      if (!originalOpacity || isNaN(originalOpacity)) {
+        originalOpacity = CONFIG.GAUGE.BG_OPACITY;
+        bgLine.setAttribute("data-original-opacity", originalOpacity);
+      }
+      
+      // progress에 따라 opacity 설정: 학습 내용이 없으면(progress === 0) opacity 0, 있으면 원본 opacity
+      if (progress > 0) {
+        bgLine.setAttribute("opacity", originalOpacity);
+      } else {
+        bgLine.setAttribute("opacity", 0);
       }
       
       if (isCompleted) {
@@ -2617,7 +2632,7 @@ class ModalManager {
     // 차시 정보
     const labelElement = modal.querySelector(".gauge-labels .label:not(.current)");
     if (labelElement) {
-      labelElement.innerHTML = `<em>${completedCount}</em> /${totalCount}강`;
+      labelElement.innerHTML = `<em>${completedCount}</em> /${totalCount} 강`;
     }
   }
 
