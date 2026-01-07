@@ -588,7 +588,7 @@ class MultiGuide {
           const interestX = interestRect.right;
           const interestY = interestRect.top + interestRect.height / 2;
           
-          const interestPathData = `M ${interestX} ${interestY} L ${connectionMidX} ${interestY} L ${connectionMidX} ${connectionMidY}`;
+          const interestPathData = `M ${interestX} ${interestY} L ${connectionMidX} ${interestY}`;
           
           const interestPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
           interestPath.setAttribute("d", interestPathData);
