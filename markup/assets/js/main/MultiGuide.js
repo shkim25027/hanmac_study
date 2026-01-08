@@ -720,7 +720,11 @@ class MultiGuide {
         }
 
         // 세로 위치 계산
-        if (verticalPos === "center") {
+        // learning 클래스인 경우 guide-arc-ellipse-stroke-path의 top 위치 사용
+        if (target.class === "learning" && this.arcEllipseStrokePath) {
+          const arcPathRect = this.arcEllipseStrokePath.getBoundingClientRect();
+          top = arcPathRect.top;
+        } else if (verticalPos === "center") {
           // 요소의 중앙에 tooltip 중앙이 맞도록
           const boxHeight = tooltipBox.offsetHeight || 100;
           top = elementRect.top + elementRect.height / 2 - boxHeight / 2;
