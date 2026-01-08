@@ -746,7 +746,7 @@ h5 {
         padding: 8px;
         gap: 8px;
         border-top: 1px solid var(--border-video);
-        @include flex();
+        @include flex(row, flex-end, flex-start);
       }
     }
     textarea {
@@ -754,12 +754,12 @@ h5 {
       color: var(--text-revers);
       background: var(--bg-textarea);
       height: 32px;
-      overflow-y: auto;
       border-radius: 4px;
       padding: 6px 8px;
       font-size: 14px;
       line-height: 20px;
       resize: none;
+      transition: height 0.3s linear;
       @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
       &::placeholder {
         color: var(--bg-textarea-placeholder);

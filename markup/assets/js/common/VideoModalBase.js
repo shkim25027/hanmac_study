@@ -688,6 +688,39 @@ class VideoModalBase extends ModalBase {
     if (heightChanged) {
       targetList.style.height = finalHeight + "px";
       targetList.style.overflowY = needsScroll ? "auto" : "hidden";
+    } else {
+      // 높이가 변경되지 않아도 스크롤 여부는 체크하여 업데이트
+      targetList.style.overflowY = needsScroll ? "auto" : "hidden";
+    }
+    
+    // video-list가 별도로 있는 경우에도 스크롤 여부 체크
+    if (videoList && learningList) {
+      // learning-list가 있는 경우 video-list도 스크롤 여부 체크
+      const videoListContentHeight = videoList.scrollHeight;
+      const videoListAvailableHeight = videoList.clientHeight;
+      const videoListNeedsScroll = videoListContentHeight > videoListAvailableHeight;
+      
+      // video-list의 overflow는 hidden으로 유지 (learning-list만 스크롤)
+      videoList.style.overflowY = "hidden";
+      
+      console.log("[VideoModalBase] video-list 스크롤 체크:", {
+        videoListContentHeight,
+        videoListAvailableHeight,
+        videoListNeedsScroll
+      });
+    } else if (videoList && !learningList) {
+      // video-list만 있는 경우 스크롤 여부 체크
+      const videoListContentHeight = videoList.scrollHeight;
+      const videoListAvailableHeight = videoList.clientHeight;
+      const videoListNeedsScroll = videoListContentHeight > videoListAvailableHeight;
+      
+      videoList.style.overflowY = videoListNeedsScroll ? "auto" : "hidden";
+      
+      console.log("[VideoModalBase] video-list 스크롤 체크:", {
+        videoListContentHeight,
+        videoListAvailableHeight,
+        videoListNeedsScroll
+      });
     }
 
     // 컨텐츠 높이를 CSS 변수로 설정 (::before 요소에서 사용)
@@ -762,15 +795,17 @@ class VideoModalBase extends ModalBase {
 
     const commentList = commentListWrap.querySelector(".comment-list");
     const hasComments = commentList && commentList.children.length > 0;
-    const initialHeight = hasComments ? 52 : 0;
-    commentListWrap.style.height = initialHeight + "px";
 
-    console.log(`댓글 리사이저 초기화: 댓글 ${hasComments ? "있음" : "없음"} (${initialHeight}px)`);
+    console.log(`댓글 리사이저 초기화: 댓글 ${hasComments ? "있음" : "없음"}`);
 
     if (!hasComments) {
       resizer.style.display = "none";
+      // 댓글이 없으면 높이를 0으로
+      commentListWrap.style.height = "0px";
     } else {
       resizer.style.display = "block";
+      // 댓글이 있으면 컨텐츠 높이만큼 설정
+      this.adjustCommentListWrapHeight(commentListWrap);
     }
 
     resizer.addEventListener("mousedown", (e) => {
@@ -828,13 +863,60 @@ class VideoModalBase extends ModalBase {
     }
 
     const adjustTextareaHeight = (textareaEl) => {
-      // 높이값 인라인 스타일 제거 - CSS로 관리
-      // textareaEl.style.height = "auto";
-      // const scrollHeight = textareaEl.scrollHeight;
-      // const minHeight = 32;
-      // const maxHeight = 82;
-      // const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
-      // textareaEl.style.height = newHeight + "px";
+      // 높이 설정: 1줄=32px, 2줄=52px, 3줄 이상=72px
+      const singleLineHeight = 32;
+      const twoLineHeight = 52;
+      const maxHeight = 72; // 3줄 이상 최대 높이
+      
+      // 입력값이 없으면 기본 32px로 설정
+      if (!textareaEl.value || textareaEl.value.trim().length === 0) {
+        textareaEl.style.height = singleLineHeight + "px";
+        textareaEl.style.overflowY = "hidden";
+        textareaEl.style.overflowX = "hidden";
+        return;
+      }
+      
+      // 스크롤바가 보이지 않도록 먼저 overflow를 hidden으로 설정
+      textareaEl.style.overflowY = "hidden";
+      textareaEl.style.overflowX = "hidden";
+      
+      // 높이를 auto로 설정하여 실제 컨텐츠 높이 측정
+      textareaEl.style.height = "auto";
+      
+      // 강제 리플로우 (높이 계산을 위해)
+      void textareaEl.offsetHeight;
+      
+      const scrollHeight = textareaEl.scrollHeight;
+      const computedStyle = window.getComputedStyle(textareaEl);
+      const lineHeight = parseFloat(computedStyle.lineHeight) || 20;
+      const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+      const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
+      
+      // 실제 줄 수 계산을 위한 높이 기준
+      const actualSingleLineHeight = lineHeight + paddingTop + paddingBottom;
+      const actualTwoLineHeight = (lineHeight * 2) + paddingTop + paddingBottom;
+      const actualThreeLineHeight = (lineHeight * 3) + paddingTop + paddingBottom;
+      
+      // 높이 설정: 1줄=32px, 2줄=52px, 3줄 이상=72px
+      if (scrollHeight <= actualSingleLineHeight) {
+        // 1줄: 32px
+        textareaEl.style.height = singleLineHeight + "px";
+        textareaEl.style.overflowY = "hidden";
+      } else if (scrollHeight <= actualTwoLineHeight) {
+        // 2줄: 52px
+        textareaEl.style.height = twoLineHeight + "px";
+        textareaEl.style.overflowY = "hidden";
+      } else if (scrollHeight <= actualThreeLineHeight) {
+        // 3줄: 72px
+        textareaEl.style.height = maxHeight + "px";
+        textareaEl.style.overflowY = "hidden";
+      } else {
+        // 3줄 초과: 72px 고정, 스크롤 활성화
+        textareaEl.style.height = maxHeight + "px";
+        textareaEl.style.overflowY = "auto";
+      }
+      
+      textareaEl.style.overflowX = "hidden";
     };
 
     adjustTextareaHeight(textarea);
@@ -891,9 +973,10 @@ class VideoModalBase extends ModalBase {
     if (!commentListWrap || !resizer) return;
 
     if (commentListWrap.offsetHeight === 0) {
-      commentListWrap.style.height = "52px";
       resizer.style.display = "block";
-      console.log("첫 댓글 추가: 댓글 섹션 표시 (52px)");
+      // 댓글이 있으면 컨텐츠 높이만큼 설정
+      this.adjustCommentListWrapHeight(commentListWrap);
+      console.log("첫 댓글 추가: 댓글 섹션 표시 (컨텐츠 높이)");
 
       if (this.config.enableHeightAdjustment) {
         requestAnimationFrame(() => {
@@ -904,6 +987,73 @@ class VideoModalBase extends ModalBase {
 
     // user-text 높이 조정
     this.adjustUserTextHeights(modalElement);
+  }
+
+  /**
+   * .comment-list-wrap의 높이를 컨텐츠에 맞게 조정
+   * @param {HTMLElement} commentListWrap - 댓글 리스트 래퍼 요소
+   */
+  adjustCommentListWrapHeight(commentListWrap) {
+    if (!commentListWrap) return;
+
+    const modalElement = commentListWrap.closest(".modal");
+    if (!modalElement) return;
+
+    const commentList = commentListWrap.querySelector(".comment-list");
+    if (!commentList || commentList.children.length === 0) {
+      commentListWrap.style.height = "0px";
+      // 댓글이 없을 때도 video-list 스크롤 재측정
+      if (this.config.enableHeightAdjustment) {
+        requestAnimationFrame(() => {
+          this.adjustVideoListHeight(modalElement);
+        });
+      }
+      return;
+    }
+
+    // 현재 높이 저장
+    const originalHeight = commentListWrap.style.height;
+    const originalOverflow = commentListWrap.style.overflowY;
+
+    // 높이를 auto로 설정하여 실제 컨텐츠 높이 측정
+    commentListWrap.style.height = "auto";
+    commentListWrap.style.overflowY = "hidden";
+
+    const scrollHeight = commentListWrap.scrollHeight;
+    const computedStyle = window.getComputedStyle(commentListWrap);
+    const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+    const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
+
+    // 컨텐츠 높이 + padding
+    const contentHeight = scrollHeight + paddingTop + paddingBottom;
+
+    // 최소 높이 보장 (52px)
+    const minHeight = 52;
+    const finalHeight = Math.max(contentHeight, minHeight);
+
+    // CSS max-height 제한 확인
+    const maxHeight = parseFloat(computedStyle.maxHeight) || Infinity;
+    const adjustedHeight = Math.min(finalHeight, maxHeight);
+
+    commentListWrap.style.height = adjustedHeight + "px";
+    commentListWrap.style.overflowY = adjustedHeight >= maxHeight ? "auto" : "hidden";
+
+    console.log("[VideoModalBase] comment-list-wrap 높이 조정:", {
+      scrollHeight,
+      paddingTop,
+      paddingBottom,
+      contentHeight,
+      finalHeight,
+      adjustedHeight,
+      maxHeight
+    });
+
+    // comment-list-wrap 높이가 변경되었으므로 video-list 스크롤 재측정
+    if (this.config.enableHeightAdjustment) {
+      requestAnimationFrame(() => {
+        this.adjustVideoListHeight(modalElement);
+      });
+    }
   }
 
   /**
@@ -919,13 +1069,42 @@ class VideoModalBase extends ModalBase {
 
     console.log(`[VideoModalBase] .user-text 요소 ${userTexts.length}개 발견`);
 
+    // 먼저 모든 textarea를 완전히 숨김 (깜박임 방지)
+    userTexts.forEach((textarea) => {
+      // 초기 상태 저장
+      const originalVisibility = textarea.style.visibility;
+      const originalOpacity = textarea.style.opacity;
+      const originalOverflow = textarea.style.overflowY;
+      
+      // 완전히 숨김 처리
+      textarea.style.visibility = "hidden";
+      textarea.style.opacity = "0";
+      // 스크롤이 보이지 않도록 확실히 설정
+      textarea.style.overflowY = "hidden";
+      
+      // 원래 값 저장 (나중에 복원용)
+      textarea._originalStyles = {
+        visibility: originalVisibility,
+        opacity: originalOpacity,
+        overflow: originalOverflow
+      };
+    });
+
+    // 높이 계산 및 설정
     userTexts.forEach((textarea, index) => {
       // 기본 높이 32px (1줄)
       const defaultHeight = 32;
       
-      // 높이를 auto로 설정하여 실제 컨텐츠 높이 측정
-      textarea.style.height = "auto";
+      // 스크롤바가 보이지 않도록 먼저 overflow를 hidden으로 설정
       textarea.style.overflowY = "hidden";
+      textarea.style.overflowX = "hidden";
+      
+      // 높이를 auto로 설정하여 실제 컨텐츠 높이 측정
+      // 이때도 overflow는 hidden으로 유지하여 스크롤이 보이지 않도록
+      textarea.style.height = "auto";
+
+      // 강제 리플로우 (높이 계산을 위해)
+      void textarea.offsetHeight;
 
       const scrollHeight = textarea.scrollHeight;
       const computedStyle = window.getComputedStyle(textarea);
@@ -953,13 +1132,35 @@ class VideoModalBase extends ModalBase {
       if (scrollHeight > twoLineHeight) {
         textarea.style.height = scrollHeight + "px";
         textarea.style.overflowY = "hidden";
+        textarea.style.overflowX = "hidden";
         console.log(`[VideoModalBase] textarea #${index + 1} 높이 조정: ${scrollHeight}px (2줄 이상)`);
       } else {
         // 1줄이면 기본 32px 유지 (인라인 스타일 제거하여 CSS 기본값 사용)
         textarea.style.height = "";
-        textarea.style.overflowY = "";
+        textarea.style.overflowY = "hidden"; // overflow는 hidden 유지
+        textarea.style.overflowX = "hidden";
         console.log(`[VideoModalBase] textarea #${index + 1} 높이 유지: CSS 기본값 32px (1줄)`);
       }
+    });
+
+    // 모든 높이 계산이 완료된 후 한 번에 표시 (2프레임 대기하여 확실히)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        userTexts.forEach((textarea) => {
+          // 원래 스타일 복원 또는 기본값으로 설정
+          if (textarea._originalStyles) {
+            textarea.style.visibility = textarea._originalStyles.visibility || "";
+            textarea.style.opacity = textarea._originalStyles.opacity || "";
+            // overflow는 hidden 유지 (스크롤 방지)
+            textarea.style.overflowY = "hidden";
+            delete textarea._originalStyles;
+          } else {
+            textarea.style.visibility = "";
+            textarea.style.opacity = "";
+            textarea.style.overflowY = "hidden";
+          }
+        });
+      });
     });
   }
 }
