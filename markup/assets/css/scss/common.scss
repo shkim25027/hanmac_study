@@ -593,7 +593,7 @@ h5 {
       &-list {
         overflow-y: auto;
         align-self: start;
-        @include scrollbar-light();
+        @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
         .tit {
           color: #fff;
           margin-bottom: 8px;
@@ -604,7 +604,7 @@ h5 {
     .learning-list {
       position: relative;
       color: var(--text-learning-base);
-      @include scrollbar-light();
+      @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
       &::before {
         @include pseudo(block, absolute, "");
         left: 56px;
@@ -732,12 +732,16 @@ h5 {
       flex-grow: 1;
       color: var(--text-revers);
       background: var(--bg-textarea);
-      height: 32px;
+      min-height: 32px;
+      max-height: 82px;
+      height: a;
+      overflow-y: auto;
       border-radius: 4px;
       padding: 6px 8px;
       font-size: 14px;
-      line-height: 1.4;
-
+      line-height: 20px;
+      resize: none;
+      @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
       &::placeholder {
         color: var(--bg-textarea-placeholder);
       }
@@ -919,11 +923,12 @@ h5 {
         font-size: 14px;
         font-weight: 500;
         flex-grow: 1;
-        @include flex();
+        @include flex(row, flex-start, flex-start);
       }
       &-name {
         font-weight: 700;
         color: var(--text-comment-secondary);
+        line-height: 32px;
       }
       &-text {
         color: var(--text-comment-primary);

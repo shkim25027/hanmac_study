@@ -485,8 +485,28 @@ class VideoModalManager {
       return;
     }
 
+    // textarea 높이 자동 조절 함수
+    const adjustTextareaHeight = (textareaEl) => {
+      // 높이를 auto로 설정하여 scrollHeight 측정
+      textareaEl.style.height = "auto";
+      const scrollHeight = textareaEl.scrollHeight;
+      
+      // 최소 32px, 최대 64px
+      const minHeight = 32;
+      const maxHeight = 64;
+      const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
+      
+      textareaEl.style.height = newHeight + "px";
+    };
+
+    // 초기 높이 설정
+    adjustTextareaHeight(textarea);
+
     textarea.addEventListener("input", (e) => {
       const hasValue = e.target.value.trim().length > 0;
+
+      // 높이 자동 조절
+      adjustTextareaHeight(e.target);
 
       if (hasValue) {
         btnCancel.removeAttribute("disabled");
@@ -502,6 +522,7 @@ class VideoModalManager {
     btnCancel.addEventListener("click", (e) => {
       e.preventDefault();
       textarea.value = "";
+      adjustTextareaHeight(textarea);
       btnCancel.setAttribute("disabled", "disabled");
       btnSave.setAttribute("disabled", "disabled");
       btnSave.classList.remove("btn-active");
@@ -519,6 +540,7 @@ class VideoModalManager {
         this.showCommentSection();
 
         textarea.value = "";
+        adjustTextareaHeight(textarea);
         btnCancel.setAttribute("disabled", "disabled");
         btnSave.setAttribute("disabled", "disabled");
         btnSave.classList.remove("btn-active");

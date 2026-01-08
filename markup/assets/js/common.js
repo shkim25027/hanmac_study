@@ -145,9 +145,9 @@ function setActiveNavigation() {
     
     // 현재 경로와 링크의 href를 비교
     // onboarding.html이 포함되어 있으면 active 클래스 추가
-    if (currentPath.includes('onboarding.html') && href.includes('onboarding.html')) {
+    if (currentPath.includes('onboarding') && href.includes('onboarding')) {
       li.classList.add('active');
-    } else if (currentPath.includes('learning.html') && href.includes('learning.html')) {
+    } else if (currentPath.includes('learning') && href.includes('learning')) {
       li.classList.add('active');
     } else {
       // 다른 페이지에서는 active 제거 (필요한 경우)
