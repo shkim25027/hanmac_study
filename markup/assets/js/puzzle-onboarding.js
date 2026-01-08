@@ -2234,40 +2234,41 @@ class ModalManager {
    * @param {Function} onComplete - 높이 조정 완료 후 실행할 콜백
    */
   static _initializeHeightAdjustment(modal, modalState, onComplete) {
-    // ✅ 단계별 높이 조정 (지연 시간 증가)
-    const adjustmentSteps = [
-      { delay: 0, name: "즉시" },
-      { delay: 10, name: "nextFrame" },
-      { delay: 100, name: "100ms" },
-      { delay: 200, name: "200ms"},
-      { delay: 500, name: "500ms (완료)" }
-    ];
-  
-    adjustmentSteps.forEach((step, index) => {
-      if (step.delay === 10) {
-        requestAnimationFrame(() => {
-          console.log(`[ModalManager] ${step.name} 높이 조정`);
-          this._adjustModalContentHeight(modal, modalState);
-          this._adjustVideoListHeight(modal, modalState);
-        });
-      } else {
-        setTimeout(() => {
-          console.log(`[ModalManager] ${step.name} 높이 조정`);
-          this._adjustModalContentHeight(modal, modalState);
-          this._adjustVideoListHeight(modal, modalState);
-          
-          // 마지막 단계에서 완료 콜백 실행
-          if (index === adjustmentSteps.length - 1 && onComplete) {
-            onComplete();
-          }
-        }, step.delay);
+    // ✅ 최적화: 높이 조정을 3단계로 축소 (리플로우 최소화)
+    let pendingAdjust = null;
+    
+    const scheduleAdjust = () => {
+      if (pendingAdjust) {
+        cancelAnimationFrame(pendingAdjust);
+      }
+      pendingAdjust = requestAnimationFrame(() => {
+        this._adjustModalContentHeight(modal, modalState);
+        this._adjustVideoListHeight(modal, modalState);
+        pendingAdjust = null;
+      });
+    };
+
+    // 1단계: 즉시 시도 (첫 렌더링)
+    scheduleAdjust();
+
+    // 2단계: requestAnimationFrame (2프레임 대기)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scheduleAdjust();
+      });
+    });
+
+    // 3단계: 지연 시도 (이미지 로딩 대기 후)
+    this._waitForImagesAndAdjust(modal, modalState).then(() => {
+      scheduleAdjust();
+      if (onComplete) {
+        onComplete();
       }
     });
   
     // Observer 설정 (초기 로딩 후에만 작동)
     this._setupResizeObserver(modal, modalState);
     this._setupMutationObserver(modal, modalState);
-    this._waitForImagesAndAdjust(modal, modalState);
   }
 
   /**
@@ -2366,6 +2367,10 @@ class ModalManager {
     // comment-wrap 높이
     const commentWrapHeight = commentWrap ? commentWrap.offsetHeight : 0;
 
+    // comment-list-wrap 높이 (comment-wrap 내부에 있을 수 있음)
+    const commentListWrap = modal.querySelector(".comment-list-wrap");
+    const commentListWrapHeight = commentListWrap ? commentListWrap.offsetHeight : 0;
+
     // video-list의 제목 높이
     const videoListTitle = videoList.querySelector("h5.tit");
     const titleHeight = videoListTitle ? videoListTitle.offsetHeight : 0;
@@ -2380,7 +2385,9 @@ class ModalManager {
     const commentInfoOffset = commentInfo ? 40 : 0;
 
     // learning-list에 사용 가능한 최대 높이
+    // comment-list-wrap 높이도 고려 (comment-wrap과 별도로 계산)
     const availableHeight = totalHeight - headerHeight - commentWrapHeight - 
+                           (commentListWrapHeight > 0 ? commentListWrapHeight : 0) -
                            titleHeight - paddingTop - paddingBottom - 
                            commentInfoOffset - 20;
 
@@ -2393,7 +2400,7 @@ class ModalManager {
       return false;
     }
 
-    // ✅ 리스트의 실제 컨텐츠 높이 측정 (스타일 제거 후)
+    // ✅ learning-list의 실제 컨텐츠 높이 측정 (스타일 제거 후)
     const originalHeight = learningList.style.height;
     const originalOverflow = learningList.style.overflowY;
     
@@ -2405,24 +2412,51 @@ class ModalManager {
     learningList.style.height = originalHeight;
     learningList.style.overflowY = originalOverflow;
 
+    // ✅ video-list의 실제 컨텐츠 높이 측정 (comment-list-wrap 높이 고려)
+    const videoListOriginalHeight = videoList.style.height;
+    const videoListOriginalOverflow = videoList.style.overflowY;
+    
+    videoList.style.height = 'auto';
+    videoList.style.overflowY = 'visible';
+    
+    const videoListContentHeight = videoList.scrollHeight;
+    
+    videoList.style.height = videoListOriginalHeight;
+    videoList.style.overflowY = videoListOriginalOverflow;
+
+    // video-list에 사용 가능한 높이 계산 (comment-list-wrap 높이 고려)
+    // video-list는 learning-list와 별도로 존재하므로, comment-list-wrap 높이를 고려한 전체 사용 가능 높이 사용
+    const videoListAvailableHeight = totalHeight - headerHeight - commentWrapHeight - 
+                                    (commentListWrapHeight > 0 ? commentListWrapHeight : 0) -
+                                    titleHeight - paddingTop - paddingBottom - 
+                                    commentInfoOffset - 20;
+
     // 컨텐츠가 적으면 컨텐츠 높이만큼, 많으면 사용 가능한 높이만큼
     const listHeight = Math.min(listContentHeight, availableHeight);
+    const videoListHeight = Math.min(videoListContentHeight, videoListAvailableHeight);
 
     // 최소 높이 보장
     const finalHeight = Math.max(listHeight, 100);
+    const videoListFinalHeight = Math.max(videoListHeight, 100);
 
     // ✅ 현재 설정된 높이 확인
     const currentHeight = learningList.style.height
       ? parseInt(learningList.style.height)
       : learningList.offsetHeight;
+    
+    const videoListCurrentHeight = videoList.style.height
+      ? parseInt(videoList.style.height)
+      : videoList.offsetHeight;
 
     // 스크롤 필요 여부 확인
     const needsScroll = listContentHeight > availableHeight;
+    const videoListNeedsScroll = videoListContentHeight > videoListAvailableHeight;
 
     console.log("[ModalManager] 높이 측정 성공:", {
       totalHeight,
       headerHeight,
       commentWrapHeight,
+      commentListWrapHeight,
       titleHeight,
       paddingTop,
       paddingBottom,
@@ -2432,15 +2466,33 @@ class ModalManager {
       finalHeight,
       currentHeight,
       needsScroll,
+      videoListContentHeight,
+      videoListAvailableHeight,
+      videoListHeight,
+      videoListFinalHeight,
+      videoListCurrentHeight,
+      videoListNeedsScroll,
       savedScrollTop,
     });
 
     // ✅ 높이가 실제로 변경되는 경우에만 스타일 업데이트
     const heightChanged = Math.abs(currentHeight - finalHeight) > 1;
+    const videoListHeightChanged = Math.abs(videoListCurrentHeight - videoListFinalHeight) > 1;
 
     if (heightChanged) {
       learningList.style.height = finalHeight + "px";
       learningList.style.overflowY = needsScroll ? "auto" : "hidden";
+    }
+
+    // ✅ video-list 높이 및 스크롤 설정 (overflow-y: hidden 제거, CSS 기본값 사용)
+    if (videoListHeightChanged) {
+      videoList.style.height = videoListFinalHeight + "px";
+    }
+    // 스크롤이 필요할 때만 auto 설정, 필요 없을 때는 CSS 기본값 사용
+    if (videoListNeedsScroll) {
+      videoList.style.overflowY = "auto";
+    } else {
+      videoList.style.overflowY = ""; // CSS 기본값 사용
     }
 
     // ✅ 컨텐츠 높이를 CSS 변수로 설정 (::before 요소에서 사용)
@@ -2468,23 +2520,29 @@ class ModalManager {
     if (!videoSide) return;
   
     if (!modal._resizeObserver) {
+      // ✅ throttle 적용 (리플로우 최소화)
+      const throttledAdjust = Utils.throttle(() => {
+        if (!modalState.isInitialLoadComplete) {
+          return;
+        }
+        
+        let pendingAdjust = null;
+        if (pendingAdjust) {
+          cancelAnimationFrame(pendingAdjust);
+        }
+        pendingAdjust = requestAnimationFrame(() => {
+          this._adjustModalContentHeight(modal, modalState);
+          this._adjustVideoListHeight(modal, modalState);
+          pendingAdjust = null;
+        });
+      }, 100); // 100ms throttle
+
       modal._resizeObserver = new ResizeObserver((entries) => {
         // ✅ 초기 로딩 중에는 무시
         if (!modalState.isInitialLoadComplete) {
-          console.log("[ModalManager] 초기 로딩 중 - ResizeObserver 무시");
           return;
         }
-  
-        // ✅ 디바운스 시간 증가 (50ms → 150ms)
-        if (modal._heightAdjustTimer) {
-          clearTimeout(modal._heightAdjustTimer);
-        }
-        
-        modal._heightAdjustTimer = setTimeout(() => {
-          console.log("[ModalManager] ResizeObserver 감지: 높이 재조정");
-          this._adjustModalContentHeight(modal, modalState);
-          this._adjustVideoListHeight(modal, modalState);
-        }, 150);
+        throttledAdjust();
       });
   
       modal._resizeObserver.observe(videoSide);
@@ -2496,23 +2554,25 @@ class ModalManager {
       }
     }
   
-    // Window resize 이벤트
+    // Window resize 이벤트 (throttle 적용)
     if (!modal._windowResizeHandler) {
-      modal._windowResizeHandler = () => {
-        // ✅ 초기 로딩 중에는 무시
+      const throttledResize = Utils.throttle(() => {
         if (!modalState.isInitialLoadComplete) {
           return;
         }
-  
-        if (modal._heightAdjustTimer) {
-          clearTimeout(modal._heightAdjustTimer);
+        
+        let pendingAdjust = null;
+        if (pendingAdjust) {
+          cancelAnimationFrame(pendingAdjust);
         }
-        modal._heightAdjustTimer = setTimeout(() => {
-          console.log("[ModalManager] Window resize 감지: 높이 재조정");
+        pendingAdjust = requestAnimationFrame(() => {
           this._adjustModalContentHeight(modal, modalState);
           this._adjustVideoListHeight(modal, modalState);
-        }, 150);
-      };
+          pendingAdjust = null;
+        });
+      }, 100); // 100ms throttle
+
+      modal._windowResizeHandler = throttledResize;
       window.addEventListener("resize", modal._windowResizeHandler);
     }
   }
@@ -2555,15 +2615,21 @@ class ModalManager {
           return;
         }
   
-        // ✅ 디바운스 시간 증가
-        if (modal._heightAdjustTimer) {
-          clearTimeout(modal._heightAdjustTimer);
+        // ✅ throttle 적용 (리플로우 최소화)
+        if (!modal._mutationThrottle) {
+          modal._mutationThrottle = Utils.throttle(() => {
+            let pendingAdjust = null;
+            if (pendingAdjust) {
+              cancelAnimationFrame(pendingAdjust);
+            }
+            pendingAdjust = requestAnimationFrame(() => {
+              this._adjustModalContentHeight(modal, modalState);
+              this._adjustVideoListHeight(modal, modalState);
+              pendingAdjust = null;
+            });
+          }, 100); // 100ms throttle
         }
-        modal._heightAdjustTimer = setTimeout(() => {
-          console.log("[ModalManager] MutationObserver 감지: 높이 재조정");
-          this._adjustModalContentHeight(modal, modalState);
-          this._adjustVideoListHeight(modal, modalState);
-        }, 150);
+        modal._mutationThrottle();
       });
   
       modal._mutationObserver.observe(learningList, {

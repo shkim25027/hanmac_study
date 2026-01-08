@@ -73,12 +73,13 @@
       };
     </script>
 
-    <script src="./assets/js/learning/config.js"></script>
-    <script src="./assets/js/learning/gauge.js"></script>
-    <script src="./assets/js/learning/markers.js"></script>
-    <script src="./assets/js/learning/chapter-cards.js"></script>
-    <script src="./assets/js/learning/progress-indicator.js"></script>
-    <script src="./assets/js/learning/modal.js"></script>
-    <script src="./assets/js/learning/main.js"></script>
+    <!-- 학습 페이지 스크립트 (의존성 순서 유지하며 defer로 비동기 로드) -->
+    <script src="./assets/js/learning/config.js" defer></script>
+    <script src="./assets/js/learning/gauge.js" defer></script>
+    <script src="./assets/js/learning/markers.js" defer></script>
+    <script src="./assets/js/learning/chapter-cards.js" defer></script>
+    <script src="./assets/js/learning/progress-indicator.js" defer></script>
+    <script src="./assets/js/learning/modal.js" defer></script>
+    <script src="./assets/js/learning/main.js" defer></script>
   </body>
 </html>

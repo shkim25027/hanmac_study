@@ -24,6 +24,11 @@ const browserSync = browserSyncLib.create();
 const sassCompiler = gulpSass(sass);
 
 // ------------------------------------
+// Build Mode (NODE_ENV 또는 환경 변수로 제어)
+// ------------------------------------
+const isProduction = process.env.NODE_ENV === "production" || process.env.BUILD_MODE === "production";
+
+// ------------------------------------
 // Paths
 // ------------------------------------
 const paths = {
@@ -89,6 +94,9 @@ function fonts() {
 
 // Images
 function images() {
+  // 프로덕션 빌드에서는 더 높은 최적화 레벨 사용
+  const optimizationLevel = isProduction ? 5 : 3;
+  
   return src(paths.img.src, {
     encoding: false,
     buffer: true,
@@ -96,36 +104,38 @@ function images() {
     .pipe(
       imagemin(
         [
-          //0: 최적화 안 함 (빠름, 용량 큰 편)
-          //3: 적당한 최적화 (속도와 용량 균형) ✅ 권장
-          //5: 기본값 (더 작은 용량, 좀 더 느림)
-          //7: 최대 최적화 (가장 작은 용량, 매우 느림)
-          imagemin.optipng({ optimizationLevel: 3 }), // 5 대신 3으로 낮춤
+          imagemin.optipng({ optimizationLevel }),
           imagemin.svgo({
             plugins: [{ name: "removeViewBox", active: false }],
           }),
         ],
-
         {
-          verbose: true, // 로그 출력
+          verbose: isProduction, // 프로덕션에서만 로그 출력
         }
       )
     )
     .pipe(dest(paths.img.dest));
-  //return src(paths.img.src).pipe(imagemin()).pipe(dest(paths.img.dest));
-  // return src(paths.img.src).pipe(dest(paths.img.dest));
 }
 
 // SCSS → CSS
 function scss() {
+  const postcssPlugins = [autoprefixer()];
+  
+  // 프로덕션 빌드에서만 CSS 압축
+  if (isProduction) {
+    postcssPlugins.push(
+      cssnano({
+        preset: ["default", { discardComments: { removeAll: true } }],
+      })
+    );
+  }
+  
   return (
     src([paths.scss.src, paths.scss.ignore])
       .pipe(
         sassCompiler({ quietDeps: true }).on("error", sassCompiler.logError)
       )
-      .pipe(postcss([autoprefixer()])) // 압축 안됨
-      //.pipe(postcss([autoprefixer(), cssnano()]))  // 압축
-      //.pipe(rename({ suffix: ".min" }))
+      .pipe(postcss(postcssPlugins))
       .pipe(dest(paths.scss.dest))
       .pipe(browserSync.stream())
   );
@@ -138,15 +148,28 @@ function csscopy() {
 
 // JS
 function scripts() {
-  return (
-    src([paths.js.src, paths.js.ignore], { base: "./markup/assets/js" })
-      // .pipe(concat("common.js"))
-      //.pipe(babel({ presets: ["@babel/preset-env"] }))
-      //.pipe(terser())
-      // .pipe(rename({ suffix: ".min" }))
-      .pipe(dest(paths.js.dest))
-      .pipe(browserSync.stream())
-  );
+  let stream = src([paths.js.src, paths.js.ignore], { base: "./markup/assets/js" });
+  
+  // 프로덕션 빌드에서만 JavaScript 압축 및 최적화
+  if (isProduction) {
+    stream = stream
+      .pipe(
+        terser({
+          compress: {
+            drop_console: true, // console.log 제거
+            drop_debugger: true, // debugger 제거
+            pure_funcs: ["console.log", "console.info", "console.debug"], // 특정 함수 제거
+          },
+          format: {
+            comments: false, // 주석 제거
+          },
+        })
+      );
+  }
+  
+  return stream
+    .pipe(dest(paths.js.dest))
+    .pipe(browserSync.stream());
 }
 
 // JS Library copy
@@ -208,6 +231,7 @@ function serve() {
 // Series / Parallel Tasks
 // ------------------------------------
 
+// 프로덕션 빌드 (압축 및 최적화 포함)
 const build = series(
   clean,
   parallel(
@@ -225,6 +249,7 @@ const build = series(
   cache
 );
 
+// 개발 빌드 (압축 없음, 빠른 빌드)
 const dev = series(
   clean,
   parallel(

@@ -134,6 +134,7 @@ class MarkerManager {
 
     const img = document.createElement("img");
     img.style.height = "auto";
+    img.loading = "lazy";
     marker.appendChild(img);
     this.markersContainer.appendChild(marker);
 

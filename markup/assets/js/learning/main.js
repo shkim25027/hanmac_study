@@ -151,5 +151,22 @@ class LearningApp {
   }
 }
 
-// 앱 시작
-window.learningApp = new LearningApp();
+// 앱 시작 (모든 defer 스크립트가 로드된 후 실행)
+// VideoModal이 정의될 때까지 대기
+function initLearningApp() {
+  if (typeof VideoModal === 'undefined') {
+    // VideoModal이 아직 로드되지 않았으면 재시도
+    setTimeout(initLearningApp, 10);
+    return;
+  }
+  
+  window.learningApp = new LearningApp();
+}
+
+// DOMContentLoaded는 defer 스크립트가 모두 로드된 후에 발생
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initLearningApp);
+} else {
+  // 이미 로드된 경우 즉시 시도
+  initLearningApp();
+}

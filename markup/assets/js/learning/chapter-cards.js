@@ -129,6 +129,7 @@ class ChapterCardManager {
     thumbnail.className = "card-thumbnail";
     thumbnail.src = `./assets/images/learning/img_learning_0${(chapterIndex % 6) + 1}.jpg`;
     thumbnail.alt = chapter.name;
+    thumbnail.loading = "lazy";
     thumbnailContainer.appendChild(thumbnail);
 
     // 플레이 버튼
@@ -136,6 +137,7 @@ class ChapterCardManager {
     playButton.className = "card-play-button";
     playButton.src = this._getPlayButtonImagePath(state);
     playButton.alt = "재생";
+    playButton.loading = "lazy";
     thumbnailContainer.appendChild(playButton);
 
     // 스탬프 아이콘 추가 (completed 상태일 때만 표시)

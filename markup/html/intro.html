@@ -147,10 +147,10 @@
       }
     </script>
 
-    <!-- 외부 스크립트 파일 로드 -->
-    <script src="./assets/js/intro/animation.js"></script>
-    <script src="./assets/js/intro/section.js"></script>
-    <script src="./assets/js/intro/events.js"></script>
-    <script src="./assets/js/intro/init.js"></script>
+    <!-- 외부 스크립트 파일 로드 (의존성 순서 유지하며 defer로 비동기 로드) -->
+    <script src="./assets/js/intro/animation.js" defer></script>
+    <script src="./assets/js/intro/section.js" defer></script>
+    <script src="./assets/js/intro/events.js" defer></script>
+    <script src="./assets/js/intro/init.js" defer></script>
   </body>
 </html>

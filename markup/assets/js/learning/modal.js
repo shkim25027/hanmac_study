@@ -29,7 +29,7 @@ class VideoModal extends VideoModalBase {
     this._setupKeyboardEvents();
   }
 
-  /**
+      /**
    * 챕터 기반으로 비디오 모달 로드
    * @param {Object} chapter - 챕터 데이터
    * @param {number} chapterIndex - 챕터 인덱스
@@ -64,7 +64,7 @@ class VideoModal extends VideoModalBase {
     }
   }
 
-  /**
+      /**
    * 비디오 모달 로드 (기존 호환성 유지)
    * @param {Object} videoData - 비디오 데이터
    * @param {number} currentIndex - 현재 전역 인덱스
@@ -154,7 +154,7 @@ class VideoModal extends VideoModalBase {
     }
   }
 
-  /**
+      /**
    * 모달 HTML 가져오기 (VideoModalBase 활용)
    * @private
    */
@@ -163,7 +163,7 @@ class VideoModal extends VideoModalBase {
     return await this.loadModalHTML("learning");
   }
 
-  /**
+      /**
    * 모달 HTML 파싱 (VideoModalBase 활용)
    * @private
    */
@@ -172,7 +172,7 @@ class VideoModal extends VideoModalBase {
     return this.createModalFromHTML(modalHTML, modalType);
   }
 
-  /**
+      /**
    * 비디오 설정 (VideoModalBase 활용)
    * @private
    */
@@ -182,7 +182,7 @@ class VideoModal extends VideoModalBase {
     this.setupVideo(modalElement, videoData);
   }
 
-  /**
+      /**
    * 모달 컨텐츠 업데이트
    * @private
    */
@@ -199,7 +199,7 @@ class VideoModal extends VideoModalBase {
     }
   }
 
-  /**
+      /**
    * 제목 업데이트
    * @private
    */
@@ -211,7 +211,7 @@ class VideoModal extends VideoModalBase {
     if (currentLesson) currentLesson.textContent = label;
   }
 
-  /**
+      /**
    * 진행률 업데이트 (현재 챕터 기준)
    * @private
    */
@@ -274,7 +274,7 @@ class VideoModal extends VideoModalBase {
     );
   }
 
-  /**
+      /**
    * 학습 목차 생성 (현재 챕터만)
    * @private
    */
@@ -333,7 +333,7 @@ class VideoModal extends VideoModalBase {
     });
   }
 
-  /**
+      /**
    * 학습 목차 상태만 업데이트 (목록 재생성 없이)
    * @private
    */
@@ -400,7 +400,7 @@ class VideoModal extends VideoModalBase {
     });
   }
 
-  /**
+      /**
    * 목차 항목 생성
    * @private
    */
@@ -465,7 +465,7 @@ class VideoModal extends VideoModalBase {
     return li;
   }
 
-  /**
+      /**
    * 상태 텍스트 반환
    * @private
    */
@@ -476,7 +476,7 @@ class VideoModal extends VideoModalBase {
     return "미진행";
   }
 
-  /**
+      /**
    * 목차 항목 이벤트 설정
    * @private
    */
@@ -493,7 +493,7 @@ class VideoModal extends VideoModalBase {
     });
   }
 
-  /**
+      /**
    * 모달 표시
    * @private
    */
@@ -520,7 +520,7 @@ class VideoModal extends VideoModalBase {
   // 스크롤 관리
   // ============================================
 
-  /**
+      /**
    * 현재 학습 중인 항목으로 스크롤
    * @private
    */
@@ -561,7 +561,7 @@ class VideoModal extends VideoModalBase {
     this._highlightCurrentLesson(currentItem);
   }
 
-  /**
+      /**
    * 현재 학습 항목 시각적 강조
    * @private
    */
@@ -580,7 +580,7 @@ class VideoModal extends VideoModalBase {
   // 높이 조정
   // ============================================
 
-  /**
+      /**
    * 높이 조정 초기화
    * @private
    * @param {Function} onComplete - 높이 조정 완료 후 실행할 콜백
@@ -629,7 +629,7 @@ class VideoModal extends VideoModalBase {
     this._waitForImagesAndAdjust();
   }
 
-  /**
+      /**
    * 모달 컨텐츠 높이 조정
    * 높이가 화면 높이의 80% 이상일 때만 조절하고, 아닐 경우 80%로 유지
    * @private
@@ -671,7 +671,7 @@ class VideoModal extends VideoModalBase {
     });
   }
 
-  /**
+      /**
    * 학습 목록 높이 조정
    * @private
    */
@@ -782,7 +782,7 @@ class VideoModal extends VideoModalBase {
     });
   }
 
-  /**
+      /**
    * ResizeObserver 설정
    * @private
    */
@@ -828,7 +828,7 @@ class VideoModal extends VideoModalBase {
     window.addEventListener("resize", this._windowResizeHandler);
   }
 
-  /**
+      /**
    * MutationObserver 설정
    * @private
    */
@@ -884,7 +884,7 @@ class VideoModal extends VideoModalBase {
     });
   }
 
-  /**
+      /**
    * 이미지 로딩 대기 후 높이 조정
    * @private
    */
@@ -935,7 +935,7 @@ class VideoModal extends VideoModalBase {
   // 이벤트 핸들러
   // ============================================
 
-  /**
+      /**
    * 닫기 이벤트 설정
    * @private
    */
@@ -950,7 +950,7 @@ class VideoModal extends VideoModalBase {
     };
   }
 
-  /**
+      /**
    * 키보드 이벤트 설정
    * @private
    */
@@ -964,10 +964,10 @@ class VideoModal extends VideoModalBase {
     });
   }
 
-  /**
+      /**
    * 모달 닫기
    */
-  close() {
+      lose() {
     if (!this.currentModal) return;
 
     const iframe = this.currentModal.querySelector("#videoFrame");
@@ -1008,10 +1008,10 @@ class VideoModal extends VideoModalBase {
     }
   }
 
-  /**
+      /**
    * 모달 제거 (VideoModalBase 활용)
    */
-  destroy() {
+      estroy() {
     if (this.currentModal) {
       // 이전 모달 닫을 때 완료 처리 (학습 페이지 특화)
       if (this.currentLearningIndex !== null) {

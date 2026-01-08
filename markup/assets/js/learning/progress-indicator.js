@@ -261,7 +261,7 @@ class ProgressIndicator {
         console.error("[ProgressIndicator] SVG 로드 실패:", error);
         // 폴백: img 태그 사용
         this.stateIndicator.innerHTML = `
-          <img src="${stateImage}" alt="학습 상태" class="state-image ${stateType}" />
+          <img src="${stateImage}" alt="학습 상태" class="state-image ${stateType}" loading="lazy" />
         `;
         this._positionStateIndicatorOnMarker(currentProgress);
       });

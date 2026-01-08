@@ -48,7 +48,7 @@ class VideoCardRenderer {
     const cardContent = `
       <a href="#" class="card" data-video-id="${videoModel.id}">
         <div class="thumb">
-          <img src="${thumbnailUrl}" alt="${videoModel.title}" />
+          <img src="${thumbnailUrl}" alt="${videoModel.title}" loading="lazy" />
         </div>
         <div class="txt-box">
           <label class="bookmark" for="like_chk${videoModel.id}" onclick="event.stopPropagation();">

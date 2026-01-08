@@ -79,11 +79,14 @@
 
       <!-- // container -->
     </div>
-    <script src="./assets/js/main/VideoCardRenderer.js"></script>
-    <script src="./assets/js/main/VideoSlider.js"></script>
-    <script src="./assets/js/main/Videomodalmanager.js"></script>
-    <script src="./assets/js/main/Gaugechart.js"></script>
+    <!-- 메인 페이지 스크립트 (의존성 순서 유지하며 defer로 비동기 로드) -->
+    <script src="./assets/js/main/VideoCardRenderer.js" defer></script>
+    <script src="./assets/js/main/VideoSlider.js" defer></script>
+    <script src="./assets/js/main/Videomodalmanager.js" defer></script>
+    <script src="./assets/js/main/Gaugechart.js" defer></script>
     <script>
+      // defer 스크립트가 로드된 후 실행되도록 DOMContentLoaded 사용
+      document.addEventListener("DOMContentLoaded", function() {
       const videos = [
         {
           id: 1,
@@ -403,6 +406,7 @@
           }
         };
       });
+      }); // DOMContentLoaded 종료
     </script>
   </body>
 </html>

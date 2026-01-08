@@ -40,6 +40,8 @@ class VideoModalBase extends ModalBase {
     this.resizerCleanup = null;
     this._retryCount = 0;
     this._isAdjustingHeight = false;
+    this._pendingHeightAdjust = null; // 배치 처리를 위한 대기 중인 조정
+    this._lastHeightValues = {}; // 마지막 높이 값 캐시 (불필요한 재계산 방지)
   }
 
   /**
@@ -416,24 +418,24 @@ class VideoModalBase extends ModalBase {
   // ========================================
 
   /**
-   * 높이 조정 초기화
+   * 높이 조정 초기화 (리플로우 최적화)
    * @param {HTMLElement} modalElement - 모달 요소
    */
   initializeHeightAdjustment(modalElement) {
-    // 1단계: 즉시 시도
-    this.adjustVideoListHeight(modalElement);
+    // 1단계: 즉시 시도 (첫 렌더링)
+    this._scheduleHeightAdjust(modalElement);
 
     // 2단계: requestAnimationFrame (2프레임 대기)
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        this.adjustVideoListHeight(modalElement);
+        this._scheduleHeightAdjust(modalElement);
       });
     });
 
-    // 3-5단계: 지연 시도
+    // 3-5단계: 지연 시도 (배치 처리)
     [50, 100, 200].forEach((delay) => {
       setTimeout(() => {
-        this.adjustVideoListHeight(modalElement);
+        this._scheduleHeightAdjust(modalElement);
       }, delay);
     });
 
@@ -445,6 +447,21 @@ class VideoModalBase extends ModalBase {
 
     // 8단계: 이미지 로딩 대기
     this.waitForImagesAndAdjust(modalElement);
+  }
+
+  /**
+   * 높이 조정 스케줄링 (리플로우 최소화를 위한 배치 처리)
+   * @private
+   * @param {HTMLElement} modalElement - 모달 요소
+   */
+  _scheduleHeightAdjust(modalElement) {
+    if (this._pendingHeightAdjust) {
+      cancelAnimationFrame(this._pendingHeightAdjust);
+    }
+    this._pendingHeightAdjust = requestAnimationFrame(() => {
+      this.adjustVideoListHeight(modalElement);
+      this._pendingHeightAdjust = null;
+    });
   }
 
   /**
@@ -461,12 +478,13 @@ class VideoModalBase extends ModalBase {
       this.resizeObserver.disconnect();
     }
 
+    // throttled 높이 조정 함수 (리플로우 최소화)
+    const throttledAdjustHeight = Utils.throttle(() => {
+      this._scheduleHeightAdjust(modalElement);
+    }, 100); // 100ms throttle
+
     this.resizeObserver = new ResizeObserver((entries) => {
-      clearTimeout(this.heightAdjustTimer);
-      this.heightAdjustTimer = setTimeout(() => {
-        console.log("ResizeObserver 감지: 높이 재조정");
-        this.adjustVideoListHeight(modalElement);
-      }, 50);
+      throttledAdjustHeight();
     });
 
     this.resizeObserver.observe(videoSide);
@@ -488,12 +506,13 @@ class VideoModalBase extends ModalBase {
       this.mutationObserver.disconnect();
     }
 
+    // throttled 높이 조정 함수 (리플로우 최소화)
+    const throttledAdjustHeight = Utils.throttle(() => {
+      this._scheduleHeightAdjust(modalElement);
+    }, 100); // 100ms throttle
+
     this.mutationObserver = new MutationObserver((mutations) => {
-      clearTimeout(this.heightAdjustTimer);
-      this.heightAdjustTimer = setTimeout(() => {
-        console.log("MutationObserver 감지: 높이 재조정");
-        this.adjustVideoListHeight(modalElement);
-      }, 50);
+      throttledAdjustHeight();
     });
 
     this.mutationObserver.observe(videoList, {
@@ -682,44 +701,50 @@ class VideoModalBase extends ModalBase {
       hasLearningList: !!learningList,
     });
 
-    // 높이가 실제로 변경되는 경우에만 스타일 업데이트
+    // 높이가 실제로 변경되는 경우에만 스타일 업데이트 (리플로우 최소화)
     const heightChanged = Math.abs(currentHeight - finalHeight) > 1;
-
-    if (heightChanged) {
-      targetList.style.height = finalHeight + "px";
-      targetList.style.overflowY = needsScroll ? "auto" : "hidden";
-    } else {
-      // 높이가 변경되지 않아도 스크롤 여부는 체크하여 업데이트
-      targetList.style.overflowY = needsScroll ? "auto" : "hidden";
-    }
     
-    // video-list가 별도로 있는 경우에도 스크롤 여부 체크
+    // 캐시 키 생성
+    const cacheKey = `${targetList.className}-${modalElement.id || 'default'}`;
+    const lastHeight = this._lastHeightValues[cacheKey];
+    
+    // 높이가 변경되지 않고, 스크롤 여부도 동일하면 스타일 업데이트 생략
+    if (!heightChanged && lastHeight === finalHeight && 
+        targetList.style.overflowY === (needsScroll ? "auto" : "hidden")) {
+      this._isAdjustingHeight = false;
+      return true; // 변경 없음, 조기 종료
+    }
+
+    // 스타일 업데이트를 requestAnimationFrame으로 배치
+    requestAnimationFrame(() => {
+      if (heightChanged) {
+        targetList.style.height = finalHeight + "px";
+      }
+      targetList.style.overflowY = needsScroll ? "auto" : "hidden";
+      
+      // 캐시 업데이트
+      this._lastHeightValues[cacheKey] = finalHeight;
+    });
+    
+    // video-list가 별도로 있는 경우에도 스크롤 여부 체크 (리플로우 최소화)
+    // overflow-y: hidden 제거, CSS 기본값 사용
     if (videoList && learningList) {
-      // learning-list가 있는 경우 video-list도 스크롤 여부 체크
-      const videoListContentHeight = videoList.scrollHeight;
-      const videoListAvailableHeight = videoList.clientHeight;
-      const videoListNeedsScroll = videoListContentHeight > videoListAvailableHeight;
-      
-      // video-list의 overflow는 hidden으로 유지 (learning-list만 스크롤)
-      videoList.style.overflowY = "hidden";
-      
-      console.log("[VideoModalBase] video-list 스크롤 체크:", {
-        videoListContentHeight,
-        videoListAvailableHeight,
-        videoListNeedsScroll
-      });
+      // learning-list가 있는 경우 video-list는 CSS 기본값 사용 (overflow-y 설정 안 함)
+      // learning-list만 스크롤 처리
     } else if (videoList && !learningList) {
       // video-list만 있는 경우 스크롤 여부 체크
       const videoListContentHeight = videoList.scrollHeight;
       const videoListAvailableHeight = videoList.clientHeight;
       const videoListNeedsScroll = videoListContentHeight > videoListAvailableHeight;
       
-      videoList.style.overflowY = videoListNeedsScroll ? "auto" : "hidden";
-      
-      console.log("[VideoModalBase] video-list 스크롤 체크:", {
-        videoListContentHeight,
-        videoListAvailableHeight,
-        videoListNeedsScroll
+      // requestAnimationFrame으로 배치하여 리플로우 최소화
+      requestAnimationFrame(() => {
+        // 스크롤이 필요할 때만 auto 설정, 필요 없을 때는 CSS 기본값 사용
+        if (videoListNeedsScroll) {
+          videoList.style.overflowY = "auto";
+        } else {
+          videoList.style.overflowY = ""; // CSS 기본값 사용
+        }
       });
     }
 
