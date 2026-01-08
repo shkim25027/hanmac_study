@@ -13,6 +13,7 @@ import imagemin from "gulp-imagemin"; //PNG, JPEG, GIF, SVG 이미지 용량 최
 import includer from "gulp-file-include"; //Gulp 빌드 시 정적 HTML 조립
 import prettier from "gulp-prettier"; //JS/CSS/HTML 코드 자동 포맷팅
 import { deleteAsync } from "del";
+import { existsSync } from "fs";
 
 const babel = await import("gulp-babel").then((mod) => mod.default || mod);
 const CacheBuster = await import("gulp-cachebust").then(
@@ -143,7 +144,15 @@ function scss() {
 
 // CSS Library copy
 function csscopy() {
-  return src(paths.csscopy.src).pipe(dest(paths.csscopy.dest));
+  // lib 디렉토리가 없으면 빈 스트림 반환 (오류 방지)
+  const libDir = "./markup/assets/css/lib";
+  if (!existsSync(libDir)) {
+    // 빈 스트림 반환 (완료된 Promise 반환)
+    return new Promise((resolve) => {
+      resolve();
+    });
+  }
+  return src(paths.csscopy.src, { allowEmpty: true }).pipe(dest(paths.csscopy.dest));
 }
 
 // JS
@@ -174,7 +183,15 @@ function scripts() {
 
 // JS Library copy
 function jscopy() {
-  return src(paths.jscopy.src).pipe(dest(paths.jscopy.dest));
+  // lib 디렉토리가 없으면 빈 스트림 반환 (오류 방지)
+  const libDir = "./markup/assets/js/lib";
+  if (!existsSync(libDir)) {
+    // 빈 스트림 반환 (완료된 Promise 반환)
+    return new Promise((resolve) => {
+      resolve();
+    });
+  }
+  return src(paths.jscopy.src, { allowEmpty: true }).pipe(dest(paths.jscopy.dest));
 }
 
 // HTML SSI
