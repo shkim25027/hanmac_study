@@ -1036,7 +1036,8 @@ class VideoModalBase extends ModalBase {
     const adjustedHeight = Math.min(finalHeight, maxHeight);
 
     commentListWrap.style.height = adjustedHeight + "px";
-    commentListWrap.style.overflowY = adjustedHeight >= maxHeight ? "auto" : "hidden";
+    // overflow-y는 CSS로 관리 (인라인 스타일 제거)
+    commentListWrap.style.overflowY = "";
 
     console.log("[VideoModalBase] comment-list-wrap 높이 조정:", {
       scrollHeight,
