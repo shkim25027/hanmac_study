@@ -715,18 +715,7 @@ class MarkerManager {
         .completion-background svg {
           position: relative;
         }
-        /* 상단 왼쪽 영역(대략 0-600px x, 0-300px y) 마스킹 - 배경색으로 덮기 */
-        .completion-background::before {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 70%;
-          background: linear-gradient(180deg, #f9f5f2 0%, #ece3d2 100%);
-          z-index: 0;
-          pointer-events: none;
-        }
+
       `;
       document.head.appendChild(style);
     }

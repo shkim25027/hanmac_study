@@ -333,6 +333,7 @@ class GaugeChart {
     this.svg.appendChild(text);
 
     const textPath = text.querySelector("textPath");
+
     const finalOffset = this._calculateTextOffset(value, percent);
 
     if (shouldAnimate) {
@@ -345,10 +346,17 @@ class GaugeChart {
     } else {
       textPath.setAttribute("startOffset", `${finalOffset}%`);
     }
+
+    // 클릭 이벤트 추가: mypage.html로 이동
+    text.style.cursor = "pointer";
+    text.addEventListener("click", () => {
+      window.location.href = "mypage.html";
+    });
   }
 
   _createTextElement(label, value, percent, maxValue) {
     const text = this._createSVGElement("text");
+    text.setAttribute("class", "my-learning-text");
     text.setAttribute("font-size", "16");
     text.setAttribute("font-weight", "700");
     text.setAttribute("fill", "#FFF");
