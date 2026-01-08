@@ -438,9 +438,17 @@ h5 {
         .meta {
           font-size: 14px;
           color: var(--text-video-primary);
-
           span {
+            position: relative;
+            display: inline-block;
             color: var(--text-video-primary);
+            &::after{
+              content:" ";
+              display: inline-block;
+              width: 12px;
+              height: 10px;
+              background:url('../images/ico/ico_arrow_meta.svg') no-repeat center center;
+            }
           }
 
           em {

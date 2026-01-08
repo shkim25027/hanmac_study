@@ -215,7 +215,7 @@ class VideoModalBase extends ModalBase {
     const categorySpan = modalElement.querySelector(".meta span");
     if (categorySpan) {
       categorySpan.textContent = hasSubcate
-        ? videoData.category + " ＞ "
+        ? videoData.category
         : videoData.category;
     }
 
