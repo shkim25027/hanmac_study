@@ -34,7 +34,7 @@ const DEFAULT_CONFIG = {
   },
 
   IMAGE_PATHS: {
-    BASE: "./assets/images/onboarding/bg_piece.png",
+    BASE: "./assets/images/onboarding/bg_piece.jpg",
     COMPLETED: {
       ACTIVE: "./assets/images/onboarding/bg_piece_completed.png",
       COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png",

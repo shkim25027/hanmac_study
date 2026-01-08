@@ -215,11 +215,13 @@ $chapter-widths: (
         }
 
         &:not(.completed) {
+          .piece-overlay-base {
+            fill-opacity: 0.2;
+          }
           &[data-piece="1"],
           &[data-piece="6"] {
             .piece-overlay-base {
               fill: var(--bg-piece-1);
-              fill-opacity: 0.1;
             }
           }
 
@@ -229,7 +231,6 @@ $chapter-widths: (
           &[data-piece="5"] {
             .piece-overlay-base {
               fill: var(--bg-piece-2);
-              fill-opacity: 0.1;
             }
           }
 
@@ -237,7 +238,6 @@ $chapter-widths: (
           &[data-piece="8"] {
             .piece-overlay-base {
               fill: var(--bg-piece-3);
-              fill-opacity: 0.1;
             }
           }
 
@@ -245,7 +245,6 @@ $chapter-widths: (
           &[data-piece="10"] {
             .piece-overlay-base {
               fill: var(--bg-piece-4);
-              fill-opacity: 0.1;
             }
           }
         }
@@ -266,6 +265,7 @@ $chapter-widths: (
         }
       }
     }
+
   }
 }
 
