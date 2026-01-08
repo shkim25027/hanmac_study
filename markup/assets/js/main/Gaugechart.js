@@ -522,7 +522,7 @@ class GaugeChart {
 
   _addAverageLearningText(value, percent) {
     const text = this._createSVGElement("text");
-    text.setAttribute("font-size", "16");
+    text.setAttribute("font-size", "13");
     text.setAttribute("font-weight", "400");
     text.setAttribute("fill", "#4A4947");
 

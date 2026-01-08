@@ -67,12 +67,26 @@ function handleMouseMoveOnSection3(e) {
   const mouseX = e.clientX;
   const mouseY = e.clientY;
 
-  maskContainer.style.setProperty("--x", `${mouseX}px`);
-  maskContainer.style.setProperty("--y", `${mouseY}px`);
-
   const mainContainer = document.getElementById("mainContainer");
+  const mainContainerRect = mainContainer.getBoundingClientRect();
   const h1Elements = mainContainer.querySelectorAll("p");
+  const ctaBtn = document.querySelector(".cta-btn");
   let hovering = false;
+  let isCtaBtnHovering = false;
+
+  // .cta-btn 위에 마우스가 있는지 먼저 체크
+  if (ctaBtn) {
+    const ctaRect = ctaBtn.getBoundingClientRect();
+    if (
+      mouseX >= ctaRect.left &&
+      mouseX <= ctaRect.right &&
+      mouseY >= ctaRect.top &&
+      mouseY <= ctaRect.bottom
+    ) {
+      hovering = true;
+      isCtaBtnHovering = true;
+    }
+  }
 
   h1Elements.forEach((element) => {
     const h1Rect = element.getBoundingClientRect();
@@ -85,6 +99,14 @@ function handleMouseMoveOnSection3(e) {
       hovering = true;
     }
   });
+
+  // .cta-btn 위에 있을 때만 세로 위치 고정, 그 외에는 마우스 위치 따라감
+  const targetY = isCtaBtnHovering
+    ? mainContainerRect.top + mainContainerRect.height / 2.3
+    : mouseY;
+
+  maskContainer.style.setProperty("--x", `${mouseX}px`);
+  maskContainer.style.setProperty("--y", `${targetY}px`);
 
   const targetSize = hovering ? 380 : 30;
   maskContainer.style.setProperty("--size", `${targetSize}px`);

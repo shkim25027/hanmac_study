@@ -52,7 +52,7 @@ $transition-speed: 0.1s;
   &-card {
     position: relative;
     border-radius: $card-border-radius;
-
+    pointer-events: auto;
     &::before {
       @include card-hover-overlay;
       padding: 0;

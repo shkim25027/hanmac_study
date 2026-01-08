@@ -151,15 +151,17 @@ function resetSection3() {
  */
 function startAutoScrollTimer() {
   clearTimeout(INTRO_STATE.autoScrollTimer);
+  // 첫 번째 세션(섹션 0)일 때만 1500ms, 이후는 3000ms
+  const delay = INTRO_STATE.currentSection === 0 ? 1500 : 3000;
   INTRO_STATE.autoScrollTimer = setTimeout(() => {
     // 마지막 상호작용 후 설정된 시간이 지났는지 확인
     if (
       Date.now() - INTRO_STATE.lastInteractionTime >=
-      INTRO_CONFIG.autoScrollDelay
+      delay
     ) {
       handleScrollDown();
     }
-  }, INTRO_CONFIG.autoScrollDelay);
+  }, delay);
 }
 
 /**

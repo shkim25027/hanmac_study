@@ -255,10 +255,11 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
       position: absolute;
       width: 100%;
       height: $main-height;
-
+      pointer-events: none;
       .btn {
         &-prev,
         &-next {
+          pointer-events: auto;
           @include arrow-button-base;
         }
 
@@ -320,6 +321,7 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
     }
 
     &-card {
+      
       &:nth-child(3) {
         margin-left: -30%;
       }
