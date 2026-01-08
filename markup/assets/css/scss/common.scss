@@ -961,6 +961,7 @@ h5 {
       &-text {
         color: var(--text-comment-primary);
         height: 32px;
+        word-break: keep-all;
         overflow-y: hidden;
         &:disabled {
           background: none;
