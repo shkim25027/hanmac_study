@@ -455,7 +455,9 @@ html {
   right: 0;
   bottom: 0;
   width: 100%;
-  height: calc(100vh - 64px);
+  // 모바일 브라우저 주소창 변화에 대응하기 위해 var(--window-inner-height) 사용
+  // 100vh는 고정값이지만 window.innerHeight는 동적으로 변함
+  height: calc(var(--window-inner-height, 100vh) - 64px);
   margin-top: 0;
   overflow: auto;
   z-index: 1;

@@ -1,15 +1,25 @@
 /**
- * 비디오 모달 관리 클래스
+ * 비디오 모달 관리 클래스 (VideoModalBase 활용)
  */
-class VideoModal {
+class VideoModal extends VideoModalBase {
   constructor(config, markerManager) {
-    this.config = config;
+    super({
+      videos: [], // 학습 페이지는 videos 배열을 사용하지 않음
+      modalPath: config.modalPath || "./_modal/video-learning.html",
+      modalPathTemplate: config.modalPathTemplate || "./_modal/video-{type}.html",
+      enableHeightAdjustment: true,
+      enableCommentResizer: false,
+      enableCommentBox: false,
+    });
+
+    // VideoModalBase의 config와 학습 페이지 config 병합
+    this.config = { ...this.config, ...config };
     this.markerManager = markerManager;
     this.currentModal = null;
     this.currentLearningIndex = null;
     this.currentChapterInfo = null;
 
-    // 높이 조정 관련
+    // 높이 조정 관련 (VideoModalBase의 것과 별도로 관리)
     this.resizeObserver = null;
     this.mutationObserver = null;
     this.heightAdjustTimer = null;
@@ -42,6 +52,7 @@ class VideoModal {
 
       document.body.appendChild(modalElement);
       this.currentModal = modalElement;
+      this.currentModalElement = modalElement; // VideoModalBase 호환성
 
       const initialLesson = this.markerManager.allMarkers[initialLessonIndex];
       this._setupVideo(modalElement, initialLesson.url);
@@ -122,10 +133,11 @@ class VideoModal {
         console.log(`[VideoModal] 챕터 정보:`, this.currentChapterInfo);
 
         const modalHTML = await this._fetchModal();
-        const modalElement = this._parseModal(modalHTML, videoData.type);
+        const modalElement = this._parseModal(modalHTML, videoData.type || "learning");
 
         document.body.appendChild(modalElement);
         this.currentModal = modalElement;
+        this.currentModalElement = modalElement; // VideoModalBase 호환성
 
         this._setupVideo(modalElement, videoData.url);
         this._updateContent(modalElement, videoData, currentIndex);
@@ -143,45 +155,31 @@ class VideoModal {
   }
 
   /**
-   * 모달 HTML 가져오기
+   * 모달 HTML 가져오기 (VideoModalBase 활용)
    * @private
    */
   async _fetchModal() {
-    const response = await fetch(`${this.config.modalPath}?t=${Date.now()}`);
-    if (!response.ok) {
-      throw new Error(`모달 로드 실패: ${this.config.modalPath}`);
-    }
-    return await response.text();
+    // VideoModalBase의 loadModalHTML 메서드 활용
+    return await this.loadModalHTML("learning");
   }
 
   /**
-   * 모달 HTML 파싱
+   * 모달 HTML 파싱 (VideoModalBase 활용)
    * @private
    */
   _parseModal(modalHTML, modalType = "learning") {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(modalHTML, "text/html");
-    const modalElement = doc.querySelector(".modal.video");
-
-    if (!modalElement) {
-      throw new Error("모달 요소를 찾을 수 없습니다");
-    }
-
-    modalElement.id = "videoModal";
-    modalElement.setAttribute("data-type", modalType);
-
-    return modalElement;
+    // VideoModalBase의 createModalFromHTML 메서드 활용
+    return this.createModalFromHTML(modalHTML, modalType);
   }
 
   /**
-   * 비디오 설정
+   * 비디오 설정 (VideoModalBase 활용)
    * @private
    */
   _setupVideo(modalElement, videoUrl) {
-    const iframe = modalElement.querySelector("#videoFrame");
-    if (iframe) {
-      iframe.src = `https://www.youtube.com/embed/${videoUrl}?autoplay=1`;
-    }
+    // VideoModalBase의 setupVideo 메서드 활용
+    const videoData = { url: videoUrl, id: videoUrl };
+    this.setupVideo(modalElement, videoData);
   }
 
   /**
@@ -1011,11 +1009,11 @@ class VideoModal {
   }
 
   /**
-   * 모달 제거
+   * 모달 제거 (VideoModalBase 활용)
    */
   destroy() {
     if (this.currentModal) {
-      // 이전 모달 닫을 때 완료 처리
+      // 이전 모달 닫을 때 완료 처리 (학습 페이지 특화)
       if (this.currentLearningIndex !== null) {
         const currentLesson =
           this.markerManager.allMarkers[this.currentLearningIndex];
@@ -1040,7 +1038,13 @@ class VideoModal {
         this.currentChapterInfo = null;
       }
 
-      // Observer들 정리
+      // 비디오 중지 (VideoModalBase 활용)
+      const iframe = this.currentModal.querySelector("#videoFrame");
+      if (iframe) {
+        VideoBase.stop(iframe);
+      }
+
+      // Observer들 정리 (학습 페이지 특화 Observer)
       if (this.resizeObserver) {
         this.resizeObserver.disconnect();
         this.resizeObserver = null;
@@ -1066,8 +1070,13 @@ class VideoModal {
       // 재시도 카운터 초기화
       this._retryCount = 0;
 
+      // VideoModalBase의 cleanupObservers도 호출
+      super.cleanupObservers();
+
+      // 모달 제거
       this.currentModal.remove();
       this.currentModal = null;
+      this.currentModalElement = null; // VideoModalBase 호환성
     }
   }
 }

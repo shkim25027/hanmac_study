@@ -11,21 +11,35 @@
   type="image/svg+xml"
   href="/assets/images/favicon.svg"
 />
-<link rel="stylesheet" href="./assets/css/lib/aos.min.css" />
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="./assets/css/lib/swiper11.min.css"
-/>
+<!-- 사용하지 않는 CSS 라이브러리 제거됨:
+  - aos.min.css (사용 안 함)
+  - swiper11.min.css (사용 안 함)
+-->
 <link rel="stylesheet" type="text/css" href="./assets/css/common.css" />
 <link rel="stylesheet" type="text/css" href="./assets/css/style.css" />
 
-<script src="./assets/js/lib/jquery-3.6.1.min.js"></script>
-<script src="./assets/js/lib/aos.min.js"></script>
-<script src="./assets/js/lib/gsap.min.js"></script>
-<script src="./assets/js/lib/MotionPathPlugin.min.js"></script>
-<script src="./assets/js/lib/swiper11.min.js"></script>
-<script src="./assets/js/lib/scrolltrigger.min.js"></script>
+<!-- 사용하지 않는 라이브러리 제거됨:
+  - jquery-3.6.1.min.js (DOMUtils로 대체)
+  - aos.min.js (사용 안 함)
+  - gsap.min.js (사용 안 함)
+  - MotionPathPlugin.min.js (사용 안 함)
+  - swiper11.min.js (사용 안 함)
+  - scrolltrigger.min.js (사용 안 함)
+  - lenis.min.js (사용 안 함)
+  - lottie.min.js (사용 안 함)
+  - jquery.mCustomScrollbar.concat.min.js (사용 안 함)
+  - scrollToPlugin.min.js (사용 안 함)
+-->
+
+<!-- 공통 모듈 (common.js보다 먼저 로드) -->
+<script src="./assets/js/common/Utils.js"></script>
+<script src="./assets/js/common/DOMUtils.js"></script>
+<script src="./assets/js/common/AnimationUtils.js"></script>
+<script src="./assets/js/common/VideoBase.js"></script>
+<script src="./assets/js/common/ModalBase.js"></script>
+<script src="./assets/js/common/VideoModalBase.js"></script>
+<script src="./assets/js/common/ConfigManager.js"></script>
+<script src="./assets/js/common/GaugeBase.js"></script>
 
 <script src="./assets/js/common.js"></script>
 <title>배움터</title>

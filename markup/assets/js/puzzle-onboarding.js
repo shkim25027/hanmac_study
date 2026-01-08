@@ -2080,11 +2080,32 @@ static createBoundaryLines(svg) {
 }
 }
 // ============================================================================
-// 모달 관리 클래스 (개선 버전)
+// 모달 관리 클래스 (VideoModalBase 활용)
 // ============================================================================
 class ModalManager {
+  // VideoModalBase 인스턴스 저장
+  static videoModalBase = null;
+
   /**
-   * 챕터 모달 열기
+   * VideoModalBase 초기화
+   * @private
+   */
+  static _initVideoModalBase() {
+    if (!this.videoModalBase) {
+      this.videoModalBase = new VideoModalBase({
+        videos: [],
+        modalPath: "./_modal/video-onboarding.html",
+        modalPathTemplate: "./_modal/video-{type}.html",
+        enableHeightAdjustment: false, // onboarding은 자체 높이 조정 사용
+        enableCommentResizer: false,
+        enableCommentBox: false,
+      });
+    }
+    return this.videoModalBase;
+  }
+
+  /**
+   * 챕터 모달 열기 (VideoModalBase 활용)
    * @param {number} chapterIndex - 챕터 인덱스
    * @param {Object} chapter - 챕터 데이터
    */
@@ -2094,18 +2115,20 @@ class ModalManager {
     );
 
     try {
-      // 모달 HTML 로드
-      const response = await fetch("./_modal/video-onboarding.html");
-      if (!response.ok) throw new Error("모달 로드 실패");
-
-      const modalHTML = await response.text();
+      // VideoModalBase 초기화
+      const videoModalBase = this._initVideoModalBase();
       
       // 기존 모달 제거
       this._removeExistingModal();
 
-      // 새 모달 추가
-      document.body.insertAdjacentHTML("beforeend", modalHTML);
-      const modal = document.querySelector(".modal.video");
+      // VideoModalBase를 사용하여 모달 HTML 로드
+      const modalHTML = await videoModalBase.loadModalHTML("onboarding");
+      
+      // VideoModalBase를 사용하여 모달 요소 생성
+      const modal = videoModalBase.createModalFromHTML(modalHTML, "onboarding");
+      
+      // DOM에 추가
+      document.body.appendChild(modal);
       
       // ✅ 모달을 먼저 숨긴 상태로 표시 (높이 조정이 보이지 않도록)
       modal.style.display = "block";
@@ -2123,12 +2146,18 @@ class ModalManager {
   }
 
   /**
-   * 기존 모달 제거
+   * 기존 모달 제거 (VideoModalBase 활용)
    * @private
    */
   static _removeExistingModal() {
     const existingModal = document.querySelector(".modal.video");
     if (existingModal) {
+      // VideoBase를 사용하여 비디오 중지
+      const iframe = existingModal.querySelector("#videoFrame");
+      if (iframe) {
+        VideoBase.stop(iframe);
+      }
+
       // Observer들 정리
       if (existingModal._resizeObserver) {
         existingModal._resizeObserver.disconnect();
@@ -2143,6 +2172,11 @@ class ModalManager {
         window.removeEventListener("resize", existingModal._windowResizeHandler);
       }
       existingModal.remove();
+    }
+
+    // VideoModalBase 인스턴스도 정리
+    if (this.videoModalBase) {
+      this.videoModalBase.destroy();
     }
   }
 
@@ -2651,17 +2685,23 @@ class ModalManager {
   // ============================================================================
 
   /**
-   * 학습 로드
+   * 학습 로드 (VideoModalBase 활용)
    * @private
    */
   static _loadLesson(modal, chapter, lessonIndex) {
     const lesson = chapter.lessons[lessonIndex];
-    const iframe = modal.querySelector("#videoFrame");
+    const videoModalBase = this._initVideoModalBase();
     
+    // VideoModalBase의 setupVideo 메서드 활용
     if (chapter.type === "youtube" && lesson.url) {
-      iframe.src = `https://www.youtube.com/embed/${lesson.url}?autoplay=1`;
+      const videoData = { url: lesson.url, id: lesson.url };
+      videoModalBase.setupVideo(modal, videoData);
     } else if (chapter.type === "file") {
-      iframe.src = lesson.url || "";
+      // 파일 타입은 직접 설정
+      const iframe = modal.querySelector("#videoFrame");
+      if (iframe) {
+        iframe.src = lesson.url || "";
+      }
     }
 
     // 현재 강의 제목 업데이트
@@ -2799,8 +2839,11 @@ class ModalManager {
     const closeModal = () => {
       console.log(`[ModalManager] closeModal 호출 - currentLessonIndex: ${modalState.currentLessonIndex}`);
       
+      // VideoBase를 사용하여 비디오 중지
       const iframe = modal.querySelector("#videoFrame");
-      if (iframe) iframe.src = "";
+      if (iframe) {
+        VideoBase.stop(iframe);
+      }
 
       // 현재 학습 완료 처리
       const currentLesson = chapter.lessons[modalState.currentLessonIndex];

@@ -1,5 +1,6 @@
 // ============================================
 // 비디오 슬라이드 모듈 (페이지네이션)
+// 공통 모듈(DOMUtils, AnimationUtils, Utils) 활용
 // ============================================
 
 class VideoSlider {
@@ -17,8 +18,8 @@ class VideoSlider {
 
   // 이벤트 리스너 설정
   setupEventListeners() {
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    const prevBtn = DOMUtils.$("#prevBtn");
+    const nextBtn = DOMUtils.$("#nextBtn");
 
     if (prevBtn && nextBtn) {
       prevBtn.onclick = async (e) => {
@@ -49,14 +50,13 @@ class VideoSlider {
     return this.videos.slice(start, end);
   }
 
-  // 페이지 변경
+  // 페이지 변경 (AnimationUtils 활용)
   async changePage() {
-    const container = document.getElementById("videoCardsContainer");
+    const container = DOMUtils.$("#videoCardsContainer");
     if (!container) return;
 
     // 페이드 아웃 효과
-    container.classList.add("fade-out");
-    await this.delay(400);
+    await AnimationUtils.fade(container, "out", 400);
 
     // 외부 렌더링 함수 호출
     if (this.config.onPageChange) {
@@ -67,14 +67,14 @@ class VideoSlider {
     this.updatePagination();
 
     // 페이드 인 효과
-    container.classList.remove("fade-out");
+    await AnimationUtils.fade(container, "in", 400);
   }
 
   // 페이지네이션 업데이트
   updatePagination() {
-    const pagination = document.getElementById("pagination");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    const pagination = DOMUtils.$("#pagination");
+    const prevBtn = DOMUtils.$("#prevBtn");
+    const nextBtn = DOMUtils.$("#nextBtn");
 
     if (!pagination) return;
 
@@ -83,22 +83,17 @@ class VideoSlider {
 
     // 이전 버튼 상태
     if (prevBtn) {
-      prevBtn.classList.toggle("disabled", this.currentPage === 0);
+      DOMUtils.toggleClass(prevBtn, "disabled", this.currentPage === 0);
     }
 
     // 다음 버튼 상태
     if (nextBtn) {
-      nextBtn.classList.toggle("disabled", this.currentPage >= totalPages - 1);
+      DOMUtils.toggleClass(nextBtn, "disabled", this.currentPage >= totalPages - 1);
     }
   }
 
   // 전체 페이지 수
   getTotalPages() {
     return Math.ceil(this.videos.length / this.config.videosPerPage);
-  }
-
-  // 유틸리티: 딜레이
-  delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

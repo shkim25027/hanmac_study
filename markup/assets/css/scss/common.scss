@@ -359,9 +359,9 @@ h5 {
 
     .modal {
       &-content {
-        width: 72.9166%;
+        width:90%;
         max-width: $video-modal-width;
-        max-height: $video-modal-height;
+        height: $video-modal-height;
         padding: 0;
         background: var(--bg-video);
         border: none;
@@ -380,15 +380,19 @@ h5 {
       &-contents {
         display: flex;
         flex-direction: column;
-        max-height: $video-modal-height;
+        height: $video-modal-height;
         border-right: 1px solid var(--border-video);
       }
-
+      &-area{
+        flex:1;
+        border-bottom: 1px solid var(--border-video);
+        @include flex();
+      }
       &-box {
         position: relative;
         flex-shrink: 0;
+        width: 100%;
         padding-top: 56.0405%;
-        border-bottom: 1px solid var(--border-video);
         overflow: hidden;
 
         iframe {
@@ -401,8 +405,7 @@ h5 {
       }
 
       &-info {
-        flex: 1;
-        min-height: 0;
+        height: 188px;
         padding: 0 36px;
         text-align: left;
         color: var(--text-revers);
@@ -466,10 +469,25 @@ h5 {
           &:has(.comment-list) {
             border-top: 1px solid var(--border-video);
             box-shadow: var(--shadow-comment);
+           
           }
+          
         }
 
         &.step {
+          &:has(.comment-wrap){
+            .learning-list{
+              max-height: 574.5px;
+            }
+          }
+          &:has(:not(.comment-wrap)){
+            .video-list {
+              padding-bottom: 20px;       
+            }
+            .learning-list{
+              max-height: 646.5px;
+            }
+          }
           .video-header {
             flex-direction: column;
             background:
@@ -565,6 +583,7 @@ h5 {
             padding-top: 20px;
      
           }
+         
         }
       }
 
@@ -594,10 +613,12 @@ h5 {
         overflow-y: auto;
         align-self: start;
         @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
+       
         .tit {
           color: #fff;
           margin-bottom: 8px;
         }
+
       }
     }
 
@@ -732,9 +753,7 @@ h5 {
       flex-grow: 1;
       color: var(--text-revers);
       background: var(--bg-textarea);
-      min-height: 32px;
-      max-height: 82px;
-      height: a;
+      height: 32px;
       overflow-y: auto;
       border-radius: 4px;
       padding: 6px 8px;
@@ -896,6 +915,7 @@ h5 {
     overflow-y: auto;
     overflow-x: hidden;
     flex-shrink: 0;
+    max-height: 340px;
     @include scrollbar-light;
   }
   &-list {
@@ -932,6 +952,8 @@ h5 {
       }
       &-text {
         color: var(--text-comment-primary);
+        height: 32px;
+        overflow-y: hidden;
         &:disabled {
           background: none;
         }
