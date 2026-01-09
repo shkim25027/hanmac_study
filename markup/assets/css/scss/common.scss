@@ -484,17 +484,9 @@ h5 {
         }
 
         &.step {
-          &:has(.comment-wrap){
-            .learning-list{
-              max-height: 574.5px;
-            }
-          }
           &:has(:not(.comment-wrap)){
             .video-list {
               padding-bottom: 20px;       
-            }
-            .learning-list{
-              max-height: 646.5px;
             }
           }
           .video-header {

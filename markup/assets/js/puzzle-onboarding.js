@@ -2424,12 +2424,10 @@ class ModalManager {
     videoList.style.height = videoListOriginalHeight;
     videoList.style.overflowY = videoListOriginalOverflow;
 
-    // video-list에 사용 가능한 높이 계산 (comment-list-wrap 높이 고려)
-    // video-list는 learning-list와 별도로 존재하므로, comment-list-wrap 높이를 고려한 전체 사용 가능 높이 사용
-    const videoListAvailableHeight = totalHeight - headerHeight - commentWrapHeight - 
-                                    (commentListWrapHeight > 0 ? commentListWrapHeight : 0) -
-                                    titleHeight - paddingTop - paddingBottom - 
-                                    commentInfoOffset - 20;
+    // video-list에 사용 가능한 높이 계산
+    // video-list는 컨테이너이므로, 내부 요소(제목, padding)는 빼지 않음
+    // comment-wrap만 빼면 됨 (comment-list-wrap은 이미 commentWrapHeight에 포함됨)
+    const videoListAvailableHeight = totalHeight - headerHeight - commentWrapHeight - 10;
 
     // 컨텐츠가 적으면 컨텐츠 높이만큼, 많으면 사용 가능한 높이만큼
     const listHeight = Math.min(listContentHeight, availableHeight);
@@ -2479,10 +2477,7 @@ class ModalManager {
     const heightChanged = Math.abs(currentHeight - finalHeight) > 1;
     const videoListHeightChanged = Math.abs(videoListCurrentHeight - videoListFinalHeight) > 1;
 
-    if (heightChanged) {
-      learningList.style.height = finalHeight + "px";
-      learningList.style.overflowY = needsScroll ? "hidden" : "hidden";
-    }
+    // learning-list의 height와 overflow-y는 CSS로 관리 (인라인 스타일 제거)
 
     // ✅ video-list 높이 및 스크롤 설정 (overflow-y: hidden 제거, CSS 기본값 사용)
     if (videoListHeightChanged) {

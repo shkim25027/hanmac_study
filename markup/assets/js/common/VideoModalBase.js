@@ -616,7 +616,7 @@ class VideoModalBase extends ModalBase {
     // learning-list가 있는 경우 더 상세한 계산
     let availableHeight;
     if (learningList) {
-      // video-list가 있으면 제목과 padding 고려
+      // video-list가 있으면 제목과 padding 고려 (learning-list는 video-list 내부에 있음)
       let titleHeight = 0;
       let paddingTop = 0;
       let paddingBottom = 0;
@@ -632,12 +632,10 @@ class VideoModalBase extends ModalBase {
         paddingBottom = parseInt(videoListStyle.paddingBottom) || 0;
       }
 
-      // comment-info 존재 여부 확인
-      const commentInfo = modalElement.querySelector(".comment-info");
-      const commentInfoOffset = commentInfo ? 40 : 0;
-
       // learning-list에 사용 가능한 최대 높이
+      // learning-list는 video-list 내부에 있으므로 video-list의 제목과 padding을 고려해야 함
       // comment-wrap이 없어도 (commentWrapHeight = 0) 정상 작동
+      // commentInfoOffset은 comment-wrap 내부 요소이므로 이미 commentWrapHeight에 포함됨
       availableHeight =
         totalHeight -
         headerHeight -
@@ -645,8 +643,7 @@ class VideoModalBase extends ModalBase {
         titleHeight -
         paddingTop -
         paddingBottom -
-        commentInfoOffset -
-        20;
+        10;
     } else {
       // video-list만 있는 경우 (기존 로직)
       availableHeight = totalHeight - headerHeight - commentWrapHeight;
@@ -716,11 +713,16 @@ class VideoModalBase extends ModalBase {
     }
 
     // 스타일 업데이트를 requestAnimationFrame으로 배치
+    // learning-list의 height와 overflow-y는 CSS로 관리 (인라인 스타일 제거)
     requestAnimationFrame(() => {
-      if (heightChanged) {
+      // learning-list가 아닌 경우에만 height 설정 (video-list만 있는 경우)
+      if (heightChanged && !learningList) {
         targetList.style.height = finalHeight + "px";
       }
-      targetList.style.overflowY = needsScroll ? "hidden" : "hidden";
+      // learning-list의 overflow-y는 CSS로 관리
+      if (!learningList) {
+        targetList.style.overflowY = needsScroll ? "hidden" : "hidden";
+      }
       
       // 캐시 업데이트
       this._lastHeightValues[cacheKey] = finalHeight;
