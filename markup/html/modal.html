@@ -129,7 +129,6 @@
         // 배경 클릭으로 닫기
         modal.onclick = (e) => {
           if (e.target === modal) {
-            modal.style.opacity = "0";
             setTimeout(() => {
               if (modal && modal.parentNode) {
                 modal.parentNode.removeChild(modal);
