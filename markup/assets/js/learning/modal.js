@@ -678,8 +678,10 @@ class VideoModal extends VideoModalBase {
   _adjustLearningListHeight() {
     const videoSide = this.currentModal?.querySelector(".video-side");
     const videoHeader = this.currentModal?.querySelector(".video-header");
+    const videoList = this.currentModal?.querySelector(".video-list");
     const learningList = this.currentModal?.querySelector(".learning-list");
     const gaugeWrap = this.currentModal?.querySelector(".gauge-wrap");
+    const commentWrap = this.currentModal?.querySelector(".comment-wrap");
 
     if (!videoSide || !videoHeader || !learningList) {
       console.warn("필요한 요소를 찾을 수 없습니다");
@@ -718,12 +720,39 @@ class VideoModal extends VideoModalBase {
     // 재시도 카운터 초기화
     this._retryCount = 0;
 
-    // 헤더와 게이지 높이
+    // 헤더 높이 (gaugeHeight는 headerHeight에 이미 포함되어 있음)
     const headerHeight = videoHeader.offsetHeight;
-    const gaugeHeight = gaugeWrap ? gaugeWrap.offsetHeight : 0;
 
-    // 리스트에 사용 가능한 최대 높이
-    const availableHeight = totalHeight - headerHeight - gaugeHeight - 80;
+    // learning-list에 사용 가능한 최대 높이 계산
+    // video-list가 있으면 제목과 padding 고려
+    let titleHeight = 0;
+    let paddingTop = 0;
+    let paddingBottom = 0;
+    
+    if (videoList) {
+      // video-list의 제목 높이
+      const videoListTitle = videoList.querySelector("h5.tit");
+      titleHeight = videoListTitle ? videoListTitle.offsetHeight : 0;
+
+      // video-list의 padding 값 계산
+      const videoListStyle = window.getComputedStyle(videoList);
+      paddingTop = parseInt(videoListStyle.paddingTop) || 0;
+      paddingBottom = parseInt(videoListStyle.paddingBottom) || 0;
+    }
+
+    // comment-wrap 높이
+    const commentWrapHeight = commentWrap && commentWrap.offsetHeight > 0 ? commentWrap.offsetHeight : 0;
+
+    // learning-list에 사용 가능한 최대 높이
+    // learning-list는 video-list 내부에 있으므로 video-list의 제목과 padding을 고려해야 함
+    const availableHeight =
+      totalHeight -
+      headerHeight -
+      commentWrapHeight -
+      titleHeight -
+      paddingTop -
+      paddingBottom -
+      10;
 
     // 사용 가능한 높이가 음수이거나 너무 작으면 경고
     if (availableHeight < 50) {
@@ -752,13 +781,65 @@ class VideoModal extends VideoModalBase {
     // 컨텐츠 높이를 CSS 변수로 설정 (::before 요소에서 사용)
     learningList.style.setProperty("--scroll-height", listContentHeight + "px");
 
-    // 높이가 실제로 변경되는 경우에만 스타일 업데이트
-    const heightChanged = Math.abs(currentHeight - finalHeight) > 1;
+    // learning-list의 height와 overflow-y는 CSS로 관리 (인라인 스타일 제거)
 
-    if (heightChanged) {
-      learningList.style.height = finalHeight + "px";
-      learningList.style.overflowY =
-        listContentHeight > availableHeight ? "hidden" : "hidden";
+    // video-list가 있는 경우 높이 계산 및 스크롤 설정
+    if (videoList) {
+      // video-list의 제목 높이
+      const videoListTitle = videoList.querySelector("h5.tit");
+      const videoListTitleHeight = videoListTitle ? videoListTitle.offsetHeight : 0;
+      
+      // video-list의 padding 값 계산
+      const videoListStyle = window.getComputedStyle(videoList);
+      const videoListPaddingTop = parseInt(videoListStyle.paddingTop) || 0;
+      const videoListPaddingBottom = parseInt(videoListStyle.paddingBottom) || 0;
+      
+      // video-list에 사용 가능한 높이 계산
+      // video-list는 learning-list를 포함하므로, 전체 높이에서 헤더, 댓글, 제목, padding을 제외
+      // gaugeHeight는 headerHeight에 이미 포함되어 있으므로 별도로 빼지 않음
+      const commentWrapHeight = commentWrap && commentWrap.offsetHeight > 0 ? commentWrap.offsetHeight : 0;
+      const videoListAvailableHeight = 
+        totalHeight - 
+        headerHeight - 
+        commentWrapHeight - 
+
+        10;
+      
+      // video-list의 실제 컨텐츠 높이 측정 (learning-list 포함)
+      const videoListOriginalHeight = videoList.style.height;
+      const videoListOriginalOverflow = videoList.style.overflowY;
+      
+      videoList.style.height = "auto";
+      videoList.style.overflowY = "visible";
+      
+      const videoListContentHeight = videoList.scrollHeight;
+      
+      videoList.style.height = videoListOriginalHeight;
+      videoList.style.overflowY = videoListOriginalOverflow;
+      
+      // video-list의 높이 계산
+      const videoListHeight = Math.min(videoListContentHeight, videoListAvailableHeight);
+      const videoListFinalHeight = Math.max(videoListHeight, 100);
+      
+      // video-list의 현재 높이 확인
+      const videoListCurrentHeight = videoList.style.height
+        ? parseInt(videoList.style.height)
+        : videoList.offsetHeight;
+      
+      const videoListHeightChanged = Math.abs(videoListCurrentHeight - videoListFinalHeight) > 1;
+      const videoListNeedsScroll = videoListContentHeight > videoListFinalHeight;
+      
+      // video-list 높이 및 스크롤 설정
+      requestAnimationFrame(() => {
+        if (videoListHeightChanged) {
+          videoList.style.height = videoListFinalHeight + "px";
+        }
+        if (videoListNeedsScroll) {
+          videoList.style.overflowY = "auto";
+        } else {
+          videoList.style.overflowY = ""; // CSS 기본값 사용
+        }
+      });
     }
 
     // 스크롤 위치 복원 (높이 변경 여부와 관계없이)
@@ -771,13 +852,11 @@ class VideoModal extends VideoModalBase {
     console.log("높이 측정 성공:", {
       totalHeight,
       headerHeight,
-      gaugeHeight,
       availableHeight,
       listContentHeight,
       listHeight,
       finalHeight,
       currentHeight,
-      heightChanged,
       savedScrollTop,
     });
   }
