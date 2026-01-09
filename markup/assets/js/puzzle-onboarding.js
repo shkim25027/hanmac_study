@@ -2891,21 +2891,13 @@ class ModalManager {
   }
 
   /**
-   * 닫기 이벤트 설정
+   * 닫기 이벤트 설정 (ModalUtils 활용)
    * @private
    */
   static _setupCloseEvents(modal, chapter, chapterIndex, modalState) {
-    const closeBtn = modal.querySelector(".close");
-    
     const closeModal = () => {
       console.log(`[ModalManager] closeModal 호출 - currentLessonIndex: ${modalState.currentLessonIndex}`);
       
-      // VideoBase를 사용하여 비디오 중지
-      const iframe = modal.querySelector("#videoFrame");
-      if (iframe) {
-        VideoBase.stop(iframe);
-      }
-
       // 현재 학습 완료 처리
       const currentLesson = chapter.lessons[modalState.currentLessonIndex];
       console.log(`[ModalManager] 현재 학습 정보:`, {
@@ -2929,50 +2921,22 @@ class ModalManager {
         console.error(`[ModalManager] 학습 정보를 찾을 수 없음: [${chapterIndex}-${modalState.currentLessonIndex}]`);
       }
 
-      // ✅ Observer 및 이벤트 리스너 정리
-      if (modal._resizeObserver) {
-        modal._resizeObserver.disconnect();
-        modal._resizeObserver = null;
-      }
-
-      if (modal._mutationObserver) {
-        modal._mutationObserver.disconnect();
-        modal._mutationObserver = null;
-      }
-
-      if (modal._heightAdjustTimer) {
-        clearTimeout(modal._heightAdjustTimer);
-        modal._heightAdjustTimer = null;
-      }
-
-      if (modal._windowResizeHandler) {
-        window.removeEventListener("resize", modal._windowResizeHandler);
-        modal._windowResizeHandler = null;
-      }
-
-      modal.style.display = "none";
-      setTimeout(() => modal.remove(), 300);
+      // ModalUtils를 사용하여 정리 및 제거
+      ModalUtils.remove(modal, {
+        duration: 300,
+        onComplete: () => {
+          console.log(`[ModalManager] 모달 제거 완료`);
+        },
+      });
     };
 
-    if (closeBtn) {
-      closeBtn.onclick = closeModal;
-    }
-
-    // 모달 배경 클릭
-    modal.onclick = (e) => {
-      if (e.target === modal) {
-        closeModal();
-      }
-    };
-
-    // ESC 키
-    const escHandler = (e) => {
-      if (e.key === "Escape") {
-        closeModal();
-        document.removeEventListener("keydown", escHandler);
-      }
-    };
-    document.addEventListener("keydown", escHandler);
+    // ModalUtils를 사용하여 공통 닫기 이벤트 설정
+    ModalUtils.setupCloseEvents(modal, {
+      onClose: closeModal,
+      onCleanup: () => {
+        // Observer 정리는 ModalUtils.remove에서 자동 처리됨
+      },
+    });
   }
 
   /**

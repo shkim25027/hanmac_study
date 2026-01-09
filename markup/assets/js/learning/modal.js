@@ -1015,18 +1015,17 @@ class VideoModal extends VideoModalBase {
   // ============================================
 
       /**
-   * 닫기 이벤트 설정
+   * 닫기 이벤트 설정 (ModalUtils 활용)
    * @private
    */
   _setupCloseEvents(modalElement) {
-    const closeBtn = modalElement.querySelector(".close");
-    if (closeBtn) {
-      closeBtn.onclick = () => this.close();
-    }
-
-    modalElement.onclick = (e) => {
-      if (e.target === modalElement) this.close();
-    };
+    // ModalUtils를 사용하여 공통 닫기 이벤트 설정
+    this._closeEventHandlers = ModalUtils.setupCloseEvents(modalElement, {
+      onClose: () => this.close(),
+      onCleanup: () => {
+        // Observer 정리는 close() 메서드에서 처리
+      },
+    });
   }
 
       /**
@@ -1044,13 +1043,13 @@ class VideoModal extends VideoModalBase {
   }
 
       /**
-   * 모달 닫기
+   * 모달 닫기 (ModalUtils 활용)
    */
-      lose() {
+      close() {
     if (!this.currentModal) return;
 
-    const iframe = this.currentModal.querySelector("#videoFrame");
-    if (iframe) iframe.src = "";
+    // ModalUtils를 사용하여 비디오 정지
+    ModalUtils.stopVideo(this.currentModal);
 
     this.currentModal.style.display = "none";
 
@@ -1117,13 +1116,10 @@ class VideoModal extends VideoModalBase {
         this.currentChapterInfo = null;
       }
 
-      // 비디오 중지 (VideoModalBase 활용)
-      const iframe = this.currentModal.querySelector("#videoFrame");
-      if (iframe) {
-        VideoBase.stop(iframe);
-      }
+      // ModalUtils를 사용하여 비디오 정지 및 Observer 정리
+      ModalUtils.cleanup(this.currentModal);
 
-      // Observer들 정리 (학습 페이지 특화 Observer)
+      // 학습 페이지 특화 Observer 정리
       if (this.resizeObserver) {
         this.resizeObserver.disconnect();
         this.resizeObserver = null;

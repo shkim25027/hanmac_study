@@ -112,44 +112,15 @@
         }
       }
 
-      // 키워드 모달 닫기 이벤트
+      // 키워드 모달 닫기 이벤트 (ModalUtils 활용)
       function setupKeywordModalCloseEvents(modal) {
-        const closeIcon = modal.querySelector(".ico-check");
-        if (closeIcon) {
-          closeIcon.onclick = () => {
-            modal.style.opacity = "0";
-            setTimeout(() => {
-              if (modal && modal.parentNode) {
-                modal.parentNode.removeChild(modal);
-              }
-            }, 300);
-          };
-        }
-
-        // 배경 클릭으로 닫기
-        modal.onclick = (e) => {
-          if (e.target === modal) {
-            setTimeout(() => {
-              if (modal && modal.parentNode) {
-                modal.parentNode.removeChild(modal);
-              }
-            }, 300);
-          }
-        };
-
-        // ESC 키로 닫기
-        const escHandler = (e) => {
-          if (e.key === "Escape") {
-            modal.style.opacity = "0";
-            setTimeout(() => {
-              if (modal && modal.parentNode) {
-                modal.parentNode.removeChild(modal);
-              }
-            }, 300);
-            document.removeEventListener("keydown", escHandler);
-          }
-        };
-        document.addEventListener("keydown", escHandler);
+        // ModalUtils를 사용하여 공통 닫기 이벤트 설정
+        ModalUtils.setupCloseEvents(modal, {
+          closeSelector: ".ico-check", // 키워드 모달은 .ico-check를 닫기 버튼으로 사용
+          onClose: () => {
+            ModalUtils.remove(modal, { duration: 300 });
+          },
+        });
       }
 
       function checkURLParamsAndOpenModal() {
