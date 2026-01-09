@@ -633,6 +633,7 @@ h5 {
 
     .learning-list {
       position: relative;
+      overflow-y: hidden;
       color: var(--text-learning-base);
       @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
       &::before {

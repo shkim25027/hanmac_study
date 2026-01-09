@@ -758,7 +758,7 @@ class VideoModal extends VideoModalBase {
     if (heightChanged) {
       learningList.style.height = finalHeight + "px";
       learningList.style.overflowY =
-        listContentHeight > availableHeight ? "auto" : "hidden";
+        listContentHeight > availableHeight ? "hidden" : "hidden";
     }
 
     // 스크롤 위치 복원 (높이 변경 여부와 관계없이)

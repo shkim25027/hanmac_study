@@ -720,7 +720,7 @@ class VideoModalBase extends ModalBase {
       if (heightChanged) {
         targetList.style.height = finalHeight + "px";
       }
-      targetList.style.overflowY = needsScroll ? "auto" : "hidden";
+      targetList.style.overflowY = needsScroll ? "hidden" : "hidden";
       
       // 캐시 업데이트
       this._lastHeightValues[cacheKey] = finalHeight;

@@ -2481,7 +2481,7 @@ class ModalManager {
 
     if (heightChanged) {
       learningList.style.height = finalHeight + "px";
-      learningList.style.overflowY = needsScroll ? "auto" : "hidden";
+      learningList.style.overflowY = needsScroll ? "hidden" : "hidden";
     }
 
     // ✅ video-list 높이 및 스크롤 설정 (overflow-y: hidden 제거, CSS 기본값 사용)
