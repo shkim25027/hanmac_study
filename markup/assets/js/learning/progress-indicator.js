@@ -1,25 +1,61 @@
 /**
  * 진행률 표시 관리 클래스
+ * 공통 모듈 활용 (ErrorHandler, DOMUtils, EventManager, Utils)
  */
 class ProgressIndicator {
-  constructor(config, gaugeManager, markerManager = null) {
-    this.config = config;
-    this.gaugeManager = gaugeManager;
-    this.markerManager = markerManager; // 마커 매니저 참조 추가
-    this.indicator = null;
-    this.stateIndicator = null; // 평균 상태 표시 요소
-    this.gaugeSvg = document.getElementById("gauge-svg");
-    this.lastMarkerIndex = -1; // 이전 마커 인덱스 추적
-    this.lastIndicatorPosition = null; // 이전 indicator 위치 저장
-    this.animationFrameId = null; // 애니메이션 프레임 ID
+  constructor(config, gaugeManager, markerManager = null, dependencies = {}) {
+    // 의존성 주입 (폴백 포함)
+    this.domUtils = dependencies.domUtils || (typeof DOMUtils !== 'undefined' ? DOMUtils : null);
+    this.errorHandler = dependencies.errorHandler || (typeof ErrorHandler !== 'undefined' ? ErrorHandler : null);
+    this.eventManager = dependencies.eventManager || (typeof eventManager !== 'undefined' ? eventManager : null);
+    this.utils = dependencies.utils || (typeof Utils !== 'undefined' ? Utils : null);
+    this.animationUtils = dependencies.animationUtils || (typeof AnimationUtils !== 'undefined' ? AnimationUtils : null);
 
-    // 곡선 스타일 설정 (변경 가능)
-    // 'arc-up': 위로 휘어지는 호 (기본)
-    // 'arc-down': 아래로 휘어지는 호
-    // 'wave': 물결 모양
-    // 'steep-arc': 가파른 호
-    // 'gentle-arc': 완만한 호
-    this.curveStyle = "arc-up";
+    // 이벤트 리스너 ID 저장 (정리용)
+    this.listenerIds = [];
+
+    try {
+      this.config = config;
+      this.gaugeManager = gaugeManager;
+      this.markerManager = markerManager; // 마커 매니저 참조 추가
+      this.indicator = null;
+      this.stateIndicator = null; // 평균 상태 표시 요소
+      
+      this.gaugeSvg = this.domUtils?.$("#gauge-svg") || document.getElementById("gauge-svg");
+      if (!this.gaugeSvg) {
+        this._handleError(new Error('gauge-svg 요소를 찾을 수 없습니다.'), 'constructor');
+      }
+
+      this.lastMarkerIndex = -1; // 이전 마커 인덱스 추적
+      this.lastIndicatorPosition = null; // 이전 indicator 위치 저장
+      this.animationFrameId = null; // 애니메이션 프레임 ID
+
+      // 곡선 스타일 설정 (변경 가능)
+      // 'arc-up': 위로 휘어지는 호 (기본)
+      // 'arc-down': 아래로 휘어지는 호
+      // 'wave': 물결 모양
+      // 'steep-arc': 가파른 호
+      // 'gentle-arc': 완만한 호
+      this.curveStyle = "arc-up";
+    } catch (error) {
+      this._handleError(error, 'constructor');
+    }
+  }
+
+  /**
+   * 에러 처리 헬퍼
+   * @private
+   */
+  _handleError(error, context, additionalInfo = {}) {
+    if (this.errorHandler) {
+      this.errorHandler.handle(error, {
+        context: `ProgressIndicator.${context}`,
+        component: 'ProgressIndicator',
+        ...additionalInfo
+      }, false);
+    } else {
+      console.error(`[ProgressIndicator] ${context}:`, error, additionalInfo);
+    }
   }
 
   /**
@@ -58,13 +94,20 @@ class ProgressIndicator {
    * 진행률 표시 생성
    */
   createIndicator() {
-    // 컨테이너 생성
-    this.indicator = document.createElement("div");
-    this.indicator.className = "progress-indicator";
-    this.indicator.id = "progress-indicator";
+    try {
+      // 컨테이너 생성
+      this.indicator = this.domUtils?.createElement('div', {
+        class: 'progress-indicator',
+        id: 'progress-indicator'
+      }) || document.createElement("div");
+      
+      if (!this.domUtils) {
+        this.indicator.className = "progress-indicator";
+        this.indicator.id = "progress-indicator";
+      }
 
-    // 곡선 경로 가져오기
-    const curvePath = this._getCurvePath();
+      // 곡선 경로 가져오기
+      const curvePath = this._getCurvePath();
 
     // SVG 이미지 추가
     this.indicator.innerHTML = `
@@ -155,20 +198,25 @@ class ProgressIndicator {
       </svg>
     `;
 
-    // 게이지 컨테이너에 추가
-    const gaugeContainer = document.querySelector(".lessons-gauge");
-    if (gaugeContainer) {
-      gaugeContainer.appendChild(this.indicator);
+      // 게이지 컨테이너에 추가
+      const gaugeContainer = this.domUtils?.$(".lessons-gauge") || document.querySelector(".lessons-gauge");
+      if (gaugeContainer) {
+        gaugeContainer.appendChild(this.indicator);
+      } else {
+        console.warn("[ProgressIndicator] .lessons-gauge 요소를 찾을 수 없습니다.");
+      }
+
+      // 위치 설정
+      this._positionIndicator();
+
+      // 리사이즈 핸들러 설정
+      this._setupResizeHandler();
+
+      // 평균 상태 표시 생성
+      this._createStateIndicator();
+    } catch (error) {
+      this._handleError(error, 'createIndicator');
     }
-
-    // 위치 설정
-    this._positionIndicator();
-
-    // 리사이즈 핸들러 설정
-    this._setupResizeHandler();
-
-    // 평균 상태 표시 생성
-    this._createStateIndicator();
   }
 
   /**
@@ -176,16 +224,28 @@ class ProgressIndicator {
    * @private
    */
   _createStateIndicator() {
-    this.stateIndicator = document.createElement("div");
-    this.stateIndicator.className = "state-indicator";
-    this.stateIndicator.id = "state-indicator";
+    try {
+      this.stateIndicator = this.domUtils?.createElement('div', {
+        class: 'state-indicator',
+        id: 'state-indicator'
+      }) || document.createElement("div");
+      
+      if (!this.domUtils) {
+        this.stateIndicator.className = "state-indicator";
+        this.stateIndicator.id = "state-indicator";
+      }
 
-    const gaugeContainer = document.querySelector(".lessons-gauge");
-    if (gaugeContainer) {
-      gaugeContainer.appendChild(this.stateIndicator);
+      const gaugeContainer = this.domUtils?.$(".lessons-gauge") || document.querySelector(".lessons-gauge");
+      if (gaugeContainer) {
+        gaugeContainer.appendChild(this.stateIndicator);
+      } else {
+        console.warn("[ProgressIndicator] .lessons-gauge 요소를 찾을 수 없습니다.");
+      }
+
+      console.log("[ProgressIndicator] 평균 상태 표시 요소 생성 완료");
+    } catch (error) {
+      this._handleError(error, '_createStateIndicator');
     }
-
-    console.log("[ProgressIndicator] 평균 상태 표시 요소 생성 완료");
   }
 
   /**
@@ -784,24 +844,53 @@ class ProgressIndicator {
    * @private
    */
   _setupResizeHandler() {
-    let resizeTimer;
+    try {
+      const resizeHandler = () => {
+        try {
+          console.log("[ProgressIndicator] 리사이즈 감지: 위치 재계산");
+          this._positionIndicator();
 
-    window.addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        console.log("[ProgressIndicator] 리사이즈 감지: 위치 재계산");
-        this._positionIndicator();
-
-        // 상태 표시도 재계산 (현재 진행률 기준, 마커 위)
-        if (this.stateIndicator && this.config.averageProgress) {
-          const valueSpan = this.indicator.querySelector(".progress-value");
-          if (valueSpan) {
-            const currentProgress = parseInt(valueSpan.textContent) || 0;
-            this._positionStateIndicatorOnMarker(currentProgress);
+          // 상태 표시도 재계산 (현재 진행률 기준, 마커 위)
+          if (this.stateIndicator && this.config && this.config.averageProgress) {
+            const valueSpan = this.domUtils?.$(".progress-value", this.indicator) || this.indicator?.querySelector(".progress-value");
+            if (valueSpan) {
+              const currentProgress = parseInt(valueSpan.textContent) || 0;
+              this._positionStateIndicatorOnMarker(currentProgress);
+            }
           }
+        } catch (error) {
+          this._handleError(error, '_setupResizeHandler.resizeHandler');
         }
-      }, 100);
-    });
+      };
+
+      // Utils.throttle 사용 (있는 경우)
+      if (this.utils && this.utils.throttle) {
+        const throttledResize = this.utils.throttle(resizeHandler, 100);
+        
+        if (this.eventManager) {
+          const listenerId = this.eventManager.on(window, "resize", throttledResize);
+          this.listenerIds.push({ element: window, id: listenerId, type: 'resize' });
+        } else {
+          window.addEventListener("resize", throttledResize);
+        }
+      } else {
+        // 폴백: debounce 구현
+        let resizeTimer;
+        const debouncedResize = () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(resizeHandler, 100);
+        };
+
+        if (this.eventManager) {
+          const listenerId = this.eventManager.on(window, "resize", debouncedResize);
+          this.listenerIds.push({ element: window, id: listenerId, type: 'resize' });
+        } else {
+          window.addEventListener("resize", debouncedResize);
+        }
+      }
+    } catch (error) {
+      this._handleError(error, '_setupResizeHandler');
+    }
   }
 
   /**
@@ -809,33 +898,47 @@ class ProgressIndicator {
    * @param {Array} allMarkers - 전체 마커 배열
    */
   updateProgress(allMarkers) {
-    if (!this.indicator) return;
+    try {
+      if (!this.indicator) {
+        console.warn("[ProgressIndicator] indicator가 없습니다.");
+        return;
+      }
 
-    // 실제 강의만 카운트 (챕터 제외)
-    const learningContent = allMarkers.filter(
-      (m) => m.isLearningContent !== false
-    );
-    const completedCount = learningContent.filter((m) => m.completed).length;
-    const totalCount = learningContent.length;
-    const percent = Math.round((completedCount / totalCount) * 100);
+      if (!allMarkers || !Array.isArray(allMarkers)) {
+        this._handleError(new Error('allMarkers가 배열이 아닙니다.'), 'updateProgress');
+        return;
+      }
 
-    // tspan 요소 찾기
-    const valueSpan = this.indicator.querySelector(".progress-value");
-    if (valueSpan) {
-      valueSpan.textContent = `${percent}%`;
+      // 실제 강의만 카운트 (챕터 제외)
+      const learningContent = allMarkers.filter(
+        (m) => m && m.isLearningContent !== false
+      );
+      const completedCount = learningContent.filter((m) => m && m.completed === true).length;
+      const totalCount = learningContent.length;
+      const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+      // tspan 요소 찾기
+      const valueSpan = this.domUtils?.$(".progress-value", this.indicator) || this.indicator.querySelector(".progress-value");
+      if (valueSpan) {
+        valueSpan.textContent = `${percent}%`;
+      }
+
+      // 평균 상태 업데이트
+      if (this.config && this.config.averageProgress) {
+        this._updateStateIndicator(percent);
+      }
+
+      // 100% 완료 시 트로피 이미지 교체
+      if (percent === 100 && !this.indicator.classList.contains("completed")) {
+        this._replaceWithCompletedTrophy();
+      }
+
+      console.log(
+        `[ProgressIndicator] 진행률 업데이트: ${percent}% (${completedCount}/${totalCount} 강의)`
+      );
+    } catch (error) {
+      this._handleError(error, 'updateProgress', { allMarkers });
     }
-
-    // 평균 상태 업데이트
-    this._updateStateIndicator(percent);
-
-    // 100% 완료 시 트로피 이미지 교체
-    if (percent === 100 && !this.indicator.classList.contains("completed")) {
-      this._replaceWithCompletedTrophy();
-    }
-
-    console.log(
-      `[ProgressIndicator] 진행률 업데이트: ${percent}% (${completedCount}/${totalCount} 강의)`
-    );
   }
 
   /**
@@ -844,6 +947,11 @@ class ProgressIndicator {
    */
   async _replaceWithCompletedTrophy() {
     try {
+      if (!this.indicator) {
+        console.warn("[ProgressIndicator] indicator가 없습니다.");
+        return;
+      }
+
       // 외부 SVG 파일 경로
       const svgPath = "./assets/images/learning/img_trophy_completed.svg";
 
@@ -859,14 +967,51 @@ class ProgressIndicator {
       this.indicator.innerHTML = svgText;
 
       // completed 클래스 추가
-      this.indicator.classList.add("completed");
+      if (this.domUtils) {
+        this.domUtils.addClasses(this.indicator, 'completed');
+      } else {
+        this.indicator.classList.add("completed");
+      }
 
       // 위치 재계산
       this._positionIndicator();
 
       console.log("[ProgressIndicator] 완료 트로피로 교체 완료");
     } catch (error) {
-      console.error("[ProgressIndicator] 트로피 교체 실패:", error);
+      this._handleError(error, '_replaceWithCompletedTrophy');
+    }
+  }
+
+  /**
+   * 리소스 정리 (이벤트 리스너 제거)
+   */
+  destroy() {
+    try {
+      // 이벤트 리스너 제거
+      if (this.eventManager && this.listenerIds.length > 0) {
+        this.listenerIds.forEach(({ element, id }) => {
+          this.eventManager.off(element, id);
+        });
+        this.listenerIds = [];
+      }
+
+      // 애니메이션 프레임 취소
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+
+      // 참조 정리
+      this.indicator = null;
+      this.stateIndicator = null;
+      this.config = null;
+      this.gaugeManager = null;
+      this.markerManager = null;
+      this.gaugeSvg = null;
+      this.lastMarkerIndex = -1;
+      this.lastIndicatorPosition = null;
+    } catch (error) {
+      this._handleError(error, 'destroy');
     }
   }
 }

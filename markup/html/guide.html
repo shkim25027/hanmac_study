@@ -42,7 +42,8 @@
 <!-- JS 파일 import -->
 <script src="./assets/js/main/MultiGuide.js"></script>
 <script>
-const guideTargets = [
+// 전역 변수로 선언하여 다른 스크립트에서도 사용 가능하도록 함
+window.guideTargets = window.guideTargets || [
   {
     selector: ".guide-mask.nav",
     label: "메뉴",
@@ -112,5 +113,7 @@ const guideTargets = [
   },
 ];
   // 가이드 초기화
-  initMultiGuide(guideTargets);
+  if (window.initMultiGuide) {
+    window.initMultiGuide(window.guideTargets);
+  }
 </script>

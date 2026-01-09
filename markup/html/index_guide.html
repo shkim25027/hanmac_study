@@ -257,7 +257,13 @@
         console.log("[index_guide] .guide-wrap 존재:", document.querySelector(".guide-wrap") !== null);
         
         if (window.initMultiGuide) {
-          window.initMultiGuide();
+          // guide.html에서 정의된 guideTargets 사용
+          const targets = window.guideTargets || [];
+          if (targets.length > 0) {
+            window.initMultiGuide(targets);
+          } else {
+            console.warn("[index_guide] guideTargets가 정의되지 않았습니다.");
+          }
         } else {
           console.warn("[index_guide] ❌ MultiGuide 초기화 함수를 찾을 수 없습니다.");
           console.warn("[index_guide] guide.html이 제대로 include되었는지 확인하세요.");

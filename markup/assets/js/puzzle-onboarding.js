@@ -310,31 +310,61 @@ const GAUGE_CONFIG = {
 // 챕터 관리 클래스
 // ============================================================================
 class ChapterManager {
-  constructor(chapterData) {
+  constructor(chapterData, dependencies = {}) {
     this.chapters = chapterData || [];
+    
+    // 의존성 주입 (폴백 포함)
+    this.errorHandler = dependencies.errorHandler || (typeof ErrorHandler !== 'undefined' ? ErrorHandler : null);
+    this.utils = dependencies.utils || (typeof Utils !== 'undefined' ? Utils : null);
+    
     console.log('[ChapterManager] 초기화:', this.chapters);
-    this._validateAndInitialize();
+    
+    try {
+      this._validateAndInitialize();
+    } catch (error) {
+      this._handleError(error, 'ChapterManager.constructor');
+    }
   }
 
   _validateAndInitialize() {
-    this.chapters.forEach((chapter, index) => {
-      if (!chapter.lessons || !Array.isArray(chapter.lessons)) {
-        chapter.lessons = [];
-      }
-      
-      // completed 속성 초기화
-      if (chapter.completed === undefined) {
-        chapter.completed = false;
-      }
-      
-      chapter.lessons.forEach((lesson) => {
-        if (lesson.completed === undefined) {
-          lesson.completed = false;
+    try {
+      this.chapters.forEach((chapter, index) => {
+        if (!chapter.lessons || !Array.isArray(chapter.lessons)) {
+          chapter.lessons = [];
         }
+        
+        // completed 속성 초기화
+        if (chapter.completed === undefined) {
+          chapter.completed = false;
+        }
+        
+        chapter.lessons.forEach((lesson) => {
+          if (lesson.completed === undefined) {
+            lesson.completed = false;
+          }
+        });
+        
+        console.log(`[ChapterManager] 챕터 ${index}: ${chapter.name}, pieceId: ${chapter.pieceId}, lessons: ${chapter.lessons.length}`);
       });
-      
-      console.log(`[ChapterManager] 챕터 ${index}: ${chapter.name}, pieceId: ${chapter.pieceId}, lessons: ${chapter.lessons.length}`);
-    });
+    } catch (error) {
+      this._handleError(error, 'ChapterManager._validateAndInitialize');
+    }
+  }
+
+  /**
+   * 에러 처리 헬퍼
+   * @private
+   */
+  _handleError(error, context, additionalInfo = {}) {
+    if (this.errorHandler) {
+      this.errorHandler.handle(error, {
+        context,
+        component: 'ChapterManager',
+        ...additionalInfo
+      }, false);
+    } else {
+      console.error(`[ChapterManager] ${context}:`, error, additionalInfo);
+    }
   }
 
   /**
@@ -400,34 +430,39 @@ class ChapterManager {
    * 학습 완료 처리
    */
   completeLesson(chapterIndex, lessonIndex) {
-    const chapter = this.chapters[chapterIndex];
-    if (!chapter || !chapter.lessons || !chapter.lessons[lessonIndex]) {
-      console.error("Invalid chapter or lesson index");
-      return;
-    }
+    try {
+      const chapter = this.chapters[chapterIndex];
+      if (!chapter || !chapter.lessons || !chapter.lessons[lessonIndex]) {
+        const error = new Error(`Invalid chapter or lesson index: [${chapterIndex}-${lessonIndex}]`);
+        this._handleError(error, 'ChapterManager.completeLesson', { chapterIndex, lessonIndex });
+        return;
+      }
 
-    const lesson = chapter.lessons[lessonIndex];
-    
-    // 이미 완료된 학습이면 처리하지 않음
-    if (lesson.completed) {
+      const lesson = chapter.lessons[lessonIndex];
+      
+      // 이미 완료된 학습이면 처리하지 않음
+      if (lesson.completed) {
+        console.log(
+          `[ChapterManager] 이미 완료된 학습: [${chapterIndex}-${lessonIndex}] ${lesson.label}`
+        );
+        return;
+      }
+
+      lesson.completed = true;
       console.log(
-        `[ChapterManager] 이미 완료된 학습: [${chapterIndex}-${lessonIndex}] ${lesson.label}`
+        `[ChapterManager] 학습 완료: [${chapterIndex}-${lessonIndex}] ${lesson.label}`
       );
-      return;
-    }
 
-    lesson.completed = true;
-    console.log(
-      `[ChapterManager] 학습 완료: [${chapterIndex}-${lessonIndex}] ${lesson.label}`
-    );
-
-    // 챕터의 모든 학습이 완료되었는지 확인
-    const allCompleted = chapter.lessons.every((l) => l.completed);
-    if (allCompleted && !chapter.completed) {
-      chapter.completed = true;
-      console.log(
-        `[ChapterManager] 챕터 완료: [${chapterIndex}] ${chapter.name}`
-      );
+      // 챕터의 모든 학습이 완료되었는지 확인
+      const allCompleted = chapter.lessons.every((l) => l.completed);
+      if (allCompleted && !chapter.completed) {
+        chapter.completed = true;
+        console.log(
+          `[ChapterManager] 챕터 완료: [${chapterIndex}] ${chapter.name}`
+        );
+      }
+    } catch (error) {
+      this._handleError(error, 'ChapterManager.completeLesson', { chapterIndex, lessonIndex });
     }
   }
 
@@ -1376,12 +1411,20 @@ class ContentManager {
 // ============================================================================
 
 class PuzzlePiece {
-  constructor(pieceData, contentManager, chapterManager) {
+  constructor(pieceData, contentManager, chapterManager, dependencies = {}) {
     this.data = pieceData;
     this.contentManager = contentManager;
     this.chapterManager = chapterManager;
     this.group = null;
     this.isCompleted = false;
+
+    // 의존성 주입 (폴백 포함)
+    this.eventManager = dependencies.eventManager || (typeof eventManager !== 'undefined' ? eventManager : null);
+    this.errorHandler = dependencies.errorHandler || (typeof ErrorHandler !== 'undefined' ? ErrorHandler : null);
+    this.domUtils = dependencies.domUtils || (typeof DOMUtils !== 'undefined' ? DOMUtils : null);
+
+    // 이벤트 리스너 ID 저장 (정리용)
+    this.listenerIds = [];
   }
 
   createElement() {
@@ -1504,9 +1547,88 @@ class PuzzlePiece {
   }
 
   _attachEventListeners() {
-    this.group.addEventListener("mouseenter", () => this._handleHover(true));
-    this.group.addEventListener("mouseleave", () => this._handleHover(false));
-    this.group.addEventListener("click", () => this._handleClick());
+    try {
+      if (!this.group) {
+        console.warn('[PuzzlePiece] group 요소가 없어 이벤트 리스너를 등록할 수 없습니다.');
+        return;
+      }
+
+      const mouseEnterHandler = () => {
+        try {
+          this._handleHover(true);
+        } catch (error) {
+          this._handleError(error, 'PuzzlePiece._handleHover.enter');
+        }
+      };
+
+      const mouseLeaveHandler = () => {
+        try {
+          this._handleHover(false);
+        } catch (error) {
+          this._handleError(error, 'PuzzlePiece._handleHover.leave');
+        }
+      };
+
+      const clickHandler = () => {
+        try {
+          this._handleClick();
+        } catch (error) {
+          this._handleError(error, 'PuzzlePiece._handleClick');
+        }
+      };
+
+      if (this.eventManager) {
+        const enterId = this.eventManager.on(this.group, "mouseenter", mouseEnterHandler);
+        const leaveId = this.eventManager.on(this.group, "mouseleave", mouseLeaveHandler);
+        const clickId = this.eventManager.on(this.group, "click", clickHandler);
+        
+        this.listenerIds.push(
+          { element: this.group, id: enterId, type: 'mouseenter' },
+          { element: this.group, id: leaveId, type: 'mouseleave' },
+          { element: this.group, id: clickId, type: 'click' }
+        );
+      } else {
+        this.group.addEventListener("mouseenter", mouseEnterHandler);
+        this.group.addEventListener("mouseleave", mouseLeaveHandler);
+        this.group.addEventListener("click", clickHandler);
+      }
+    } catch (error) {
+      this._handleError(error, 'PuzzlePiece._attachEventListeners');
+    }
+  }
+
+  /**
+   * 에러 처리 헬퍼
+   * @private
+   */
+  _handleError(error, context, additionalInfo = {}) {
+    if (this.errorHandler) {
+      this.errorHandler.handle(error, {
+        context,
+        component: 'PuzzlePiece',
+        pieceId: this.data?.id,
+        ...additionalInfo
+      }, false);
+    } else {
+      console.error(`[PuzzlePiece] ${context}:`, error, additionalInfo);
+    }
+  }
+
+  /**
+   * 리소스 정리 (이벤트 리스너 제거)
+   */
+  destroy() {
+    try {
+      if (this.eventManager && this.listenerIds.length > 0) {
+        this.listenerIds.forEach(({ element, id }) => {
+          this.eventManager.off(element, id);
+        });
+        this.listenerIds = [];
+      }
+      this.group = null;
+    } catch (error) {
+      this._handleError(error, 'PuzzlePiece.destroy');
+    }
   }
 
   _handleHover(isHovering) {
@@ -2080,9 +2202,9 @@ static createBoundaryLines(svg) {
 }
 }
 // ============================================================================
-// 모달 관리 클래스 (VideoModalBase 활용)
+// 모달 관리 클래스 (VideoModalBase 활용) - 퍼즐 온보딩 전용
 // ============================================================================
-class ModalManager {
+class PuzzleModalManager {
   // VideoModalBase 인스턴스 저장
   static videoModalBase = null;
 
@@ -2111,7 +2233,7 @@ class ModalManager {
    */
   static async openChapterModal(chapterIndex, chapter) {
     console.log(
-      `[ModalManager] 챕터 모달 열기: [${chapterIndex}] ${chapter.name}`
+      `[PuzzleModalManager] 챕터 모달 열기: [${chapterIndex}] ${chapter.name}`
     );
 
     try {
@@ -2805,89 +2927,150 @@ class ModalManager {
    * @private
    */
   static _createLearningList(modal, chapter, chapterIndex, modalState) {
-    const list = modal.querySelector(".learning-list");
-    if (!list) return;
+    try {
+      const domUtils = typeof DOMUtils !== 'undefined' ? DOMUtils : null;
+      const eventManager = typeof eventManager !== 'undefined' ? eventManager : null;
+      const errorHandler = typeof ErrorHandler !== 'undefined' ? ErrorHandler : null;
 
-    list.innerHTML = "";
-
-    chapter.lessons.forEach((lesson, index) => {
-      const li = document.createElement("li");
-      
-      // 상태 클래스
-      if (index === modalState.currentLessonIndex) {
-        li.className = "active";
-        li.setAttribute("data-current", "true");
-      } else if (lesson.completed) {
-        li.className = "complet";
+      const list = domUtils?.$(".learning-list", modal) || modal.querySelector(".learning-list");
+      if (!list) {
+        console.warn('[ModalManager] 학습 목록 요소를 찾을 수 없습니다.');
+        return;
       }
 
-      // 이미지 번호 (1-6 순환)
-      const imageNum = (index % 6) + 1;
+      domUtils?.empty(list) || (list.innerHTML = "");
 
-      // 상태 텍스트
-      let stateText = "미진행";
-      if (index === modalState.currentLessonIndex) {
-        stateText = "학습중";
-      } else if (lesson.completed) {
-        stateText = "학습완료";
-      }
+      chapter.lessons.forEach((lesson, index) => {
+        try {
+          const li = domUtils?.createElement('li') || document.createElement("li");
+          
+          // 상태 클래스
+          if (index === modalState.currentLessonIndex) {
+            domUtils?.addClasses(li, 'active') || li.classList.add("active");
+            li.setAttribute("data-current", "true");
+          } else if (lesson.completed) {
+            domUtils?.addClasses(li, 'complet') || li.classList.add("complet");
+          }
 
-      li.innerHTML = `
-        <a href="#" class="list" data-lesson-index="${index}">
-          <span class="seq">${index + 1}차시</span>
-          <div class="learning-box">
-            <div class="thumb">
-              <img src="./assets/images/video/img_learning_thumb_0${imageNum}.png" />
-            </div>
-            <div class="txt-box">
-              <div class="title">${lesson.label}</div>
-              <span class="state">${stateText}</span>
-            </div>
-          </div>
-        </a>
-      `;
+          // 이미지 번호 (1-6 순환)
+          const imageNum = (index % 6) + 1;
 
-      // 클릭 이벤트
-      const link = li.querySelector(".list");
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        
-        const clickedIndex = parseInt(e.currentTarget.dataset.lessonIndex);
-        console.log(`[ModalManager] 학습 클릭: ${clickedIndex}, 이전: ${modalState.currentLessonIndex}`);
-        
-        // 이전 학습 완료 처리
-        if (modalState.currentLessonIndex !== clickedIndex) {
-          const prevLesson = chapter.lessons[modalState.currentLessonIndex];
-          if (!prevLesson.completed) {
-            console.log(`[ModalManager] 학습 완료 처리: [${chapterIndex}-${modalState.currentLessonIndex}] ${prevLesson.label}`);
-            PuzzleManager.instance.chapterManager.completeLesson(
+          // 상태 텍스트
+          let stateText = "미진행";
+          if (index === modalState.currentLessonIndex) {
+            stateText = "학습중";
+          } else if (lesson.completed) {
+            stateText = "학습완료";
+          }
+
+          li.innerHTML = `
+            <a href="#" class="list" data-lesson-index="${index}">
+              <span class="seq">${index + 1}차시</span>
+              <div class="learning-box">
+                <div class="thumb">
+                  <img src="./assets/images/video/img_learning_thumb_0${imageNum}.png" alt="${lesson.label}" loading="lazy" />
+                </div>
+                <div class="txt-box">
+                  <div class="title">${lesson.label}</div>
+                  <span class="state">${stateText}</span>
+                </div>
+              </div>
+            </a>
+          `;
+
+          // 클릭 이벤트 (EventManager 사용)
+          const link = domUtils?.$(".list", li) || li.querySelector(".list");
+          if (link) {
+            const clickHandler = (e) => {
+              try {
+                e.preventDefault();
+                
+                const clickedIndex = parseInt(e.currentTarget.dataset.lessonIndex);
+                if (isNaN(clickedIndex)) {
+                  console.error('[ModalManager] 유효하지 않은 lesson index:', e.currentTarget.dataset.lessonIndex);
+                  return;
+                }
+
+                console.log(`[ModalManager] 학습 클릭: ${clickedIndex}, 이전: ${modalState.currentLessonIndex}`);
+                
+                // 이전 학습 완료 처리
+                if (modalState.currentLessonIndex !== clickedIndex) {
+                  const prevLesson = chapter.lessons[modalState.currentLessonIndex];
+                  if (prevLesson && !prevLesson.completed) {
+                    console.log(`[ModalManager] 학습 완료 처리: [${chapterIndex}-${modalState.currentLessonIndex}] ${prevLesson.label}`);
+                    PuzzleManager.instance.chapterManager.completeLesson(
+                      chapterIndex,
+                      modalState.currentLessonIndex
+                    );
+                    PuzzleManager.instance.updatePieceGauge(chapter.pieceId);
+                  }
+                }
+
+                // 새 학습 로드
+                modalState.currentLessonIndex = clickedIndex;
+                console.log(`[ModalManager] currentLessonIndex 업데이트: ${modalState.currentLessonIndex}`);
+                
+                this._loadLesson(modal, chapter, modalState.currentLessonIndex);
+                this._updateProgress(modal, chapter);
+                this._createLearningList(modal, chapter, chapterIndex, modalState);
+                
+                // ✅ 목록 재생성 후 높이 재조정 및 스크롤
+                setTimeout(() => {
+                  this._adjustModalContentHeight(modal, modalState);
+                  this._adjustVideoListHeight(modal, modalState);
+                  setTimeout(() => {
+                    this._scrollToCurrentLesson(modal);
+                  }, 100);
+                }, 50);
+              } catch (error) {
+                if (errorHandler) {
+                  errorHandler.handle(error, {
+                    context: 'PuzzleModalManager._createLearningList.clickHandler',
+                    chapterIndex,
+                    lessonIndex: index
+                  }, false);
+                } else {
+                  console.error('[ModalManager] 클릭 핸들러 에러:', error);
+                }
+              }
+            };
+
+            if (eventManager) {
+              const listenerId = eventManager.on(link, "click", clickHandler);
+              // 리스너 ID를 modal에 저장하여 나중에 정리할 수 있도록
+              if (!modal._learningListListenerIds) {
+                modal._learningListListenerIds = [];
+              }
+              modal._learningListListenerIds.push({ element: link, id: listenerId });
+            } else {
+              link.addEventListener("click", clickHandler);
+            }
+          }
+
+          list.appendChild(li);
+        } catch (error) {
+          if (errorHandler) {
+            errorHandler.handle(error, {
+              context: 'PuzzleModalManager._createLearningList.lesson',
               chapterIndex,
-              modalState.currentLessonIndex
-            );
-            PuzzleManager.instance.updatePieceGauge(chapter.pieceId);
+              lessonIndex: index
+            }, false);
+          } else {
+            console.error(`[ModalManager] 학습 항목 생성 에러 [${index}]:`, error);
           }
         }
-
-        // 새 학습 로드
-        modalState.currentLessonIndex = clickedIndex;
-        console.log(`[ModalManager] currentLessonIndex 업데이트: ${modalState.currentLessonIndex}`);
-        
-        this._loadLesson(modal, chapter, modalState.currentLessonIndex);
-        this._updateProgress(modal, chapter);
-        this._createLearningList(modal, chapter, chapterIndex, modalState);
-        
-        // ✅ 목록 재생성 후 높이 재조정 및 스크롤
-        setTimeout(() => {
-          this._adjustModalContentHeight(modal, modalState);
-          this._adjustVideoListHeight(modal, modalState);
-          setTimeout(() => {
-            this._scrollToCurrentLesson(modal);
-          }, 100);
-        }, 50);
       });
-
-      list.appendChild(li);
-    });
+    } catch (error) {
+      const errorHandler = typeof ErrorHandler !== 'undefined' ? ErrorHandler : null;
+      if (errorHandler) {
+        errorHandler.handle(error, {
+          context: 'PuzzleModalManager._createLearningList',
+          chapterIndex
+        }, false);
+      } else {
+        console.error('[ModalManager] 학습 목록 생성 에러:', error);
+      }
+    }
   }
 
   /**
@@ -3010,7 +3193,7 @@ class ModalManager {
 class PuzzleManager {
   static instance = null;
 
-  constructor(boardElementId, chapterData = null) {
+  constructor(boardElementId, chapterData = null, dependencies = {}) {
     if (PuzzleManager.instance) {
       return PuzzleManager.instance;
     }
@@ -3018,23 +3201,57 @@ class PuzzleManager {
     console.log('[PuzzleManager] 초기화 시작');
     console.log('[PuzzleManager] 챕터 데이터:', chapterData);
 
-    this.boardElement = document.getElementById(boardElementId);
-    if (!this.boardElement) {
-      console.error('[PuzzleManager] 보드 엘리먼트를 찾을 수 없습니다:', boardElementId);
-      return;
+    // 의존성 주입 (폴백 포함)
+    this.domUtils = dependencies.domUtils || (typeof DOMUtils !== 'undefined' ? DOMUtils : null);
+    this.eventManager = dependencies.eventManager || (typeof eventManager !== 'undefined' ? eventManager : null);
+    this.errorHandler = dependencies.errorHandler || (typeof ErrorHandler !== 'undefined' ? ErrorHandler : null);
+    this.utils = dependencies.utils || (typeof Utils !== 'undefined' ? Utils : null);
+    this.animationUtils = dependencies.animationUtils || (typeof AnimationUtils !== 'undefined' ? AnimationUtils : null);
+
+    // 이벤트 리스너 ID 저장 (정리용)
+    this.listenerIds = [];
+
+    try {
+      this.boardElement = this.domUtils?.$(`#${boardElementId}`) || document.getElementById(boardElementId);
+      if (!this.boardElement) {
+        const error = new Error(`보드 엘리먼트를 찾을 수 없습니다: ${boardElementId}`);
+        this._handleError(error, 'PuzzleManager.constructor');
+        return;
+      }
+
+      this.svg = null;
+      this.pieces = [];
+      this.chapterManager = new ChapterManager(chapterData, {
+        errorHandler: this.errorHandler,
+        utils: this.utils
+      });
+      this.contentManager = new ContentManager(this.chapterManager);
+      this.videoModal = null; // VideoModal 인스턴스
+
+      // VideoModal 초기화 시도
+      this._initializeVideoModal();
+
+      PuzzleManager.instance = this;
+      console.log('[PuzzleManager] 초기화 완료');
+    } catch (error) {
+      this._handleError(error, 'PuzzleManager.constructor');
     }
+  }
 
-    this.svg = null;
-    this.pieces = [];
-    this.chapterManager = new ChapterManager(chapterData);
-    this.contentManager = new ContentManager(this.chapterManager);
-    this.videoModal = null; // VideoModal 인스턴스
-
-    // VideoModal 초기화 시도
-    this._initializeVideoModal();
-
-    PuzzleManager.instance = this;
-    console.log('[PuzzleManager] 초기화 완료');
+  /**
+   * 에러 처리 헬퍼
+   * @private
+   */
+  _handleError(error, context, additionalInfo = {}) {
+    if (this.errorHandler) {
+      this.errorHandler.handle(error, {
+        context,
+        component: 'PuzzleManager',
+        ...additionalInfo
+      }, false);
+    } else {
+      console.error(`[PuzzleManager] ${context}:`, error, additionalInfo);
+    }
   }
 
   /**
@@ -3063,7 +3280,7 @@ class PuzzleManager {
             
             // 실제 VideoModal 인스턴스가 필요한 경우
             // 여기서는 간단한 모달을 사용
-            await ModalManager._openSimpleModal(chapterIndex, chapter);
+            await PuzzleModalManager._openSimpleModal(chapterIndex, chapter);
           }
         };
         
@@ -3235,15 +3452,36 @@ class PuzzleManager {
   }
 
   _createPuzzlePieces() {
-    PUZZLE_PIECES.forEach((pieceData) => {
-      const piece = new PuzzlePiece(
-        pieceData,
-        this.contentManager,
-        this.chapterManager
-      );
-      this.pieces.push(piece);
-      this.svg.appendChild(piece.createElement());
-    });
+    try {
+      // 의존성 전달
+      const dependencies = {
+        eventManager: this.eventManager,
+        errorHandler: this.errorHandler,
+        domUtils: this.domUtils
+      };
+
+      PUZZLE_PIECES.forEach((pieceData) => {
+        try {
+          const piece = new PuzzlePiece(
+            pieceData,
+            this.contentManager,
+            this.chapterManager,
+            dependencies
+          );
+          const element = piece.createElement();
+          if (element && this.svg) {
+            this.pieces.push(piece);
+            this.svg.appendChild(element);
+          } else {
+            console.warn(`[PuzzleManager] 퍼즐 조각 ${pieceData.id} 생성 실패`);
+          }
+        } catch (error) {
+          this._handleError(error, 'PuzzleManager._createPuzzlePieces.piece', { pieceId: pieceData.id });
+        }
+      });
+    } catch (error) {
+      this._handleError(error, 'PuzzleManager._createPuzzlePieces');
+    }
   }
 
   _createPlayButtonsAndGauges() {
@@ -3261,7 +3499,7 @@ class PuzzleManager {
    * 챕터 모달 열기
    */
   openChapterModal(chapterIndex, chapter) {
-    ModalManager.openChapterModal(chapterIndex, chapter);
+    PuzzleModalManager.openChapterModal(chapterIndex, chapter);
   }
 
   /**
@@ -3666,24 +3904,87 @@ function updatePieceGaugeByCompletion(pieceId) {
 // 초기화
 // ============================================================================
 function initializeOverlay() {
-  const overlay = document.getElementById("overlay");
-  const celebration = document.getElementById("celebration");
+  try {
+    const domUtils = typeof DOMUtils !== 'undefined' ? DOMUtils : null;
+    const eventManager = typeof eventManager !== 'undefined' ? eventManager : null;
+    const errorHandler = typeof ErrorHandler !== 'undefined' ? ErrorHandler : null;
 
-  if (overlay && celebration) {
-    overlay.addEventListener("click", function () {
-      this.classList.remove("show");
-      celebration.classList.remove("show");
-    });
+    const overlay = domUtils?.$("#overlay") || document.getElementById("overlay");
+    const celebration = domUtils?.$("#celebration") || document.getElementById("celebration");
+
+    if (overlay && celebration) {
+      const clickHandler = function () {
+        try {
+          this.classList.remove("show");
+          celebration.classList.remove("show");
+        } catch (error) {
+          if (errorHandler) {
+            errorHandler.handle(error, { context: 'initializeOverlay.clickHandler' }, false);
+          } else {
+            console.error('[Overlay] 클릭 핸들러 에러:', error);
+          }
+        }
+      };
+
+      if (eventManager) {
+        eventManager.on(overlay, "click", clickHandler);
+      } else {
+        overlay.addEventListener("click", clickHandler);
+      }
+    }
+  } catch (error) {
+    const errorHandler = typeof ErrorHandler !== 'undefined' ? ErrorHandler : null;
+    if (errorHandler) {
+      errorHandler.handle(error, { context: 'initializeOverlay' }, false);
+    } else {
+      console.error('[Overlay] 초기화 에러:', error);
+    }
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const chapterData = window.puzzleChapterData || null;
+// 초기화 함수 (에러 처리 포함)
+function initializePuzzleOnboarding() {
+  try {
+    const chapterData = window.puzzleChapterData || null;
 
-  const puzzleManager = new PuzzleManager("puzzleBoard", chapterData);
-  puzzleManager.initialize();
-  initializeOverlay();
-});
+    // 의존성 주입
+    const dependencies = {
+      domUtils: typeof DOMUtils !== 'undefined' ? DOMUtils : null,
+      eventManager: typeof eventManager !== 'undefined' ? eventManager : null,
+      errorHandler: typeof ErrorHandler !== 'undefined' ? ErrorHandler : null,
+      utils: typeof Utils !== 'undefined' ? Utils : null,
+      animationUtils: typeof AnimationUtils !== 'undefined' ? AnimationUtils : null,
+    };
+
+    const puzzleManager = new PuzzleManager("puzzleBoard", chapterData, dependencies);
+    
+    if (puzzleManager && puzzleManager.initialize) {
+      puzzleManager.initialize();
+    } else {
+      console.error('[PuzzleOnboarding] PuzzleManager 초기화 실패');
+    }
+    
+    initializeOverlay();
+  } catch (error) {
+    const errorHandler = typeof ErrorHandler !== 'undefined' ? ErrorHandler : null;
+    if (errorHandler) {
+      errorHandler.handle(error, {
+        context: 'initializePuzzleOnboarding'
+      }, true); // 사용자에게 표시
+    } else {
+      console.error('[PuzzleOnboarding] 초기화 에러:', error);
+      alert('퍼즐 온보딩 초기화 중 오류가 발생했습니다.');
+    }
+  }
+}
+
+// DOMContentLoaded 이벤트 처리
+if (document.readyState === 'loading') {
+  document.addEventListener("DOMContentLoaded", initializePuzzleOnboarding);
+} else {
+  // 이미 로드된 경우 즉시 실행
+  initializePuzzleOnboarding();
+}
 
 // ============================================================================
 // Export

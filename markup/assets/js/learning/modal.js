@@ -1,8 +1,9 @@
 /**
  * 비디오 모달 관리 클래스 (VideoModalBase 활용)
+ * 공통 모듈 활용 (ErrorHandler, DOMUtils, EventManager, Utils)
  */
 class VideoModal extends VideoModalBase {
-  constructor(config, markerManager) {
+  constructor(config, markerManager, dependencies = {}) {
     super({
       videos: [], // 학습 페이지는 videos 배열을 사용하지 않음
       modalPath: config.modalPath || "./_modal/video-learning.html",
@@ -12,24 +13,55 @@ class VideoModal extends VideoModalBase {
       enableCommentBox: false,
     });
 
-    // VideoModalBase의 config와 학습 페이지 config 병합
-    this.config = { ...this.config, ...config };
-    this.markerManager = markerManager;
-    this.currentModal = null;
-    this.currentLearningIndex = null;
-    this.currentChapterInfo = null;
+    // 의존성 주입 (폴백 포함)
+    this.domUtils = dependencies.domUtils || (typeof DOMUtils !== 'undefined' ? DOMUtils : null);
+    this.errorHandler = dependencies.errorHandler || (typeof ErrorHandler !== 'undefined' ? ErrorHandler : null);
+    this.eventManager = dependencies.eventManager || (typeof eventManager !== 'undefined' ? eventManager : null);
+    this.utils = dependencies.utils || (typeof Utils !== 'undefined' ? Utils : null);
+    this.animationUtils = dependencies.animationUtils || (typeof AnimationUtils !== 'undefined' ? AnimationUtils : null);
 
-    // 높이 조정 관련 (VideoModalBase의 것과 별도로 관리)
-    this.resizeObserver = null;
-    this.mutationObserver = null;
-    this.heightAdjustTimer = null;
-    this._retryCount = 0;
-    this._isAdjustingHeight = false; // 높이 조정 중 플래그
+    // 이벤트 리스너 ID 저장 (정리용)
+    this.listenerIds = [];
 
-    this._setupKeyboardEvents();
+    try {
+      // VideoModalBase의 config와 학습 페이지 config 병합
+      this.config = { ...this.config, ...config };
+      this.markerManager = markerManager;
+      this.currentModal = null;
+      this.currentLearningIndex = null;
+      this.currentChapterInfo = null;
+
+      // 높이 조정 관련 (VideoModalBase의 것과 별도로 관리)
+      this.resizeObserver = null;
+      this.mutationObserver = null;
+      this.heightAdjustTimer = null;
+      this._retryCount = 0;
+      this._isAdjustingHeight = false; // 높이 조정 중 플래그
+      this._windowResizeHandler = null; // window resize 핸들러 저장
+
+      this._setupKeyboardEvents();
+    } catch (error) {
+      this._handleError(error, 'constructor');
+    }
   }
 
-      /**
+  /**
+   * 에러 처리 헬퍼
+   * @private
+   */
+  _handleError(error, context, additionalInfo = {}) {
+    if (this.errorHandler) {
+      this.errorHandler.handle(error, {
+        context: `VideoModal.${context}`,
+        component: 'VideoModal',
+        ...additionalInfo
+      }, false);
+    } else {
+      console.error(`[VideoModal] ${context}:`, error, additionalInfo);
+    }
+  }
+
+  /**
    * 챕터 기반으로 비디오 모달 로드
    * @param {Object} chapter - 챕터 데이터
    * @param {number} chapterIndex - 챕터 인덱스
@@ -37,45 +69,93 @@ class VideoModal extends VideoModalBase {
    */
   async loadChapter(chapter, chapterIndex, initialLessonIndex) {
     try {
+      // 입력값 유효성 검증
+      if (!chapter || typeof chapterIndex !== 'number' || typeof initialLessonIndex !== 'number') {
+        this._handleError(new Error('유효하지 않은 입력값'), 'loadChapter', { chapter, chapterIndex, initialLessonIndex });
+        return;
+      }
+
+      if (!this.markerManager || !this.markerManager.allMarkers) {
+        this._handleError(new Error('markerManager가 없습니다.'), 'loadChapter');
+        return;
+      }
+
+      if (initialLessonIndex < 0 || initialLessonIndex >= this.markerManager.allMarkers.length) {
+        this._handleError(new Error(`initialLessonIndex ${initialLessonIndex}가 범위를 벗어났습니다.`), 'loadChapter');
+        return;
+      }
+
       this.destroy();
       this.currentLearningIndex = initialLessonIndex;
 
       // 챕터 정보 저장 (새 구조: 챕터 마커가 첫 번째)
+      const globalStartIndex = this.config.toGlobalIndex ? this.config.toGlobalIndex(chapterIndex, -1) : null;
+      if (globalStartIndex === null) {
+        this._handleError(new Error('globalStartIndex를 계산할 수 없습니다.'), 'loadChapter');
+        return;
+      }
+
       this.currentChapterInfo = {
         chapterIndex: chapterIndex,
         chapterData: chapter,
-        globalStartIndex: this.config.toGlobalIndex(chapterIndex, -1), // 챕터 마커 인덱스
+        globalStartIndex: globalStartIndex, // 챕터 마커 인덱스
       };
 
       const modalHTML = await this._fetchModal();
       const modalElement = this._parseModal(modalHTML, "learning");
 
+      if (!modalElement) {
+        this._handleError(new Error('모달 요소를 생성할 수 없습니다.'), 'loadChapter');
+        return;
+      }
+
       document.body.appendChild(modalElement);
+
       this.currentModal = modalElement;
       this.currentModalElement = modalElement; // VideoModalBase 호환성
 
       const initialLesson = this.markerManager.allMarkers[initialLessonIndex];
+      if (!initialLesson || !initialLesson.url) {
+        this._handleError(new Error('초기 학습 데이터가 유효하지 않습니다.'), 'loadChapter');
+        return;
+      }
+
       this._setupVideo(modalElement, initialLesson.url);
       this._updateContent(modalElement, initialLesson, initialLessonIndex);
       this._show(modalElement);
     } catch (error) {
-      console.error("모달 로드 오류:", error);
-      alert("비디오를 로드하는 중 오류가 발생했습니다.");
+      this._handleError(error, 'loadChapter', { chapter, chapterIndex, initialLessonIndex });
+      if (this.errorHandler) {
+        // ErrorHandler가 있으면 사용자 알림은 ErrorHandler가 처리
+      } else {
+        alert("비디오를 로드하는 중 오류가 발생했습니다.");
+      }
     }
   }
 
-      /**
+  /**
    * 비디오 모달 로드 (기존 호환성 유지)
    * @param {Object} videoData - 비디오 데이터
    * @param {number} currentIndex - 현재 전역 인덱스
    */
   async load(videoData, currentIndex) {
     try {
+      // 입력값 유효성 검증
+      if (!videoData || typeof currentIndex !== 'number' || currentIndex < 0) {
+        this._handleError(new Error('유효하지 않은 입력값'), 'load', { videoData, currentIndex });
+        return;
+      }
+
       console.log(
         `[VideoModal] load 호출: index=${currentIndex}, label=${videoData?.label}`
       );
 
       // 새로운 챕터 정보 가져오기
+      if (!this.config || typeof this.config.getChapterByGlobalIndex !== 'function') {
+        this._handleError(new Error('config.getChapterByGlobalIndex가 없습니다.'), 'load');
+        return;
+      }
+
       const newChapterInfo = this.config.getChapterByGlobalIndex(currentIndex);
 
       if (!newChapterInfo) {
@@ -135,22 +215,36 @@ class VideoModal extends VideoModalBase {
         const modalHTML = await this._fetchModal();
         const modalElement = this._parseModal(modalHTML, videoData.type || "learning");
 
+        if (!modalElement) {
+          this._handleError(new Error('모달 요소를 생성할 수 없습니다.'), 'load');
+          return;
+        }
+
         document.body.appendChild(modalElement);
+
         this.currentModal = modalElement;
         this.currentModalElement = modalElement; // VideoModalBase 호환성
+
+        if (!videoData.url) {
+          this._handleError(new Error('videoData.url이 없습니다.'), 'load');
+          return;
+        }
 
         this._setupVideo(modalElement, videoData.url);
         this._updateContent(modalElement, videoData, currentIndex);
         this._show(modalElement);
       }
     } catch (error) {
-      console.error("모달 로드 오류:", error);
-      console.error("오류 상세:", {
+      this._handleError(error, 'load', {
         currentIndex,
         videoData,
         currentChapterInfo: this.currentChapterInfo,
       });
-      alert(`비디오를 로드하는 중 오류가 발생했습니다.\n${error.message}`);
+      if (this.errorHandler) {
+        // ErrorHandler가 있으면 사용자 알림은 ErrorHandler가 처리
+      } else {
+        alert(`비디오를 로드하는 중 오류가 발생했습니다.\n${error.message}`);
+      }
     }
   }
 
@@ -199,79 +293,103 @@ class VideoModal extends VideoModalBase {
     }
   }
 
-      /**
+  /**
    * 제목 업데이트
    * @private
    */
   _updateTitle(modalElement, label) {
-    const videoTitle = modalElement.querySelector(".tit-box h3");
-    const currentLesson = modalElement.querySelector(".sub-txt");
+    try {
+      if (!modalElement || !label) {
+        console.warn("[VideoModal] _updateTitle: 유효하지 않은 입력값");
+        return;
+      }
 
-    if (videoTitle) videoTitle.textContent = label;
-    if (currentLesson) currentLesson.textContent = label;
+      const videoTitle = this.domUtils?.$(".tit-box h3", modalElement) || modalElement.querySelector(".tit-box h3");
+      const currentLesson = this.domUtils?.$(".sub-txt", modalElement) || modalElement.querySelector(".sub-txt");
+
+      if (videoTitle) videoTitle.textContent = label;
+      if (currentLesson) currentLesson.textContent = label;
+    } catch (error) {
+      this._handleError(error, '_updateTitle', { label });
+    }
   }
 
-      /**
+  /**
    * 진행률 업데이트 (현재 챕터 기준)
    * @private
    */
   _updateProgress(modalElement, currentIndex) {
-    if (!this.currentChapterInfo) {
-      console.warn("[VideoModal] currentChapterInfo가 없습니다");
-      return;
+    try {
+      if (!this.currentChapterInfo) {
+        console.warn("[VideoModal] currentChapterInfo가 없습니다");
+        return;
+      }
+
+      if (!modalElement) {
+        console.warn("[VideoModal] modalElement가 없습니다");
+        return;
+      }
+
+      const currentChapter = this.currentChapterInfo.chapterData;
+      const lessons = currentChapter?.lessons;
+
+      if (!lessons || lessons.length === 0) {
+        console.warn("[VideoModal] lessons가 비어있습니다");
+        return;
+      }
+
+      // 현재 챕터의 완료된 학습 개수
+      const completedCount = lessons.filter((lesson) => lesson && lesson.completed === true).length;
+      const totalCount = lessons.length;
+      const progressPercent = Math.round((completedCount / totalCount) * 100);
+
+      // 현재 학습의 챕터 내 로컬 인덱스 계산
+      // globalStartIndex는 챕터 마커 인덱스이므로, +1 해서 첫 번째 lesson 인덱스 시작
+      const globalStartIndex = this.currentChapterInfo.globalStartIndex;
+      const localIndex = currentIndex - globalStartIndex - 1; // 챕터 마커 다음부터 시작
+
+      console.log(`[VideoModal] 인덱스 계산:`, {
+        currentIndex,
+        globalStartIndex,
+        localIndex,
+        lessonLabel: this.currentChapterInfo.lessonData?.label,
+      });
+
+      const gaugeFill = this.domUtils?.$("#gaugeFill", modalElement) || modalElement.querySelector("#gaugeFill");
+      const labelElement = this.domUtils?.$(".gauge-labels .label:not(.current)", modalElement) || modalElement.querySelector(
+        ".gauge-labels .label:not(.current)"
+      );
+      const progressText = this.domUtils?.$(".gauge-labels .label.current em", modalElement) || modalElement.querySelector(
+        ".gauge-labels .label.current em"
+      );
+
+      // 게이지바: 챕터 진행률
+      if (gaugeFill) {
+        if (this.domUtils) {
+          this.domUtils.setStyles(gaugeFill, { width: `${progressPercent}%` });
+        } else {
+          gaugeFill.style.width = progressPercent + "%";
+        }
+      }
+
+      // 차시 업데이트: "현재차시 / 총차시" 형식
+      if (labelElement) {
+        const currentText = localIndex + 1;
+        labelElement.innerHTML = `<em>${currentText}</em> / ${totalCount} 강`;
+        console.log(`[VideoModal] 차시 업데이트: ${currentText} / ${totalCount}`);
+      } else {
+        console.warn("[VideoModal] 차시 표시 요소를 찾을 수 없습니다.");
+      }
+
+      // 진행률 퍼센트: 챕터 진행률
+      if (progressText) progressText.textContent = progressPercent;
+
+      console.log(
+        `[VideoModal] 챕터 진행률: ${completedCount}/${totalCount} (${progressPercent}%), 현재 차시: ${localIndex + 1}`
+      );
+    } catch (error) {
+      this._handleError(error, '_updateProgress', { currentIndex });
     }
-
-    const currentChapter = this.currentChapterInfo.chapterData;
-    const lessons = currentChapter.lessons;
-
-    if (!lessons || lessons.length === 0) {
-      console.warn("[VideoModal] lessons가 비어있습니다");
-      return;
-    }
-
-    // 현재 챕터의 완료된 학습 개수
-    const completedCount = lessons.filter((lesson) => lesson.completed).length;
-    const totalCount = lessons.length;
-    const progressPercent = Math.round((completedCount / totalCount) * 100);
-
-    // 현재 학습의 챕터 내 로컬 인덱스 계산
-    // globalStartIndex는 챕터 마커 인덱스이므로, +1 해서 첫 번째 lesson 인덱스 시작
-    const globalStartIndex = this.currentChapterInfo.globalStartIndex;
-    const localIndex = currentIndex - globalStartIndex - 1; // 챕터 마커 다음부터 시작
-
-    console.log(`[VideoModal] 인덱스 계산:`, {
-      currentIndex,
-      globalStartIndex,
-      localIndex,
-      lessonLabel: this.currentChapterInfo.lessonData?.label,
-    });
-
-    const gaugeFill = modalElement.querySelector("#gaugeFill");
-    const labelElement = modalElement.querySelector(
-      ".gauge-labels .label:not(.current)"
-    );
-    const progressText = modalElement.querySelector(
-      ".gauge-labels .label.current em"
-    );
-
-    // 게이지바: 챕터 진행률
-    if (gaugeFill) gaugeFill.style.width = progressPercent + "%";
-
-    // 차시 업데이트: "현재차시 / 총차시" 형식
-    if (labelElement) {
-      const currentText = localIndex + 1;
-      labelElement.innerHTML = `<em>${currentText}</em> / ${totalCount} 강`;
-      console.log(`[VideoModal] 차시 업데이트: ${currentText} / ${totalCount}`);
-    } else {
-      console.warn("[VideoModal] 차시 표시 요소를 찾을 수 없습니다.");
-    }
-
-    // 진행률 퍼센트: 챕터 진행률
-    if (progressText) progressText.textContent = progressPercent;
-
-    console.log(
-      `[VideoModal] 챕터 진행률: ${completedCount}/${totalCount} (${progressPercent}%), 현재 차시: ${localIndex + 1}`
-    );
   }
 
       /**
@@ -897,14 +1015,33 @@ class VideoModal extends VideoModalBase {
 
     // window resize 이벤트도 감지
     this._windowResizeHandler = () => {
-      clearTimeout(this.heightAdjustTimer);
-      this.heightAdjustTimer = setTimeout(() => {
-        console.log("Window resize 감지: 높이 재조정");
-        this._adjustModalContentHeight();
-        this._adjustLearningListHeight();
-      }, 50);
+      try {
+        clearTimeout(this.heightAdjustTimer);
+        
+        // Utils.throttle 사용 (있는 경우)
+        const adjustHeight = () => {
+          console.log("Window resize 감지: 높이 재조정");
+          this._adjustModalContentHeight();
+          this._adjustLearningListHeight();
+        };
+
+        if (this.utils && this.utils.throttle) {
+          const throttledAdjust = this.utils.throttle(adjustHeight, 50);
+          this.heightAdjustTimer = setTimeout(throttledAdjust, 50);
+        } else {
+          this.heightAdjustTimer = setTimeout(adjustHeight, 50);
+        }
+      } catch (error) {
+        this._handleError(error, '_setupResizeObserver.windowResizeHandler');
+      }
     };
-    window.addEventListener("resize", this._windowResizeHandler);
+
+    if (this.eventManager) {
+      const listenerId = this.eventManager.on(window, "resize", this._windowResizeHandler);
+      this.listenerIds.push({ element: window, id: listenerId, type: 'resize' });
+    } else {
+      window.addEventListener("resize", this._windowResizeHandler);
+    }
   }
 
       /**
@@ -1028,18 +1165,33 @@ class VideoModal extends VideoModalBase {
     });
   }
 
-      /**
+  /**
    * 키보드 이벤트 설정
    * @private
    */
   _setupKeyboardEvents() {
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        if (this.currentModal && this.currentModal.style.display === "block") {
-          this.close();
+    try {
+      const keyboardHandler = (e) => {
+        try {
+          if (e.key === "Escape") {
+            if (this.currentModal && this.currentModal.style.display === "block") {
+              this.close();
+            }
+          }
+        } catch (error) {
+          this._handleError(error, '_setupKeyboardEvents.keyboardHandler');
         }
+      };
+
+      if (this.eventManager) {
+        const listenerId = this.eventManager.on(document, "keydown", keyboardHandler);
+        this.listenerIds.push({ element: document, id: listenerId, type: 'keydown' });
+      } else {
+        document.addEventListener("keydown", keyboardHandler);
       }
-    });
+    } catch (error) {
+      this._handleError(error, '_setupKeyboardEvents');
+    }
   }
 
       /**
@@ -1086,72 +1238,106 @@ class VideoModal extends VideoModalBase {
     }
   }
 
-      /**
+  /**
    * 모달 제거 (VideoModalBase 활용)
    */
-      estroy() {
-    if (this.currentModal) {
-      // 이전 모달 닫을 때 완료 처리 (학습 페이지 특화)
-      if (this.currentLearningIndex !== null) {
-        const currentLesson =
-          this.markerManager.allMarkers[this.currentLearningIndex];
+  destroy() {
+    try {
+      if (this.currentModal) {
+        // 이전 모달 닫을 때 완료 처리 (학습 페이지 특화)
+        if (this.currentLearningIndex !== null && this.markerManager && this.markerManager.allMarkers) {
+          const currentLesson =
+            this.markerManager.allMarkers[this.currentLearningIndex];
 
-        // 챕터 마커는 완료 처리 안 함
-        if (!currentLesson.isChapterMarker) {
-          // 완료된 학습을 다시 본 경우 (재학습)
-          if (currentLesson.completed) {
-            console.log(
-              `[VideoModal] 재학습 완료 (destroy): [${this.currentLearningIndex}] ${currentLesson.label} - 게이지 유지`
-            );
-          } else {
-            // 새로운 학습 완료
-            console.log(
-              `[VideoModal] 새 학습 완료 (destroy): [${this.currentLearningIndex}] ${currentLesson.label}`
-            );
-            this.markerManager.completeLesson(this.currentLearningIndex);
+          if (currentLesson) {
+            // 챕터 마커는 완료 처리 안 함
+            if (!currentLesson.isChapterMarker) {
+              // 완료된 학습을 다시 본 경우 (재학습)
+              if (currentLesson.completed) {
+                console.log(
+                  `[VideoModal] 재학습 완료 (destroy): [${this.currentLearningIndex}] ${currentLesson.label} - 게이지 유지`
+                );
+              } else {
+                // 새로운 학습 완료
+                console.log(
+                  `[VideoModal] 새 학습 완료 (destroy): [${this.currentLearningIndex}] ${currentLesson.label}`
+                );
+                if (this.markerManager && typeof this.markerManager.completeLesson === 'function') {
+                  this.markerManager.completeLesson(this.currentLearningIndex);
+                }
+              }
+            }
           }
+
+          this.currentLearningIndex = null;
+          this.currentChapterInfo = null;
         }
 
-        this.currentLearningIndex = null;
-        this.currentChapterInfo = null;
+        // ModalUtils를 사용하여 비디오 정지 및 Observer 정리
+        if (typeof ModalUtils !== 'undefined' && ModalUtils && typeof ModalUtils.cleanup === 'function') {
+          ModalUtils.cleanup(this.currentModal);
+        }
+
+        // 학습 페이지 특화 Observer 정리
+        if (this.resizeObserver) {
+          this.resizeObserver.disconnect();
+          this.resizeObserver = null;
+        }
+
+        if (this.mutationObserver) {
+          this.mutationObserver.disconnect();
+          this.mutationObserver = null;
+        }
+
+        // 타이머 정리
+        if (this.heightAdjustTimer) {
+          clearTimeout(this.heightAdjustTimer);
+          this.heightAdjustTimer = null;
+        }
+
+        // window resize 이벤트 리스너 제거
+        if (this._windowResizeHandler) {
+          if (this.eventManager && this.listenerIds.length > 0) {
+            // EventManager로 등록된 리스너 제거
+            this.listenerIds.forEach(({ element, id }) => {
+              if (element === window && id) {
+                this.eventManager.off(element, id);
+              }
+            });
+            this.listenerIds = this.listenerIds.filter(({ element }) => element !== window);
+          } else {
+            window.removeEventListener("resize", this._windowResizeHandler);
+          }
+          this._windowResizeHandler = null;
+        }
+
+        // 키보드 이벤트 리스너 제거
+        if (this.eventManager && this.listenerIds.length > 0) {
+          this.listenerIds.forEach(({ element, id }) => {
+            this.eventManager.off(element, id);
+          });
+          this.listenerIds = [];
+        }
+
+        // 재시도 카운터 초기화
+        this._retryCount = 0;
+
+        // VideoModalBase의 cleanupObservers도 호출
+        if (super.cleanupObservers && typeof super.cleanupObservers === 'function') {
+          super.cleanupObservers();
+        }
+
+        // 모달 제거
+        if (this.domUtils && this.domUtils.remove) {
+          this.domUtils.remove(this.currentModal);
+        } else {
+          this.currentModal.remove();
+        }
+        this.currentModal = null;
+        this.currentModalElement = null; // VideoModalBase 호환성
       }
-
-      // ModalUtils를 사용하여 비디오 정지 및 Observer 정리
-      ModalUtils.cleanup(this.currentModal);
-
-      // 학습 페이지 특화 Observer 정리
-      if (this.resizeObserver) {
-        this.resizeObserver.disconnect();
-        this.resizeObserver = null;
-      }
-
-      if (this.mutationObserver) {
-        this.mutationObserver.disconnect();
-        this.mutationObserver = null;
-      }
-
-      // 타이머 정리
-      if (this.heightAdjustTimer) {
-        clearTimeout(this.heightAdjustTimer);
-        this.heightAdjustTimer = null;
-      }
-
-      // window resize 이벤트 리스너 제거
-      if (this._windowResizeHandler) {
-        window.removeEventListener("resize", this._windowResizeHandler);
-        this._windowResizeHandler = null;
-      }
-
-      // 재시도 카운터 초기화
-      this._retryCount = 0;
-
-      // VideoModalBase의 cleanupObservers도 호출
-      super.cleanupObservers();
-
-      // 모달 제거
-      this.currentModal.remove();
-      this.currentModal = null;
-      this.currentModalElement = null; // VideoModalBase 호환성
+    } catch (error) {
+      this._handleError(error, 'destroy');
     }
   }
 }

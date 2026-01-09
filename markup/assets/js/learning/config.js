@@ -1,5 +1,6 @@
 /**
  * 학습 경로 설정
+ * 공통 모듈 활용 (ErrorHandler, Utils, ConfigManager)
  */
 const LEARNING_CONFIG = {
   // 마커 설정 - 챕터별로 그룹화
@@ -262,12 +263,30 @@ const LEARNING_CONFIG = {
    * 하위 lessons가 모두 완료되면 챕터도 completed = true로 변경
    */
   updateChapterCompletionStatus() {
-    this.chapters.forEach((chapter) => {
-      const allLessonsCompleted = chapter.lessons.every(
-        (lesson) => lesson.completed
-      );
-      chapter.completed = allLessonsCompleted;
-    });
+    try {
+      if (!this.chapters || !Array.isArray(this.chapters)) {
+        this._handleError(new Error('chapters가 배열이 아닙니다.'), 'updateChapterCompletionStatus');
+        return;
+      }
+
+      this.chapters.forEach((chapter, index) => {
+        try {
+          if (!chapter || !chapter.lessons || !Array.isArray(chapter.lessons)) {
+            console.warn(`[LEARNING_CONFIG] 챕터 ${index}의 lessons가 유효하지 않습니다.`);
+            return;
+          }
+
+          const allLessonsCompleted = chapter.lessons.every(
+            (lesson) => lesson && lesson.completed === true
+          );
+          chapter.completed = allLessonsCompleted;
+        } catch (error) {
+          this._handleError(error, 'updateChapterCompletionStatus.chapter', { chapterIndex: index });
+        }
+      });
+    } catch (error) {
+      this._handleError(error, 'updateChapterCompletionStatus');
+    }
   },
 
   /**
@@ -275,79 +294,151 @@ const LEARNING_CONFIG = {
    * @returns {Array}
    */
   getAllMarkers() {
-    // 챕터 완료 상태 업데이트
-    this.updateChapterCompletionStatus();
+    try {
+      // 챕터 완료 상태 업데이트
+      this.updateChapterCompletionStatus();
 
-    const markers = [];
-    this.chapters.forEach((chapter) => {
-      // 챕터 자체를 마커로 추가 (시작점 표시용, 클릭 불가)
-      markers.push({
-        pathPercent: chapter.pathPercent,
-        gaugePercent: chapter.gaugePercent !== undefined ? chapter.gaugePercent : chapter.pathPercent, // gaugePercent가 없으면 pathPercent 사용
-        type: chapter.type,
-        label: chapter.name,
-        url: chapter.url,
-        completed: chapter.completed,
-        chapterId: chapter.id,
-        isChapterMarker: true,
-        isLearningContent: false, // 강의 아님
-        isClickable: false, // 클릭 불가
+      if (!this.chapters || !Array.isArray(this.chapters)) {
+        this._handleError(new Error('chapters가 배열이 아닙니다.'), 'getAllMarkers');
+        return [];
+      }
+
+      const markers = [];
+      this.chapters.forEach((chapter, chapterIndex) => {
+        try {
+          if (!chapter) {
+            console.warn(`[LEARNING_CONFIG] 챕터 ${chapterIndex}가 null입니다.`);
+            return;
+          }
+
+          // 챕터 자체를 마커로 추가 (시작점 표시용, 클릭 불가)
+          markers.push({
+            pathPercent: chapter.pathPercent || 0,
+            gaugePercent: chapter.gaugePercent !== undefined ? chapter.gaugePercent : (chapter.pathPercent || 0),
+            type: chapter.type || 'chapter',
+            label: chapter.name || `챕터 ${chapterIndex + 1}`,
+            url: chapter.url || '',
+            completed: chapter.completed === true,
+            chapterId: chapter.id || chapterIndex + 1,
+            isChapterMarker: true,
+            isLearningContent: false, // 강의 아님
+            isClickable: false, // 클릭 불가
+          });
+
+          // 하위 lessons 추가 (실제 강의)
+          if (chapter.lessons && Array.isArray(chapter.lessons)) {
+            chapter.lessons.forEach((lesson, lessonIndex) => {
+              try {
+                if (!lesson) {
+                  console.warn(`[LEARNING_CONFIG] 챕터 ${chapterIndex}의 레슨 ${lessonIndex}가 null입니다.`);
+                  return;
+                }
+
+                markers.push({
+                  pathPercent: lesson.pathPercent || 0,
+                  gaugePercent: lesson.gaugePercent !== undefined ? lesson.gaugePercent : (lesson.pathPercent || 0),
+                  type: lesson.type || 'normal',
+                  label: lesson.label || `레슨 ${lessonIndex + 1}`,
+                  url: lesson.url || '',
+                  completed: lesson.completed === true,
+                  chapterId: chapter.id || chapterIndex + 1,
+                  isChapterMarker: false,
+                  isLearningContent: true, // 실제 강의
+                  isClickable: true, // 클릭 가능
+                });
+              } catch (error) {
+                this._handleError(error, 'getAllMarkers.lesson', { chapterIndex, lessonIndex });
+              }
+            });
+          }
+        } catch (error) {
+          this._handleError(error, 'getAllMarkers.chapter', { chapterIndex });
+        }
       });
 
-      // 하위 lessons 추가 (실제 강의)
-      chapter.lessons.forEach((lesson) => {
-        markers.push({
-          ...lesson,
-          gaugePercent: lesson.gaugePercent !== undefined ? lesson.gaugePercent : lesson.pathPercent, // gaugePercent가 없으면 pathPercent 사용
-          chapterId: chapter.id,
-          isChapterMarker: false,
-          isLearningContent: true, // 실제 강의
-          isClickable: true, // 클릭 가능
-        });
-      });
-    });
-
-    return markers;
+      return markers;
+    } catch (error) {
+      this._handleError(error, 'getAllMarkers');
+      return [];
+    }
   },
 
   /**
    * 특정 인덱스의 챕터 정보 반환
    * @param {number} globalIndex - 전체 마커 기준 인덱스
-   * @returns {Object} { chapterIndex, chapterData, lessonIndex, lessonData, isChapterMarker }
+   * @returns {Object|null} { chapterIndex, chapterData, lessonIndex, lessonData, isChapterMarker }
    */
   getChapterByGlobalIndex(globalIndex) {
-    const allMarkers = this.getAllMarkers();
-    const marker = allMarkers[globalIndex];
+    try {
+      if (typeof globalIndex !== 'number' || globalIndex < 0) {
+        this._handleError(new Error(`유효하지 않은 globalIndex: ${globalIndex}`), 'getChapterByGlobalIndex');
+        return null;
+      }
 
-    if (!marker) return null;
+      const allMarkers = this.getAllMarkers();
+      
+      if (!Array.isArray(allMarkers) || globalIndex >= allMarkers.length) {
+        console.warn(`[LEARNING_CONFIG] globalIndex ${globalIndex}가 범위를 벗어났습니다. (총 ${allMarkers.length}개)`);
+        return null;
+      }
 
-    const chapterIndex = this.chapters.findIndex(
-      (ch) => ch.id === marker.chapterId
-    );
-    const chapter = this.chapters[chapterIndex];
+      const marker = allMarkers[globalIndex];
+      if (!marker) {
+        console.warn(`[LEARNING_CONFIG] globalIndex ${globalIndex}의 마커를 찾을 수 없습니다.`);
+        return null;
+      }
 
-    if (marker.isChapterMarker) {
-      // 챕터 마커인 경우
-      return {
-        chapterIndex,
-        chapterData: chapter,
-        lessonIndex: -1, // 챕터 자체이므로 -1
-        lessonData: marker,
-        isChapterMarker: true,
-      };
-    } else {
-      // 일반 레슨인 경우
-      const lessonIndex = chapter.lessons.findIndex(
-        (lesson) => lesson.pathPercent === marker.pathPercent
+      const chapterIndex = this.chapters.findIndex(
+        (ch) => ch && ch.id === marker.chapterId
       );
 
-      return {
-        chapterIndex,
-        chapterData: chapter,
-        lessonIndex,
-        lessonData: marker,
-        isChapterMarker: false,
-      };
+      if (chapterIndex === -1) {
+        console.warn(`[LEARNING_CONFIG] chapterId ${marker.chapterId}에 해당하는 챕터를 찾을 수 없습니다.`);
+        return null;
+      }
+
+      const chapter = this.chapters[chapterIndex];
+      if (!chapter) {
+        console.warn(`[LEARNING_CONFIG] 챕터 인덱스 ${chapterIndex}의 데이터가 없습니다.`);
+        return null;
+      }
+
+      if (marker.isChapterMarker) {
+        // 챕터 마커인 경우
+        return {
+          chapterIndex,
+          chapterData: chapter,
+          lessonIndex: -1, // 챕터 자체이므로 -1
+          lessonData: marker,
+          isChapterMarker: true,
+        };
+      } else {
+        // 일반 레슨인 경우
+        if (!chapter.lessons || !Array.isArray(chapter.lessons)) {
+          console.warn(`[LEARNING_CONFIG] 챕터 ${chapterIndex}의 lessons가 유효하지 않습니다.`);
+          return null;
+        }
+
+        const lessonIndex = chapter.lessons.findIndex(
+          (lesson) => lesson && lesson.pathPercent === marker.pathPercent
+        );
+
+        if (lessonIndex === -1) {
+          console.warn(`[LEARNING_CONFIG] pathPercent ${marker.pathPercent}에 해당하는 레슨을 찾을 수 없습니다.`);
+          return null;
+        }
+
+        return {
+          chapterIndex,
+          chapterData: chapter,
+          lessonIndex,
+          lessonData: marker,
+          isChapterMarker: false,
+        };
+      }
+    } catch (error) {
+      this._handleError(error, 'getChapterByGlobalIndex', { globalIndex });
+      return null;
     }
   },
 
@@ -355,22 +446,141 @@ const LEARNING_CONFIG = {
    * 로컬 인덱스를 글로벌 인덱스로 변환
    * @param {number} chapterIndex - 챕터 인덱스
    * @param {number} lessonIndex - 챕터 내 학습 인덱스 (-1이면 챕터 자체)
-   * @returns {number}
+   * @returns {number|null}
    */
   toGlobalIndex(chapterIndex, lessonIndex) {
-    let globalIndex = 0;
+    try {
+      if (typeof chapterIndex !== 'number' || chapterIndex < 0) {
+        this._handleError(new Error(`유효하지 않은 chapterIndex: ${chapterIndex}`), 'toGlobalIndex');
+        return null;
+      }
 
-    for (let i = 0; i < chapterIndex; i++) {
-      globalIndex += 1; // 챕터 마커
-      globalIndex += this.chapters[i].lessons.length; // 하위 lessons
+      if (typeof lessonIndex !== 'number') {
+        this._handleError(new Error(`유효하지 않은 lessonIndex: ${lessonIndex}`), 'toGlobalIndex');
+        return null;
+      }
+
+      if (!this.chapters || !Array.isArray(this.chapters)) {
+        this._handleError(new Error('chapters가 배열이 아닙니다.'), 'toGlobalIndex');
+        return null;
+      }
+
+      if (chapterIndex >= this.chapters.length) {
+        console.warn(`[LEARNING_CONFIG] chapterIndex ${chapterIndex}가 범위를 벗어났습니다. (총 ${this.chapters.length}개)`);
+        return null;
+      }
+
+      let globalIndex = 0;
+
+      for (let i = 0; i < chapterIndex; i++) {
+        const chapter = this.chapters[i];
+        if (!chapter) {
+          console.warn(`[LEARNING_CONFIG] 챕터 인덱스 ${i}가 null입니다.`);
+          continue;
+        }
+
+        globalIndex += 1; // 챕터 마커
+        
+        if (chapter.lessons && Array.isArray(chapter.lessons)) {
+          globalIndex += chapter.lessons.length; // 하위 lessons
+        }
+      }
+
+      if (lessonIndex === -1) {
+        // 챕터 마커 자체
+        return globalIndex;
+      } else {
+        // 하위 lesson
+        const chapter = this.chapters[chapterIndex];
+        if (!chapter || !chapter.lessons || !Array.isArray(chapter.lessons)) {
+          console.warn(`[LEARNING_CONFIG] 챕터 ${chapterIndex}의 lessons가 유효하지 않습니다.`);
+          return null;
+        }
+
+        if (lessonIndex >= chapter.lessons.length) {
+          console.warn(`[LEARNING_CONFIG] lessonIndex ${lessonIndex}가 범위를 벗어났습니다. (총 ${chapter.lessons.length}개)`);
+          return null;
+        }
+
+        return globalIndex + 1 + lessonIndex;
+      }
+    } catch (error) {
+      this._handleError(error, 'toGlobalIndex', { chapterIndex, lessonIndex });
+      return null;
     }
+  },
 
-    if (lessonIndex === -1) {
-      // 챕터 마커 자체
-      return globalIndex;
+  /**
+   * 에러 처리 헬퍼
+   * @private
+   */
+  _handleError(error, context, additionalInfo = {}) {
+    if (typeof ErrorHandler !== 'undefined' && ErrorHandler) {
+      ErrorHandler.handle(error, {
+        context: `LEARNING_CONFIG.${context}`,
+        component: 'LEARNING_CONFIG',
+        ...additionalInfo
+      }, false);
     } else {
-      // 하위 lesson
-      return globalIndex + 1 + lessonIndex;
+      console.error(`[LEARNING_CONFIG] ${context}:`, error, additionalInfo);
+    }
+  },
+
+  /**
+   * 설정 유효성 검증
+   * @returns {boolean}
+   */
+  validate() {
+    try {
+      if (!this.chapters || !Array.isArray(this.chapters)) {
+        this._handleError(new Error('chapters가 배열이 아닙니다.'), 'validate');
+        return false;
+      }
+
+      let isValid = true;
+      this.chapters.forEach((chapter, index) => {
+        if (!chapter) {
+          console.warn(`[LEARNING_CONFIG] 챕터 ${index}가 null입니다.`);
+          isValid = false;
+          return;
+        }
+
+        if (!chapter.id) {
+          console.warn(`[LEARNING_CONFIG] 챕터 ${index}에 id가 없습니다.`);
+          isValid = false;
+        }
+
+        if (!chapter.name) {
+          console.warn(`[LEARNING_CONFIG] 챕터 ${index}에 name이 없습니다.`);
+          isValid = false;
+        }
+
+        if (!chapter.lessons || !Array.isArray(chapter.lessons)) {
+          console.warn(`[LEARNING_CONFIG] 챕터 ${index}의 lessons가 유효하지 않습니다.`);
+          isValid = false;
+        } else {
+          chapter.lessons.forEach((lesson, lessonIndex) => {
+            if (!lesson) {
+              console.warn(`[LEARNING_CONFIG] 챕터 ${index}의 레슨 ${lessonIndex}가 null입니다.`);
+              isValid = false;
+            } else {
+              if (!lesson.label) {
+                console.warn(`[LEARNING_CONFIG] 챕터 ${index}의 레슨 ${lessonIndex}에 label이 없습니다.`);
+                isValid = false;
+              }
+              if (typeof lesson.pathPercent !== 'number') {
+                console.warn(`[LEARNING_CONFIG] 챕터 ${index}의 레슨 ${lessonIndex}에 pathPercent가 없거나 숫자가 아닙니다.`);
+                isValid = false;
+              }
+            }
+          });
+        }
+      });
+
+      return isValid;
+    } catch (error) {
+      this._handleError(error, 'validate');
+      return false;
     }
   },
 };
@@ -380,30 +590,77 @@ const LEARNING_CONFIG = {
  * window.learningConfigData가 있으면 completed 상태를 업데이트
  */
 if (typeof window !== "undefined" && window.learningConfigData) {
-  const configData = window.learningConfigData;
+  try {
+    const configData = window.learningConfigData;
 
-  LEARNING_CONFIG.chapters.forEach((chapter) => {
-    const chapterData = configData[chapter.id];
-
-    if (chapterData) {
-      // 챕터 완료 상태 업데이트
-      if (chapterData.completed !== undefined) {
-        chapter.completed = chapterData.completed;
-      }
-
-      // 레슨 완료 상태 업데이트
-      if (chapterData.lessons && Array.isArray(chapterData.lessons)) {
-        chapterData.lessons.forEach((lessonData, index) => {
-          if (chapter.lessons[index] && lessonData.completed !== undefined) {
-            chapter.lessons[index].completed = lessonData.completed;
+    if (!configData || typeof configData !== 'object') {
+      console.warn('[LEARNING_CONFIG] learningConfigData가 유효하지 않습니다.');
+    } else {
+      LEARNING_CONFIG.chapters.forEach((chapter, chapterIndex) => {
+        try {
+          if (!chapter || !chapter.id) {
+            console.warn(`[LEARNING_CONFIG] 챕터 ${chapterIndex}가 유효하지 않습니다.`);
+            return;
           }
-        });
+
+          const chapterData = configData[chapter.id];
+
+          if (chapterData) {
+            // 챕터 완료 상태 업데이트
+            if (chapterData.completed !== undefined) {
+              chapter.completed = chapterData.completed === true;
+            }
+
+            // 레슨 완료 상태 업데이트
+            if (chapterData.lessons && Array.isArray(chapterData.lessons)) {
+              if (!chapter.lessons || !Array.isArray(chapter.lessons)) {
+                console.warn(`[LEARNING_CONFIG] 챕터 ${chapterIndex}의 lessons가 유효하지 않습니다.`);
+                return;
+              }
+
+              chapterData.lessons.forEach((lessonData, index) => {
+                try {
+                  if (chapter.lessons[index] && lessonData && lessonData.completed !== undefined) {
+                    chapter.lessons[index].completed = lessonData.completed === true;
+                  }
+                } catch (error) {
+                  console.error(`[LEARNING_CONFIG] 레슨 ${index} 업데이트 에러:`, error);
+                }
+              });
+            }
+          }
+        } catch (error) {
+          if (typeof ErrorHandler !== 'undefined' && ErrorHandler) {
+            ErrorHandler.handle(error, {
+              context: 'LEARNING_CONFIG.loadFromHTML.chapter',
+              chapterIndex
+            }, false);
+          } else {
+            console.error(`[LEARNING_CONFIG] 챕터 ${chapterIndex} 업데이트 에러:`, error);
+          }
+        }
+      });
+
+      console.log(
+        "[LEARNING_CONFIG] learningConfigData 적용 완료:",
+        LEARNING_CONFIG
+      );
+
+      // 설정 유효성 검증
+      if (LEARNING_CONFIG.validate) {
+        const isValid = LEARNING_CONFIG.validate();
+        if (!isValid) {
+          console.warn('[LEARNING_CONFIG] 설정 유효성 검증 실패');
+        }
       }
     }
-  });
-
-  console.log(
-    "[LEARNING_CONFIG] learningConfigData 적용 완료:",
-    LEARNING_CONFIG
-  );
+  } catch (error) {
+    if (typeof ErrorHandler !== 'undefined' && ErrorHandler) {
+      ErrorHandler.handle(error, {
+        context: 'LEARNING_CONFIG.loadFromHTML'
+      }, false);
+    } else {
+      console.error('[LEARNING_CONFIG] learningConfigData 적용 에러:', error);
+    }
+  }
 }

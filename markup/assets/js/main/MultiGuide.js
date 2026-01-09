@@ -1,129 +1,293 @@
 // multiGuide.js
+// 공통 모듈 활용 (ErrorHandler, DOMUtils, EventManager, Utils)
 class MultiGuide {
-    constructor(targets) {
-      this.targets = targets;
-      this.isActive = false;
-      this.init();
+    constructor(targets, dependencies = {}) {
+      // 의존성 주입 (폴백 포함)
+      this.domUtils = dependencies.domUtils || (typeof DOMUtils !== 'undefined' ? DOMUtils : null);
+      this.errorHandler = dependencies.errorHandler || (typeof ErrorHandler !== 'undefined' ? ErrorHandler : null);
+      this.eventManager = dependencies.eventManager || (typeof eventManager !== 'undefined' ? eventManager : null);
+      this.utils = dependencies.utils || (typeof Utils !== 'undefined' ? Utils : null);
+      this.animationUtils = dependencies.animationUtils || (typeof AnimationUtils !== 'undefined' ? AnimationUtils : null);
+
+      // 이벤트 리스너 ID 저장 (정리용)
+      this.listenerIds = [];
+      this.resizeTimer = null; // resize 타이머 저장
+
+      try {
+        // 입력값 유효성 검증
+        if (!targets || !Array.isArray(targets)) {
+          this._handleError(new Error('targets가 배열이 아닙니다.'), 'constructor');
+          this.targets = [];
+        } else {
+          this.targets = targets;
+        }
+
+        this.isActive = false;
+        this.init();
+      } catch (error) {
+        this._handleError(error, 'constructor');
+      }
+    }
+
+    /**
+     * 에러 처리 헬퍼
+     * @private
+     */
+    _handleError(error, context, additionalInfo = {}) {
+      if (this.errorHandler) {
+        this.errorHandler.handle(error, {
+          context: `MultiGuide.${context}`,
+          component: 'MultiGuide',
+          ...additionalInfo
+        }, false);
+      } else {
+        console.error(`[MultiGuide] ${context}:`, error, additionalInfo);
+      }
     }
   
     init() {
-      console.log("[MultiGuide.init] 초기화 시작");
-      
-      this.guideWrap = document.querySelector(".guide-wrap");
-      console.log("[MultiGuide.init] guideWrap:", this.guideWrap);
-      
-      if (!this.guideWrap) {
-        console.error("[MultiGuide.init] ❌ .guide-wrap 요소를 찾을 수 없습니다!");
-        setTimeout(() => {
-          this.guideWrap = document.querySelector(".guide-wrap");
-          if (this.guideWrap) {
-            console.log("[MultiGuide.init] ✅ 재시도 후 guideWrap 찾음");
-            this.continueInit();
-          } else {
-            console.error("[MultiGuide.init] ❌ 재시도 실패");
-          }
-        }, 100);
-        return;
+      try {
+        console.log("[MultiGuide.init] 초기화 시작");
+        
+        this.guideWrap = this.domUtils?.$(".guide-wrap") || document.querySelector(".guide-wrap");
+        console.log("[MultiGuide.init] guideWrap:", this.guideWrap);
+        
+        if (!this.guideWrap) {
+          console.error("[MultiGuide.init] ❌ .guide-wrap 요소를 찾을 수 없습니다!");
+          setTimeout(() => {
+            try {
+              this.guideWrap = this.domUtils?.$(".guide-wrap") || document.querySelector(".guide-wrap");
+              if (this.guideWrap) {
+                console.log("[MultiGuide.init] ✅ 재시도 후 guideWrap 찾음");
+                this.continueInit();
+              } else {
+                console.error("[MultiGuide.init] ❌ 재시도 실패");
+                this._handleError(new Error('.guide-wrap 요소를 찾을 수 없습니다.'), 'init.retry');
+              }
+            } catch (error) {
+              this._handleError(error, 'init.retry');
+            }
+          }, 100);
+          return;
+        }
+        
+        this.continueInit();
+      } catch (error) {
+        this._handleError(error, 'init');
       }
-      
-      this.continueInit();
     }
     
     continueInit() {
-      this.cutoutPath = document.getElementById("guide-cutout-path");
-      this.strokePath = document.getElementById("guide-stroke-path");
-      this.arcEllipseStrokePath = document.getElementById("guide-arc-ellipse-stroke-path");
-      this.arcStrokeMaskPath = document.getElementById("guide-arc-stroke-mask-path");
-      this.connectionLinesGroup = document.getElementById("guide-connection-lines");
-      this.elementConnectionLinesGroup = document.getElementById("guide-element-connection-lines");
-      
-      this.bordersContainer = document.getElementById("guideBorders");
-      this.labelsContainer = document.getElementById("guideLabels");
-  
-      if (!this.bordersContainer) {
-        this.bordersContainer = document.createElement("div");
-        this.bordersContainer.id = "guideBorders";
-        this.bordersContainer.className = "guide-borders";
-        this.guideWrap.appendChild(this.bordersContainer);
+      try {
+        if (!this.guideWrap) {
+          this._handleError(new Error('guideWrap이 없습니다.'), 'continueInit');
+          return;
+        }
+
+        this.cutoutPath = this.domUtils?.$("#guide-cutout-path") || document.getElementById("guide-cutout-path");
+        this.strokePath = this.domUtils?.$("#guide-stroke-path") || document.getElementById("guide-stroke-path");
+        this.arcEllipseStrokePath = this.domUtils?.$("#guide-arc-ellipse-stroke-path") || document.getElementById("guide-arc-ellipse-stroke-path");
+        this.arcStrokeMaskPath = this.domUtils?.$("#guide-arc-stroke-mask-path") || document.getElementById("guide-arc-stroke-mask-path");
+        this.connectionLinesGroup = this.domUtils?.$("#guide-connection-lines") || document.getElementById("guide-connection-lines");
+        this.elementConnectionLinesGroup = this.domUtils?.$("#guide-element-connection-lines") || document.getElementById("guide-element-connection-lines");
+        
+        this.bordersContainer = this.domUtils?.$("#guideBorders") || document.getElementById("guideBorders");
+        this.labelsContainer = this.domUtils?.$("#guideLabels") || document.getElementById("guideLabels");
+    
+        if (!this.bordersContainer) {
+          this.bordersContainer = this.domUtils?.createElement('div', {
+            id: 'guideBorders',
+            class: 'guide-borders'
+          }) || document.createElement("div");
+          
+          if (!this.domUtils) {
+            this.bordersContainer.id = "guideBorders";
+            this.bordersContainer.className = "guide-borders";
+          }
+          
+          this.guideWrap.appendChild(this.bordersContainer);
+        }
+    
+        if (!this.labelsContainer) {
+          this.labelsContainer = this.domUtils?.createElement('div', {
+            id: 'guideLabels',
+            class: 'guide-labels',
+            style: {
+              position: 'fixed',
+              top: '0',
+              left: '0',
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              zIndex: '10000'
+            }
+          }) || document.createElement("div");
+          
+          if (!this.domUtils) {
+            this.labelsContainer.id = "guideLabels";
+            this.labelsContainer.className = "guide-labels";
+            this.labelsContainer.style.cssText =
+              "position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10000;";
+          }
+          
+          this.guideWrap.appendChild(this.labelsContainer);
+        }
+    
+        this.attachEvents();
+        console.log("[MultiGuide.init] ✅ 초기화 완료");
+      } catch (error) {
+        this._handleError(error, 'continueInit');
       }
-  
-      if (!this.labelsContainer) {
-        this.labelsContainer = document.createElement("div");
-        this.labelsContainer.id = "guideLabels";
-        this.labelsContainer.className = "guide-labels";
-        this.labelsContainer.style.cssText =
-          "position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10000;";
-        this.guideWrap.appendChild(this.labelsContainer);
-      }
-  
-      this.attachEvents();
-      console.log("[MultiGuide.init] ✅ 초기화 완료");
     }
   
     getStartButton() {
-      return (
-        document.querySelector(".guide-start-btn") ||
-        document.getElementById("guideStart") ||
-        document.querySelector("[data-guide-start]")
-      );
+      try {
+        return (
+          this.domUtils?.$(".guide-start-btn") ||
+          this.domUtils?.$("#guideStart") ||
+          this.domUtils?.$("[data-guide-start]") ||
+          document.querySelector(".guide-start-btn") ||
+          document.getElementById("guideStart") ||
+          document.querySelector("[data-guide-start]")
+        );
+      } catch (error) {
+        this._handleError(error, 'getStartButton');
+        return null;
+      }
     }
   
     attachEvents() {
-      const startBtn = this.getStartButton();
-      if (startBtn) {
-        startBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          this.show();
-        });
-      }
+      try {
+        const startBtn = this.getStartButton();
+        if (startBtn) {
+          const startBtnHandler = (e) => {
+            try {
+              e.preventDefault();
+              e.stopPropagation();
+              this.show();
+            } catch (error) {
+              this._handleError(error, 'attachEvents.startBtnHandler');
+            }
+          };
 
-      const svg = document.querySelector(".guide-svg");
-      if (svg) {
-        svg.addEventListener("click", (e) => {
-          if (e.target === svg || e.target.tagName.toLowerCase() === "rect") {
-            this.hide();
+          if (this.eventManager) {
+            const listenerId = this.eventManager.on(startBtn, "click", startBtnHandler);
+            this.listenerIds.push({ element: startBtn, id: listenerId, type: 'click' });
+          } else {
+            startBtn.addEventListener("click", startBtnHandler);
           }
-        });
-      }
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && this.isActive) {
-          this.hide();
         }
-      });
 
-      // 화면 리사이즈 시 재측정
-      let resizeTimer;
-      window.addEventListener("resize", () => {
-        if (!this.isActive) return;
-        
-        // 디바운싱: 100ms 후에 재측정
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          console.log("[MultiGuide] 화면 리사이즈 감지 - 재측정 중...");
-          this.createCutouts();
-          this.createBorders();
-          this.createLabels();
-        }, 100);
-      });
+        const svg = this.domUtils?.$(".guide-svg") || document.querySelector(".guide-svg");
+        if (svg) {
+          const svgHandler = (e) => {
+            try {
+              if (e.target === svg || e.target.tagName.toLowerCase() === "rect") {
+                this.hide();
+              }
+            } catch (error) {
+              this._handleError(error, 'attachEvents.svgHandler');
+            }
+          };
+
+          if (this.eventManager) {
+            const listenerId = this.eventManager.on(svg, "click", svgHandler);
+            this.listenerIds.push({ element: svg, id: listenerId, type: 'click' });
+          } else {
+            svg.addEventListener("click", svgHandler);
+          }
+        }
+
+        const keydownHandler = (e) => {
+          try {
+            if (e.key === "Escape" && this.isActive) {
+              this.hide();
+            }
+          } catch (error) {
+            this._handleError(error, 'attachEvents.keydownHandler');
+          }
+        };
+
+        if (this.eventManager) {
+          const listenerId = this.eventManager.on(document, "keydown", keydownHandler);
+          this.listenerIds.push({ element: document, id: listenerId, type: 'keydown' });
+        } else {
+          document.addEventListener("keydown", keydownHandler);
+        }
+
+        // 화면 리사이즈 시 재측정
+        const resizeHandler = () => {
+          try {
+            if (!this.isActive) return;
+            
+            // 디바운싱: 100ms 후에 재측정
+            if (this.resizeTimer) {
+              clearTimeout(this.resizeTimer);
+            }
+
+            // Utils.debounce 사용 (있는 경우)
+            if (this.utils && this.utils.debounce) {
+              const debouncedResize = this.utils.debounce(() => {
+                console.log("[MultiGuide] 화면 리사이즈 감지 - 재측정 중...");
+                this.createCutouts();
+                this.createBorders();
+                this.createLabels();
+              }, 100);
+              this.resizeTimer = setTimeout(debouncedResize, 100);
+            } else {
+              this.resizeTimer = setTimeout(() => {
+                console.log("[MultiGuide] 화면 리사이즈 감지 - 재측정 중...");
+                this.createCutouts();
+                this.createBorders();
+                this.createLabels();
+              }, 100);
+            }
+          } catch (error) {
+            this._handleError(error, 'attachEvents.resizeHandler');
+          }
+        };
+
+        if (this.eventManager) {
+          const listenerId = this.eventManager.on(window, "resize", resizeHandler);
+          this.listenerIds.push({ element: window, id: listenerId, type: 'resize' });
+        } else {
+          window.addEventListener("resize", resizeHandler);
+        }
+      } catch (error) {
+        this._handleError(error, 'attachEvents');
+      }
     }
   
     show() {
+      try {
         console.log("[MultiGuide.show] 가이드 표시 시작");
         
         if (!this.guideWrap) {
-          console.error("[MultiGuide.show] ❌ guideWrap을 찾을 수 없습니다!");
+          this._handleError(new Error('guideWrap을 찾을 수 없습니다.'), 'show');
           return;
         }
       
         this.isActive = true;
-        this.guideWrap.classList.add("active");
+        if (this.domUtils) {
+          this.domUtils.addClasses(this.guideWrap, 'active');
+        } else {
+          this.guideWrap.classList.add("active");
+        }
       
         const startBtn = this.getStartButton();
-        if (startBtn) startBtn.style.display = "none";
+        if (startBtn) {
+          if (this.domUtils) {
+            this.domUtils.setStyles(startBtn, { display: 'none' });
+          } else {
+            startBtn.style.display = "none";
+          }
+        }
       
-        document.body.style.overflow = "hidden";
+        if (this.domUtils) {
+          this.domUtils.setStyles(document.body, { overflow: 'hidden' });
+        } else {
+          document.body.style.overflow = "hidden";
+        }
       
         this.createCutouts();
         this.createBorders();
@@ -131,39 +295,84 @@ class MultiGuide {
         
         // 🔥 createLabels 이후에 키워드 연결선 생성
         setTimeout(() => {
-          this.createKeywordElementConnection();
+          try {
+            this.createKeywordElementConnection();
+          } catch (error) {
+            this._handleError(error, 'show.createKeywordElementConnection');
+          }
         }, 100);
         
         console.log("[MultiGuide.show] ✅ 가이드 표시 완료");
+      } catch (error) {
+        this._handleError(error, 'show');
       }
+    }
   
     hide() {
-      this.isActive = false;
-      this.guideWrap.classList.remove("active");
+      try {
+        this.isActive = false;
+        
+        if (this.guideWrap) {
+          if (this.domUtils) {
+            this.domUtils.removeClasses(this.guideWrap, 'active');
+          } else {
+            this.guideWrap.classList.remove("active");
+          }
+        }
   
-      const startBtn = this.getStartButton();
-      if (startBtn) startBtn.style.display = "block";
+        const startBtn = this.getStartButton();
+        if (startBtn) {
+          if (this.domUtils) {
+            this.domUtils.setStyles(startBtn, { display: 'block' });
+          } else {
+            startBtn.style.display = "block";
+          }
+        }
   
-      document.body.style.overflow = "";
+        if (this.domUtils) {
+          this.domUtils.setStyles(document.body, { overflow: '' });
+        } else {
+          document.body.style.overflow = "";
+        }
   
-      if (this.bordersContainer) this.bordersContainer.innerHTML = "";
-      if (this.labelsContainer) this.labelsContainer.innerHTML = "";
-      if (this.connectionLinesGroup) this.connectionLinesGroup.innerHTML = "";
-      if (this.elementConnectionLinesGroup) this.elementConnectionLinesGroup.innerHTML = "";
+        if (this.bordersContainer) this.bordersContainer.innerHTML = "";
+        if (this.labelsContainer) this.labelsContainer.innerHTML = "";
+        if (this.connectionLinesGroup) this.connectionLinesGroup.innerHTML = "";
+        if (this.elementConnectionLinesGroup) this.elementConnectionLinesGroup.innerHTML = "";
+      } catch (error) {
+        this._handleError(error, 'hide');
+      }
     }
   
     createCutouts() {
+      try {
+        if (!this.cutoutPath) {
+          this._handleError(new Error('cutoutPath가 없습니다.'), 'createCutouts');
+          return;
+        }
+
         let pathData = "";
         let strokePathData = "";
         let arcEllipseStrokePathData = "";
         let arcStrokeMaskPathData = "";
       
-        this.targets.forEach((target) => {
-          const element = document.querySelector(target.selector);
-          if (!element) {
-            console.warn("요소를 찾을 수 없음:", target.selector);
-            return;
-          }
+        if (!this.targets || !Array.isArray(this.targets)) {
+          this._handleError(new Error('targets가 배열이 아닙니다.'), 'createCutouts');
+          return;
+        }
+
+        this.targets.forEach((target, index) => {
+          try {
+            if (!target || !target.selector) {
+              console.warn(`[MultiGuide] target ${index}가 유효하지 않습니다.`);
+              return;
+            }
+
+            const element = this.domUtils?.$(target.selector) || document.querySelector(target.selector);
+            if (!element) {
+              console.warn("[MultiGuide] 요소를 찾을 수 없음:", target.selector);
+              return;
+            }
       
           console.log("[createCutouts]", {
             selector: target.selector,
@@ -205,6 +414,9 @@ class MultiGuide {
               radius
             ) + " ";
           }
+          } catch (error) {
+            this._handleError(error, 'createCutouts.target', { index, target });
+          }
         });
       
         this.cutoutPath.setAttribute("d", pathData.trim());
@@ -222,14 +434,18 @@ class MultiGuide {
           console.log("[createCutouts] arcEllipseStrokePath 설정:", arcEllipseStrokePathData.trim() ? "있음" : "없음");
           this.arcEllipseStrokePath.setAttribute("d", arcEllipseStrokePathData.trim());
         }
+      } catch (error) {
+        this._handleError(error, 'createCutouts');
       }
+    }
 
     createGaugeArcStrokeMaskPath(containerElement, target) {
-      const gaugeSvg = document.getElementById("gauge");
-      if (!gaugeSvg) {
-        console.warn("gauge SVG를 찾을 수 없습니다");
-        return "";
-      }
+      try {
+        const gaugeSvg = this.domUtils?.$("#gauge") || document.getElementById("gauge");
+        if (!gaugeSvg) {
+          console.warn("[MultiGuide] gauge SVG를 찾을 수 없습니다");
+          return "";
+        }
   
       const size = target.gaugeSize || 832;
       const strokeWidth = target.gaugeStrokeWidth || 31;
@@ -298,15 +514,20 @@ class MultiGuide {
         Z
       `;
   
-      return pathData;
+        return pathData;
+      } catch (error) {
+        this._handleError(error, 'createGaugeArcStrokeMaskPath', { target });
+        return "";
+      }
     }
   
     createGaugeArcEllipseStrokeBoundaryPath(containerElement, target) {
-      const gaugeSvg = document.getElementById("gauge");
-      if (!gaugeSvg) {
-        console.warn("gauge SVG를 찾을 수 없습니다");
-        return "";
-      }
+      try {
+        const gaugeSvg = this.domUtils?.$("#gauge") || document.getElementById("gauge");
+        if (!gaugeSvg) {
+          console.warn("[MultiGuide] gauge SVG를 찾을 수 없습니다");
+          return "";
+        }
   
       const size = target.gaugeSize || 832;
       const strokeWidth = target.gaugeStrokeWidth || 31;
@@ -365,7 +586,11 @@ class MultiGuide {
       const endCapRightX = endCapCenterX + capRadius;
       pathData += `M ${endCapLeftX},${endCapCenterY} A ${capRadius},${capRadius} 0 0 0 ${endCapRightX},${endCapCenterY}`;
   
-      return pathData.trim();
+        return pathData.trim();
+      } catch (error) {
+        this._handleError(error, 'createGaugeArcEllipseStrokeBoundaryPath', { target });
+        return "";
+      }
     }
   
     createRoundedRectPath(x, y, width, height, radius) {
@@ -399,28 +624,67 @@ class MultiGuide {
     }
   
     createBorders() {
-      this.targets.forEach((target, index) => {
-        const element = document.querySelector(target.selector);
-        if (!element) return;
-  
-        if (target.useGaugeArc || target.shape === "arc") {
+      try {
+        if (!this.bordersContainer) {
+          console.warn("[MultiGuide] bordersContainer가 없습니다.");
           return;
         }
-  
-        const rect = element.getBoundingClientRect();
-        const padding = target.padding || 15;
-  
-        const border = document.createElement("div");
-        border.className = "guide-border";
-        border.style.cssText = `
-          left: ${rect.left - padding}px;
-          top: ${rect.top - padding}px;
-          width: ${rect.width + padding * 2}px;
-          height: ${rect.height + padding * 2}px;
-          animation-delay: ${index * 0.1}s;
-        `;
-        this.bordersContainer.appendChild(border);
-      });
+
+        if (!this.targets || !Array.isArray(this.targets)) {
+          this._handleError(new Error('targets가 배열이 아닙니다.'), 'createBorders');
+          return;
+        }
+
+        this.targets.forEach((target, index) => {
+          try {
+            if (!target || !target.selector) {
+              console.warn(`[MultiGuide] target ${index}가 유효하지 않습니다.`);
+              return;
+            }
+
+            const element = this.domUtils?.$(target.selector) || document.querySelector(target.selector);
+            if (!element) {
+              console.warn(`[MultiGuide] 요소를 찾을 수 없음: ${target.selector}`);
+              return;
+            }
+    
+            if (target.useGaugeArc || target.shape === "arc") {
+              return;
+            }
+    
+            const rect = element.getBoundingClientRect();
+            const padding = target.padding || 15;
+    
+            const border = this.domUtils?.createElement('div', {
+              class: 'guide-border',
+              style: {
+                left: `${rect.left - padding}px`,
+                top: `${rect.top - padding}px`,
+                width: `${rect.width + padding * 2}px`,
+                height: `${rect.height + padding * 2}px`,
+                animationDelay: `${index * 0.1}s`
+              }
+            }) || document.createElement("div");
+            
+            if (!this.domUtils) {
+              border.className = "guide-border";
+              border.style.cssText = `
+                left: ${rect.left - padding}px;
+                top: ${rect.top - padding}px;
+                width: ${rect.width + padding * 2}px;
+                height: ${rect.height + padding * 2}px;
+                animation-delay: ${index * 0.1}s;
+              `;
+            }
+            
+            this.bordersContainer.appendChild(border);
+          } catch (error) {
+            this._handleError(error, 'createBorders.target', { index, target });
+          }
+        });
+      } catch (error) {
+        this._handleError(error, 'createBorders');
+      }
     }
   
     createConnectionLine(elementRect, maskRect, tooltipBox, target, horizontalPos, verticalPos) {
@@ -522,15 +786,16 @@ class MultiGuide {
     }
 
     createKeywordElementConnection() {
+      try {
         console.log("[createKeywordElementConnection] 시작");
         
         if (!this.elementConnectionLinesGroup) {
-          console.warn("❌ elementConnectionLinesGroup 없음");
+          console.warn("[MultiGuide] ❌ elementConnectionLinesGroup 없음");
           return;
         }
       
-        const element1 = document.querySelector(".video-card:nth-child(3) .key-badge:first-child");
-        const element2 = document.querySelector(".video-card:nth-child(5) .key-badge:first-child");
+        const element1 = this.domUtils?.$(".video-card:nth-child(3) .key-badge:first-child") || document.querySelector(".video-card:nth-child(3) .key-badge:first-child");
+        const element2 = this.domUtils?.$(".video-card:nth-child(5) .key-badge:first-child") || document.querySelector(".video-card:nth-child(5) .key-badge:first-child");
       
         console.log("element1:", element1);
         console.log("element2:", element2);
@@ -608,8 +873,8 @@ class MultiGuide {
         }
       
         // 🔥 애니메이션 CSS 추가
-        if (!document.getElementById("guide-connection-animation-styles")) {
-          const style = document.createElement("style");
+        if (!(this.domUtils?.$("#guide-connection-animation-styles") || document.getElementById("guide-connection-animation-styles"))) {
+          const style = this.domUtils?.createElement('style', { id: 'guide-connection-animation-styles' }) || document.createElement("style");
           style.id = "guide-connection-animation-styles";
           style.textContent = `
             @keyframes connectionFadeIn {
@@ -627,14 +892,34 @@ class MultiGuide {
           `;
           document.head.appendChild(style);
         }
+      } catch (error) {
+        this._handleError(error, 'createKeywordElementConnection');
       }
+    }
 
     createLabels() {
-      this.targets.forEach((target, index) => {
-        if (!target.label) return;
+      try {
+        if (!this.labelsContainer) {
+          console.warn("[MultiGuide] labelsContainer가 없습니다.");
+          return;
+        }
 
-        const element = document.querySelector(target.selector);
-        if (!element) return;
+        if (!this.targets || !Array.isArray(this.targets)) {
+          this._handleError(new Error('targets가 배열이 아닙니다.'), 'createLabels');
+          return;
+        }
+
+        this.targets.forEach((target, index) => {
+          try {
+            if (!target || !target.label) {
+              return;
+            }
+
+            const element = this.domUtils?.$(target.selector) || document.querySelector(target.selector);
+            if (!element) {
+              console.warn(`[MultiGuide] 요소를 찾을 수 없음: ${target.selector}`);
+              return;
+            }
 
         const elementRect = element.getBoundingClientRect();
         // 마스크된 영역의 rect 계산 (padding 포함)
@@ -738,14 +1023,17 @@ class MultiGuide {
           }
         }
 
-        tooltipBox.style.left = `${left}px`;
-        tooltipBox.style.top = `${top}px`;
+            tooltipBox.style.left = `${left}px`;
+            tooltipBox.style.top = `${top}px`;
 
-        // 연결 라인 그리기
-        this.createConnectionLine(elementRect, maskRect, tooltipBox, target, horizontalPos, verticalPos);
-      });
+            // 연결 라인 그리기
+            this.createConnectionLine(elementRect, maskRect, tooltipBox, target, horizontalPos, verticalPos);
+          } catch (error) {
+            this._handleError(error, 'createLabels.target', { index, target });
+          }
+        });
   
-      if (!document.getElementById("guide-tooltip-styles")) {
+        if (!(this.domUtils?.$("#guide-tooltip-styles") || document.getElementById("guide-tooltip-styles"))) {
         const style = document.createElement("style");
         style.id = "guide-tooltip-styles";
         style.textContent = `
@@ -788,16 +1076,69 @@ class MultiGuide {
         `;
         document.head.appendChild(style);
       }
+      } catch (error) {
+        this._handleError(error, 'createLabels');
+      }
+    }
+
+    /**
+     * 리소스 정리 (이벤트 리스너 제거)
+     */
+    destroy() {
+      try {
+        // 이벤트 리스너 제거
+        if (this.eventManager && this.listenerIds.length > 0) {
+          this.listenerIds.forEach(({ element, id }) => {
+            this.eventManager.off(element, id);
+          });
+          this.listenerIds = [];
+        }
+
+        // resize 타이머 정리
+        if (this.resizeTimer) {
+          clearTimeout(this.resizeTimer);
+          this.resizeTimer = null;
+        }
+
+        // 가이드 숨기기
+        this.hide();
+
+        // 참조 정리
+        this.guideWrap = null;
+        this.cutoutPath = null;
+        this.strokePath = null;
+        this.arcEllipseStrokePath = null;
+        this.arcStrokeMaskPath = null;
+        this.connectionLinesGroup = null;
+        this.elementConnectionLinesGroup = null;
+        this.bordersContainer = null;
+        this.labelsContainer = null;
+        this.targets = [];
+        this.isActive = false;
+      } catch (error) {
+        this._handleError(error, 'destroy');
+      }
     }
   }
   
   // 초기화 함수
   window.initMultiGuide = function(targets) {
+    // targets가 없으면 기본값 사용 또는 에러 처리
+    if (!targets || !Array.isArray(targets) || targets.length === 0) {
+      console.warn("[MultiGuide] targets가 제공되지 않았습니다. 기본 targets를 사용합니다.");
+      // 기본 targets를 사용하거나 에러를 발생시킬 수 있습니다.
+      // 여기서는 에러를 발생시키는 것이 더 안전합니다.
+      if (!targets) {
+        console.error("[MultiGuide] initMultiGuide는 targets 파라미터가 필요합니다.");
+        return;
+      }
+    }
+
     if (window.multiGuide) {
       console.log("MultiGuide가 이미 초기화되어 있습니다.");
       return;
     }
-  
+
     window.multiGuide = new MultiGuide(targets);
     console.log("멀티 가이드 초기화 완료!");
     
