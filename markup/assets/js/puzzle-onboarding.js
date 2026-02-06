@@ -37,7 +37,7 @@ const DEFAULT_CONFIG = {
     BASE: "./assets/images/onboarding/bg_piece.jpg",
     COMPLETED: {
       ACTIVE: "./assets/images/onboarding/bg_piece_completed.png",
-      COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png",
+      COMPLETED: "./assets/images/onboarding/bg_piece_finish.png",
       ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed.png",
     },
     FINISH: {
@@ -3582,8 +3582,9 @@ class PuzzleManager {
         boundaries.style.transition = "opacity 0.5s ease";
       }
     }, 3100);
-  
-    this._showCelebration();
+
+    // 애니메이션 시작 시 문구 (이름님 수고하셨습니다 / 온보딩 필수 콘텐츠 시청을 완료하셨습니다)
+    this._showCelebrationStart();
   }
 
   async _showRibbonAnimation() {
@@ -3690,21 +3691,29 @@ class PuzzleManager {
   }
 
   _showCompletionAnimation() {
+    // 애니메이션 시작 시 h3 문구 먼저 변경 (한 프레임 뒤 오버레이 표시해 변경이 보이도록)
+    this._showCelebrationStart();
+    requestAnimationFrame(() => {
+      this._runCompletionAnimationOverlay();
+    });
+  }
+
+  _runCompletionAnimationOverlay() {
     const boardRect = this.boardElement.getBoundingClientRect();
 
     const animationContainer = document.createElement("div");
     animationContainer.className = "completion-animation-container";
     animationContainer.style.cssText = `
-    position: fixed;
-    top: ${boardRect.top}px;
-    left: ${boardRect.left}px;
-    width: ${boardRect.width}px;
-    height: ${boardRect.height}px;
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0;
-    animation: completionFadeIn 0.5s ease forwards, completionPulse 2.5s ease-in-out 0.5s infinite;
-  `;
+      position: fixed;
+      top: ${boardRect.top}px;
+      left: ${boardRect.left}px;
+      width: ${boardRect.width}px;
+      height: ${boardRect.height}px;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      animation: completionFadeIn 0.5s ease forwards, completionPulse 2.5s ease-in-out 0.5s infinite;
+    `;
 
     // CSS 애니메이션 스타일 추가
     if (!document.getElementById('completion-animation-styles')) {
@@ -3815,43 +3824,50 @@ class PuzzleManager {
 
     setTimeout(() => {
       animationContainer.remove();
-
+  
       // ✅ 애니메이션 후 Finish Image 표시
       console.log('[PuzzleManager] 애니메이션 종료 - showFinish 호출 시작');
       this.pieces.forEach((piece) => {
-        piece.showFinish();  // ✅ showAllCompleted → showFinish 변경
+        piece.showFinish();
       });
       console.log('[PuzzleManager] 애니메이션 종료 - showFinish 호출 완료');
+  
+      // ✅ 애니메이션 종료 시 문구 변경
+      this._showCelebrationEnd();
     }, 3500);
   }
 
-  _showCelebration() {
+  /** 애니메이션 시작 시 표시 (h3: 온보딩 필수 콘텐츠 시청을 완료하셨습니다) */
+  _showCelebrationStart() {
     const pageTitle = document.querySelector(".page-title");
     if (!pageTitle) return;
 
     const p = pageTitle.querySelector("p");
     const emText = pageTitle.querySelector("h3 em")?.textContent;
 
-    if (CONFIG.COMPLETION_MODE === "FINISH") {
-      pageTitle.querySelector("h3").innerHTML = `
-    <em>온보딩 필수 콘텐츠</em> 시청을 완료하셨습니다.
-  `;
-      if (p) {
-        p.classList.add("fw-b");
-        p.innerHTML = `
-    필요할 땐 <em>언제든</em> 다시 볼 수 있어요.
-  `;
-      }
-    } else {
-      pageTitle.querySelector("h3").innerHTML = `
+    pageTitle.querySelector("h3").innerHTML = `
     <span><em>${emText}</em>님,</span> 수고하셨습니다.
   `;
-
-      if (p) {
-        p.innerHTML = `
+    if (p) {
+      p.innerHTML = `
     <em>온보딩 필수 콘텐츠 </em> 시청을 완료하셨습니다.
   `;
-      }
+    }
+  }
+
+  /** 애니메이션 종료 시 표시 (p: 필요할 땐 언제든 다시 볼 수 있어요) */
+  _showCelebrationEnd() {
+    const pageTitle = document.querySelector(".page-title");
+    if (!pageTitle) return;
+    const p = pageTitle.querySelector("p");
+    pageTitle.querySelector("h3").innerHTML = `
+    <em>온보딩 필수 콘텐츠</em> 시청을 완료하셨습니다.
+  `;
+    if (p) {
+      p.classList.add("fw-b");
+      p.innerHTML = `
+    필요할 땐 <em>언제든</em> 다시 볼 수 있어요.
+  `;
     }
   }
 
