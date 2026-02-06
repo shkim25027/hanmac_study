@@ -303,6 +303,12 @@ class VideoModalBase extends ModalBase {
         this.adjustCommentOnlyLayout(modalElement);
         break;
 
+      case "onboarding":
+        if (this.config.enableCommentBox) {
+          this.setupCommentBox(modalElement);
+        }
+        break;
+
       case "essential":
         this.setupEssentialLayout(modalElement);
         break;

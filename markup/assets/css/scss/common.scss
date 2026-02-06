@@ -467,20 +467,26 @@ h5 {
 
       &-side {
         display: grid;
-        grid-template-rows: auto 1fr auto;
+        grid-template-rows: auto minmax(0, 1fr) auto;
         grid-auto-rows: auto;
         max-height: $video-modal-height;
         overflow: hidden;
 
+        & > * {
+          min-height: 0;
+        }
+
         .comment-wrap {
+          display: flex;
+          flex-direction: column;
+          min-height: 0;
+          overflow: visible;
           align-self: end;
 
           &:has(.comment-list) {
             border-top: 1px solid var(--border-video);
             box-shadow: var(--shadow-comment);
-           
           }
-          
         }
 
         &.step {
@@ -752,6 +758,8 @@ h5 {
     }
     textarea {
       flex-grow: 1;
+      min-height: 32px;
+      max-height: 120px;
       color: var(--text-revers);
       background: var(--bg-textarea);
       height: 32px;
@@ -760,6 +768,7 @@ h5 {
       font-size: 14px;
       line-height: 20px;
       resize: none;
+      overflow-y: auto;
       transition: height 0.3s linear;
       @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
       &::placeholder {
@@ -880,6 +889,9 @@ h5 {
     position: relative;
     background: var(--bg-comment);
   }
+  &-box {
+    flex-shrink: 0;
+  }
   &-resizer {
     position: absolute;
     left: calc(50% - 21px);
@@ -913,9 +925,10 @@ h5 {
   }
 
   &-list-wrap {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    flex-shrink: 0;
     max-height: 340px;
     @include scrollbar-light;
   }

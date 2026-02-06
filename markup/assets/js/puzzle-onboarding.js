@@ -2220,7 +2220,7 @@ class PuzzleModalManager {
         modalPathTemplate: "./_modal/video-{type}.html",
         enableHeightAdjustment: false, // onboarding은 자체 높이 조정 사용
         enableCommentResizer: false,
-        enableCommentBox: false,
+        enableCommentBox: true, // 댓글 입력 시 작성 버튼 활성화
       });
     }
     return this.videoModalBase;
@@ -2324,6 +2324,11 @@ class PuzzleModalManager {
   
     // 닫기 이벤트 먼저 설정
     this._setupCloseEvents(modal, chapter, chapterIndex, modalState);
+
+    // 댓글 입력 시 작성/취소 버튼 활성화
+    if (this.videoModalBase && this.videoModalBase.setupCommentBox) {
+      this.videoModalBase.setupCommentBox(modal);
+    }
   
     // 학습 목차 생성
     this._createLearningList(modal, chapter, chapterIndex, modalState);
