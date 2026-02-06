@@ -129,8 +129,9 @@ class VideoCardRenderer {
         : "";
 
       const categoryClass = this.getCategoryClass(videoModel.category);
-      const pickBadge = videoModel.bookmark
-        ? `<div class="pick"><i class="ico-pick"></i>${this._escapeHtml(String(videoModel.picker || ''))}님<em>Pick!</em></div>`
+      const pickerName = videoModel.picker && String(videoModel.picker).trim();
+      const pickBadge = pickerName
+        ? `<div class="pick"><i class="ico-pick"></i>${this._escapeHtml(pickerName)}님<em>Pick!</em></div>`
         : "";
       
       const gauge = videoModel.gauge;
@@ -159,6 +160,8 @@ class VideoCardRenderer {
       const videoId = videoModel.id || videoModel.url || '';
       const title = this._escapeHtml(String(videoModel.title || ''));
       const category = this._escapeHtml(String(videoModel.category || ''));
+      const isBookmarked = !!videoModel.bookmark;
+      const checkboxChecked = isBookmarked ? ' checked' : '';
 
       const cardContent = `
         <a href="#" class="card" data-video-id="${this._escapeHtml(String(videoId))}">
@@ -167,7 +170,7 @@ class VideoCardRenderer {
           </div>
           <div class="txt-box">
             <label class="bookmark" for="like_chk${this._escapeHtml(String(videoId))}" onclick="event.stopPropagation();">
-              <input type="checkbox" id="like_chk${this._escapeHtml(String(videoId))}">
+              <input type="checkbox" id="like_chk${this._escapeHtml(String(videoId))}"${checkboxChecked}>
             </label>
             <div class="category ${categoryClass}">${category}</div>
             <div class="title">${title}</div>
