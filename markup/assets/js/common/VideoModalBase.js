@@ -884,12 +884,13 @@ class VideoModalBase extends ModalBase {
 
     if (!hasComments) {
       resizer.style.display = "none";
-      // 댓글이 없으면 높이를 0으로
       commentListWrap.style.height = "0px";
+      commentListWrap.style.flex = "";
     } else {
       resizer.style.display = "block";
-      // 댓글이 있으면 컨텐츠 높이만큼 설정
       this.adjustCommentListWrapHeight(commentListWrap);
+      const h = commentListWrap.offsetHeight;
+      commentListWrap.style.flex = "0 0 " + h + "px";
     }
 
     resizer.addEventListener("mousedown", (e) => {
@@ -906,6 +907,7 @@ class VideoModalBase extends ModalBase {
       if (!isResizing) return;
       const delta = startY - e.clientY;
       const newHeight = Math.min(Math.max(startHeight + delta, minHeight), maxHeight);
+      commentListWrap.style.flex = "0 0 " + newHeight + "px";
       commentListWrap.style.height = newHeight + "px";
 
       if (videoSide && this.config.enableHeightAdjustment) {
