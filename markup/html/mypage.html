@@ -5,15 +5,339 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
   </head>
   <body>
-    <div class="wrap onboarding">
+    <div class="wrap mypage">
       @@include("_include/_header.html")
       <!-- container -->
       <div class="container">
-       <div style="height:200vh"></div>
+        <div class="mypage-inner">
+          <!-- 좌측: 프로필 + 컨텐츠 제안 -->
+          <aside class="mypage-sidebar">
+            <h2 class=" ">마이페이지</h2>
+            <div class="profile-area">
+              <div class="profile-card">
+                <div class="profile-photo">
+                  <img src="./assets/images/insight/profile.png" alt="홍길동 프로필" />
+                </div>
+                <p class="profile-name">
+                 <em>홍길동</em> 선임연구원
+                </p>
+                <p class="profile-role">바론컨설턴트</p>
+                <div class="badge-level">
+                  <span class="badge-level-title">학습레벨</span>
+                  <span class="badge-level-value"> 
+                    <i class="ico-level">
+                      <img src="./assets/images/ico/ico_level_master.svg" alt="학습레벨" />
+                    </i>
+                    Master
+                  </span>
+                  <i class="ico-info" title="레벨 안내"></i>
+                </div>
+              </div>
+              <section class="suggest-section">
+                <h3 class="suggest-title">컨텐츠 제안하기</h3>
+                <textarea class="suggest-input" placeholder="URL, 추천이유 작성" rows="4"></textarea>
+                <button type="button" class="btn-primary btn-full" disabled>
+                  제안 보내기
+                  <i class="ico-arrow"></i>
+                </button>
+              </section>
+            </div>
+
+          </aside>
+
+          <!-- 우측: 학습 활동 + 콘텐츠 -->
+          <main class="mypage-main">
+            <section class="activity-section">
+              <h3 class="section-title">나의 학습 활동 <span class="year-badge">(2026년 기준)</span></h3>
+              <p class="total-time">총 학습시간 <strong>340</strong>분</p>
+              <ul class="activity-list">
+                <li class="activity-item activity-item--gauge">
+                  <div class="activity-head">
+                    <span class="activity-label">마이클래스</span>
+                    <span class="activity-value">74분 <em>(33%)</em></span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="gauge-bar rect"><div class="gauge-fill" style="width: 33%"></div></div>
+                  </div>
+                </li>
+                <li class="activity-item activity-item--gauge">
+                  <div class="activity-head">
+                    <span class="activity-label">온보딩</span>
+                    <span class="activity-value">110분 <em>(80%)</em></span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="gauge-bar rect"><div class="gauge-fill" style="width: 80%"></div></div>
+                  </div>
+                  <p class="activity-note">① 필수 시청 : 26.01.14</p>
+                </li>
+                <li class="activity-item activity-item--gauge">
+                  <div class="activity-head">
+                    <span class="activity-label">법정교육</span>
+                    <span class="activity-value">30분 <em>(20%)</em></span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="gauge-bar rect"><div class="gauge-fill" style="width: 20%"></div></div>
+                  </div>
+                </li>
+                <li class="activity-item activity-item--tag">
+                  <p class="average-label">전체 평균</p>
+                  <div class="activity-head">
+                    <span class="activity-label">리더십</span>
+                    <span class="activity-value">60분</span>
+                  </div>
+                  <div class="tag-list">
+                    <span class="tag">소통</span>
+                    <span class="tag">협업</span>
+                    <span class="tag">웰니스</span>
+                  </div>
+                </li>
+                <li class="activity-item activity-item--tag">
+                  <div class="activity-head">
+                    <span class="activity-label">인사이트</span>
+                    <span class="activity-value">43분</span>
+                  </div>
+                  <div class="tag-list">
+                    <span class="tag">인물</span>
+                    <span class="tag">마인..</span>
+                  </div>
+                </li>
+                <li class="activity-item activity-item--tag">
+                  <div class="activity-head">
+                    <span class="activity-label">비즈트렌드</span>
+                    <span class="activity-value">23분</span>
+                  </div>
+                  <div class="tag-list">
+                    <span class="tag">금리</span>
+                    <span class="tag">증시</span>
+                  </div>
+                </li>
+              </ul>
+            </section>
+
+            <div class="mylist-area">
+              <section class="content-section">
+                <h3 class="section-title">시청중인 콘텐츠 <span class="count">15</span></h3>
+                <ul class="content-grid">
+                  <li class="content-card">
+                    <a href="#" class="card-link">
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_01.png" alt="" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 93%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">어색한 침묵 스몰토크</strong>
+                        <div class="tag-list">
+                          <span class="tag">소통</span>
+                          <span class="tag">협업</span>
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card">
+                    <a href="#" class="card-link">
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_02.png" alt="" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 33%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag leader">리더십</span>
+                        <strong class="item-title">한국에서 가장 유명한 회계사의 조언</strong>
+                        <div class="tag-list">
+                          <span class="tag">소통</span>
+                          
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card">
+                    <a href="#" class="card-link">
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_03.png" alt="" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 83%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하..</strong>
+                        <div class="tag-list">
+                          <span class="tag">협업</span>
+                          <span class="tag">웰니스</span>
+                          
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card">
+                    <a href="#" class="card-link">
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_04.png" alt="" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 63%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag leader">리더십</span>
+                        <strong class="item-title">꼰대가 되지 않고 건설적인 피드백을 하는 법</strong>
+                        <div class="tag-list">
+                          <span class="tag">마인드셋</span>
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card">
+                    <a href="#" class="card-link">
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_05.png" alt="" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 13%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">프로와 아마추어를 가르는 차이점!</strong>
+                        <div class="tag-list">
+                          <span class="tag">자기개발</span>
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card">
+                    <a href="#" class="card-link">
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_06.png" alt="" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 23%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag biz">비즈트렌드</span>
+                        <strong class="item-title">트럼프 반도체 관세…한국 기업 불똥?</strong>
+                        <div class="tag-list">
+                          <span class="tag">금리</span>
+                          <span class="tag">증시</span>
+                          
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </section>
+  
+              <section class="content-section">
+                <h3 class="section-title">저장한 콘텐츠 <span class="count">3</span></h3>
+                <ul class="content-grid">
+                  <li class="content-card content-card--saved">
+                    <a href="#" class="card-link">
+                      <button type="button" class="btn-like on" title="저장 취소"><i class="ico-like"></i></button>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_01.png" alt="" />
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">나의 무한한 가능성을 발견하는 방법</strong>
+                        <div class="tag-list">
+                          <span class="tag">마인드셋</span>
+                          <span class="tag">자기개발</span>
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--saved">
+                    <a href="#" class="card-link">
+                      <button type="button" class="btn-like on" title="저장 취소"><i class="ico-like"></i></button>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_02.png" alt="" />
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag leader">리더십</span>
+                        <strong class="item-title">아무도 알려주지 않았던 일 잘하는 방법</strong>
+                        <div class="tag-list">
+                          <span class="tag">협업</span>
+                          
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--saved">
+                    <a href="#" class="card-link">
+                      <button type="button" class="btn-like on" title="저장 취소"><i class="ico-like"></i></button>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_03.png" alt="" />
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">정선근 교수가 알려주는 목디스크 지식</strong>
+                        <div class="tag-list">
+                          <span class="tag">건강</span>
+                          <span class="tag">웰니스</span>
+                        </div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </section>
+  
+              <section class="review-section">
+                <h3 class="section-title">한줄 소감 <span class="count">6</span></h3>
+                <ul class="review-list">
+                  <li class="review-item">
+                    <span class="category-tag insight">인사이트 &gt; 기술과 미래</span>
+                    <p class="review-text">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하..</p>
+                    <div class="review-comment">
+                      <i class="ico-user"></i>
+                      <strong>홍길동</strong> 사소한 말이 관계를 살린다는 걸 느꼈습니다.
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <span class="category-tag leader">리더십 &gt; 소통</span>
+                    <p class="review-text">꼰대가 되지 않는 피드백 방법을 배웠어요</p>
+                    <div class="review-comment">
+                      <i class="ico-user"></i>
+                      <strong>홍길동</strong> 팀원들과 적용해보려 합니다.
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <span class="category-tag insight">인사이트 &gt; 경제와 사회</span>
+                    <p class="review-text">회계 기초를 쉽게 이해할 수 있었습니다</p>
+                    <div class="review-comment">
+                      <i class="ico-user"></i>
+                      <strong>홍길동</strong> 실무에 도움이 될 것 같아요.
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <span class="category-tag biz">비즈트렌드 &gt; 금리</span>
+                    <p class="review-text">경제 동향 파악에 유용했습니다</p>
+                    <div class="review-comment">
+                      <i class="ico-user"></i>
+                      <strong>홍길동</strong> 시사 이슈를 잘 정리해주셨네요.
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <span class="category-tag leader">법정교육</span>
+                    <p class="review-text">필수 교육 수료 완료!</p>
+                    <div class="review-comment">
+                      <i class="ico-user"></i>
+                      <strong>홍길동</strong> 이해하기 쉽게 구성되어 있었습니다.
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <span class="category-tag">온보딩</span>
+                    <p class="review-text">신입으로서 꼭 필요한 내용이었어요</p>
+                    <div class="review-comment">
+                      <i class="ico-user"></i>
+                      <strong>홍길동</strong> 회사에 대한 이해가 높아졌습니다.
+                    </div>
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </main>
+        </div>
       </div>
       <!-- // container -->
     </div>
-
-    
   </body>
 </html>

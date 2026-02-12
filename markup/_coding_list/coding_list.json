@@ -61,6 +61,9 @@
       },
       "검색결과": {
         "검색결과": ["../search_result.html", "mainframe", "컨펌대기", ""]
+      },
+      "마이페이지": {
+        "마이페이지": ["../mypage.html", "mainframe", "컨펌대기", ""]
       }
     }
   }

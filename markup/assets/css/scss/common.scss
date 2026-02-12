@@ -41,6 +41,28 @@ html {
   display: none !important;
 }
 
+
+// Button - Primary
+.btn-full {
+  width: 100%;
+}
+.btn-primary {
+  height: 36px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  background: radial-gradient(117.51% 77.94% at 48.87% 100%, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.30) 24.58%, rgba(255, 255, 255, 0.00) 100%), #FF8200;
+  background-blend-mode: screen, normal;
+  color: #fff;
+  &:disabled {
+    background: #C4C4C4;
+    border-color: #B1B1B1;
+    color: #E8E8E8;
+  }
+}
+
+
 // Input
 .input {
   &-group {
@@ -185,6 +207,15 @@ html {
       }
     }
   }
+}
+.leader {
+  background: var(--bg-cate-primary);
+}
+.insight {
+  background: var(--bg-cate-secondary);
+}
+.biz {
+  background: var(--bg-cate-tertiary);
 }
 
 // =======================================

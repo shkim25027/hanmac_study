@@ -1,0 +1,495 @@
+@charset "UTF-8";
+
+@use "base" as *;
+
+// =======================================
+// My Page (마이페이지)
+// =======================================
+.mypage {
+  .container {
+    background: linear-gradient(180deg, #F4F1EB 0%, #F7F7F7 100%);
+  }
+
+  .mypage-inner {
+    display: grid;
+    grid-template-columns: 295px 1305fr;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  // ---------------------------------------
+  // 좌측 사이드바
+  // ---------------------------------------
+  .mypage-sidebar {
+    flex-shrink: 0;
+    width: 100%;
+    border-right: 1px solid #C7C5C0;
+    padding-top: 40px;
+
+    @include mq("tablet-wide", max) {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+  }
+
+  .mypage-title {
+    margin: 0 0 24px;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .profile-area {
+    margin-top: 64px;
+    max-width: 202px;
+    margin: 64px auto 0;
+  }
+  .profile-card {
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .profile-photo {
+    width: 144px;
+    height: 144px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--bg-video);
+    box-shadow: 3px 1px 11.6px 10px rgba(210, 205, 194, 0.20), 0 0 0 2px #FFF, 0 4px 6.4px 0 rgba(0, 0, 0, 0.25) inset;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .profile-name {
+    margin: 0 0  4px;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text-primary);
+    em {
+      font-weight: 700;
+    }
+  }
+
+  .profile-role {
+    margin: 0 0 22px;
+    font-size: 15px;
+    color: #7D7B78;
+  }
+
+  .badge-level {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #625C53;
+    background: #F6E7D0;
+    border-radius: 4px;
+
+    .ico-level {
+      width: 16px;
+      height: 16px;
+    }
+
+    .ico-info {
+      width: 14px;
+      height: 14px;
+      opacity: 0.6;
+      background: url("../images/ico/ico_info.svg") center/contain no-repeat;
+      cursor: help;
+    }
+    .badge-level-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: #000;
+      gap: 4px;
+      @include flex(row, center, center);
+    }
+  }
+
+  .suggest-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .suggest-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #5E4311;
+  }
+
+  .suggest-input {
+    width: 100%;
+    min-height: 140px;
+    padding: 8px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: #FAFAFA;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color:#C8C8C8;
+    }
+  }
+
+  .btn-suggest {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: #e8e4dc;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #ddd9d0;
+    }
+
+    .ico-arrow {
+      width: 14px;
+      height: 14px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+  }
+
+  // ---------------------------------------
+  // 우측 메인
+  // ---------------------------------------
+  .mypage-main {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .section-title {
+    margin: 0 0 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+
+    .year-badge,
+    .count {
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+  }
+
+  // ---------------------------------------
+  // 나의 학습 활동
+  // ---------------------------------------
+  .activity-section {
+    margin-bottom: 48px;
+  }
+
+  .total-time {
+    margin: 0 0 24px;
+    font-size: 18px;
+    color: var(--text-primary);
+
+    strong {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-accent);
+    }
+  }
+
+  .activity-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .activity-item {
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    &--tag {
+      background: linear-gradient(135deg, #f5e6c8 0%, #e8d4a8 50%);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+  }
+
+  .activity-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    .activity-label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .activity-value {
+      font-size: 14px;
+      color: var(--text-secondary);
+
+      em {
+        font-style: normal;
+        margin-left: 2px;
+      }
+    }
+  }
+
+  .activity-note {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .average-label {
+    margin: 0 0 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .progress-track {
+    position: relative;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #d9d9d9;
+
+    .gauge-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #d9d9d9;
+
+      .gauge-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        background: #188f6b;
+        border-radius: 0;
+        // width는 인라인 style로 각 항목별 설정
+      }
+    }
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+
+    .tag {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  }
+
+  // ---------------------------------------
+  // 콘텐츠 카드 그리드
+  // ---------------------------------------
+  .mylist-area {
+    padding-left: 46px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .content-section {
+    margin-bottom: 48px;
+  }
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @include mq("tablet", max) {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+  }
+
+  .content-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.2s;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .btn-like {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+    }
+
+    .btn-remove-card {
+      position: absolute;
+      bottom: 10px;
+      right: 12px;
+      z-index: 2;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      opacity: 0.7;
+      @include bgImg("../images/ico/ico_trash.svg", contain, center);
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  .content-card--saved .btn-like {
+    @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+  }
+
+  .item-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--bg-video);
+    border-radius: 12px 12px 0 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .item-info {
+    padding: 8px 12px;
+  }
+
+  .category-tag {
+    display: inline-block;
+    padding: 2px 4px;
+    margin-bottom: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #000;
+    opacity: 0.5;
+    border-radius: 4px;
+
+  }
+
+  .item-title {
+    display: block;
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    height: calc(12px * 1.4 * 2);
+    color: var(--text-primary);
+    @include ellipsis(2);
+  }
+
+  .item-info .tag-list {
+    margin-top: 0;
+
+  }
+  @include gauge-bar();
+
+  // ---------------------------------------
+  // 한줄 소감
+  // ---------------------------------------
+  .review-section {
+    margin-bottom: 48px;
+  }
+
+  .review-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .review-item {
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+    .category-tag {
+      margin-bottom: 8px;
+    }
+  }
+
+  .review-text {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-primary);
+  }
+
+  .review-comment {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+
+    .ico-user {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      @include bgImg("../images/ico/ico_user.svg", contain, center);
+    }
+
+    strong {
+      color: var(--text-primary);
+    }
+  }
+}
