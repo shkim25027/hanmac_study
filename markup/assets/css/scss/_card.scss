@@ -211,25 +211,7 @@ $transition-speed: 0.1s;
       }
     }
 
-    .gauge {
-      &-bar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: var(--bg-gauge-base);
-        padding-bottom: 4px;
-        @include maskContents();
-      }
-
-      &-fill {
-        position: absolute;
-        left: 0;
-        top: 50%;
-        height: 50%;
-        background: var(--bg-gauge-primary);
-      }
-    }
+    // [공통] 진행률 게이지
+    @include gauge-bar;
   }
 }

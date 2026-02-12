@@ -1,0 +1,242 @@
+// ================================================================
+// 공통 컴포넌트 Mixins
+// ================================================================
+@use "mixin" as *;
+// 여러 페이지에서 반복 사용되는 스타일을 mixin으로 정의합니다.
+// 사용법: @include mixin-name;
+//
+// 포함된 컴포넌트:
+// - page-header      : 페이지 상단 헤더 (breadcrumb + 제목)
+// - breadcrumb       : 홈 > 메뉴 > 현재페이지 경로
+// - select-sort      : 정렬용 셀렉트 박스
+// - video-card-grid  : 비디오 카드 그리드 (인사이트, 검색결과 등)
+// - gauge-bar        : 진행률 게이지 (카드, 기사 카드 내)
+// ================================================================
+
+// ---------------------------------------
+// 1. Page Header (페이지 헤더)
+// ---------------------------------------
+/// 페이지 상단 공통 헤더 스타일
+/// insight, biztrend, search 등에서 사용
+@mixin page-header {
+  display: flex;
+  flex-direction: column;
+  max-width: 1600px;
+  margin: auto;
+  padding-top: 24px;
+  padding-bottom: 56px;
+
+  .page-title {
+    padding-top: 64px;
+  }
+
+  h3 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #000;
+  }
+}
+
+// ---------------------------------------
+// 2. Breadcrumb (브레드크럼)
+// ---------------------------------------
+/// 홈 > 상위메뉴 > 현재페이지 형식의 경로 표시
+@mixin breadcrumb {
+  gap: 32px;
+  font-size: 14px;
+  align-self: flex-end;
+  color: var(--text-secondary);
+  @include flex(row, center, flex-start);
+
+  li {
+    position: relative;
+    &:not(:last-child)::after {
+      content: ">";
+      position: absolute;
+      right: -14px;
+      top: 0;
+    }
+  }
+
+  a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    &:hover { color: var(--text-primary); }
+  }
+
+  .sep {
+    margin: 0 2px;
+    color: var(--text-keyword-base);
+  }
+
+  .current {
+    color: var(--text-base);
+    font-weight: 700;
+  }
+}
+
+// ---------------------------------------
+// 3. Select Sort (정렬 셀렉트 박스)
+// ---------------------------------------
+/// 정렬용 드롭다운 스타일 (인사이트, 검색결과에서 사용)
+/// @param $font-size - 선택적. 기본 14px
+$select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23303030' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+
+@mixin select-sort($font-size: 14px) {
+  .list-options {
+    @include flex(row, center, flex-end);
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .select-wrap {
+    position: relative;
+  }
+
+  .select-sort {
+    padding: 8px 32px 8px 12px;
+    font-size: $font-size;
+    color: var(--text-secondary);
+    appearance: none;
+    background-image: $select-sort-arrow;
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-color: #fff;
+    border: 1px solid var(--border-keyword-base, #ddd);
+    border-radius: 8px;
+    cursor: pointer;
+  }
+}
+
+// ---------------------------------------
+// 4. Video Card Grid (비디오 카드 그리드)
+// ---------------------------------------
+/// 비디오/콘텐츠 카드 목록 (인사이트, 검색결과 페이지)
+/// @param $columns     - 그리드 열 수 (기본 4)
+/// @param $column-gap  - 열 간격 (기본 24px)
+/// @param $row-gap     - 행 간격 (기본 56px)
+/// @param $title-size  - 제목 폰트 크기 (기본 18px)
+@mixin video-card-grid($columns: 4, $column-gap: 24px, $row-gap: 56px, $title-size: 18px) {
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat($columns, 1fr);
+    column-gap: $column-gap;
+    row-gap: $row-gap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .video-item {
+    .card-link {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .btn-like {
+      position: absolute;
+      top: 16px;
+      right: 14px;
+      z-index: 2;
+      width: 22px;
+      aspect-ratio: 6 / 5;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      @include flex(row, center, center);
+      transition: background 0.2s;
+
+      .ico-like {
+        display: block;
+        width: 100%;
+        aspect-ratio: 6 / 5;
+        @include bgImg("../images/ico/ico_bookmark_off.svg", contain, center);
+      }
+
+      &.on .ico-like {
+        @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+      }
+    }
+
+    .item-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 16px 16px 0 0; // 위쪽만 라운드
+      background: var(--bg-video);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .item-info {
+      padding: 14px 0;
+      @include flex(column, flex-start, stretch);
+      gap: 16px;
+    }
+
+    .item-title {
+      display: block;
+      font-size: $title-size;
+      font-weight: 500;
+      line-height: 1.4;
+      height: calc(#{$title-size} * 1.4 * 2);
+      color: var(--text-primary);
+      @include ellipsis(2);
+    }
+
+    .item-meta {
+      display: inline-block;
+      font-size: 14px;
+      color: var(--text-keyword-secondary);
+    }
+  }
+}
+
+// ---------------------------------------
+// 5. Gauge Bar (진행률 게이지)
+// ---------------------------------------
+/// 진행률 표시 바 (비디오 카드, 기사 카드 내)
+/// HTML: <div class="gauge-bar"><div class="gauge-fill" style="width: 60%"></div></div>
+/// rect형: <div class="gauge-bar gauge-bar--rect"><div class="gauge-fill" style="width: 60%"></div></div>
+/// 부모에 position: relative 필요
+@mixin gauge-bar {
+  .gauge-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-gauge-base);
+    padding-bottom: 4px;
+    @include maskContents();
+
+    // rect형: 각진 모서리
+    &.rect {
+      border-radius: 0;
+      background: #D9D9D9;
+      .gauge-fill {
+        border-radius: 0;
+        
+      }
+    }
+  }
+
+  .gauge-fill {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 50%;
+    background: var(--bg-gauge-primary);
+    border-radius: 4px; // 라운드형 (기본)
+  }
+}

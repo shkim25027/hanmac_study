@@ -3,7 +3,9 @@
 @use "base" as *;
 
 // =======================================
-// Search Result Page Styles
+// Search Result Page (검색결과)
+// =======================================
+// 공통 컴포넌트: @include page-header, select-sort, video-card-grid
 // =======================================
 .search-result {
   // wrap의 overflow: hidden 오버라이드하여 스크롤 가능하게
@@ -23,37 +25,30 @@
     }
   }
 
-  // 페이지 헤더 (인사이트 형식)
+  // [공통] 페이지 헤더 + 검색결과 전용
   .page-header {
-    display: flex;
-    flex-direction: column;
-    max-width: 1600px;
-    margin: auto;
-    padding-top: 24px;
+    @include page-header;
     padding-bottom: 15px;
   }
 
   .page-title {
     padding-top: 32px;
 
-    h3 {
-      font-size: 26px;
-      font-weight: 700;
-      color: #000;
-      margin: 0 0 12px;
-    }
+    h3 { margin: 0 0 12px; }
 
     .search-summary {
       font-size: 27px;
       line-height: 2;
       margin: 0;
 
-      em {
-        font-weight: 700;
-      }
+      em { font-weight: 700; }
+
       .search-keyword {
         color: #FF7C33;
         font-weight: 600;
+      }
+      .search-count {
+        color: #000;
       }
     }
   }
@@ -156,123 +151,31 @@
         }
       }
 
-      .list-options {
-        @include flex(row, center, flex-end);
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-
-      .select-wrap {
-        position: relative;
-      }
-
-      .select-sort {
-        padding: 8px 32px 8px 12px;
-        font-size: 20px;
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23303030' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        cursor: pointer;
-      }
+      // [공통] 정렬 셀렉트 박스
+      @include select-sort(20px);
     }
 
-    // 인사이트와 동일한 video-grid 형식
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      column-gap: 24px;
-      row-gap: 56px;
-      list-style: none;
-      margin: 0;
-      padding: 0;
+    // [공통] 비디오 카드 그리드 (4열, 20px 제목)
+    @include video-card-grid(4, 24px, 56px, 20px);
 
+    // 반응형: 검색결과 전용
+    .video-grid {
       @include mq("tablet-wide", max) {
         grid-template-columns: repeat(2, 1fr);
       }
-
       @include mq("tablet", max) {
         grid-template-columns: 1fr;
       }
     }
 
-    .video-item {
-      .card-link {
-        display: block;
-        position: relative;
-        overflow: hidden;
-        transition: box-shadow 0.2s, transform 0.2s;
-        text-decoration: none;
-        color: inherit;
-      }
-
-      .btn-like {
-        position: absolute;
-        top: 16px;
-        right: 14px;
-        z-index: 2;
-        width: 22px;
-        aspect-ratio: 6 / 5;
-        padding: 0;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        @include flex(row, center, center);
-        transition: background 0.2s;
-
-        .ico-like {
-          display: block;
-          width: 100%;
-          aspect-ratio: 6 / 5;
-          @include bgImg("../images/ico/ico_bookmark_off.svg", contain, center);
-        }
-
-        &.on .ico-like {
-          @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
-        }
-      }
-
-      .item-thumb {
-        position: relative;
-        width: 100%;
-        aspect-ratio: 16 / 9;
-        overflow: hidden;
-        border-radius: 16px;
-        background: var(--bg-video);
-
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-
-      .item-info {
-        padding: 14px 0;
-        @include flex(column, flex-start, stretch);
-        gap: 16px;
-      }
-
-      .item-title {
-        display: block;
-        font-size: 20px;
-        font-weight: 500;
-        line-height: 1.4;
-        height: calc(20px * 1.4 * 2);
-        color: var(--text-primary);
-        @include ellipsis(2);
-        span {
-          color: #FF7C33;
-          font-weight: 700;
-        }
-      }
-
-      .item-meta {
-        display: inline-block;
-        font-size: 14px;
-        color: var(--text-keyword-secondary);
-      }
+    // 검색결과 전용: 제목 내 키워드 하이라이트
+    .video-item .item-title span {
+      color: #FF7C33;
+      font-weight: 700;
     }
   }
+
+  // [공통] 진행률 게이지 (기사 카드 내)
+  @include gauge-bar;
 }
 

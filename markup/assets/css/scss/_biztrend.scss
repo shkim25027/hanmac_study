@@ -3,103 +3,64 @@
 @use "base" as *;
 
 // =======================================
-// Insight Page
+// Biztrend Page (성공예감&별책부록)
+// =======================================
+// 공통 컴포넌트: @include page-header, breadcrumb
 // =======================================
 .biztrend {
   .container {
     background-color: #fff;
   }
 
+  // [공통] 페이지 헤더
   .page-header {
-    display: flex;
-    flex-direction: column;
-    max-width: 1600px;
-    margin: auto;
-    padding-top: 24px;
-    padding-bottom: 56px;
-    .page-title {
-      padding-top: 64px;
-    }
-    h3 {
-      font-size: 26px;
-      font-weight: 700;
-      color: #000;
-    }
+    @include page-header;
   }
-  // ---------------------------------------
-  // Breadcrumb
-  // ---------------------------------------
+
+  // [공통] 브레드크럼
   .breadcrumb {
-    gap: 32px;
-    font-size: 14px;
-    align-self: flex-end;
-    color: var(--text-secondary);
-    @include flex(row, center, flex-start);
-    li {
-      position: relative;
-      &:not(:last-child) {
-        &::after {
-          content: ">";
-          position: absolute;
-          right: -14px;
-          top: 0;
-          width: 1px;
-          height: 100%;
-        }
-      }
-    }
-    a {
-      color: var(--text-secondary);
-      text-decoration: none;
-
-      &:hover {
-        color: var(--text-primary);
-      }
-    }
-
-    .sep {
-      margin: 0 2px;
-      color: var(--text-keyword-base);
-    }
-
-    .current {
-      color: var(--text-base);
-      font-weight: 700;
-    }
+    @include breadcrumb;
   }
 
   // ---------------------------------------
-  // 성공예감&별책부록: 소개 섹션
+  // 소개 섹션 (biztrend-header)
   // ---------------------------------------
   .biztrend-wrap {
     margin-top: -48px;
   }
+
   .biztrend-inner {
     max-width: 1600px;
     margin: 0 auto;
   }
+
   .biztrend-header {
     margin-bottom: 10px;
     @include flex(row, center, space-between);
     gap: 24px;
+
     .biztrend-sub-title {
       gap: 16px;
       @include flex(row, center, flex-start);
     }
+
     .biztrend-photo {
       width: 48px;
       height: 48px;
       border-radius: 50%;
       overflow: hidden;
     }
+
     .biztrend-intro-desc {
+      margin: 0;
       font-size: 15px;
       line-height: 1.28;
-      em {
-        font-weight: 700;
-      }
+      color: var(--text-base, #333);
+
+      em { font-weight: 700; }
     }
   }
+
   .biztrend-intro-inner {
     position: relative;
     @include flex(row, center, flex-start);
@@ -124,16 +85,14 @@
     }
   }
 
-  .biztrend-intro-desc {
-    margin: 0;
-    font-size: 16px;
-    line-height: 1.6;
-    color: var(--text-base, #333);
-  }
+  // ---------------------------------------
+  // 기사 그리드 (달력형)
+  // ---------------------------------------
+  $article-grid-gap: 8px;
+  $article-grid-cols: 6;
+  $article-grid-last-extra: 28px;
+  $article-grid-total: ($article-grid-cols - 1) * $article-grid-gap + $article-grid-last-extra;
 
-  // ---------------------------------------
-  // 성공예감&별책부록: 기사 그리드 (달력형)
-  // ---------------------------------------
   .article-grid {
     max-width: 1600px;
     margin: 0 auto;
@@ -157,11 +116,6 @@
     background: #fff;
   }
 
-  $article-grid-gap: 8px;
-  $article-grid-cols: 6;
-  $article-grid-last-extra: 28px;
-  $article-grid-total: ($article-grid-cols - 1) * $article-grid-gap + $article-grid-last-extra; // 5×16 + 28 = 108px
-
   .article-grid-days {
     display: grid;
     grid-template-columns: repeat(5, calc((100% - #{$article-grid-total}) / #{$article-grid-cols})) calc((100% - #{$article-grid-total}) / #{$article-grid-cols} + #{$article-grid-last-extra});
@@ -173,7 +127,8 @@
     font-weight: 600;
     color: var(--text-secondary);
     width: 100%;
-    &::after{
+
+    &::after {
       content: '&';
       position: absolute;
       top: 0;
@@ -185,41 +140,44 @@
       color: #C3C3C3;
       @include flex(row, center, center);
     }
+
     li {
       position: relative;
       padding: 8px 0;
       text-align: center;
       font-size: 17px;
       color: #C3C3C3;
-      &:last-child{
-        &::before,
-        &::after{
-          left: auto;
-          right: 0;
-          width: calc(100% - 28px);
-        }
+
+      &:last-child::before,
+      &:last-child::after {
+        left: auto;
+        right: 0;
+        width: calc(100% - 28px);
       }
-      &::before{  
-        content: " "; 
+
+      &::before {
+        content: " ";
         position: absolute;
         top: 0;
         left: 0;
         width: calc(100% + 8px);
-        height: 2px ;
+        height: 2px;
         background: #E5E4E3;
       }
-      &::after{  
-        content: " "; 
+
+      &::after {
+        content: " ";
         position: absolute;
         bottom: 0;
         left: 0;
         width: calc(100% + 8px);
-        height: 1px ;
+        height: 1px;
         background: #E5E4E3;
       }
     }
   }
 
+  // 날짜 선택 (드롭다운)
   .article-grid-date {
     position: relative;
 
@@ -243,136 +201,145 @@
         color: #979797;
         font-size: 20px;
       }
+
       .date-month {
         font-size: 25px;
         color: #020202;
       }
+
       .date-select-month {
         font-weight: bold;
       }
+
       .date-select-icon {
         display: none;
       }
     }
 
-    // 날짜 드롭다운 (셀렉트 박스처럼 버튼 바로 아래 노출)
     .datepicker-dropdown {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 4px;
-    z-index: 50;
-    min-width: 280px;
-    background: #fff;
-    border: 1px solid var(--border-keyword-base, #ddd);
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-
-    &.is-open {
-      display: block;
-    }
-
-    .datepicker-dropdown-inner {
-      padding: 16px;
-    }
-    .datepicker-wheels {
-      @include flex(row, stretch, center);
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .datepicker-wheel-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .datepicker-wheel-label {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .datepicker-wheel {
-      height: 180px;
-      overflow: hidden;
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 4px;
+      z-index: 50;
+      min-width: 280px;
+      background: #fff;
       border: 1px solid var(--border-keyword-base, #ddd);
-      border-radius: 6px;
-      position: relative;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
-      &::before,
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        height: 72px;
-        pointer-events: none;
-        z-index: 1;
+      &.is-open {
+        display: block;
       }
-      &::before {
-        top: 0;
-        background: linear-gradient(to bottom, #fff 0%, transparent 100%);
-      }
-      &::after {
-        bottom: 0;
-        background: linear-gradient(to top, #fff 0%, transparent 100%);
-      }
-    }
-    .datepicker-wheel-track {
-      height: 100%;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 72px 0;
-      scroll-behavior: smooth;
-      @include scrollbar-style(6px, 6px, var(--bg-scrollbar-thumb), var(--bg-scrollbar-track));
-    }
-    .datepicker-wheel-item {
-      height: 36px;
-      @include flex(row, center, center);
-      font-size: 16px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: color 0.15s, font-weight 0.15s;
 
-      &.is-selected {
-        font-weight: 700;
-        color: var(--text-primary);
+      .datepicker-dropdown-inner {
+        padding: 16px;
       }
-      &:hover {
-        color: var(--text-primary);
-      }
-    }
-    .datepicker-actions {
-      @include flex(row, center, center);
-      gap: 10px;
-    }
-    .btn-datepicker-cancel,
-    .btn-datepicker-confirm {
-      padding: 8px 20px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-    .btn-datepicker-cancel {
-      background: #f5f5f5;
-      color: var(--text-secondary);
-      border: none;
 
-      &:hover {
-        background: #eee;
+      .datepicker-wheels {
+        @include flex(row, stretch, center);
+        gap: 16px;
+        margin-bottom: 16px;
       }
-    }
-    .btn-datepicker-confirm {
-      background: var(--bg-keyword-primary, #333);
-      color: #fff;
-      border: none;
 
-      &:hover {
-        background: var(--bg-keyword-hover, #555);
+      .datepicker-wheel-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
       }
-    }
+
+      .datepicker-wheel-label {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-secondary);
+      }
+
+      .datepicker-wheel {
+        height: 180px;
+        overflow: hidden;
+        border: 1px solid var(--border-keyword-base, #ddd);
+        border-radius: 6px;
+        position: relative;
+
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          height: 72px;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        &::before {
+          top: 0;
+          background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+        }
+
+        &::after {
+          bottom: 0;
+          background: linear-gradient(to top, #fff 0%, transparent 100%);
+        }
+      }
+
+      .datepicker-wheel-track {
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 72px 0;
+        scroll-behavior: smooth;
+        @include scrollbar-style(6px, 6px, var(--bg-scrollbar-thumb), var(--bg-scrollbar-track));
+      }
+
+      .datepicker-wheel-item {
+        height: 36px;
+        @include flex(row, center, center);
+        font-size: 16px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: color 0.15s, font-weight 0.15s;
+
+        &.is-selected {
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+
+        &:hover {
+          color: var(--text-primary);
+        }
+      }
+
+      .datepicker-actions {
+        @include flex(row, center, center);
+        gap: 10px;
+      }
+
+      .btn-datepicker-cancel,
+      .btn-datepicker-confirm {
+        padding: 8px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+
+      .btn-datepicker-cancel {
+        background: #f5f5f5;
+        color: var(--text-secondary);
+        border: none;
+        &:hover { background: #eee; }
+      }
+
+      .btn-datepicker-confirm {
+        background: var(--bg-keyword-primary, #333);
+        color: #fff;
+        border: none;
+        &:hover { background: var(--bg-keyword-hover, #555); }
+      }
     }
   }
 
@@ -382,7 +349,8 @@
     grid-template-columns: repeat(5, calc((100% - #{$article-grid-total}) / #{$article-grid-cols})) calc((100% - #{$article-grid-total}) / #{$article-grid-cols} + #{$article-grid-last-extra});
     column-gap: $article-grid-gap;
     row-gap: 32px;
-    &::before{
+
+    &::before {
       content: '';
       position: absolute;
       bottom: 0;
@@ -393,65 +361,64 @@
     }
   }
 
+  // ---------------------------------------
+  // 기사 카드
+  // ---------------------------------------
   .article-card {
     position: relative;
     display: grid;
     grid-template-columns: 1fr;
     align-items: flex-start;
     min-height: 160px;
-    min-width: 0; // 그리드 셀 안에서 overflow 방지
-    padding: 0px 8px;
-    background: #fff;
+    min-width: 0;
+    padding: 0 8px;
+    background: linear-gradient(180deg, #EFF4F3 0%, #F9F9F9 71.15%, rgba(249, 249, 249, 0) 96.63%);
     border-radius: 6px;
-    background: linear-gradient(180deg, #EFF4F3 0%, #F9F9F9 71.15%, rgba(249, 249, 249, 0.00) 96.63%);
-    &:nth-child(6n){
+
+    &:nth-child(6n) {
       margin-left: 28px;
     }
-    &:not(.weekend){
-      .article-card-content{
-        height: 144px;
-      }
-    }
-    &.weekend{
-      display: flex;
-      background: linear-gradient(180deg, #F8F3EE 0%, rgba(248, 243, 238, 0.00) 100%);
-      .article-card-num {
-        &:before{
-          background-color: #8C7B6A;
-        }
-      }
-      .article-card-content  {
 
-        .article-card-title-box{
-          background: #EDDFD1;
-        }
+    &:not(.weekend) .article-card-content {
+      height: 144px;
+    }
+
+    &.weekend {
+      display: flex;
+      background: linear-gradient(180deg, #F8F3EE 0%, rgba(248, 243, 238, 0) 100%);
+
+      .article-card-num::before {
+        background-color: #8C7B6A;
+      }
+
+      .article-card-content .article-card-title-box {
+        background: #EDDFD1;
       }
     }
-    // 오늘 이후 날짜: 흐리게 표시
+
     &.is-future {
       opacity: 0.3;
     }
-    &.today{
-      &::before{
+
+    &.today {
+      &::before {
         content: '';
         position: absolute;
         top: 0;
         left: 6px;
         height: 2px;
-        background: linear-gradient(90deg, #FF5905 75%, rgba(255, 89, 5, 0.00) 100%);
-        width:calc(100% - 12px);
+        width: calc(100% - 12px);
         z-index: 1;
+        background: linear-gradient(90deg, #FF5905 75%, rgba(255, 89, 5, 0) 100%);
       }
-      .article-card-num{
-        
+
+      .article-card-num {
         filter: drop-shadow(3px 0 2px rgba(0, 0, 0, 0.25));
-        &:before{
+
+        &::before {
           background-color: #FF5905;
         }
-          
-
       }
-      
     }
   }
 
@@ -464,11 +431,12 @@
     color: #fff;
     width: 39px;
     height: 33px;
-    z-index: 2; 
+    z-index: 2;
     padding-left: 6px;
     padding-right: 12px;
     @include flex(row, center, center);
-    &:before{
+
+    &::before {
       content: ' ';
       position: absolute;
       top: 0;
@@ -480,7 +448,6 @@
       -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 39 33'%3E%3Cpath fill='white' d='M0 33C32 33 29.5 28.5 38.5 0H6C2.68629 0 0 2.68629 0 6V33Z'/%3E%3C/svg%3E") center/contain no-repeat;
       z-index: -1;
     }
-      
   }
 
   .article-card-content {
@@ -488,54 +455,53 @@
     width: 100%;
     height: 100%;
     min-width: 0;
-    gap: 8px;        
+    gap: 8px;
     @include flex(column, center, flex-start);
 
-    &:first-of-type {
-     
-      .article-card-title-box {
-        padding-left: 32px;
-      }
+    &:first-of-type .article-card-title-box {
+      padding-left: 32px;
     }
-    &:not(:first-of-type):last-of-type{
-      .article-card-title-box{
-        background: #EBE3EB;
-      }
+
+    &:not(:first-of-type):last-of-type .article-card-title-box {
+      background: #EBE3EB;
     }
-    &:hover{
+
+    &:hover {
       box-shadow: 0 0 5.4px 0 rgba(0, 0, 0, 0.30);
       z-index: 1;
+
       &::before {
         background: linear-gradient(180deg, var(--bg-card-hover-start) 0%, var(--bg-card-hover-end) 100%);
       }
     }
-    &:before {
+
+    &::before {
       content: ' ';
       display: none;
       position: absolute;
       width: 100%;
       height: 100%;
-      @include maskContents();
-      border-radius: 10px;
       padding: 8px;
+      @include maskContents();
       top: -8px;
       left: -8px;
+      border-radius: 10px;
     }
-
-    
   }
+
   .article-card-title-box {
     position: relative;
     padding-left: 16px;
     padding-right: 32px;
-    @include flex(row, center);
     width: 100%;
     min-width: 0;
     height: 36px;
     min-height: 36px;
     background: #DBE8E5;
     gap: 8px;
-    border-radius: 2px 2px 20px 20px ;
+    border-radius: 2px 2px 20px 20px;
+    @include flex(row, center);
+
     .article-card-like {
       position: absolute;
       right: 10px;
@@ -554,27 +520,8 @@
       }
     }
   }
-  .gauge {
-    &-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--bg-gauge-base);
-      padding-bottom: 4px;
-      @include maskContents();
-    }
 
-    &-fill {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      height: 50%;
-      background: var(--bg-gauge-primary);
-    }
-  }
-  .article-card-title { 
+  .article-card-title {
     position: relative;
     flex: 1;
     min-width: 0;
@@ -587,18 +534,20 @@
   }
 
   .article-card-list {
-    padding:0 16px;
+    padding: 0 16px;
     width: 100%;
     min-width: 0;
     font-size: 14px;
     line-height: 1.6;
     color: #2D2D2D;
+
     li {
       position: relative;
       padding-left: 14px;
       text-align: left;
       @include ellipsis(2);
-      &::before{
+
+      &::before {
         content: " ";
         position: absolute;
         left: 0;
@@ -640,14 +589,11 @@
     border-radius: 4px;
   }
 
-
-
-
   .article-card-image {
+    display: grid;
+    grid-template-columns: 68fr 149fr;
     gap: 12px;
-   display: grid;
-   grid-template-columns: 68fr 149fr;
-   max-width: 100%;
+    max-width: 100%;
   }
 
   .article-card-image-placeholder {
@@ -662,18 +608,24 @@
     text-align: center;
     padding-left: 12px;
     padding-top: 4px;
+
     + .article-card-list {
-      padding-left: 0px;
+      padding-left: 0;
     }
   }
 
-  .article-card--with-image .article-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  .article-card--with-image {
+    .article-card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .article-card-title {
+      padding-top: 0;
+    }
   }
 
-  .article-card--with-image .article-card-title {
-    padding-top: 0;
-  }
+  // [공통] 진행률 게이지 (기사 카드 내)
+  @include gauge-bar;
 }
