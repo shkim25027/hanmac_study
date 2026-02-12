@@ -58,6 +58,9 @@
       },
       "비즈트렌드": {
         "비즈트렌드": ["../biztrend.html", "mainframe", "컨펌대기", ""]
+      },
+      "검색결과": {
+        "검색결과": ["../search_result.html", "mainframe", "컨펌대기", ""]
       }
     }
   }

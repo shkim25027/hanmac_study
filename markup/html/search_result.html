@@ -10,12 +10,14 @@
       <!-- container -->
       <div class="container">
         <div class="search-result-wrap">
-          <!-- 검색 결과 헤더 -->
-          <div class="search-result-header">
-            <h2 class="page-title">검색결과</h2>
-            <p class="search-summary">
-              '<em>AI</em>' '<em>테크</em>'에 대한 검색결과가 <em>24</em>건 있습니다.
-            </p>
+          <!-- 페이지 헤더 -->
+          <div class="page-header">
+            <div class="page-title">
+              <h3 class="blind">검색결과</h3>
+              <p class="search-summary">
+                '<em class="search-keyword">AI 테크</em>'에 대한 검색결과가 <em class="search-count">14</em>건 있습니다.
+              </p>
+            </div>
           </div>
 
           <!-- 필터 탭 -->
@@ -24,17 +26,12 @@
               전체 <span class="count">24</span>
             </button>
             <button class="filter-tab" data-filter="leadership">
-              리더십 <span class="count">21</span>
+              리더십 <span class="count">11</span>
             </button>
             <button class="filter-tab" data-filter="insight">
               인사이트 <span class="count">3</span>
             </button>
-            <button class="filter-tab" data-filter="viewed">
-              <i class="ico-check"></i> 시청한 콘텐츠 <span class="count">1</span>
-            </button>
-            <button class="filter-tab" data-filter="saved">
-              <i class="ico-heart"></i> 저장한 콘텐츠 <span class="count">3</span>
-            </button>
+
           </div>
 
           <!-- 검색 결과 섹션 -->
@@ -43,231 +40,172 @@
             <section class="content-section" data-section="leadership">
               <div class="section-header">
                 <h3 class="section-title">리더십 <span class="section-count">21</span></h3>
-                <button class="btn-more">더보기 +</button>
-              </div>
-              <div class="video-cards-container">
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk1" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk1">
-                      </label>
-                      <div class="category leader">인사이트</div>
-                      <div class="title">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 방법 | 최재천의 관계</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk2" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk2">
-                      </label>
-                      <div class="category leader">인사이트</div>
-                      <div class="title">사고실험 가장 쉽게 설명해드립니다 조선제일검 이재용 회계사 한국에서 가장 유명한 회계사의 조언</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk3" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk3" checked>
-                      </label>
-                      <div class="category leader">인사이트</div>
-                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk4" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk4" checked>
-                      </label>
-                      <div class="category leader">인사이트</div>
-                      <div class="title">새비시 울음에 답하세요! 상대의 숨은 욕구를 찾아내는 것, 거기서 시작해야 됩니다 백영재 | 인류학 박사, &lt;씩데이터&gt;저자</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
-                    </div>
-                  </a>
+                <div class="list-options">
+                  <div class="select-wrap">
+                    <select class="select-sort" title="정렬">
+                    <option>조회수</option>
+                    <option selected>업데이트</option>
+                    <option>내가본컨텐츠</option>
+                    <option>안본컨텐츠</option>
+                    </select>
+                  </div>
                 </div>
               </div>
+              <ul class="video-grid">
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_01.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">
+                        미국 <span>AI테크</span> 집중 투자하며 월배당까지 추구! 미국 <span>AI테크</span> TOP10커버드콜 ETF
+                      </strong>
+                      <span class="item-meta">웰니스 협업</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_02.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">
+                        <span>AI</span> 시대 투자, 이제는 선택이 아닌 필수, ACE 미국 <span>AI테크</span>핵심산업액티
+                      </strong>
+                      <span class="item-meta">웰니스 협업</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like on" title="좋아요 취소"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_03.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">
+                        빅<span>테크</span>는 고졸자를 뽑는다, <span>AI</span>가 무너뜨린 학벌주의하라
+                      </strong>
+                      <span class="item-meta">웰니스 협업</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like on" title="좋아요 취소"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_04.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">
+                        아마존부터 오픈<span>AI</span>까지... 글로벌 빅<span>테크</span>들이 한국에 <span>AI</span> 데이터센터 짓는 이유
+                      </strong>
+                      <span class="item-meta">웰니스 협업</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_01.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title"><span>AI</span> 학벌파괴, 이걸 눈치챈 사람이 큰 돌을 벌겁니다.</strong>
+                      <span class="item-meta">웰니스 협업</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_02.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">
+                        <span>AI</span> 시대 ‘조직’은 망한다. 가벼운 ‘개인’만 살아남을 것
+                      </strong>
+                      <span class="item-meta">웰니스 협업</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like on" title="좋아요 취소"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_03.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">
+                        아는 자만이 살아남는다. 초압축 <span>AI</span> 몰입 강연
+                      </strong>
+                      <span class="item-meta">웰니스 협업</span>
+                    </div>
+                  </a>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like on" title="좋아요 취소"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_04.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">
+                        격변의 <span>AI</span> 시대, 증폭되는 불평등
+                      </strong>
+                      <span class="item-meta">웰니스 협업</span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
             </section>
 
             <!-- 인사이트 섹션 -->
             <section class="content-section" data-section="insight">
               <div class="section-header">
                 <h3 class="section-title">인사이트 <span class="section-count">3</span></h3>
-                <button class="btn-more">더보기 +</button>
-              </div>
-              <div class="video-cards-container">
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk5" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk5">
-                      </label>
-                      <div class="category insight">인사이트</div>
-                      <div class="title">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 방법 | 최재천의 관계</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk6" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk6">
-                      </label>
-                      <div class="category insight">인사이트</div>
-                      <div class="title">사고실험 가장 쉽게 설명해드립니다 조선제일검 이재용 회계사 한국에서 가장 유명한 회계사의 조언</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
-                    </div>
-                  </a>
-                </div>
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk7" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk7" checked>
-                      </label>
-                      <div class="category insight">인사이트</div>
-                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
-                    </div>
-                  </a>
+                <div class="list-options">
+                  <div class="select-wrap">
+                    <select class="select-sort" title="정렬">
+                    <option>조회수</option>
+                    <option selected>업데이트</option>
+                    <option>내가본컨텐츠</option>
+                    <option>안본컨텐츠</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-            </section>
-
-            <!-- 시청한 콘텐츠 섹션 -->
-            <section class="content-section" data-section="viewed">
-              <div class="section-header">
-                <h3 class="section-title">
-                  <i class="ico-check"></i> 시청한 콘텐츠 <span class="section-count">1</span>
-                </h3>
-                <button class="btn-more">더보기 +</button>
-              </div>
-              <div class="video-cards-container">
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk8" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk8" checked>
-                      </label>
-                      <div class="category leader">인사이트</div>
-                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
+              <ul class="video-grid">
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_01.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title"><span>AI</span> 학벌파괴, 이걸 눈치챈 사람이 큰 돌을 벌겁니다.</strong>
+                      <span class="item-meta">웰니스 협업</span>
                     </div>
                   </a>
-                </div>
-              </div>
-            </section>
-
-            <!-- 저장한 콘텐츠 섹션 -->
-            <section class="content-section" data-section="saved">
-              <div class="section-header">
-                <h3 class="section-title">
-                  <i class="ico-heart"></i> 저장한 콘텐츠 <span class="section-count">3</span>
-                </h3>
-                <button class="btn-more">더보기 +</button>
-              </div>
-              <div class="video-cards-container">
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk9" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk9" checked>
-                      </label>
-                      <div class="category leader">인사이트</div>
-                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_02.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title"><span>AI</span> 시대 ‘조직’은 망한다. 가벼운 ‘개인’만 살아남을 것</strong>
+                      <span class="item-meta">웰니스 협업</span>
                     </div>
                   </a>
-                </div>
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk10" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk10" checked>
-                      </label>
-                      <div class="category leader">인사이트</div>
-                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like on" title="좋아요 취소"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_03.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">아는 자만이 살아남는다. 초압축 <span>AI</span> 몰입 강연</strong>
+                      <span class="item-meta">웰니스 협업</span>
                     </div>
                   </a>
-                </div>
-                <div class="video-card">
-                  <a href="#" class="card">
-                    <div class="thumb">
-                      <img src="https://via.placeholder.com/128" alt="콘텐츠" />
-                    </div>
-                    <div class="txt-box">
-                      <label class="bookmark" for="like_chk11" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk11" checked>
-                      </label>
-                      <div class="category leader">인사이트</div>
-                      <div class="title">채부심 BOOKS AI 사피엔스 일자리 멸종하는 AI 시대를 대비하라</div>
-                      <div class="author">
-                        <span class="key-badge">웰니스 협업</span>
-                      </div>
+                </li>
+                <li class="video-item">
+                  <a href="#" class="card-link">
+                    <button type="button" class="btn-like on" title="좋아요 취소"><i class="ico-like"></i></button>
+                    <div class="item-thumb"><img src="./assets/images/video/img_thumb_03.png" alt="" /></div>
+                    <div class="item-info">
+                      <strong class="item-title">격변의 <span>AI</span> 시대, 증폭되는 불평등</strong>
+                      <span class="item-meta">웰니스 협업</span>
                     </div>
                   </a>
-                </div>
-              </div>
+                </li>
+              </ul>
             </section>
           </div>
         </div>
@@ -353,6 +291,16 @@
             }
           });
         }
+
+        // 좋아요 버튼 토글
+        document.querySelectorAll('.search-result .btn-like').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.classList.toggle('on');
+            this.setAttribute('title', this.classList.contains('on') ? '좋아요 취소' : '좋아요');
+          });
+        });
 
         // 필터 탭 클릭 이벤트
         const filterTabs = document.querySelectorAll('.filter-tab');
