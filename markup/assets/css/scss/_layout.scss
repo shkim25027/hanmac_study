@@ -144,13 +144,17 @@ html {
       }
     }
 
+    .input-group {
+      position: relative;
+    }
+
     input[type="text"] {
-      padding-left: 44px;
+      padding-left: 38px;
       padding-right: 14px;
       width: 185px;
       height: 38px;
       border-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.7);
+      border: 1px solid #138E65;
       background: var(--bg-search);
       box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3) inset;
       filter: drop-shadow(0 0 0 #000);
@@ -158,6 +162,85 @@ html {
         color: rgba(0, 0, 0, 0.3);
       }
     }
+
+    // 포커스 시: input 위쪽만 라운드, 드롭다운 표시
+    .input-group:focus-within {
+      input[type="text"] {
+        border-radius: 4px 4px 0 0;
+        border-bottom-color: transparent;
+        outline: none;
+      }
+      .search-suggestions {
+        display: block;
+      }
+    }
+
+    .search-suggestions {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 185px;
+      padding: 4px 0;
+      border: 1px solid #138E65;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      background: #F1ECE1;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15) inset, 0 2px 1.9px 0 rgba(0, 0, 0, 0.40);
+      z-index: 1;
+    }
+
+    .search-suggestions-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        @include flex(row, center, flex-start);
+        gap: 8px;
+        padding: 8px 12px;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-primary, #000);
+        cursor: pointer;
+        transition: background 0.15s;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.05);
+        }
+
+        span {
+          flex: 1;
+          text-align: left;
+        }
+      }
+    }
+
+    .ico-history {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      background: url("../images/ico/ico_history.svg") center/contain no-repeat;
+    }
+
+    .btn-remove {
+      flex-shrink: 0;
+      width: 14px;
+      height: 14px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      opacity: 0.5;
+      @include bgImg("../images/ico/ico_clear.svg", contain, center);
+
+      &:hover {
+        opacity: 0.8;
+      }
+
+      // 클릭 시 li 삭제는 JS에서 처리
+    }
+
     .ico-search {
       position: absolute;
       left: 14px;
