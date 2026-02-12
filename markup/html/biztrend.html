@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="wrap biztrend">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+
+        <div class="page-header">
+          <!-- breadcrumb -->
+          <ul class="breadcrumb" aria-label="breadcrumb">
+            <li><a href="./index.html">홈</a></li>
+            <li><a href="./biztrend.html">비즈트렌드</a></li>
+            <li><span class="current">성공예감&별책부록</span></li>
+          </ul>
+          <div class="page-title">
+            <h3>성공예감<span>&</span>별책부록</h3>
+          </div>
+        </div>
+
+        <!-- 소개 섹션 -->
+        <section class="biztrend-wrap">
+          <div class="biztrend-inner">
+            <div class="biztrend-header">
+              <div class="biztrend-sub-title">
+                <div class="biztrend-photo">
+                  <img src="./assets/images/biztrend/img_profile.png" alt="" />
+                </div>
+                <p class="biztrend-intro-desc">
+                  KBS 제1라디오 '성공예감&별책부록'을 통해 <br>
+                  <em>경제 정보를 쉽게 접하고, 생활 속 경제 흐름</em>을 알아보세요.
+                </p>
+              </div>
+              <div class="article-grid-date">
+                <button type="button" class="date-select-trigger datepicker-trigger" id="datepicker-trigger" title="연도·월 선택" aria-label="연도·월 선택" aria-haspopup="listbox" aria-expanded="false">
+                  <span class="date-select-label">
+                    <span class="date-year"><span class="date-select-year">2026</span>년</span> 
+                    <span class="date-month"><em class="date-select-month">2</em>월</span>
+                  </span>
+                  <span class="date-select-icon" aria-hidden="true"></span>
+                </button>
+                <input type="hidden" class="date-select-value" value="2026-02">
+                <!-- 날짜 드롭다운 (셀렉트 박스처럼 버튼 바로 아래 노출) -->
+                <div class="datepicker-dropdown" id="datepicker-dropdown" role="listbox" aria-hidden="true">
+                  <div class="datepicker-dropdown-inner">
+                    <div class="datepicker-wheels">
+                      <div class="datepicker-wheel-wrap">
+                        <span class="datepicker-wheel-label">연도</span>
+                        <div class="datepicker-wheel" aria-label="연도 선택">
+                          <div class="datepicker-wheel-track" data-wheel="year"></div>
+                        </div>
+                      </div>
+                      <div class="datepicker-wheel-wrap">
+                        <span class="datepicker-wheel-label">월</span>
+                        <div class="datepicker-wheel" aria-label="월 선택">
+                          <div class="datepicker-wheel-track" data-wheel="month"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="datepicker-actions">
+                      <button type="button" class="btn-datepicker-cancel">취소</button>
+                      <button type="button" class="btn-datepicker-confirm">확인</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            
+            <!-- 기사 그리드 (달력형) -->
+            <div class="article-grid">
+              <div class="article-grid-inner">
+                <div class="article-grid-head">
+                  <ul class="article-grid-days" aria-label="요일">
+                    <li>월</li>
+                    <li>화</li>
+                    <li>수</li>
+                    <li>목</li>
+                    <li>금</li>
+                    <li>토</li>
+                  </ul>
+                </div>
+                <div class="article-grid-body">
+                  <!-- 카드 1 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">1</span>
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">3,370만 고객정보 유출 </h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                  
+                      <ul class="article-card-list">
+                        <li>금융시장 동향</li>
+                        <li>삼겹살과 소주의 역사</li>
+                        <li>시니어 시장의 부상</li>
+                      </ul>
+                    </div>
+  
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">
+                          외인 팔고 개미 샀던 11월
+                        </h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+  
+                      <ul class="article-card-list">
+                        <li>조선에도 ‘김부장’은 있었다…관직으로 본 옛관직으로 본 관...</li>
+                        <li>이한 역사커뮤니케이터</li>
+                      </ul>
+                    </div>
+  
+                  
+                  </article>
+                  <!-- 카드 2 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">2</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">쿠팡 개인정보 유출 </h4>
+                        <button type="button" class="article-card-like is-active" aria-label="좋아요 취소"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>금융시장 동향</li>
+                        <li>삼겹살과 소주의 역사</li>
+                        <li>시니어 시장의 부상</li>
+                      </ul>
+                    </div>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">
+                          외인 팔고 개미 샀던 11월
+                        </h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      
+                      <ul class="article-card-list">
+                        <li>조선에도 ‘김부장’은 있었다…관직으로 본 옛관직으로 본 관...</li>
+                        <li>이한 역사커뮤니케이터</li>
+                      </ul>
+                    </div>
+                    
+                  </article>
+                  <!-- 카드 3 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">3</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">
+                          불안한 시장에 CMA 잔액 첫 100조 돌파 눈앞
+                        </h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                        <div class="gauge-bar"><div class="gauge-fill" style="width: 80%"></div></div>
+                      </div>
+                      
+                      <ul class="article-card-list">
+                        <li>금융시장 동향</li>
+                        <li>삼겹살과 소주의 역사</li>
+                        <li>시니어 시장의 부상</li>
+                      </ul>
+                    </div>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">
+                          쿠팡 사태가 알린 AI 시대 새..
+                        </h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                        <div class="gauge-bar"><div class="gauge-fill" style="width: 60%"></div></div>
+                      </div>
+  
+                      <ul class="article-card-list">
+                        <li>조선에도 ‘김부장’은 있었다…관직으로 본 옛관직으로 본 관...</li>
+                        <li>이한 역사커뮤니케이터</li>
+                      </ul>
+                    </div>
+                  
+                  </article>
+                  <!-- 카드 4 - BEST -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">4</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">국내외 증시 상황</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                        <div class="gauge-bar"><div class="gauge-fill" style="width: 40%"></div></div>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>금융시장 동향</li>
+                        <li>삼겹살과 소주의 역사</li>
+                        <li>시니어 시장의 부상</li>
+                      </ul>
+                      <span class="article-card-badge">★BEST</span>
+                    </div>
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">26살 직장인의 재정 관리</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>조선에도 ‘김부장’은 있었다…관직으로 본 옛관직으로 본 관...</li>
+                        <li>이한 역사커뮤니케이터</li>
+                      </ul>
+                    </div>
+                    
+                  </article>
+                  <!-- 카드 5 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">5</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">쿠팡 공화국의 그늘</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>금융시장 동향</li>
+                        <li>삼겹살과 소주의 역사</li>
+                        <li>시니어 시장의 부상</li>
+                      </ul>
+                    </div>
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">증시 널뛰기… AI 거품? </h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>조선에도 ‘김부장’은 있었다…관직으로 본 옛관직으로 본 관...</li>
+                        <li>이한 역사커뮤니케이터</li>
+                      </ul>
+                    </div>
+  
+                  </article>
+                  <!-- 카드 6 - 이미지+텍스트 -->
+                  <article class="article-card weekend">
+                    <span class="article-card-num" aria-hidden="true">6</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">돈의 흐름이 보인다 </h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <div class="article-card-image">
+                        <div class="article-card-image-placeholder" aria-hidden="true">
+                          <img src="./assets/images/biztrend/img_book_01.png" alt="돈의 흐름이 보인다">
+                        </div>
+                        <ul class="article-card-list">
+                          <li>압도적 성과를 만들어 낸 8인의 CEO</li>
+                          <li>최준철 대표 (VIP자산 운용)</li>
+                        </ul>
+                      </div>
+                    </div>                
+                  </article>
+  
+                  <!-- 카드 8 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">8</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">업비트, 해킹 늑장신고 도..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>금융시장 동향</li>
+                        <li>삼겹살과 소주의 역사</li>
+                        <li>시니어 시장의 부상</li>
+                      </ul>
+                    </div>
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">증시 널뛰기… AI 거품? </h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>조선에도 ‘김부장’은 있었다…관직으로 본 옛관직으로 본 관...</li>
+                        <li>이한 역사커뮤니케이터</li>
+                      </ul>
+                    </div>
+                  </article>
+                  <!-- 카드 9 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">9</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">‘코스닥 대장주’ 알테오젠..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>금융시장 동향</li>
+                        <li>삼겹살과 소주의 역사</li>
+                        <li>시니어 시장의 부상</li>
+                      </ul>
+                    </div>
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">격화되는 중-일 갈등, 외교 ..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>조선에도 ‘김부장’은 있었다…관직으로 본 옛관직으로 본 관...</li>
+                        <li>이한 역사커뮤니케이터</li>
+                      </ul>
+                    </div>
+                  </article>
+                  <!-- 카드 10 - HOVER -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">10</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">영화관은 침체, OTT는 독점..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>국무총리 한은총재 회동... "시장안정 위해 공조 중요"</li>
+                        <li>너도나도 비만치료제, 약값·보험·제도 괜찮을까</li>
+                      </ul>
+                    </div>
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">격화되는 중-일 갈등, 외교 ..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>조선에도 ‘김부장’은 있었다…관직으로 본 옛관직으로 본 관...</li>
+                        <li>이한 역사커뮤니케이터</li>
+                      </ul>
+                    </div>
+                  </article>
+  
+                  <!-- 카드 11 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">11</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">美 FOMC 금리 인하, 증..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                        <div class="gauge-bar"><div class="gauge-fill" style="width: 80%"></div></div>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>정부, FOMC 금리인하, 증시올라</li>
+                        <li>1인 가구인식, 이렇게 달라졌다.</li>
+                        <li>시니어 시장의 부상</li>
+                      </ul>
+                    </div>
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">조기 은퇴를 꿈꾸는 50대 부..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>조기 은퇴를 위한 소득 점검과 적정 기준</li>
+                        <li>자산 6억5천, 월 소득 500의 부부</li>
+                        <li>김경필 머니트레이너</li>
+                      </ul>
+                    </div>
+                  </article>
+                  <!-- 카드 12 - 빈 블록 -->
+                  <article class="article-card today">
+                    <span class="article-card-num" aria-hidden="true">12</span>
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">美 FOMC 금리 인하, 증..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                        <div class="gauge-bar"><div class="gauge-fill" style="width: 40%"></div></div>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>정부, FOMC 금리인하, 증시올라</li>
+                      </ul>
+                    </div>
+  
+                    <div class="article-card-content">
+                      <div class="article-card-title-box">
+                        <h4 class="article-card-title">조기 은퇴를 꿈꾸는 50대 부..</h4>
+                        <button type="button" class="article-card-like" aria-label="좋아요"></button>
+                      </div>
+                      <ul class="article-card-list">
+                        <li>조기 은퇴를 위한 소득 점검과 적정 기준</li>
+                      </ul>
+                    </div>
+                  </article>
+                  <!-- 카드 13 - 빈 블록 -->
+                  <article class="article-card weekend">
+                    <span class="article-card-num" aria-hidden="true">13</span>
+                  </article>
+  
+                  <!-- 카드 15 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">15</span>
+                    
+                  </article>
+  
+                  <!-- 카드 16 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">16</span>
+                    
+                  </article>
+                  <!-- 카드 17 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">17</span>
+                    
+                  </article>
+                  
+                  <!-- 카드 18 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">18</span>
+                  </article>
+  
+  
+                  <!-- 카드 19 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">19</span>
+                  </article>
+  
+                  <!-- 카드 20 - 빈 블록 -->
+                  <article class="article-card weekend">
+                    <span class="article-card-num" aria-hidden="true">20</span>
+                  </article>
+  
+                  <!-- 카드 15 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">15</span>
+                    
+                  </article>
+                                <!-- 카드 16 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">16</span>
+                    
+                  </article>
+                  <!-- 카드 17 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">17</span>
+                    
+                  </article>
+                  
+                  <!-- 카드 18 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">18</span>
+                  </article>
+                                              <!-- 카드 19 -->
+                  <article class="article-card">
+                    <span class="article-card-num" aria-hidden="true">19</span>
+                  </article>
+                                <!-- 카드 13 - 빈 블록 -->
+                  <article class="article-card weekend">
+                    <span class="article-card-num" aria-hidden="true">20</span>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+      </div>
+
+      <!-- // container -->
+    </div>
+
+    <script>
+    (function () {
+      var YEAR_START = 2020;
+      var YEAR_END = 2030;
+      var ITEM_HEIGHT = 36;
+
+      function getDateValue() {
+        var input = document.querySelector('.biztrend .date-select-value');
+        if (!input) return { year: 2026, month: 2 };
+        var match = (input.value || '').match(/^(\d{4})-(\d{2})$/);
+        return match
+          ? { year: parseInt(match[1], 10), month: parseInt(match[2], 10) }
+          : { year: new Date().getFullYear(), month: new Date().getMonth() + 1 };
+      }
+
+      function setDateValue(year, month) {
+        var input = document.querySelector('.biztrend .date-select-value');
+        var label = document.querySelector('.biztrend .date-select-label');
+        if (input) input.value = year + '-' + String(month).padStart(2, '0');
+        if (label) label.textContent = year + '년 ' + month + '월';
+      }
+
+      function applyFutureDateOpacity() {
+        var cards = document.querySelectorAll('.biztrend .article-card');
+        if (!cards.length) return;
+
+        var v = getDateValue();
+        var selectedYear = v.year;
+        var selectedMonth = v.month;
+
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        cards.forEach(function (card) {
+          card.classList.remove('is-future');
+          var numEl = card.querySelector('.article-card-num');
+          if (!numEl) return;
+          var day = parseInt(numEl.textContent.trim(), 10);
+          if (isNaN(day) || day < 1 || day > 31) return;
+
+          var cardDate = new Date(selectedYear, selectedMonth - 1, day);
+          cardDate.setHours(0, 0, 0, 0);
+          if (cardDate > today) {
+            card.classList.add('is-future');
+          }
+        });
+      }
+
+      function buildWheelItems() {
+        var years = [];
+        for (var y = YEAR_START; y <= YEAR_END; y++) years.push({ value: y, label: y + '년' });
+        var months = [];
+        for (var m = 1; m <= 12; m++) months.push({ value: m, label: m + '월' });
+        return { years: years, months: months };
+      }
+
+      function renderWheel(trackEl, items, selectedValue) {
+        var idx = items.findIndex(function (i) { return i.value === selectedValue; });
+        if (idx < 0) idx = 0;
+        var html = items.map(function (item, i) {
+          var isSelected = i === idx ? ' is-selected' : '';
+          return '<div class="datepicker-wheel-item' + isSelected + '" data-value="' + item.value + '">' + item.label + '</div>';
+        }).join('');
+        trackEl.innerHTML = html;
+        trackEl.scrollTop = idx * ITEM_HEIGHT;
+      }
+
+      function getSelectedFromWheel(trackEl) {
+        var idx = Math.round(trackEl.scrollTop / ITEM_HEIGHT);
+        var items = trackEl.querySelectorAll('.datepicker-wheel-item');
+        idx = Math.max(0, Math.min(idx, items.length - 1));
+        var item = items[idx];
+        return item ? parseInt(item.dataset.value, 10) : null;
+      }
+
+      function scrollToSelected(trackEl, value) {
+        var item = trackEl.querySelector('.datepicker-wheel-item[data-value="' + value + '"]');
+        if (!item) return;
+        var idx = Array.from(trackEl.querySelectorAll('.datepicker-wheel-item')).indexOf(item);
+        if (idx < 0) return;
+        trackEl.scrollTop = idx * ITEM_HEIGHT;
+        trackEl.querySelectorAll('.datepicker-wheel-item').forEach(function (el) {
+          el.classList.toggle('is-selected', parseInt(el.dataset.value, 10) === value);
+        });
+      }
+
+      function initDatepickerDropdown() {
+        var trigger = document.getElementById('datepicker-trigger');
+        var dropdown = document.getElementById('datepicker-dropdown');
+        if (!trigger || !dropdown) return;
+
+        var yearTrack = dropdown.querySelector('[data-wheel="year"]');
+        var monthTrack = dropdown.querySelector('[data-wheel="month"]');
+        var items = buildWheelItems();
+
+        function openDropdown() {
+          var v = getDateValue();
+          renderWheel(yearTrack, items.years, v.year);
+          renderWheel(monthTrack, items.months, v.month);
+          dropdown.classList.add('is-open');
+          dropdown.setAttribute('aria-hidden', 'false');
+          trigger.setAttribute('aria-expanded', 'true');
+          document.addEventListener('keydown', onEscape);
+          setTimeout(function () { document.addEventListener('click', onDocumentClick); }, 0);
+        }
+
+        function closeDropdown() {
+          dropdown.classList.remove('is-open');
+          dropdown.setAttribute('aria-hidden', 'true');
+          trigger.setAttribute('aria-expanded', 'false');
+          document.removeEventListener('keydown', onEscape);
+          document.removeEventListener('click', onDocumentClick);
+        }
+
+        function onEscape(e) {
+          if (e.key === 'Escape') closeDropdown();
+        }
+
+        function onDocumentClick(e) {
+          if (!dropdown.contains(e.target) && e.target !== trigger) closeDropdown();
+        }
+
+        function onConfirm() {
+          var year = getSelectedFromWheel(yearTrack);
+          var month = getSelectedFromWheel(monthTrack);
+          if (year != null && month != null) {
+            setDateValue(year, month);
+            applyFutureDateOpacity();
+          }
+          closeDropdown();
+        }
+
+        trigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (dropdown.classList.contains('is-open')) {
+            closeDropdown();
+          } else {
+            openDropdown();
+          }
+        });
+        dropdown.querySelector('.btn-datepicker-cancel').addEventListener('click', function (e) {
+          e.stopPropagation();
+          closeDropdown();
+        });
+        dropdown.querySelector('.btn-datepicker-confirm').addEventListener('click', function (e) {
+          e.stopPropagation();
+          onConfirm();
+        });
+
+        function updateSelectedClass(trackEl) {
+          var val = getSelectedFromWheel(trackEl);
+          if (val != null) {
+            trackEl.querySelectorAll('.datepicker-wheel-item').forEach(function (el) {
+              el.classList.toggle('is-selected', parseInt(el.dataset.value, 10) === val);
+            });
+          }
+        }
+        yearTrack.addEventListener('scroll', function () { updateSelectedClass(yearTrack); });
+        monthTrack.addEventListener('scroll', function () { updateSelectedClass(monthTrack); });
+
+        yearTrack.addEventListener('click', function (e) {
+          var item = e.target.closest('.datepicker-wheel-item');
+          if (item) scrollToSelected(yearTrack, parseInt(item.dataset.value, 10));
+        });
+        monthTrack.addEventListener('click', function (e) {
+          var item = e.target.closest('.datepicker-wheel-item');
+          if (item) scrollToSelected(monthTrack, parseInt(item.dataset.value, 10));
+        });
+      }
+
+      function initBiztrendCalendar() {
+        if (!document.querySelector('.wrap.biztrend')) return;
+        applyFutureDateOpacity();
+        initDatepickerDropdown();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBiztrendCalendar);
+      } else {
+        initBiztrendCalendar();
+      }
+    })();
+    </script>
+  </body>
+</html>

@@ -41,29 +41,6 @@ html {
   display: none !important;
 }
 
-// =======================================
-// Component Styles
-// =======================================
-// Gradient mask
-[class*="gra"] {
-  position: relative;
-
-  &::before,
-  &::after {
-    @include pseudo(block, absolute, "");
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  &::after {
-    inset: 0;
-    padding: 1px;
-    mask: var(--mask-contents);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-}
-
 // Input
 .input {
   &-group {
@@ -281,6 +258,7 @@ h5 {
     height: 10px;
     -webkit-appearance: none;
     appearance: none;
+    cursor: pointer;
     @include useIcon("bookmark", 12px);
 
     &:checked {

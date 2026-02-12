@@ -52,6 +52,12 @@
       "법정교육": {
         "법정교육": ["../learning.html", "mainframe", "컨펌대기", ""],
         "법정교육_학습중": ["../learning_2.html", "mainframe", "컨펌대기", ""]
+      },
+      "인사이트": {
+        "경제와사회": ["../insight.html", "mainframe", "컨펌대기", ""]
+      },
+      "비즈트렌드": {
+        "비즈트렌드": ["../biztrend.html", "mainframe", "컨펌대기", ""]
       }
     }
   }

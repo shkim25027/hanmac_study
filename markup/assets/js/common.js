@@ -520,6 +520,12 @@ class NavigationManager {
     if (currentPath.includes('learning') && href.includes('learning')) {
       return true;
     }
+    if (currentPath.includes('insight') && href.includes('insight')) {
+      return true;
+    }
+    if (currentPath.includes('biztrend') && href.includes('biztrend')) {
+      return true;
+    }
     // 추가적인 매칭 로직을 여기에 구현할 수 있습니다
     return false;
   }

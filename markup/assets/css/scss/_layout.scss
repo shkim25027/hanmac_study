@@ -340,6 +340,9 @@ html {
           border-radius: 8px 8px 0 0;
           background: var(--bg-nav-depth);
           filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.1));
+          
+        }
+        &:hover {
           &:has(.depth02) {
             &::before,
             &::after {
@@ -359,11 +362,10 @@ html {
               mask: radial-gradient(16px at 100% 0, #0000 98%, #000);
             }
           }
-        }
-        &:hover {
           .depth02 {
             @include flex();
           }
+
         }
         > a {
           filter: var(--text-stroke);

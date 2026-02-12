@@ -1,75 +1,94 @@
 @charset "UTF-8";
 
-//@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;600;700;900&display=swap");
+// 로컬 폰트 사용 시 Google Fonts import 비활성화 권장 (중복 로딩 방지)
+//@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;600;700;900&display=swap");
 
 /* ====================================================================== */
 /* [Web Font]
 /* ====================================================================== */
 
+// Noto Sans KR - src는 한 번만 선언하고, local + url들을 쉼표로 묶어야 함 (뒷줄 src가 앞을 덮어쓰던 문제 수정)
+// woff2/woff 추가로 현대 브라우저 대역폭 절감, font-display: swap으로 FOIT 방지
 @font-face {
-  font-family: Noto Sans KR;
+  font-family: "Noto Sans KR";
   font-style: normal;
   font-weight: 100;
-  src: local("NotoKR-Thin"), local("NotoKR-Thin"), local("NotoKR-Thin");
-  src: url(../fonts/NotoKR-Thin/notokr-thin.eot);
-  src: url(../fonts/NotoKR-Thin/notokr-thin.eot?#iefix)
-    format("embedded-opentype");
+  font-display: swap;
+  src: local("NotoKR-Thin"),
+    url(../fonts/NotoKR-Thin/notokr-thin.woff2) format("woff2"),
+    url(../fonts/NotoKR-Thin/notokr-thin.woff) format("woff"),
+    url(../fonts/NotoKR-Thin/notokr-thin.eot?#iefix) format("embedded-opentype");
 }
 @font-face {
-  font-family: Noto Sans KR;
+  font-family: "Noto Sans KR";
   font-style: normal;
   font-weight: 300;
-  src: local("NotoKR-Light"), local("NotoKR-Light"), local("NotoKR-Light");
-  src: url(../fonts/NotoKR-Light/notokr-light.eot);
-  src: url(../fonts/NotoKR-Light/notokr-light.eot?#iefix)
-    format("embedded-opentype");
+  font-display: swap;
+  src: local("NotoKR-Light"),
+    url(../fonts/NotoKR-Light/notokr-light.woff2) format("woff2"),
+    url(../fonts/NotoKR-Light/notokr-light.woff) format("woff"),
+    url(../fonts/NotoKR-Light/notokr-light.eot?#iefix) format("embedded-opentype");
 }
 @font-face {
-  font-family: Noto Sans KR;
+  font-family: "Noto Sans KR";
   font-style: normal;
   font-weight: 350;
-  src:
-    local("NotoKR-DemiLight"), local("NotoKR-DemiLight"),
-    local("NotoKR-DemiLight");
-  src: url(../fonts/NotoKR-DemiLight/notokr-demilight.eot);
-  src: url(../fonts/NotoKR-DemiLight/notokr-demilight.eot?#iefix)
-    format("embedded-opentype");
+  font-display: swap;
+  src: local("NotoKR-DemiLight"),
+    url(../fonts/NotoKR-DemiLight/notokr-demilight.woff2) format("woff2"),
+    url(../fonts/NotoKR-DemiLight/notokr-demilight.woff) format("woff"),
+    url(../fonts/NotoKR-DemiLight/notokr-demilight.eot?#iefix)
+      format("embedded-opentype");
 }
 @font-face {
-  font-family: Noto Sans KR;
+  font-family: "Noto Sans KR";
   font-style: normal;
   font-weight: 400;
-  src:
-    local("NotoKR-Regular"), local("NotoKR-Regular"), local("NotoKR-Regular");
-  src: url(../fonts/NotoKR-Regular/notokr-regular.eot);
-  src: url(../fonts/NotoKR-Regular/notokr-regular.eot?#iefix)
-    format("embedded-opentype");
+  font-display: swap;
+  src: local("NotoKR-Regular"),
+    url(../fonts/NotoKR-Regular/notokr-regular.woff2) format("woff2"),
+    url(../fonts/NotoKR-Regular/notokr-regular.woff) format("woff"),
+    url(../fonts/NotoKR-Regular/notokr-regular.eot?#iefix)
+      format("embedded-opentype");
 }
 @font-face {
-  font-family: Noto Sans KR;
+  font-family: "Noto Sans KR";
   font-style: normal;
   font-weight: 500;
-  src: local("NotoKR-Medium"), local("NotoKR-Medium"), local("NotoKR-Medium");
-  src: url(../fonts/NotoKR-Medium/notokr-medium.eot);
-  src: url(../fonts/NotoKR-Medium/notokr-medium.eot?#iefix)
-    format("embedded-opentype");
+  font-display: swap;
+  src: local("NotoKR-Medium"),
+    url(../fonts/NotoKR-Medium/notokr-medium.woff2) format("woff2"),
+    url(../fonts/NotoKR-Medium/notokr-medium.woff) format("woff"),
+    url(../fonts/NotoKR-Medium/notokr-medium.eot?#iefix)
+      format("embedded-opentype");
 }
 @font-face {
-  font-family: Noto Sans KR;
+  font-family: "Noto Sans KR";
   font-style: normal;
   font-weight: 700;
-  src: local("NotoKR-Bold"), local("NotoKR-Bold"), local("NotoKR-Bold");
-  src: url(../fonts/NotoKR-Bold/notokr-bold.eot);
-  src: url(../fonts/NotoKR-Bold/notokr-bold.eot?#iefix)
-    format("embedded-opentype");
+  font-display: swap;
+  src: local("NotoKR-Bold"),
+    url(../fonts/NotoKR-Bold/notokr-bold.woff2) format("woff2"),
+    url(../fonts/NotoKR-Bold/notokr-bold.woff) format("woff"),
+    url(../fonts/NotoKR-Bold/notokr-bold.eot?#iefix) format("embedded-opentype");
 }
 @font-face {
-  font-family: Noto Sans KR;
+  font-family: "Noto Sans KR";
   font-style: normal;
   font-weight: 900;
-  src: local("NotoKR-Black"), local("NotoKR-Black"), local("NotoKR-Black");
-  src: url(../fonts/NotoKR-Black/notokr-black.eot);
-  src: url(../fonts/NotoKR-Black/notokr-black.eot?#iefix)
-    format("embedded-opentype");
+  font-display: swap;
+  src: local("NotoKR-Black"),
+    url(../fonts/NotoKR-Black/notokr-black.woff2) format("woff2"),
+    url(../fonts/NotoKR-Black/notokr-black.woff) format("woff"),
+    url(../fonts/NotoKR-Black/notokr-black.eot?#iefix) format("embedded-opentype");
+}
+
+/* Caveat - 가변 폰트(400~700), cursive는 사용처에서 지정 */
+@font-face {
+  font-family: "Caveat";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url(../fonts/Caveat/Caveat-VariableFont_wght.woff2) format("woff2"),
+    url(../fonts/Caveat/Caveat-VariableFont_wght.ttf) format("truetype");
 }

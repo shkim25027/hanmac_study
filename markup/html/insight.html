@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="wrap insight">
+      @@include("_include/_header.html")
+      <!-- container -->
+      <div class="container">
+
+        <div class="page-header">
+          <!-- breadcrumb -->
+          <ul class="breadcrumb" aria-label="breadcrumb">
+            <li><a href="./index.html">홈</a></li>
+            <li><a href="./insight.html">인사이트</a></li>
+            <li><span class="current">경제와 사회</span></li>
+          </ul>
+          <div class="page-title">
+            <h3>경제와 사회</h3>
+          </div>
+        </div>
+        
+        <!-- editor's pick -->
+        <section class="editor-pick">
+          <div class="editor-pick-inner"> 
+            <div class="editor-pick-swiper">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                  <div class="pick-head">
+                    <span class="pick-label">Editor's pick! <em>of the Month</em></span>
+                  </div>
+                  <div class="pick-body">
+                    <div class="pick-text">
+                      <h4 class="pick-title">
+                       <em>회사에서 추천하는 영상에 대해 <br>
+                        왜 봐야하는지 문구를 넣습니다.</em>
+                      </h4>
+                      <p class="pick-desc">보조 설명이 필요한 경우, 생략 가능</p>
+                    </div>
+                    
+                    <div class="pick-video">
+                      <div class="video-placeholder"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="pick-head">
+                    <span class="pick-label">Top Viewed Pick! <em>of the Month</em></span>
+                  </div>
+                  <div class="pick-body">
+                    <div class="pick-text">
+                      <h4 class="pick-title">
+                        공식 선정! <br> 
+                        한맥인들이 이번 달 <em>가장 많이 본</em> 콘텐츠<br><br>
+                        <em>1월 14일 공개!</em>
+                      </h4>
+                    </div>
+                    
+                    <div class="pick-video">
+                      <div class="video-placeholder"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="swiper-slide">
+                  <div class="pick-head">
+                    <span class="pick-label">HOT Issue <em>of the Month</em></span>
+                  </div>
+                  <div class="pick-body">
+                    <div class="pick-text">
+                      <h4 class="pick-title">
+                        <em>TPU-GPU 경쟁이 가속</em>되면서<br>
+                        <em>디지털트윈과 실시간 모니터링,</em> <br>
+                        <em>BIM 협업 기술도 빠르게 진화</em>하고 있습니다.
+                      </h4>
+                      <p class="pick-desc">지금, 우리의 준비 상태를 점검해볼 때입니다.</p>
+                    </div>
+                    
+                    <div class="pick-video">
+                      <div class="video-placeholder"></div>
+                    </div>
+                  </div>
+                  <span class="pick-dday">D-4</span>
+                </div>
+                <div class="swiper-slide">
+                  <div class="pick-head">
+                    <span class="pick-label">Top Learner's Choice <em>of the Month</em></span>
+                  </div>
+                  <div class="pick-body">
+                    <div class="pick-left">
+                      <div class="pick-profile">
+                        <div class="pick-profile-photo">
+                          <div class="photo-frame">
+                            <img src="./assets/images/insight/profile.png" alt="" />
+                          </div>
+                          <span class="pick-profile-crown" aria-hidden="true">
+                           <img src="./assets/images/insight/crown.svg" alt="" />
+                          </span>
+                        </div>
+                        <p class="pick-profile-name">
+                          <em>홍길동 선임</em> 총괄기획실
+                        </p>
+                        <div class="pick-profile-badge">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15C15.866 15 19 11.866 19 8C19 4.13401 15.866 1 12 1C8.13401 1 5 4.13401 5 8C5 11.866 8.13401 15 12 15Z" fill="#E8B923" stroke="#C99A1A" stroke-width="1.5"/><path d="M8 21C8.5 18 10 15 12 13C14 15 15.5 18 16 21" stroke="#C99A1A" stroke-width="1.5" stroke-linecap="round"/></svg>
+                          <span>우수학습자</span>
+                        </div>
+                      </div>
+                      <div class="pick-text">
+                        <h4 class="pick-title">
+                         <em>우수학습자가 추천하는 영상,<br>
+                          왜 이 컨텐츠를추천하는지 적습니다.</em>
+                        </h4>
+                        <p class="pick-desc">
+                          예) 지금, 우리의 준비 상태를 점검해볼 <br>때입니다. 보조글/ 생략가능
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="pick-video">
+                      <div class="video-placeholder"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="swiper-pagination"></div>
+            </div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+          </div>
+        </section>
+        <div class="insight-inner">
+          <!-- video list -->
+          <section class="insight-video-list">
+            <div class="list-head">
+              <span class="total">TOTAL <em>8</em></span>
+              <div class="list-options">
+                <div class="select-wrap">
+                  <select class="select-sort" title="정렬">
+                    <option>조회수</option>
+                    <option>업데이트</option>
+                    <option>내가본컨텐츠</option>
+                    <option>안본컨텐츠</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <ul class="video-grid">
+              <li class="video-item">
+                <a href="#" class="card-link">
+                  <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                  <div class="item-thumb"><img src="./assets/images/video/img_thumb_01.png" alt="" /></div>
+                  <div class="item-info">
+                    <strong class="item-title">TPU가 GPU 제압할까? 데이터센터 전력전쟁이 온다</strong>
+                    <span class="item-meta">웰니스 협업</span>
+                  </div>
+                </a>
+              </li>
+              <li class="video-item">
+                <a href="#" class="card-link">
+                  <button type="button" class="btn-like on" title="좋아요"><i class="ico-like"></i></button>
+                  <div class="item-thumb"><img src="./assets/images/video/img_thumb_02.png" alt="" /></div>
+                  <div class="item-info">
+                    <strong class="item-title">한국에서 가장 유명한 회계사의 조언</strong>
+                    <span class="item-meta">웰니스 협업</span>
+                  </div>
+                </a>
+              </li>
+              <li class="video-item">
+                <a href="#" class="card-link">
+                  <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                  <div class="item-thumb"><img src="./assets/images/video/img_thumb_03.png" alt="" /></div>
+                  <div class="item-info">
+                    <strong class="item-title">일자리 멸종하는 AI 시대를 대비하라</strong>
+                    <span class="item-meta">케니스 협업</span>
+                  </div>
+                </a>
+              </li>
+              <li class="video-item">
+                <a href="#" class="card-link">
+                  <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                  <div class="item-thumb"><img src="./assets/images/video/img_thumb_04.png" alt="" /></div>
+                  <div class="item-info">
+                    <strong class="item-title">상대의 숨은 욕구를 찾아내는 것, 거기서 시작해야 됩니다</strong>
+                    <span class="item-meta">웰니스 협업</span>
+                  </div>
+                </a>
+              </li>
+              <li class="video-item">
+                <a href="#" class="card-link">
+                  <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                  <div class="item-thumb"><img src="./assets/images/video/img_thumb_05.png" alt="" /></div>
+                  <div class="item-info">
+                    <strong class="item-title">20년만에 구글검색의 최대강적이 나타났다</strong>
+                    <span class="item-meta">케니스 협업</span>
+                  </div>
+                </a>
+              </li>
+              <li class="video-item">
+                <a href="#" class="card-link">
+                  <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                  <div class="item-thumb"><img src="./assets/images/video/img_thumb_06.png" alt="" /></div>
+                  <div class="item-info">
+                    <strong class="item-title">사람의 속마음을 한눈에 꿰뚫어보는 18가지 심리법칙</strong>
+                    <span class="item-meta">웰니스 협업</span>
+                  </div>
+                </a>
+              </li>
+              <li class="video-item">
+                <a href="#" class="card-link">
+                  <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                  <div class="item-thumb"><img src="./assets/images/video/img_thumb_07.png" alt="" /></div>
+                  <div class="item-info">
+                    <strong class="item-title">직장인이 쉬운 일만 하면 안되는 이유</strong>
+                    <span class="item-meta">케니스 협업</span>
+                  </div>
+                </a>
+              </li>
+              <li class="video-item">
+                <a href="#" class="card-link">
+                  <button type="button" class="btn-like" title="좋아요"><i class="ico-like"></i></button>
+                  <div class="item-thumb"><img src="./assets/images/video/img_learning_thumb_01.png" alt="" /></div>
+                  <div class="item-info">
+                    <strong class="item-title">대학 부적응자가 일본 건너가 만든 일본 국민앱 '타임트리'</strong>
+                    <span class="item-meta">웰니스 협업</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <!-- // container -->
+    </div>
+    <script>
+        var swiper = new Swiper(".editor-pick-swiper", {
+          loop: true,
+          autoplay: {
+            delay: 3000, // 3초마다 자동 넘김
+            disableOnInteraction: false,
+          },
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
+          pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+          },
+          speed: 1000, // 슬라이드 전환 속도
+        });
+    </script>
+  </body>
+</html>
