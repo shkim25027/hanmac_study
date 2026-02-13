@@ -798,7 +798,7 @@
 
   .review-item {
     flex-shrink: 0;
-    padding: 16px 20px;
+    padding: 10px 14px;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -806,7 +806,7 @@
     .review-head {
       @include flex(row, center, flex-start);
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       min-width: 0;
       overflow: hidden;
     }
