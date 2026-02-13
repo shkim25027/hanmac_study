@@ -40,6 +40,33 @@
                   제안 보내기
                   <i class="ico-arrow"></i>
                 </button>
+                <div class="suggest-status accordion">
+                  <button type="button" class="accordion-trigger" aria-expanded="false" aria-controls="suggest-status-content">
+                    <span class="accordion-title">제안현황</span>
+                    <i class="ico-chevron" aria-hidden="true"></i>
+                  </button>
+                  <div id="suggest-status-content" class="accordion-content" hidden>
+                    <ul class="suggest-status-list">
+                      <li class="consider">
+                        <span class="suggest-date">26.03.01</span>
+                        <span class="suggest-dots"></span>
+                        <span class="suggest-state">검토중</span>
+                      </li>
+                      <li>
+                        <span class="suggest-date">26.02.25</span>
+                        <span class="suggest-state">게시완료</span>
+                      </li>
+                      <li>
+                        <span class="suggest-date">26.01.14</span>
+                        <span class="suggest-state">게시완료</span>
+                      </li>
+                      <li>
+                        <span class="suggest-date">26.01.01</span>
+                        <span class="suggest-state">게시완료</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </section>
             </div>
 
@@ -641,5 +668,28 @@
       </div>
       <!-- // container -->
     </div>
+    <script>
+      (function () {
+        var suggestInput = document.querySelector(".suggest-section .suggest-input");
+        var suggestBtn = document.querySelector(".suggest-section .btn-primary");
+        if (suggestInput && suggestBtn) {
+          suggestInput.addEventListener("input", function () {
+            suggestBtn.disabled = !suggestInput.value.trim();
+          });
+        }
+
+        // 제안현황 아코디언
+        var accordion = document.querySelector(".suggest-status.accordion");
+        if (accordion) {
+          var trigger = accordion.querySelector(".accordion-trigger");
+          var content = accordion.querySelector(".accordion-content");
+          trigger.addEventListener("click", function () {
+            var isOpen = accordion.classList.toggle("is-open");
+            trigger.setAttribute("aria-expanded", isOpen);
+            content.hidden = !isOpen;
+          });
+        }
+      })();
+    </script>
   </body>
 </html>

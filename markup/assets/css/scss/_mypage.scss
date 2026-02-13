@@ -162,6 +162,101 @@
     }
   }
 
+  // 제안현황 아코디언
+  .suggest-status {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .accordion-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    width: 100%;
+    font-size: 12px;
+    font-weight: 500;
+    color: #A9770B;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #4a3510;
+
+      .ico-chevron {
+        background-color: #4a3510;
+      }
+    }
+  }
+
+  .accordion-title {
+    flex-shrink: 0;
+  }
+
+  .ico-chevron {
+    flex-shrink: 0;
+    width: 10px;
+    height: 10px;
+    @include svgIconMask("../images/ico/ico_chevron.svg", #A9770B, 10px);
+    transition: transform 0.2s, background-color 0.2s;
+  }
+
+  .accordion.is-open .ico-chevron {
+    transform: rotate(180deg);
+  }
+
+  .accordion-content {
+    padding-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .suggest-status-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 6px 0;
+    }
+  }
+
+  .consider {
+    .suggest-date,
+    .suggest-state {
+      color: #000;
+      font-weight: 500;
+      font-size: 13px;
+    }
+  }
+
+
+  .suggest-date {
+    flex-shrink: 0;
+  }
+
+  .suggest-dots {
+    flex: 1;
+    min-width: 8px;
+    height: 1px;
+    border-bottom: 1px dotted #999;
+    margin: 0 4px;
+  }
+
+  .suggest-state {
+    flex-shrink: 0;
+  }
+
   .btn-suggest {
     display: flex;
     align-items: center;
@@ -170,8 +265,8 @@
     width: 100%;
     margin-top: 12px;
     padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
     color: var(--text-primary);
     background: #e8e4dc;
     border: 1px solid rgba(0, 0, 0, 0.08);
