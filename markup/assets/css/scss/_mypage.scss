@@ -8,12 +8,15 @@
 .mypage {
   .container {
     background: linear-gradient(180deg, #F4F1EB 0%, #F7F7F7 100%);
+    overflow: hidden;
   }
 
   .mypage-inner {
     display: grid;
     grid-template-columns: 295px 1305fr;
     max-width: 1600px;
+    height: 100%;
+    min-height: 0;
     margin: 0 auto;
   }
 
@@ -21,10 +24,24 @@
   // 좌측 사이드바
   // ---------------------------------------
   .mypage-sidebar {
+    position: relative;
     flex-shrink: 0;
     width: 100%;
-    border-right: 1px solid #C7C5C0;
+    min-height: 0;
     padding-top: 40px;
+    overflow-y: auto;
+    @include scrollbar-mypage();
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      border-left: 1px solid #C7C5C0;
+      right: 0;
+      top: 0;
+      box-shadow: 1px 0 0 0 #fff, -1px 0 0 0 #fff inset;
+    }
 
     @include mq("tablet-wide", max) {
       width: 100%;
@@ -179,19 +196,28 @@
   .mypage-main {
     flex: 1;
     min-width: 0;
+    min-height: 0;
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .section-title {
-    margin: 0 0 20px;
-    font-size: 20px;
-    font-weight: 700;
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 500;
     color: var(--text-primary);
+    gap: 10px;
+    @include flex(row, center, flex-start);
 
-    .year-badge,
+    .year-badge{
+      font-size: 14px;
+      font-weight: 300;
+    }
     .count {
-      font-weight: 500;
-      font-size: 16px;
-      color: var(--text-secondary);
+      font-weight: 800;
+      font-size: 14px;
     }
   }
 
@@ -199,69 +225,186 @@
   // 나의 학습 활동
   // ---------------------------------------
   .activity-section {
+    flex-shrink: 0;
+    position: relative;
     margin-bottom: 48px;
+    padding: 0 18px 0 32px;
+    .section-title{
+      margin-bottom: 8px;
+    }
   }
 
-  .total-time {
-    margin: 0 0 24px;
-    font-size: 18px;
+  .total-time-area{
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    @include flex(row, center, flex-end);
+    gap: 12px;
+    z-index: 2;
+  }
+  .total-time-inner{
+    position: relative;
+    height: 40px;
+    overflow: hidden;
+  }
+  .total-time {   
+    position: relative;
+    width: 298px;
+    height: 90px;
+    padding-bottom: 50px;
+    font-size: 14px;
     color: var(--text-primary);
+    border-radius: 160px 160px 0 0;
+    background: rgba(247, 232, 215, 1);
+    @include flex(column, center, center);
+    color: #CF6800;
+    z-index: 1;
+
+    .total-time-text {
+      margin: 0;
+    }
 
     strong {
-      font-size: 28px;
+      font-size: 20px;
       font-weight: 700;
-      color: var(--text-accent);
+    }
+
+    .gauge-bar {
+      padding-top: 4px;
+      padding-bottom: 0;
+      background: rgba(230, 191, 145, 0.4);
+      .gauge-fill{
+        top: 0;
+        background: #CF6800;
+      }
+    }
+  }
+
+  .total-average {
+    position: absolute;
+    right: -48px;
+    bottom: -50%;
+    flex-shrink: 0;
+    padding: 2px 8px 2px 8px;
+    font-size: 12px;
+    color: #D0B290;
+    background: #F9F6F0;
+    border: 1px solid #D0B290;
+    border-radius: 20px;
+    white-space: nowrap;
+    transform: translateY(-50%);
+    z-index: 1;
+    &::before {
+      content: "";
+      position: absolute;
+      left: -12px;
+      top: calc(50% + 1px);
+      width: 16px;
+      height: 8px;
+      transform: translateY(-50%);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7' fill='none'%3E%3Cpath d='M10.1699 0.516165C10.3393 0.471368 10.5206 0.518006 10.6464 0.639994C10.7723 0.762118 10.8249 0.941611 10.7852 1.11241L10.4455 2.57344C10.323 3.10031 10.3747 3.65271 10.5928 4.1477L11.198 5.52063C11.2742 5.69385 11.2459 5.89537 11.1251 6.04108C11.0043 6.18689 10.8114 6.25187 10.6269 6.20898L0.886712 3.94431C0.662962 3.89229 0.503447 3.69408 0.500001 3.46439C0.496751 3.23507 0.649987 3.03317 0.871623 2.97429L10.1699 0.516165Z' fill='%23D0B290' stroke='%23F9F6F0' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
   }
 
   .activity-list {
+    position: relative;
     list-style: none;
-    margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    width: 100%;
+    border-radius: 6px;
+    background: linear-gradient(180deg, rgba(240, 225, 207, 0.20) 0.05%, rgba(240, 225, 207, 0.00) 32.26%), linear-gradient(181deg, #FFEFDC 1.28%, rgba(251, 244, 235, 0.50) 94.84%);
+    padding: 16px 8px;
+    border-left: 1px solid #fff;
+    border-top: 1px solid #fff;
+    z-index: 1;
+    &::before {
+      content: "";
+      position: absolute;
+      width: calc(100% + 1px);
+      height: calc(100% + 1px);
+      @include maskContents();
+      top: -2px;
+      left: -2px;
+      padding: 1px;
+      background: linear-gradient(180deg, #FADEBD 0%, #DBD8D2 100%);
+    }
+    &::after {
+      content: "";
+      position: absolute;
+      width: 1px;
+      height: calc(100% - 6px);
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, rgba(199, 197, 192, 0.2) 0%, rgba(199, 197, 192, 0.6) 50%, #C7C5C0 100%);
+      box-shadow: 1px 0 0 0 #fff, -1px 0 0 0 #fff inset;
+    }
   }
 
   .activity-item {
-    padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    position: relative;
+    padding: 0px 16px;
+    &.gauge{
+      &:first-of-type{
+        &::after{
+          content: "";
+          position: absolute;
+          width: 1px;
+          height: 100%;
+          right: 0px;
+          top: 0;
+          border-right: 1px dashed #C7C5C0;
+        }
+      }
+    }
 
-    &--tag {
-      background: linear-gradient(135deg, #f5e6c8 0%, #e8d4a8 50%);
-      border: 1px solid rgba(0, 0, 0, 0.06);
+    &.tag {
+      .activity-value {
+        color: #7C590D;
+      }
     }
   }
 
   .activity-head {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 8px;
     margin-bottom: 8px;
 
     .activity-label {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+      color: #000;
     }
 
     .activity-value {
       font-size: 14px;
-      color: var(--text-secondary);
-
+      color: #1B8B6F;
       em {
-        font-style: normal;
+        font-size: 20px;
+        font-weight: 700;
         margin-left: 2px;
       }
     }
   }
 
   .activity-note {
-    margin: 8px 0 0;
-    font-size: 12px;
-    color: var(--text-secondary);
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px -1px 0 rgba(0, 0, 0, 0.15), -1px 1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(0, 0, 0, 0.15);
   }
 
   .average-label {
@@ -272,27 +415,81 @@
 
   .progress-track {
     position: relative;
-    height: 8px;
-    border-radius: 4px;
     overflow: hidden;
-    background: #d9d9d9;
 
     .gauge-bar {
-      position: absolute;
-      top: 0;
-      left: 0;
+      position: relative;
       width: 100%;
-      height: 100%;
-      background: #d9d9d9;
-
+      padding-bottom: 24px;
+      background: #CBC5BA;
+      border-radius: 70px;
+      box-shadow: 0 0 2.828px 0 rgba(0, 0, 0, 0.25) inset;
       .gauge-fill {
         position: absolute;
         left: 0;
         top: 0;
         height: 100%;
-        background: #188f6b;
-        border-radius: 0;
-        // width는 인라인 style로 각 항목별 설정
+        border-radius: 70.696px;
+        background: linear-gradient(91deg, #5693AF 20%, #0C895D 72.48%);
+        box-shadow: 0.707px 2.121px 2.828px 0 rgba(0, 0, 0, 0.25), 0.707px 1.414px 2.828px 0 rgba(255, 255, 255, 0.25) inset, -0.707px -2.121px 3.393px 0 rgba(0, 0, 0, 0.25) inset;
+      }
+    }
+    .gauge-value {
+      @include flex(row, center, space-between);
+      font-size: 10px;
+      color: #B3B0AA;
+      .gauge-start {
+        font-weight: 500;
+      }
+      .gauge-end {
+        font-weight: 700;
+      }
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 3px;
+      width: 100%;
+      height: 24px;
+      margin-top: 0;
+
+      .tag-wrap {
+        display: flex;
+        min-width: 0;
+        container-type: inline-size;
+      }
+
+      .tag {
+        padding: 0 8px;
+        width: 100%;
+        min-width: 0;
+        font-size: 12px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: rgba(255, 255, 255, 0.80);
+        white-space: nowrap;
+        border-radius: 4px;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.40) 0%, rgba(0, 0, 0, 0.40) 100%), linear-gradient(91deg, #805D00 20%, #624B19 72.48%);
+        text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px -1px 0 rgba(0, 0, 0, 0.15), -1px 1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(0, 0, 0, 0.15);
+        @include flex(row, center, center);
+
+        // 너무 좁으면 글자 블라인드 (색상 바만 표시)
+        @container (max-width: 44px) {
+          font-size: 0;
+          line-height: 0;
+          padding: 0 4px;
+        }
+      }
+
+      .tag-wrap:first-child .tag {
+        border-radius: 16px 4px 4px 16px;
+        background: linear-gradient(91deg, #B08100 20%, #936F23 72.48%);
+        box-shadow: 0.707px 1.414px 2.828px 0 rgba(255, 255, 255, 0.25) inset, -0.707px -2.121px 3.393px 0 rgba(0, 0, 0, 0.25) inset;
+      }
+      .tag-wrap:last-child .tag {
+        border-radius: 4px 16px 16px 4px;
       }
     }
   }
@@ -313,22 +510,47 @@
   // 콘텐츠 카드 그리드
   // ---------------------------------------
   .mylist-area {
+    flex: 1;
+    min-height: 0;
     padding-left: 46px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 18px;
+
+    // 그리드 아이템이 내용 때문에 늘어나지 않도록
+    .content-section,
+    .review-section {
+      min-width: 0;
+      min-height: 0;
+    }
   }
+
   .content-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     margin-bottom: 48px;
+    overflow: hidden;
+
+    .section-title {
+      flex-shrink: 0;
+    }
   }
 
   .content-grid {
+    flex: 1;
+    min-height: 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: min-content;
     gap: 12px;
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 4px 4px 0;
+    overflow-y: auto;
+    align-content: start;
+
+    @include scrollbar-mypage();
 
     @include mq("tablet", max) {
       grid-template-columns: repeat(2, 1fr);
@@ -354,18 +576,32 @@
       color: inherit;
     }
 
-    .btn-like {
+    .bookmark {
       position: absolute;
       top: 12px;
       right: 12px;
+      padding: 0;
       z-index: 2;
       width: 24px;
       height: 24px;
-      padding: 0;
-      border: none;
-      background: transparent;
       cursor: pointer;
-      @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+
+      input[type="checkbox"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        @include bgImg("../images/ico/ico_bookmark_off.svg", contain, center);
+
+        &:checked {
+          @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+        }
+      }
     }
 
     .btn-remove-card {
@@ -388,9 +624,6 @@
     }
   }
 
-  .content-card--saved .btn-like {
-    @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
-  }
 
   .item-thumb {
     position: relative;
@@ -444,48 +677,98 @@
   // 한줄 소감
   // ---------------------------------------
   .review-section {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     margin-bottom: 48px;
+    overflow: hidden;
+
+    .section-title {
+      flex-shrink: 0;
+    }
   }
 
   .review-list {
+    flex: 1;
+    min-height: 0;
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 4px 4px 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    overflow-y: auto;
+    @include scrollbar-mypage();
   }
 
   .review-item {
+    flex-shrink: 0;
     padding: 16px 20px;
     background: rgba(255, 255, 255, 0.8);
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 
+    .review-head {
+      @include flex(row, center, flex-start);
+      gap: 10px;
+      margin-bottom: 12px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
     .category-tag {
-      margin-bottom: 8px;
+      flex-shrink: 0;
+      padding: 2px 16px 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+      color: rgba(0, 0, 0, 0.5);
+      margin-bottom: 0;
+      background: rgba(0, 0, 0, 0.06);
+
+      // 한줄 소감 전용 컬러 (pill)
+      &.insight {
+        background: #DAE6E5;
+        opacity: 1;
+      }
+      &.leader {
+        background: #DED7CF;
+        opacity: 1;
+      }
+      &.biz {
+        background: #DED7CF;
+        opacity: 1;
+      }
     }
   }
 
   .review-text {
-    margin: 0 0 12px;
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
     font-size: 14px;
     line-height: 1.5;
-    color: var(--text-primary);
+    color: rgba(0, 0, 0, 0.30);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .review-comment {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--text-secondary);
 
-    .ico-user {
+    .review-user {
       flex-shrink: 0;
-      width: 16px;
-      height: 16px;
-      @include bgImg("../images/ico/ico_user.svg", contain, center);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      overflow: hidden;
     }
 
     strong {

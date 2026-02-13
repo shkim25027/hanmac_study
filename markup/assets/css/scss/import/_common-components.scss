@@ -134,29 +134,30 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
       color: inherit;
     }
 
-    .btn-like {
+    .bookmark {
       position: absolute;
       top: 16px;
       right: 14px;
       z-index: 2;
       width: 22px;
-      aspect-ratio: 6 / 5;
-      padding: 0;
-      border: none;
-      border-radius: 50%;
+      height: 22px;
       cursor: pointer;
-      @include flex(row, center, center);
-      transition: background 0.2s;
 
-      .ico-like {
-        display: block;
+      input[type="checkbox"] {
+        -webkit-appearance: none;
+        appearance: none;
         width: 100%;
-        aspect-ratio: 6 / 5;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        border: none;
+        border-radius: 50%;
         @include bgImg("../images/ico/ico_bookmark_off.svg", contain, center);
-      }
 
-      &.on .ico-like {
-        @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+        &:checked {
+          @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+        }
       }
     }
 

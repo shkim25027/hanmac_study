@@ -62,6 +62,31 @@ html {
   }
 }
 
+// Icon - Play (시청 아이콘)
+.ico-play {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  @include bgImg("../images/ico/ico_watch.svg", contain, center);
+}
+.ico-bookmark {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  @include bgImg("../images/ico/ico_bookmark.svg", contain, center);
+}
+.ico-pin {
+  display: inline-block;
+  width: 24px;
+  height: 32px;
+  @include bgImg("../images/ico/ico_pin.svg", contain, center);
+}
+.ico-comment {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  @include bgImg("../images/ico/ico_comment.svg", contain, center);
+}
 
 // Input
 .input {

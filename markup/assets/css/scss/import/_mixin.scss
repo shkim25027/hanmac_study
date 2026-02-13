@@ -378,6 +378,29 @@ $scrollbar-width-small: 6px;
   }
 }
 
+/// Scrollbar mypage mixin (thumb/track with border-radius, blend-mode)
+@mixin scrollbar-mypage {
+  &::-webkit-scrollbar {
+    height: $scrollbar-height;
+    width: $scrollbar-width;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: #E5DECD;
+    background-blend-mode: multiply;
+    background-clip: padding-box;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 4px;
+    background: #F2ECDF;
+    background-blend-mode: multiply;
+  }
+}
+
 /// Scrollbar light mixin
 @mixin scrollbar-light {
   &::-webkit-scrollbar {
