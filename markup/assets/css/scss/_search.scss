@@ -54,7 +54,7 @@
   // 필터 탭
   .filter-tabs {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     width: 100%;
     margin-bottom: 30px;
     flex-wrap: wrap;
@@ -63,14 +63,15 @@
 
     .filter-tab {
       position: relative;
-      padding: 8px 18px;
+      padding: 8px 16px;
       border-radius: 8px;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 400;
       cursor: pointer;
       transition: all 0.2s ease;
+      color: #333333;
       @include flex(row, flex-end, center);
-      gap: 6px;
+      gap: 8px;
 
       .ico-check,
       .ico-heart {
@@ -88,7 +89,7 @@
       }
 
       .count {
-        font-size: 18px;
+        //font-size: 18px;
         font-weight: 700;
       }
 
@@ -122,8 +123,8 @@
       margin-bottom: 24px;
 
       .section-title {
-        font-size: 24px;
-        font-weight: 700;
+        font-size: 18px;
+        font-weight: 500;
         color: var(--text-primary);
         @include flex(row, center, center);
         gap: 8px;
@@ -144,17 +145,17 @@
         }
 
         .section-count {
-          font-size: 20px;
-          font-weight: 500;
+          font-size: 16px;
+          font-weight: 700;
         }
       }
 
       // [공통] 정렬 셀렉트 박스
-      @include select-sort(20px);
+      @include select-sort(16px);
     }
 
     // [공통] 비디오 카드 그리드 (4열, 20px 제목)
-    @include video-card-grid(4, 24px, 56px, 20px);
+    @include video-card-grid(4, 24px, 56px, 18px);
 
     // 반응형: 검색결과 전용
     .video-grid {

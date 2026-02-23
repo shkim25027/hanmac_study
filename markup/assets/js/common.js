@@ -476,12 +476,54 @@ function initContainerScrollEffect() {
   }
 }
 
+/**
+ * 컨테이너 상단 라운드 모서리 유지
+ * - .container에 clip-path를 적용해 상단 30px 라운드를 고정 유지
+ * - 스크롤, 스타일 변경 등으로 덮어써져도 복원
+ */
+function initContainerRoundCorners() {
+  const container = document.querySelector(".container");
+  if (!container) return;
+
+  const targetClipPath = "inset(0 0 0 0 round 30px 30px 0 0)";
+  container.style.clipPath = targetClipPath;
+
+  function maintainRoundCorners() {
+    const currentClipPath = container.style.clipPath || "";
+    if (currentClipPath !== targetClipPath && !currentClipPath.includes("30px")) {
+      container.style.clipPath = targetClipPath;
+    }
+    requestAnimationFrame(maintainRoundCorners);
+  }
+
+  container.addEventListener(
+    "scroll",
+    function () {
+      this.style.clipPath = targetClipPath;
+    },
+    { passive: true, capture: true }
+  );
+
+  const observer = new MutationObserver(function () {
+    if (container.style.clipPath !== targetClipPath) {
+      container.style.clipPath = targetClipPath;
+    }
+  });
+  observer.observe(container, {
+    attributes: true,
+    attributeFilter: ["style"],
+    attributeOldValue: true,
+  });
+
+  maintainRoundCorners();
+}
+
 // DOMContentLoaded 시 초기화
 document.addEventListener("DOMContentLoaded", () => {
- // initContainerScrollEffect();
- 
- // 현재 페이지에 따라 네비게이션 active 클래스 추가
- setActiveNavigation();
+  initContainerRoundCorners();
+
+  // 현재 페이지에 따라 네비게이션 active 클래스 추가
+  setActiveNavigation();
 });
 
 /**
@@ -673,6 +715,7 @@ if (typeof window !== 'undefined') {
     popOpen,
     popClose,
     initContainerScrollEffect,
+    initContainerRoundCorners,
     setActiveNavigation,
     includehtml,
   };

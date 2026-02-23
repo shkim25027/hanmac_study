@@ -72,6 +72,7 @@
     flex-wrap: wrap;
     gap: 12px;
     translate: -50% 0;
+    z-index: 1;
     @include flex(row, center, center);
   }
 
@@ -197,7 +198,7 @@
     text-align: center;
     @include flex(column, center, center);
     .pick-title {
-      font-size: 33px;
+      font-size: 32px;
       font-weight: 400;
       em {
         font-weight: 700;
@@ -205,7 +206,7 @@
     }
     .pick-desc {
       margin: 0;
-      font-size: 28px;
+      font-size: 24px;
       line-height: 1.2;
       color: var(--text-secondary);
     }
@@ -236,6 +237,7 @@
     border-radius: 12px;
     background: var(--bg-video);
     box-shadow: 0 0 13.4px 0 rgba(0, 0, 0, 0.50);
+    overflow: hidden;
   }
 
  // Pagination 커스텀 스타일
@@ -363,7 +365,7 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
     }
 
     // [공통] 정렬 셀렉트 박스
-    @include select-sort(20px);
+    @include select-sort(16px);
 
     .filter-tabs {
       @include flex(row, center, center);

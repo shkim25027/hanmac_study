@@ -256,47 +256,6 @@
     </div>
 
     <script>
-      // 상단 라운드 유지 - 페이지 로드 즉시 실행 (다른 스크립트보다 먼저)
-      (function() {
-        const container = document.querySelector('.search-result .container');
-        if (container) {
-          const targetClipPath = 'inset(0 0 0 0 round 30px 30px 0 0)';
-          
-          // 즉시 clip-path 설정
-          container.style.clipPath = targetClipPath;
-          
-          // 지속적으로 clip-path 유지
-          function maintainRoundCorners() {
-            const currentClipPath = container.style.clipPath || '';
-            if (currentClipPath !== targetClipPath && !currentClipPath.includes('30px')) {
-              container.style.clipPath = targetClipPath;
-            }
-            requestAnimationFrame(maintainRoundCorners);
-          }
-          
-          // 스크롤 이벤트로 clip-path 고정
-          container.addEventListener('scroll', function() {
-            this.style.clipPath = targetClipPath;
-          }, { passive: true, capture: true });
-          
-          // MutationObserver로 style 변경 감지
-          const observer = new MutationObserver(function() {
-            if (container.style.clipPath !== targetClipPath) {
-              container.style.clipPath = targetClipPath;
-            }
-          });
-          
-          observer.observe(container, {
-            attributes: true,
-            attributeFilter: ['style'],
-            attributeOldValue: true
-          });
-          
-          // requestAnimationFrame 시작
-          maintainRoundCorners();
-        }
-      })();
-
       // 검색어를 헤더 검색창에 표시
       document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.querySelector('.input-group input[type="text"]');
