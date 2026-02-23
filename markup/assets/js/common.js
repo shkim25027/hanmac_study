@@ -232,7 +232,7 @@ class ModalManager {
         await AnimationUtils.fade(element, 'out', duration);
       } else {
         element.style.display = 'none';
-        element.style.opacity = '0';
+        element.style.opacity = '';
       }
 
       // 비디오 정지

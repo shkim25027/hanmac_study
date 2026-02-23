@@ -76,6 +76,7 @@ class AnimationUtils {
               element.style.display = "none";
             }
             element.style.transition = "";
+            element.style.opacity = ""; // 재오픈 시 opacity 초기화
             resolve();
           }, duration);
         });

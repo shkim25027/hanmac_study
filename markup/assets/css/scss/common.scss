@@ -243,15 +243,18 @@ html {
     }
   }
 }
-.leader {
-  background: var(--bg-cate-primary);
+.item-info {
+  .leader {
+    background: var(--bg-cate-primary);
+  }
+  .insight {
+    background: var(--bg-cate-secondary);
+  }
+  .biz {
+    background: var(--bg-cate-tertiary);
+  }
 }
-.insight {
-  background: var(--bg-cate-secondary);
-}
-.biz {
-  background: var(--bg-cate-tertiary);
-}
+
 
 // =======================================
 // Page Title Styles

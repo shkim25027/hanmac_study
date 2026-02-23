@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
+  </head>
+  <body>
+    <div class="wrap myclass">
+      @@include("_include/_header.html")
+
+      <div class="container">
+        <div class="myclass-wrap">
+
+          <!-- 사용자 등급 정보 -->
+          <div class="user-info-bar">
+            <div class="user-rank-area">
+              <span class="ico-trophy" aria-hidden="true">🏆</span>
+              <span class="rank-text">홍길동님 현재 <em>1250등</em></span>
+              <button class="btn-rank-toggle" type="button" aria-label="순위 상세 보기">
+                <span class="ico-chevron-down" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 페이지 인트로 -->
+          <div class="page-intro" id="pageIntro">
+            <!-- 상태 1: 목표 미설정 -->
+            <div class="intro-state intro-state--initial" data-state="initial">
+              <p class="intro-greeting">홍길동 선임연구원님, <strong>학습 목표</strong>를 골라볼까요?</p>
+              <p class="intro-desc"><em class="intro-dday">D-64(3월 30일)</em> <strong>까지 선택한 목표</strong>와 함께 배움을 채워가세요.</p>
+            </div>
+            <!-- 상태 2: 목표 설정 후 -->
+            <div class="intro-state intro-state--done hidden" data-state="done" hidden>
+              <p class="intro-greeting">첫번째 목표를 완성했어요!</p>
+              <p class="intro-desc">다음 목표를 <strong>선택</strong>해, 나만의 책장을 더 풍성하게 채워보세요.</p>
+            </div>
+          </div>
+
+          <!-- 연도 선택 -->
+          <div class="year-selector">
+            <button class="btn-year" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <span>2026년</span>
+              <i class="ico-year-arrow" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <!-- 책장 -->
+          <div class="bookshelf" id="bookshelf">
+
+            <!-- 1행 -->
+            <div class="shelf-row">
+              <ul class="goal-list">
+                <li class="goal-item" data-goal-id="1">
+                  <button class="goal-card" type="button" aria-label="자기이해와 강점 찾기 목표 선택">
+                    <!-- 선택 후 상태: 책 이미지 영역 -->
+                    <div class="card-books-area" hidden>
+                      <span class="quarter-badge">1분기</span>
+                      <img src="./assets/images/myclass/Group 1171286226.png" alt="" class="card-books-img">
+                    </div>
+                    <!-- 기본 상태 -->
+                    <div class="card-default-area">
+                      <div class="card-icon-wrap">
+                        <span class="card-icon" aria-hidden="true">
+                          <!-- 자기이해 아이콘: 타겟 모양 -->
+                          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="28" cy="28" r="24" stroke="#7B6CF5" stroke-width="2" fill="none"/>
+                            <circle cx="28" cy="28" r="16" stroke="#7B6CF5" stroke-width="2" fill="none"/>
+                            <circle cx="28" cy="28" r="8" fill="#7B6CF5"/>
+                            <path d="M28 4 L32 12 L28 10 L24 12 Z" fill="#7B6CF5"/>
+                            <path d="M36 8 L34 16" stroke="#7B6CF5" stroke-width="1.5" stroke-linecap="round"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="card-body">
+                        <strong class="card-title">자기이해와 강점 찾기</strong>
+                        <p class="card-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
+                      </div>
+                    </div>
+                    <span class="card-dot" aria-hidden="true"></span>
+                  </button>
+                </li>
+
+                <li class="goal-item" data-goal-id="2">
+                  <button class="goal-card" type="button" aria-label="효과적인 의사소통 배우기 목표 선택">
+                    <div class="card-books-area" hidden>
+                      <span class="quarter-badge">1분기</span>
+                      <img src="./assets/images/myclass/Group 1171286226.png" alt="" class="card-books-img">
+                    </div>
+                    <div class="card-default-area">
+                      <div class="card-icon-wrap">
+                        <span class="card-icon" aria-hidden="true">
+                          <!-- @ 아이콘 -->
+                          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="28" cy="28" r="10" stroke="#3BA8E8" stroke-width="2.5" fill="none"/>
+                            <circle cx="28" cy="28" r="4" fill="#3BA8E8"/>
+                            <path d="M38 28 C38 34 34 40 28 40 C20 40 14 34 14 28 C14 22 20 16 28 16 C34 16 38 20 38 26 L38 30 C38 33 36 35 33 35 C31 35 30 33 30 30 L30 20" stroke="#3BA8E8" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="card-body">
+                        <strong class="card-title">효과적인<br>의사소통 배우기</strong>
+                        <p class="card-desc">상황에 맞는 말하기와 경청을 통해 타인과 원활하게 소통하는 방법을 익히는 과정</p>
+                      </div>
+                    </div>
+                    <span class="card-dot" aria-hidden="true"></span>
+                  </button>
+                </li>
+
+                <li class="goal-item" data-goal-id="3">
+                  <button class="goal-card" type="button" aria-label="감정 조절과 자기관리 목표 선택">
+                    <div class="card-books-area" hidden>
+                      <span class="quarter-badge">1분기</span>
+                      <img src="./assets/images/myclass/Group 1171286226.png" alt="" class="card-books-img">
+                    </div>
+                    <div class="card-default-area">
+                      <div class="card-icon-wrap">
+                        <span class="card-icon" aria-hidden="true">
+                          <!-- 스마일 아이콘 -->
+                          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="28" cy="28" r="22" fill="#FF8C42"/>
+                            <circle cx="21" cy="23" r="3" fill="white"/>
+                            <circle cx="35" cy="23" r="3" fill="white"/>
+                            <path d="M18 33 Q28 42 38 33" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="card-body">
+                        <strong class="card-title">감정 조절과 자기관리</strong>
+                        <p class="card-desc">다양한 감정을 인식하고 조절하여 안정적인 삶을 유지하는 자기관리 훈련 과정</p>
+                      </div>
+                    </div>
+                    <span class="card-dot" aria-hidden="true"></span>
+                  </button>
+                </li>
+
+                <li class="goal-item" data-goal-id="4">
+                  <button class="goal-card" type="button" aria-label="목표 설정과 시간 관리 목표 선택">
+                    <div class="card-books-area" hidden>
+                      <span class="quarter-badge">1분기</span>
+                      <img src="./assets/images/myclass/Group 1171286226.png" alt="" class="card-books-img">
+                    </div>
+                    <div class="card-default-area">
+                      <div class="card-icon-wrap">
+                        <span class="card-icon" aria-hidden="true">
+                          <!-- 시계 아이콘 -->
+                          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="28" cy="28" r="22" stroke="rgba(255,255,255,0.8)" stroke-width="2.5" fill="none"/>
+                            <circle cx="28" cy="28" r="20" fill="rgba(255,255,255,0.15)"/>
+                            <line x1="28" y1="14" x2="28" y2="8" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="28" y1="42" x2="28" y2="48" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="14" y1="28" x2="8" y2="28" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="42" y1="28" x2="48" y2="28" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="28" y1="28" x2="28" y2="18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="28" y1="28" x2="36" y2="28" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                            <circle cx="28" cy="28" r="2.5" fill="white"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="card-body">
+                        <strong class="card-title">목표 설정과 시간 관리</strong>
+                        <p class="card-desc">실현 가능한 목표를 세우고 계획적으로 시간을 활용하는 습관을 기르는 과정</p>
+                      </div>
+                    </div>
+                    <span class="card-dot" aria-hidden="true"></span>
+                  </button>
+                </li>
+              </ul>
+
+              <div class="shelf-board">
+                <span class="shelf-leg shelf-leg--left"></span>
+                <span class="shelf-leg shelf-leg--right"></span>
+              </div>
+            </div>
+            <!-- // 1행 -->
+
+            <!-- 2행 -->
+            <div class="shelf-row">
+              <ul class="goal-list">
+                <li class="goal-item" data-goal-id="5">
+                  <button class="goal-card" type="button" aria-label="디지털 리터러시와 정보 활용 목표 선택">
+                    <div class="card-books-area" hidden>
+                      <span class="quarter-badge">1분기</span>
+                      <img src="./assets/images/myclass/Group 1171286226.png" alt="" class="card-books-img">
+                    </div>
+                    <div class="card-default-area">
+                      <div class="card-icon-wrap">
+                        <span class="card-icon" aria-hidden="true">
+                          <!-- 타겟 + 화살표 (디지털) -->
+                          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="28" cy="28" r="24" stroke="#7B6CF5" stroke-width="2" fill="none"/>
+                            <circle cx="28" cy="28" r="16" stroke="#7B6CF5" stroke-width="2" fill="none"/>
+                            <circle cx="28" cy="28" r="8" fill="#7B6CF5"/>
+                            <path d="M28 4 L32 12 L28 10 L24 12 Z" fill="#7B6CF5"/>
+                            <path d="M36 8 L34 16" stroke="#7B6CF5" stroke-width="1.5" stroke-linecap="round"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="card-body">
+                        <strong class="card-title">디지털 리터러시와<br>정보 활용</strong>
+                        <p class="card-desc">디지털 환경에서 정보를 바르게 찾고 활용하는 능력과 온라인 소양을 기르는 과정</p>
+                      </div>
+                    </div>
+                    <span class="card-dot" aria-hidden="true"></span>
+                  </button>
+                </li>
+
+                <li class="goal-item" data-goal-id="6">
+                  <button class="goal-card" type="button" aria-label="비판적 사고와 문제 해결 목표 선택">
+                    <div class="card-books-area" hidden>
+                      <span class="quarter-badge">1분기</span>
+                      <img src="./assets/images/myclass/Group 1171286226.png" alt="" class="card-books-img">
+                    </div>
+                    <div class="card-default-area">
+                      <div class="card-icon-wrap">
+                        <span class="card-icon" aria-hidden="true">
+                          <!-- 전구 아이콘 -->
+                          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <ellipse cx="28" cy="24" rx="12" ry="14" fill="#FFD54F"/>
+                            <path d="M22 38 L22 42 Q22 44 24 44 L32 44 Q34 44 34 42 L34 38 Z" fill="#FFD54F"/>
+                            <line x1="22" y1="40" x2="34" y2="40" stroke="#E6B800" stroke-width="1.5"/>
+                            <line x1="22" y1="42" x2="34" y2="42" stroke="#E6B800" stroke-width="1.5"/>
+                            <path d="M24 24 Q28 16 32 24" stroke="rgba(255,255,255,0.6)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="card-body">
+                        <strong class="card-title">비판적 사고와 문제 해결</strong>
+                        <p class="card-desc">다양한 관점에서 생각하고 문제 상황을 논리적으로 해결하는 능력을 기르는 과정</p>
+                      </div>
+                    </div>
+                    <span class="card-dot" aria-hidden="true"></span>
+                  </button>
+                </li>
+
+                <li class="goal-item" data-goal-id="7">
+                  <button class="goal-card" type="button" aria-label="협업과 팀워크 기르기 목표 선택">
+                    <div class="card-books-area" hidden>
+                      <span class="quarter-badge">1분기</span>
+                      <img src="./assets/images/myclass/Group 1171286226.png" alt="" class="card-books-img">
+                    </div>
+                    <div class="card-default-area">
+                      <div class="card-icon-wrap">
+                        <span class="card-icon" aria-hidden="true">
+                          <!-- 퍼즐 아이콘 -->
+                          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="14" height="14" rx="2" fill="#FF8A80"/>
+                            <rect x="32" y="10" width="14" height="14" rx="2" fill="#81D4FA"/>
+                            <rect x="10" y="32" width="14" height="14" rx="2" fill="#A5D6A7"/>
+                            <rect x="32" y="32" width="14" height="14" rx="2" fill="#FFD54F"/>
+                            <circle cx="28" cy="17" r="4" fill="#ECE3D2"/>
+                            <circle cx="28" cy="39" r="4" fill="#ECE3D2"/>
+                            <circle cx="17" cy="28" r="4" fill="#ECE3D2"/>
+                            <circle cx="39" cy="28" r="4" fill="#ECE3D2"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="card-body">
+                        <strong class="card-title">협업과 팀워크 기르기</strong>
+                        <p class="card-desc">타인과 협력하며 공동의 목표를 위해 함께 노력하는 태도와 기술을 기르는 과정</p>
+                      </div>
+                    </div>
+                    <span class="card-dot" aria-hidden="true"></span>
+                  </button>
+                </li>
+
+                <li class="goal-item" data-goal-id="8">
+                  <button class="goal-card" type="button" aria-label="커리어 탐색과 역량 개발 목표 선택">
+                    <div class="card-books-area" hidden>
+                      <span class="quarter-badge">1분기</span>
+                      <img src="./assets/images/myclass/Group 1171286226.png" alt="" class="card-books-img">
+                    </div>
+                    <div class="card-default-area">
+                      <div class="card-icon-wrap">
+                        <span class="card-icon" aria-hidden="true">
+                          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="28" cy="28" r="24" stroke="#7B6CF5" stroke-width="2" fill="none"/>
+                            <circle cx="28" cy="28" r="16" stroke="#7B6CF5" stroke-width="2" fill="none"/>
+                            <circle cx="28" cy="28" r="8" fill="#7B6CF5"/>
+                            <path d="M28 4 L32 12 L28 10 L24 12 Z" fill="#7B6CF5"/>
+                            <path d="M36 8 L34 16" stroke="#7B6CF5" stroke-width="1.5" stroke-linecap="round"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="card-body">
+                        <strong class="card-title">커리어 탐색과 역량 개발</strong>
+                        <p class="card-desc">직무와 산업의 흐름을 이해하고, 자신의 커리어 방향성과 필요한 역량을 점검·계획하는 과정</p>
+                      </div>
+                    </div>
+                    <span class="card-dot" aria-hidden="true"></span>
+                  </button>
+                </li>
+              </ul>
+
+              <div class="shelf-board">
+                <span class="shelf-leg shelf-leg--left"></span>
+                <span class="shelf-leg shelf-leg--right"></span>
+              </div>
+            </div>
+            <!-- // 2행 -->
+
+          </div>
+          <!-- // 책장 -->
+
+          <!-- 하단 CTA 버튼 -->
+          <div class="myclass-cta">
+            <button class="btn-select-goal" type="button" id="btnSelectGoal">학습목표 고르기</button>
+          </div>
+
+        </div>
+      </div>
+      <!-- // container -->
+
+      <!-- ====================================================
+           목표 상세 팝업 레이어
+           ==================================================== -->
+      <div class="goal-layer hidden" id="goalLayer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="학습목표 상세">
+
+        <button class="btn-goal-prev" type="button" id="btnGoalPrev" aria-label="이전 목표">
+          <span class="blind">이전</span>
+          <span class="prev-goal-name" id="prevGoalName" aria-hidden="true"></span>
+        </button>
+
+        <div class="goal-popup" role="document">
+          <button class="btn-close-layer" type="button" id="btnCloseLayer" aria-label="닫기">
+            <span class="blind">닫기</span>
+          </button>
+
+          <div class="popup-scroll">
+            <!-- 팝업 헤더 -->
+            <div class="popup-header">
+              <div class="popup-icon" id="popupIcon" aria-hidden="true"></div>
+              <div class="popup-title-area">
+                <strong class="popup-title" id="popupTitle"></strong>
+                <p class="popup-desc" id="popupDesc"></p>
+              </div>
+            </div>
+
+            <!-- 추천 대상 -->
+            <div class="popup-recs" id="popupRecs">
+              <div class="rec-item">
+                <span class="rec-label">추천 1</span>
+                <strong class="rec-target">업무에 익숙해졌지만<br>성장 정체를 느끼는 구성원</strong>
+                <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
+              </div>
+              <div class="rec-item">
+                <span class="rec-label">추천 1</span>
+                <strong class="rec-target">문제 해결을 요구받기 시작한<br>주니어, 중급 구성원</strong>
+                <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
+              </div>
+              <div class="rec-item">
+                <span class="rec-label">추천 1</span>
+                <strong class="rec-target">팀 또는 프로젝트 단위로<br>사고의 확장이 필요한 구성원</strong>
+                <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
+              </div>
+            </div>
+
+            <!-- 추천 도서 책장 -->
+            <div class="popup-bookshelf">
+              <div class="popup-books-wrap">
+                <img src="./assets/images/myclass/Group 1171286226.png" alt="추천 도서 목록" class="popup-books-img">
+              </div>
+              <div class="popup-shelf-plank"></div>
+              <div class="popup-book-tags">
+                <span class="pop-tag">IQ</span>
+                <span class="pop-tag">비트스</span>
+                <span class="pop-tag">웰니스</span>
+                <span class="pop-tag">마인드셋</span>
+                <span class="pop-tag">리더십</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 팝업 하단 버튼 -->
+          <div class="popup-foot">
+            <button class="btn-set-goal" type="button" id="btnSetGoal">이 목표로 설정하기</button>
+          </div>
+        </div>
+
+        <button class="btn-goal-next" type="button" id="btnGoalNext" aria-label="다음 목표">
+          <span class="blind">다음</span>
+          <span class="next-goal-name" id="nextGoalName" aria-hidden="true"></span>
+        </button>
+
+      </div>
+      <!-- // 목표 상세 팝업 레이어 -->
+
+    </div>
+    <!-- // wrap.myclass -->
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      // ====================================================
+      // 목표 데이터
+      // ====================================================
+      const goals = [
+        {
+          id: 1,
+          title: '자기이해와 강점 찾기',
+          desc: '나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정',
+        },
+        {
+          id: 2,
+          title: '효과적인 의사소통 배우기',
+          desc: '상황에 맞는 말하기와 경청을 통해 타인과 원활하게 소통하는 방법을 익히는 과정',
+        },
+        {
+          id: 3,
+          title: '감정 조절과 자기관리',
+          desc: '다양한 감정을 인식하고 조절하여 안정적인 삶을 유지하는 자기관리 훈련 과정',
+        },
+        {
+          id: 4,
+          title: '목표 설정과 시간 관리',
+          desc: '실현 가능한 목표를 세우고 계획적으로 시간을 활용하는 습관을 기르는 과정',
+        },
+        {
+          id: 5,
+          title: '디지털 리터러시와 정보 활용',
+          desc: '디지털 환경에서 정보를 바르게 찾고 활용하는 능력과 온라인 소양을 기르는 과정',
+        },
+        {
+          id: 6,
+          title: '비판적 사고와 문제 해결',
+          desc: '다양한 관점에서 생각하고 문제 상황을 논리적으로 해결하는 능력을 기르는 과정',
+        },
+        {
+          id: 7,
+          title: '협업과 팀워크 기르기',
+          desc: '타인과 협력하며 공동의 목표를 위해 함께 노력하는 태도와 기술을 기르는 과정',
+        },
+        {
+          id: 8,
+          title: '커리어 탐색과 역량 개발',
+          desc: '직무와 산업의 흐름을 이해하고, 자신의 커리어 방향성과 필요한 역량을 점검·계획하는 과정',
+        },
+      ];
+
+      let currentGoalId = null;
+      let selectedGoalId = null;
+
+      const goalLayer    = document.getElementById('goalLayer');
+      const btnCloseLayer = document.getElementById('btnCloseLayer');
+      const btnGoalPrev  = document.getElementById('btnGoalPrev');
+      const btnGoalNext  = document.getElementById('btnGoalNext');
+      const btnSetGoal   = document.getElementById('btnSetGoal');
+      const btnSelectGoal = document.getElementById('btnSelectGoal');
+      const popupTitle   = document.getElementById('popupTitle');
+      const popupDesc    = document.getElementById('popupDesc');
+      const popupIcon    = document.getElementById('popupIcon');
+      const prevGoalName = document.getElementById('prevGoalName');
+      const nextGoalName = document.getElementById('nextGoalName');
+
+      // ====================================================
+      // 팝업 열기
+      // ====================================================
+      function openGoalLayer(goalId) {
+        currentGoalId = goalId;
+        updatePopupContent();
+        goalLayer.removeAttribute('aria-hidden');
+        goalLayer.classList.remove('hidden');
+        goalLayer.classList.add('is-open');
+        document.body.classList.add('layer-open');
+        btnCloseLayer.focus();
+      }
+
+      // ====================================================
+      // 팝업 닫기
+      // ====================================================
+      function closeGoalLayer() {
+        goalLayer.setAttribute('aria-hidden', 'true');
+        goalLayer.classList.remove('is-open');
+        goalLayer.classList.add('hidden');
+        document.body.classList.remove('layer-open');
+      }
+
+      // ====================================================
+      // 팝업 내용 업데이트
+      // ====================================================
+      function updatePopupContent() {
+        const goal = goals.find(g => g.id === currentGoalId);
+        const goalItem = document.querySelector(`.goal-item[data-goal-id="${currentGoalId}"]`);
+        if (!goal || !goalItem) return;
+
+        // 제목 / 설명
+        popupTitle.textContent = goal.title;
+        popupDesc.textContent  = goal.desc;
+
+        // 아이콘 복사
+        const iconEl = goalItem.querySelector('.card-icon');
+        popupIcon.innerHTML = iconEl ? iconEl.innerHTML : '';
+
+        // 이전/다음 이름
+        const prevGoal = goals.find(g => g.id === currentGoalId - 1);
+        const nextGoal = goals.find(g => g.id === currentGoalId + 1);
+        prevGoalName.textContent = prevGoal ? prevGoal.title : '';
+        nextGoalName.textContent = nextGoal ? nextGoal.title : '';
+
+        btnGoalPrev.disabled = !prevGoal;
+        btnGoalNext.disabled = !nextGoal;
+      }
+
+      // ====================================================
+      // 이전/다음 이동
+      // ====================================================
+      btnGoalPrev.addEventListener('click', function () {
+        if (currentGoalId > 1) {
+          currentGoalId--;
+          updatePopupContent();
+        }
+      });
+
+      btnGoalNext.addEventListener('click', function () {
+        if (currentGoalId < goals.length) {
+          currentGoalId++;
+          updatePopupContent();
+        }
+      });
+
+      // ====================================================
+      // 목표 설정하기
+      // ====================================================
+      btnSetGoal.addEventListener('click', function () {
+        selectedGoalId = currentGoalId;
+        closeGoalLayer();
+        applySelectedState(selectedGoalId);
+      });
+
+      // ====================================================
+      // 선택 후 상태 적용
+      // ====================================================
+      function applySelectedState(goalId) {
+        // 모든 goal-item 리셋
+        document.querySelectorAll('.goal-item').forEach(function (item) {
+          item.classList.remove('is-selected');
+          const booksArea   = item.querySelector('.card-books-area');
+          const defaultArea = item.querySelector('.card-default-area');
+          if (booksArea)   booksArea.hidden = true;
+          if (defaultArea) defaultArea.hidden = false;
+        });
+
+        // 선택된 카드 업데이트
+        const selectedItem = document.querySelector(`.goal-item[data-goal-id="${goalId}"]`);
+        if (selectedItem) {
+          selectedItem.classList.add('is-selected');
+          const booksArea   = selectedItem.querySelector('.card-books-area');
+          const defaultArea = selectedItem.querySelector('.card-default-area');
+          if (booksArea)   booksArea.hidden = false;
+          if (defaultArea) defaultArea.hidden = true;
+        }
+
+        // 인트로 텍스트 변경
+        document.querySelectorAll('.intro-state').forEach(function (el) {
+          const isDone = el.classList.contains('intro-state--done');
+          el.hidden = !isDone;
+          el.classList.toggle('hidden', !isDone);
+        });
+
+        // 버튼 텍스트 변경
+        if (btnSelectGoal) btnSelectGoal.textContent = '추가 목표 고르기';
+
+        // bookshelf에 선택 완료 클래스 추가 (CSS 활용)
+        document.getElementById('bookshelf').classList.add('has-selected');
+      }
+
+      // ====================================================
+      // 카드 클릭 이벤트
+      // ====================================================
+      document.querySelectorAll('.goal-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+          const item   = card.closest('.goal-item');
+          const goalId = parseInt(item.dataset.goalId, 10);
+          openGoalLayer(goalId);
+        });
+      });
+
+      // ====================================================
+      // "학습목표 고르기" 버튼 클릭 → 첫 번째 카드 팝업 오픈
+      // ====================================================
+      if (btnSelectGoal) {
+        btnSelectGoal.addEventListener('click', function () {
+          if (!selectedGoalId) {
+            openGoalLayer(1);
+          } else {
+            // 선택 후 상태: 첫 번째 미선택 카드 오픈
+            const firstAvailable = goals.find(g => g.id !== selectedGoalId);
+            if (firstAvailable) openGoalLayer(firstAvailable.id);
+          }
+        });
+      }
+
+      // ====================================================
+      // 닫기 버튼 / 배경 클릭
+      // ====================================================
+      btnCloseLayer.addEventListener('click', closeGoalLayer);
+
+      goalLayer.addEventListener('click', function (e) {
+        if (e.target === goalLayer) closeGoalLayer();
+      });
+
+      // ESC 키
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && goalLayer.classList.contains('is-open')) {
+          closeGoalLayer();
+        }
+      });
+
+    }); // DOMContentLoaded
+    </script>
+
+  </body>
+</html>

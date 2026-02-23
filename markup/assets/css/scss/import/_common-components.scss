@@ -180,6 +180,7 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
       padding: 14px 0;
       @include flex(column, flex-start, stretch);
       gap: 16px;
+
     }
 
     .item-title {
