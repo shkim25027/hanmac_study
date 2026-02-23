@@ -166,14 +166,14 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
       width: 100%;
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      border-radius: 8px;
+      border-radius: 8px 8px 0 0;
       background: var(--bg-video);
 
       img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-      }
+      } 
     }
 
     .item-info {
@@ -196,6 +196,17 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
       display: inline-block;
       font-size: 14px;
       color: var(--text-keyword-secondary);
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      .tag {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-keyword-secondary);
+      }
     }
   }
 }
