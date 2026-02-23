@@ -9,7 +9,7 @@
 // =======================================
 .biztrend {
   .container {
-    background-color: #fff;
+    background: linear-gradient(180deg, rgba(236, 232, 228, 0.60) -5.19%, #FEFDFD 21.11%, #FFF 73.7%, #FFF 100%), #FFF;    
   }
 
   // [공통] 페이지 헤더
@@ -349,7 +349,8 @@
     display: grid;
     grid-template-columns: repeat(5, calc((100% - #{$article-grid-total}) / #{$article-grid-cols})) calc((100% - #{$article-grid-total}) / #{$article-grid-cols} + #{$article-grid-last-extra});
     column-gap: $article-grid-gap;
-    row-gap: 32px;
+    //row-gap: 32px;
+    row-gap: 54px;
 
     &::before {
       content: '';
@@ -491,23 +492,21 @@
     }
   }
 
-  .article-card-title-box {
+  .article-card-content {
     position: relative;
-    padding-left: 16px;
-    padding-right: 32px;
-    width: 100%;
-    min-width: 0;
-    height: 36px;
-    min-height: 36px;
-    background: #DBE8E5;
-    gap: 8px;
-    border-radius: 2px 2px 20px 20px;
-    @include flex(row, center);
 
-    .article-card-like {
+    .article-card-link {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    > .article-card-like {
       position: absolute;
       right: 10px;
       top: 8px;
+      z-index: 1;
       flex-shrink: 0;
       width: 20px;
       height: 20px;
@@ -521,6 +520,21 @@
         @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
       }
     }
+  }
+
+  .article-card-title-box {
+    position: relative;
+    padding-left: 16px;
+    padding-right: 32px;
+    margin-bottom: 8px;
+    width: 100%;
+    min-width: 0;
+    height: 36px;
+    min-height: 36px;
+    background: #DBE8E5;
+    gap: 8px;
+    border-radius: 2px 2px 20px 20px;
+    @include flex(row, center);
   }
 
   .article-card-title {
