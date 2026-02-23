@@ -27,6 +27,7 @@
   // ---------------------------------------
   .biztrend-wrap {
     margin-top: -48px;
+    margin-top: -72px;
   }
 
   .biztrend-inner {
@@ -276,12 +277,12 @@
 
         &::before {
           top: 0;
-          background: linear-gradient(to bottom, #fff 0%, transparent 100%);
+          //background: linear-gradient(to bottom, #fff 0%, transparent 100%);
         }
 
         &::after {
           bottom: 0;
-          background: linear-gradient(to top, #fff 0%, transparent 100%);
+          //background: linear-gradient(to top, #fff 0%, transparent 100%);
         }
       }
 
@@ -289,7 +290,7 @@
         height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
-        padding: 72px 0;
+        //padding: 72px 0;
         scroll-behavior: smooth;
         @include scrollbar-style(6px, 6px, var(--bg-scrollbar-thumb), var(--bg-scrollbar-track));
       }
@@ -357,7 +358,8 @@
       right: calc(16.6666% + 4px);
       width: 1px;
       height: 100%;
-      background: repeating-linear-gradient(180deg, #CBCACA 0, #CBCACA 2px, transparent 2px, transparent 2px);
+      //background: repeating-linear-gradient(180deg, #CBCACA 0, #CBCACA 2px, transparent 2px, transparent 2px);
+      border-right: 1px dashed #CBCACA;
     }
   }
 
