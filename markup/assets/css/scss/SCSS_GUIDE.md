@@ -4,22 +4,39 @@
 
 ---
 
+## 📋 CSS 로딩 순서 (HTML)
+
+모든 페이지에서 아래 순서로 CSS가 로드됩니다:
+
+| 순서 | 파일 | 내용 |
+|:---:|------|------|
+| 1 | common.css | 공통 스타일 (버튼, 아이콘, 리셋, 레이아웃 기초) |
+| 2 | style.css | 레이아웃, 카드, 페이지별 스타일 (_layout, _card, _mypage 등) |
+| 3 | main.css 등 | 페이지 전용 (index, mypage, onboarding, intro 등) |
+
+---
+
 ## 📁 폴더 구조
 
 ```
 scss/
-├── style.scss              ← 메인 진입점 (컴파일 대상)
-├── _base.scss              ← 공통 모듈 로드 (mixin, 변수, 공통 컴포넌트 등)
-├── _layout.scss            ← 공통 레이아웃
+├── common.scss             ← common.css 컴파일 (전역 버튼, 아이콘, 리셋)
+├── style.scss              ← style.css 컴파일 (레이아웃 + 페이지 partial)
+├── main.scss               ← main.css 컴파일 (메인/인덱스 페이지)
+├── intro.scss              ← intro.css (인트로 페이지)
+├── _base.scss              ← mixin, common-components, _root, 애니메이션 로드
+├── _root.scss              ← CSS 변수 (색상, 테마) - :root에 정의
+├── _layout.scss            ← .wrap, .header, .nav 등 공통 레이아웃
 ├── _card.scss              ← 카드 컴포넌트
+├── _mypage.scss            ← 마이페이지
 ├── _learning.scss          ← 학습 페이지
 ├── _search.scss            ← 검색결과 페이지
 ├── _insight.scss           ← 인사이트 페이지
 ├── _biztrend.scss          ← biztrend 페이지
-├── import/                 ← 공통으로 쓰이는 하위 모듈
-│   ├── _mixin.scss         ← flex, grid, ellipsis 등 유틸 mixin
-│   ├── _common-components.scss  ← 페이지 공통 UI mixin (page-header, breadcrumb 등)
-│   ├── _variables.scss     ← 색상, 브레이크포인트 변수
+├── import/                 ← 직접 컴파일되지 않음 (다른 파일에서 @use/@forward)
+│   ├── _mixin.scss         ← flex, grid, ellipsis, mq 등
+│   ├── _common-components.scss  ← page-header, breadcrumb, gauge-bar 등
+│   ├── _variables.scss     ← $html-fz, $body-fz, $font-family 등
 │   ├── _reset-css.scss     ← CSS 리셋
 │   └── ...
 └── SCSS_GUIDE.md           ← 이 문서
@@ -27,19 +44,23 @@ scss/
 
 ---
 
-## 🔄 스타일 로드 흐름
+## 🔄 컴파일 흐름
 
 ```
+common.scss
+  └── @use "base" → mixin, common-components, _root, _animation
+  └── typography, lib-fonts, reset-css
+  └── 공통 스타일 (.btn-primary, .ico-play, .blind 등)
+
 style.scss
   └── @use "base"
-        ├── mixin (flex, ellipsis, mq 등)
-        ├── common-components (page-header, breadcrumb, select-sort, video-card-grid)
-        ├── 변수, 리셋, 애니메이션
-  └── @forward "_layout", "_card", "_learning", "_search", "_insight", "_biztrend"
+  └── @forward "_layout", "_card", "_learning", "_search", "_insight", "_biztrend", "_mypage"
+
+main.scss
+  └── @use "base" + 메인 페이지 전용 스타일
 ```
 
-모든 페이지용 SCSS 파일(`_search.scss`, `_insight.scss` 등)은 맨 위에 `@use "base" as *;`를 사용합니다.  
-이렇게 하면 **mixin**, **변수**, **공통 컴포넌트**를 바로 사용할 수 있습니다.
+**import/ 폴더**의 파일들은 단독으로 컴파일되지 않고, 위 파일들에서 `@use`/`@forward`로 불러옵니다.
 
 ---
 
@@ -139,7 +160,7 @@ style.scss
 
 ## ✏️ 새 페이지 스타일 추가하기
 
-1. **새 파일 생성**: `_새페이지.scss` 생성
+1. **새 partial 생성**: `_새페이지.scss` 생성
 2. **기본 설정**:
    ```scss
    @charset "UTF-8";
@@ -149,7 +170,6 @@ style.scss
    // 새페이지
    // =======================================
    .새페이지클래스 {
-     // 필요한 공통 컴포넌트 사용
      .page-header { @include page-header; }
    }
    ```
@@ -157,6 +177,9 @@ style.scss
    ```scss
    @forward "_새페이지";
    ```
+4. **페이지 전용 CSS가 필요하면** (예: intro.css, learning_objectives.css):
+   - `새페이지.scss` 생성 후 gulpfile의 scss 경로에 포함되면 자동 컴파일
+   - HTML에서 `<link href="./assets/css/새페이지.css">` 추가
 
 ---
 

@@ -1,5 +1,16 @@
 /**
- * 공통 유틸리티 함수 모듈
+ * 공통 유틸리티 함수 모듈 (Utils.js)
+ * ========================================
+ * 자주 쓰는 헬퍼 함수들을 모아둔 정적 클래스입니다.
+ *
+ * [초보자용 사용 예]
+ * Utils.delay(1000)           → 1초 대기 후 Promise 반환 (async/await와 함께)
+ * Utils.debounce(fn, 300)     → 입력 등 연속 호출 방지 (마지막 호출만 실행)
+ * Utils.throttle(fn, 100)     → resize 등 빈번한 이벤트 제한 (100ms마다 1번)
+ * Utils.formatDate(date)      → "YYYY-MM-DD" 형식
+ * Utils.formatNumber(1234)    → "1,234" (천단위 콤마)
+ * Utils.storage.set('key', value)  → localStorage 쉽게 사용
+ *
  * @module Utils
  */
 class Utils {

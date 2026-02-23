@@ -56,10 +56,7 @@ html {
   h1 {
     width: 95px;
     height: 25px;
-    background: url(../images/logo.svg);
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
+    @include bgImg("../images/logo.svg", contain, center);
     @include textBlind();
   }
 }
@@ -106,10 +103,7 @@ html {
               width: 14px;
               height: 14px;
               margin: 0 auto 2px;
-              background: url(../images/ico/ico_frequency.svg);
-              background-position: center;
-              background-repeat: no-repeat;
-              background-size: contain;
+              @include bgImg("../images/ico/ico_frequency.svg", contain, center);
             }
             span {
               display: inline-block;

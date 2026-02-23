@@ -1,4 +1,9 @@
-// @mixin
+// ================================================================
+// Mixin 모듈 (_mixin.scss)
+// ================================================================
+// 자주 쓰는 레이아웃·반응형·효과 mixin입니다.
+// 사용법: @include flex(row, center, center);  @include mq("tablet", max) { }
+// ================================================================
 
 @use "sass:map";
 
@@ -69,7 +74,7 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  translate: -50% -50%;
 }
 
 // --------------------------------------------
@@ -229,9 +234,12 @@ $icon-registry: (
 // --------------------------------------------
 // media query
 $breakpoints: (
-  "phone": 360px,
+  "mobile-xs": 320px,    // 319px 이하 (mobile-xxs font 기준)
+  "phone": 360px,        // 359px 이하
+  "mobile-medium": 480px, // 479px 이하 (mobile-small font 기준)
   "phone-wide": 576px,
-  "tablet-small": 768px,
+  "mobile": 640px,       // 639px 이하 (mobile font 기준)
+  "tablet-small": 768px, // 767px 이하 (mobile-large font 기준)
   "tablet": 992px,
   "tablet-wide": 1024px,
   "desktop": 1200px,

@@ -1,5 +1,10 @@
 /**
- * 애니메이션 유틸리티 모듈
+ * 애니메이션 유틸리티 모듈 (AnimationUtils.js)
+ * ========================================
+ * 페이드, 슬라이드, 카운트업 등 애니메이션을 제공합니다.
+ *
+ * [초보자용] AnimationUtils.fade(el, 'in', 300) / AnimationUtils.fade(el, 'out', 300)
+ *
  * @module AnimationUtils
  */
 class AnimationUtils {

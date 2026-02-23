@@ -1,5 +1,15 @@
 @charset "UTF-8";
 
+// ================================================================
+// 공통 스타일 (common.scss) → common.css
+// ================================================================
+// 모든 페이지에 공통으로 적용됩니다.
+// - 리셋, 타이포그래피, 폰트
+// - 전역 버튼(.btn-primary), 아이콘(.ico-play 등)
+// - 유틸 클래스(.blind, .hidden, .clearfix)
+// - 스크롤바, 모달 등
+// ================================================================
+
 @use "sass:map";
 @use "base" as *;
 @forward "import/typography";
@@ -864,7 +874,8 @@ h5 {
     }
     .thumb {
       position: relative;
-      height: minmax(68px, auto, 94px);
+      min-height: 68px;
+      max-height: 94px;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.1);
       overflow: hidden;
@@ -1039,35 +1050,35 @@ $font-sizes: (
 }
 
 // Mobile Large (767px 이하)
-@media all and (max-width: 767px) {
+@include mq(tablet-small, max) {
   html {
     font-size: map.get($font-sizes, mobile-large);
   }
 }
 
 // Mobile (639px 이하)
-@media all and (max-width: 639px) {
+@include mq(mobile, max) {
   html {
     font-size: map.get($font-sizes, mobile);
   }
 }
 
 // Mobile Small (479px 이하)
-@media all and (max-width: 479px) {
+@include mq(mobile-medium, max) {
   html {
     font-size: map.get($font-sizes, mobile-small);
   }
 }
 
 // Mobile XS (359px 이하)
-@media all and (max-width: 359px) {
+@include mq(phone, max) {
   html {
     font-size: map.get($font-sizes, mobile-xs);
   }
 }
 
 // Mobile XXS (319px 이하)
-@media all and (max-width: 319px) {
+@include mq(mobile-xs, max) {
   html {
     font-size: map.get($font-sizes, mobile-xxs);
   }

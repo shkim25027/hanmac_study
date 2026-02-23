@@ -5,12 +5,21 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
   </head>
   <body>
+    <!--
+      ========================================
+      마이페이지 레이아웃 구조
+      ========================================
+      [좌측] aside.mypage-sidebar  : 프로필 + 컨텐츠 제안
+      [우측] main.mypage-main     : 학습 활동 + 시청/저장/소감 목록
+    -->
     <div class="wrap mypage">
       @@include("_include/_header.html")
-      <!-- container -->
       <div class="container">
         <div class="mypage-inner">
-          <!-- 좌측: 프로필 + 컨텐츠 제안 -->
+          <!--
+            좌측 사이드바: 프로필 카드 + 컨텐츠 제안 폼
+            수정 시: profile-card 내 이름, 직급, 학습레벨 등 변경
+          -->
           <aside class="mypage-sidebar">
             <h2 class=" ">마이페이지</h2>
             <div class="profile-area">
@@ -40,6 +49,7 @@
                   제안 보내기
                   <i class="ico-arrow"></i>
                 </button>
+                <!-- 아코디언: 클릭 시 제안현황 목록 펼침/접힘 (mypage.js에서 동작) -->
                 <div class="suggest-status accordion">
                   <button type="button" class="accordion-trigger" aria-expanded="false" aria-controls="suggest-status-content">
                     <span class="accordion-title">제안현황</span>
@@ -72,7 +82,10 @@
 
           </aside>
 
-          <!-- 우측: 학습 활동 + 콘텐츠 -->
+          <!--
+            우측 메인: 학습 활동 통계 + 시청/저장/소감 목록
+            학습 시간 수정: total-time-text의 strong, gauge-fill의 width 값
+          -->
           <main class="mypage-main">
             <section class="activity-section">
               <h3 class="section-title">
@@ -204,6 +217,8 @@
             </section>
 
             <div class="mylist-area">
+              <!-- 시청중인 콘텐츠: 진행률은 gauge-fill의 style="width: N%" 에서 조정 -->
+              <!-- 시청중인 콘텐츠: 진행률은 gauge-fill의 style="width: N%" 에서 조정 -->
               <section class="content-section">
                 <h3 class="section-title">
                   <i class="ico-play"></i>
@@ -212,11 +227,11 @@
                 <ul class="content-grid">
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_1" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_1" title="좋아요">
+                      <label class="bookmark" for="like_watching_1" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_1" title="좋아요">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_01.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_01.png" alt="어색한 침묵 스몰토크" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 93%"></div></div>
                       </div>
                       <div class="item-info">
@@ -232,11 +247,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_2" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_2" title="저장">
+                      <label class="bookmark" for="like_watching_2" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_2" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_02.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_02.png" alt="한국에서 가장 유명한 회계사의 조언" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 33%"></div></div>
                       </div>
                       <div class="item-info">
@@ -252,11 +267,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_3" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_3" title="저장">
+                      <label class="bookmark" for="like_watching_3" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_3" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_03.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_03.png" alt="무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 법" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 83%"></div></div>
                       </div>
                       <div class="item-info">
@@ -273,11 +288,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_4" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_4" title="저장">
+                      <label class="bookmark" for="like_watching_4" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_4" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_04.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_04.png" alt="꼰대가 되지 않고 건설적인 피드백을 하는 법" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 63%"></div></div>
                       </div>
                       <div class="item-info">
@@ -292,11 +307,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_5" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_5" title="저장">
+                      <label class="bookmark" for="like_watching_5" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_5" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_05.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_05.png" alt="프로와 아마추어를 가르는 차이점" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 13%"></div></div>
                       </div>
                       <div class="item-info">
@@ -311,11 +326,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_6" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_6" title="저장">
+                      <label class="bookmark" for="like_watching_6" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_6" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_06.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_06.png" alt="트럼프 반도체 관세, 한국 기업" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 23%"></div></div>
                       </div>
                       <div class="item-info">
@@ -332,11 +347,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_1" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_1" title="좋아요">
+                      <label class="bookmark" for="like_watching_7" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_7" title="좋아요">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_01.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_01.png" alt="어색한 침묵 스몰토크" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 93%"></div></div>
                       </div>
                       <div class="item-info">
@@ -352,11 +367,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_2" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_2" title="저장">
+                      <label class="bookmark" for="like_watching_8" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_8" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_02.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_02.png" alt="한국에서 가장 유명한 회계사의 조언" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 33%"></div></div>
                       </div>
                       <div class="item-info">
@@ -372,11 +387,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_3" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_3" title="저장">
+                      <label class="bookmark" for="like_watching_9" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_9" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_03.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_03.png" alt="무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 법" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 83%"></div></div>
                       </div>
                       <div class="item-info">
@@ -393,11 +408,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_4" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_4" title="저장">
+                      <label class="bookmark" for="like_watching_10" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_10" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_04.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_04.png" alt="꼰대가 되지 않고 건설적인 피드백을 하는 법" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 63%"></div></div>
                       </div>
                       <div class="item-info">
@@ -412,11 +427,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_5" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_5" title="저장">
+                      <label class="bookmark" for="like_watching_11" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_11" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_05.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_05.png" alt="프로와 아마추어를 가르는 차이점" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 13%"></div></div>
                       </div>
                       <div class="item-info">
@@ -431,11 +446,11 @@
                   </li>
                   <li class="content-card">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_6" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_6" title="저장">
+                      <label class="bookmark" for="like_watching_12" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_watching_12" title="저장">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_06.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_06.png" alt="트럼프 반도체 관세, 한국 기업" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 23%"></div></div>
                       </div>
                       <div class="item-info">
@@ -453,6 +468,7 @@
                 </ul>
               </section>
   
+              <!-- 저장한 콘텐츠: 체크된 상태로 표시 (checked) -->
               <section class="content-section">
                 <h3 class="section-title">
                   <i class="ico-bookmark"></i>
@@ -461,11 +477,11 @@
                 <ul class="content-grid">
                   <li class="content-card content-card--saved">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_7" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_7" checked title="저장 취소">
+                      <label class="bookmark" for="like_saved_1" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_saved_1" checked title="저장 취소">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_01.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_01.png" alt="나의 무한한 가능성을 발견하는 방법" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 33%"></div></div>
                       </div>
                       <div class="item-info">
@@ -481,11 +497,11 @@
                   </li>
                   <li class="content-card content-card--saved">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_8" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_8" checked title="저장 취소">
+                      <label class="bookmark" for="like_saved_2" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_saved_2" checked title="저장 취소">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_02.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_02.png" alt="아무도 알려주지 않았던 일 잘하는 방법" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 63%"></div></div>
                       </div>
                       <div class="item-info">
@@ -501,11 +517,11 @@
                   </li>
                   <li class="content-card content-card--saved">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_9" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_9" checked title="저장 취소">
+                      <label class="bookmark" for="like_saved_3" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_saved_3" checked title="저장 취소">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_03.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_03.png" alt="정선근 교수가 알려주는 목디스크 지식" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 83%"></div></div>
                       </div>
                       <div class="item-info">
@@ -521,11 +537,11 @@
                   </li>
                   <li class="content-card content-card--saved">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_7" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_7" checked title="저장 취소">
+                      <label class="bookmark" for="like_saved_4" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_saved_4" checked title="저장 취소">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_01.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_01.png" alt="나의 무한한 가능성을 발견하는 방법" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 33%"></div></div>
                       </div>
                       <div class="item-info">
@@ -541,11 +557,11 @@
                   </li>
                   <li class="content-card content-card--saved">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_8" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_8" checked title="저장 취소">
+                      <label class="bookmark" for="like_saved_5" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_saved_5" checked title="저장 취소">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_02.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_02.png" alt="아무도 알려주지 않았던 일 잘하는 방법" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 63%"></div></div>
                       </div>
                       <div class="item-info">
@@ -561,11 +577,11 @@
                   </li>
                   <li class="content-card content-card--saved">
                     <a href="#" class="card-link">
-                      <label class="bookmark" for="like_chk_9" onclick="event.stopPropagation();">
-                        <input type="checkbox" id="like_chk_9" checked title="저장 취소">
+                      <label class="bookmark" for="like_saved_6" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="like_saved_6" checked title="저장 취소">
                       </label>
                       <div class="item-thumb">
-                        <img src="./assets/images/video/img_thumb_03.png" alt="" />
+                        <img src="./assets/images/video/img_thumb_03.png" alt="정선근 교수가 알려주는 목디스크 지식" />
                         <div class="gauge-bar rect"><div class="gauge-fill" style="width: 83%"></div></div>
                       </div>
                       <div class="item-info">
@@ -582,6 +598,7 @@
                 </ul>
               </section>
   
+              <!-- 한줄 소감: 사용자가 작성한 짧은 리뷰 목록 -->
               <section class="review-section">
                 <h3 class="section-title"> 
                   <i class="ico-comment"></i>   
@@ -668,28 +685,7 @@
       </div>
       <!-- // container -->
     </div>
-    <script>
-      (function () {
-        var suggestInput = document.querySelector(".suggest-section .suggest-input");
-        var suggestBtn = document.querySelector(".suggest-section .btn-primary");
-        if (suggestInput && suggestBtn) {
-          suggestInput.addEventListener("input", function () {
-            suggestBtn.disabled = !suggestInput.value.trim();
-          });
-        }
-
-        // 제안현황 아코디언
-        var accordion = document.querySelector(".suggest-status.accordion");
-        if (accordion) {
-          var trigger = accordion.querySelector(".accordion-trigger");
-          var content = accordion.querySelector(".accordion-content");
-          trigger.addEventListener("click", function () {
-            var isOpen = accordion.classList.toggle("is-open");
-            trigger.setAttribute("aria-expanded", isOpen);
-            content.hidden = !isOpen;
-          });
-        }
-      })();
-    </script>
+    <!-- 마이페이지 전용 스크립트: 제안 폼 버튼 활성화, 제안현황 아코디언 -->
+    <script src="./assets/js/mypage.js" defer></script>
   </body>
 </html>

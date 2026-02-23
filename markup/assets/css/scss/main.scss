@@ -1,5 +1,12 @@
 @charset "UTF-8";
 
+// ================================================================
+// 메인 페이지 스타일 (main.scss) → main.css
+// ================================================================
+// index, mypage, modal, onboarding 등에서 사용합니다.
+// 메인 페이지용 원형 배경, 비디오 카드 그리드, 키워드 모달 등
+// ================================================================
+
 @use "sass:map";
 @use "base" as *;
 @forward "_guide";
@@ -37,13 +44,6 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 // =======================================
 // Mixins
 // =======================================
-@mixin center-absolute {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-}
-
 @mixin circle-mask {
   mask:
     linear-gradient(
@@ -131,6 +131,8 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
         );
         translate: 0 -50%;
         opacity: 0.67;
+        z-index: 1;
+        mix-blend-mode: multiply;
       }
 
       ul {

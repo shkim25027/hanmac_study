@@ -1,5 +1,12 @@
 @charset "UTF-8";
 
+// ================================================================
+// Base 모듈 (_base.scss)
+// ================================================================
+// common.scss, style.scss, main.scss 등에서 @use "base" 로 불러옵니다.
+// mixin, common-components, px-convert, _root(CSS변수), _animation 포함
+// ================================================================
+
 @forward "import/_mixin";
 @forward "import/_common-components";
 @forward "import/px-convert";

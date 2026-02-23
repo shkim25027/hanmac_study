@@ -18,10 +18,10 @@
   .search-result-wrap {
     max-width: 1720px;
     margin: 0 auto;
-    padding: 40px 140px 80px;
+    padding: 0px 140px 80px;
     
     @include mq("desktop-hd", max) {
-      padding: 40px 7.2916% 80px;
+      padding: 0px 7.2916% 80px;
     }
   }
 
@@ -32,8 +32,6 @@
   }
 
   .page-title {
-    padding-top: 32px;
-
     h3 { margin: 0 0 12px; }
 
     .search-summary {

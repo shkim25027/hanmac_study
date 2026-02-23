@@ -18,10 +18,19 @@
 <link rel="stylesheet" type="text/css" href="./assets/css/style.css" />
 
 <script src="./assets/js/lib/swiper11.min.js"></script>
-<!-- 공통 모듈 (의존성 순서 유지하며 defer로 비동기 로드) -->
+<!--
+  공통 모듈 로딩 순서 (반드시 유지)
+  1. Utils → 범용 유틸(딜레이, 디바운스, 날짜포맷 등)
+  2. DOMUtils → DOM 조작(선택, 페이드, 이벤트 위임)
+  3. ErrorHandler → 에러 처리 (다른 모듈에서 사용)
+  4. EventManager → 이벤트 중앙 관리 (선택적, 없으면 DOMUtils.delegate 폴백)
+  5. AnimationUtils 이하 → 애니메이션, 비디오, 모달 등
+-->
 <script src="./assets/js/lib/jquery-3.6.1.min.js"></script>
 <script src="./assets/js/common/Utils.js" defer></script>
 <script src="./assets/js/common/DOMUtils.js" defer></script>
+<script src="./assets/js/common/ErrorHandler.js" defer></script>
+<script src="./assets/js/common/EventManager.js" defer></script>
 <script src="./assets/js/common/AnimationUtils.js" defer></script>
 <script src="./assets/js/common/VideoBase.js" defer></script>
 <script src="./assets/js/common/ModalBase.js" defer></script>

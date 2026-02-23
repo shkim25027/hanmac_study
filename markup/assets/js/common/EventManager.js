@@ -1,6 +1,13 @@
 /**
- * 이벤트 관리 모듈
- * 이벤트 리스너를 중앙에서 관리하고 정리할 수 있는 유틸리티
+ * 이벤트 관리 모듈 (EventManager.js)
+ * ========================================
+ * 이벤트 리스너를 중앙에서 관리합니다.
+ * 리스너 ID를 저장해두면 나중에 off()로 제거 가능 (메모리 누수 방지).
+ *
+ * [초보자용] 전역 변수 eventManager 로 사용:
+ *   eventManager.on(element, 'click', handler)
+ *   eventManager.delegate(parent, 'click', '.btn', handler)
+ *
  * @module EventManager
  */
 class EventManager {

@@ -1,5 +1,16 @@
 /**
- * DOM 조작 유틸리티 모듈
+ * DOM 조작 유틸리티 모듈 (DOMUtils.js)
+ * ========================================
+ * document.querySelector 대신 쓰는 간편 함수들입니다.
+ *
+ * [초보자용 사용 예]
+ * DOMUtils.$('.my-class')           → 첫 번째 요소 (querySelector)
+ * DOMUtils.$$('.my-class')          → 모든 요소 (querySelectorAll)
+ * DOMUtils.fadeIn(el, 300)          → 페이드 인 (300ms)
+ * DOMUtils.fadeOut(el, 300)         → 페이드 아웃
+ * DOMUtils.delegate(parent, 'click', '.btn', handler)  → 동적 요소에 이벤트 위임
+ * DOMUtils.htmlToElement('<div>')   → HTML 문자열 → Element
+ *
  * @module DOMUtils
  */
 class DOMUtils {

@@ -1,11 +1,26 @@
 /**
- * 공통 유틸리티 함수
- * 공통 모듈(DOMUtils, AnimationUtils, EventManager, ErrorHandler) 활용
+ * 공통 스크립트 (common.js)
+ * ========================================
+ * 모든 페이지에서 공통으로 사용하는 기능을 모아둔 진입점입니다.
+ *
+ * [주요 역할]
+ * - ScrollManager: 모바일 뷰포트 높이 동기화, 스크롤 잠금(모달 열 때)
+ * - ModalManager: 모달 열기/닫기 (애니메이션, 비디오 정지)
+ * - DeviceUtils: 모바일/태블릿/데스크톱 감지
+ * - NavigationManager: 현재 페이지에 맞는 네비게이션 active 클래스
+ *
+ * [기존 코드 호환 함수] - 레거시 코드에서 그대로 사용 가능
+ * - popOpen(id): 모달 열기 (예: popOpen('modal-video'))
+ * - popClose(element): 모달 닫기 (닫기 버튼에 사용)
+ * - syncHeight(), bodyLock(), bodyUnlock(), isMobile()
+ *
  * @module CommonUtils
  */
 
 /**
  * 스크롤 및 레이아웃 관리 클래스
+ * - syncHeight(): CSS 변수 --window-inner-height 설정 (모바일 주소창 대응)
+ * - lock()/unlock(): 모달 열 때 body 스크롤 잠금/해제
  */
 class ScrollManager {
   constructor() {
@@ -256,30 +271,46 @@ class ModalManager {
 const scrollManager = new ScrollManager();
 const modalManager = new ModalManager(scrollManager);
 
-// 기존 함수 호환성을 위한 래퍼
+// ----------------------------------------
+// 기존 함수 호환성 래퍼 (레거시 코드용)
+// ----------------------------------------
+// 아래 함수들은 기존 코드에서 호출하는 이름입니다.
+// 새로 작성 시에는 scrollManager, modalManager를 직접 사용하는 것을 권장합니다.
 let scrollY = 0;
 let wrap = null;
 
+/** 뷰포트 높이 동기화 (리사이즈 시 호출) */
 function syncHeight() {
   scrollManager.syncHeight();
 }
 
+/** 모바일 기기 여부 (breakpoint 1025px) */
 function isMobile() {
   return DeviceUtils.isMobile();
 }
 
+/** body 스크롤 잠금 (모달 열 때) */
 function bodyLock() {
   scrollManager.lock();
 }
 
+/** body 스크롤 해제 (모달 닫을 때) */
 function bodyUnlock() {
   scrollManager.unlock();
 }
 
+/**
+ * 모달 열기 - id가 "open-modal-video" 인 버튼 클릭 시 모달 "modal-video" 가 열림
+ * @param {string} id - 모달 요소의 id (앞에 # 없이)
+ */
 async function popOpen(id) {
   return await modalManager.open(id);
 }
 
+/**
+ * 모달 닫기 - 닫기 버튼(.close) 또는 백드롭 클릭 시 호출
+ * @param {Element} obj - 클릭된 요소 (보통 this 또는 event.target)
+ */
 async function popClose(obj) {
   const popup = obj.closest ? obj.closest(".popup") : null;
   if (popup) {
@@ -288,7 +319,10 @@ async function popClose(obj) {
 }
 
 /**
- * 이벤트 초기화
+ * 공통 이벤트 초기화
+ * - ScrollManager: 뷰포트 높이, 리사이즈 대응
+ * - 모달: id가 "open-modal-XXX"인 요소 클릭 시 #modal-XXX 열기
+ * - 모달 닫기: .close 클릭 또는 모달 바깥(.modal) 클릭
  */
 function initCommonEvents() {
   const baseHref = window.location.href.split("#")[0];

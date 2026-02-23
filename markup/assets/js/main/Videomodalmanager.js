@@ -1,6 +1,18 @@
 // ============================================
-// 비디오 모달 관리 모듈 (VideoModalBase 활용)
-// 공통 모듈 활용 (ErrorHandler, DOMUtils, EventManager, Utils)
+// 비디오 모달 관리 모듈 (Videomodalmanager.js)
+// ============================================
+//
+// [역할] 비디오 카드 클릭 시 모달을 열고, YouTube 영상을 재생합니다.
+//
+// [파일명 참고] "Videomodalmanager"는 legacy 표기입니다.
+//              클래스명은 VideoModalManager (PascalCase)를 사용합니다.
+//
+// [의존성] VideoModalBase(부모), DOMUtils, EventManager, ErrorHandler, Utils
+//
+// [사용 예] index.html 등에서:
+//   const modalManager = new VideoModalManager({ videos: [...] });
+//   modalManager.init();
+//
 // ============================================
 
 class VideoModalManager extends VideoModalBase {

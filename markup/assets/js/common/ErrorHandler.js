@@ -1,6 +1,12 @@
 /**
- * 에러 처리 모듈
- * 에러 처리, 로깅, 사용자 알림을 중앙에서 관리
+ * 에러 처리 모듈 (ErrorHandler.js)
+ * ========================================
+ * 에러를 한곳에서 처리하고 로깅합니다.
+ *
+ * [초보자용]
+ *   ErrorHandler.safeExecute(() => 위험한함수(), 기본값)
+ *   ErrorHandler.handle(error, { context: '내모듈' })
+ *
  * @module ErrorHandler
  */
 class ErrorHandler {
