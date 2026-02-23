@@ -524,6 +524,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 현재 페이지에 따라 네비게이션 active 클래스 추가
   setActiveNavigation();
+
+  // 마이페이지 링크 active 클래스 추가
+  setActiveMypageLink();
 });
 
 /**
@@ -602,6 +605,9 @@ class NavigationManager {
     if (currentPath.includes('biztrend') && href.includes('biztrend')) {
       return true;
     }
+    if (currentPath.includes('mypage') && href.includes('mypage')) {
+      return true;
+    }
     // 추가적인 매칭 로직을 여기에 구현할 수 있습니다
     return false;
   }
@@ -613,6 +619,32 @@ const navigationManager = new NavigationManager();
 // 기존 함수 호환성
 function setActiveNavigation() {
   navigationManager.setActiveNavigation();
+}
+
+/**
+ * 마이페이지 링크(.item-box .mypage)에 현재 페이지가 mypage일 때 active 클래스 추가
+ */
+function setActiveMypageLink() {
+  try {
+    const mypageLink = document.querySelector('.item-box a.mypage');
+    if (!mypageLink) return;
+
+    const currentPath = window.location.pathname;
+    const href = mypageLink.getAttribute('href') || '';
+    const isActive = currentPath.includes('mypage') && href.includes('mypage');
+
+    if (isActive) {
+      mypageLink.classList.add('active');
+    } else {
+      mypageLink.classList.remove('active');
+    }
+  } catch (error) {
+    if (typeof ErrorHandler !== 'undefined') {
+      ErrorHandler.handle(error, { context: 'setActiveMypageLink' });
+    } else {
+      console.error('[setActiveMypageLink] error:', error);
+    }
+  }
 }
 
 /**
