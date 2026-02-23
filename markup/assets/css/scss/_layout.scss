@@ -347,7 +347,7 @@ html {
             var(--h) 0 0 0;
         }
         dl {
-          @include flex(column);
+          @include flex(column, flex-start, center);
         }
         dt {
           margin-bottom: 4px;
