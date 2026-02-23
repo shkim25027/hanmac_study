@@ -166,7 +166,7 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
       width: 100%;
       aspect-ratio: 16 / 9;
       overflow: hidden;
-      border-radius: 16px 16px 0 0; // 위쪽만 라운드
+      border-radius: 8px;
       background: var(--bg-video);
 
       img {

@@ -28,7 +28,7 @@
     flex-shrink: 0;
     width: 100%;
     min-height: 0;
-    padding-top: 40px;
+    padding-top: 32px;
     overflow-y: auto;
     @include scrollbar-mypage();
 
@@ -842,12 +842,13 @@
     flex: 1 1 0;
     min-width: 0;
     margin: 0;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.5;
     color: rgba(0, 0, 0, 0.30);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    @include ellipsis(1);
   }
 
   .review-comment {
@@ -857,6 +858,12 @@
     font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
+
+    .review-comment-text {
+      min-width: 0;
+      flex: 1;
+      @include ellipsis(1);
+    }
 
     .review-user {
       flex-shrink: 0;
@@ -868,6 +875,7 @@
 
     strong {
       color: var(--text-primary);
+      white-space: nowrap;
     }
   }
 }
