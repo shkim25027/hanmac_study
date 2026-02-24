@@ -176,6 +176,8 @@ function animateWelcome() {
 
 /**
  * Section 2: 업데이트 텍스트 + 카드 애니메이션
+ * - 모바일(≤992px): section2Text 애니메이션 → 페이드아웃 → card-list 표시
+ * - 데스크탑(>992px): section2Text + card-list 동시 표시
  */
 function animateSection2() {
   try {
@@ -184,105 +186,103 @@ function animateSection2() {
       return;
     }
 
+    const isMobile = window.innerWidth <= 992;
     const lines = ["line1", "line2", "line3"];
+    const cards = ["card1", "card2", "card3", "card4"];
     const lineDelay = 600;
-    
+    const cardDelay = isMobile ? 375 : 250;
+    const totalLineDelay = lines.length * lineDelay + 300;
+    const delayFn = (_utils && _utils.delay)
+      ? (ms) => _utils.delay(ms)
+      : (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    // 라인 순차 애니메이션
     lines.forEach((id, i) => {
-      const delay = i * lineDelay;
       const element = _domUtils?.$(`#${id}`) || document.getElementById(id);
-      
       if (!element) {
         console.warn(`[IntroAnimation] Element #${id} not found`);
         return;
       }
-
-      if (_utils && _utils.delay) {
-        _utils.delay(delay).then(() => {
-          if (_domUtils && _domUtils.addClasses) {
-            _domUtils.addClasses(element, 'show');
-          } else {
-            element.classList.add("show");
-          }
-        });
-      } else {
-        setTimeout(() => {
-          if (_domUtils && _domUtils.addClasses) {
-            _domUtils.addClasses(element, 'show');
-          } else {
-            element.classList.add("show");
-          }
-        }, delay);
-      }
+      delayFn(i * lineDelay).then(() => {
+        if (_domUtils && _domUtils.addClasses) {
+          _domUtils.addClasses(element, 'show');
+        } else {
+          element.classList.add("show");
+        }
+      });
     });
 
-    const cards = ["card1", "card2", "card3"];
-    const cardDelay = 250;
-    const totalLineDelay = lines.length * lineDelay + 300;
-
-    if (_utils && _utils.delay) {
-      _utils.delay(totalLineDelay).then(() => {
-        cards.forEach((id, i) => {
-          const cardElement = _domUtils?.$(`#${id}`) || document.getElementById(id);
-          if (!cardElement) {
-            console.warn(`[IntroAnimation] Element #${id} not found`);
-            return;
-          }
-
-          const delay = i * cardDelay;
-          if (_utils && _utils.delay) {
-            _utils.delay(delay).then(() => {
-              if (_domUtils && _domUtils.addClasses) {
-                _domUtils.addClasses(cardElement, 'show');
-              } else {
-                cardElement.classList.add("show");
-              }
-              
-              if (i === 2) {
-                INTRO_STATE.section2AnimDone = true;
-                // Section 2 애니메이션 완료 후 자동 스크롤 타이머 시작
-                startAutoScrollTimer();
-              }
-            });
+    // 카드 순차 애니메이션 헬퍼
+    const showCards = () => {
+      cards.forEach((id, i) => {
+        const cardElement = _domUtils?.$(`#${id}`) || document.getElementById(id);
+        if (!cardElement) {
+          console.warn(`[IntroAnimation] Element #${id} not found`);
+          return;
+        }
+        delayFn(i * cardDelay).then(() => {
+          if (_domUtils && _domUtils.addClasses) {
+            _domUtils.addClasses(cardElement, 'show');
           } else {
-            setTimeout(() => {
-              if (_domUtils && _domUtils.addClasses) {
-                _domUtils.addClasses(cardElement, 'show');
-              } else {
-                cardElement.classList.add("show");
-              }
-              
-              if (i === 2) {
-                INTRO_STATE.section2AnimDone = true;
-                startAutoScrollTimer();
-              }
-            }, delay);
+            cardElement.classList.add("show");
+          }
+          if (i === 3) {
+            INTRO_STATE.section2AnimDone = true;
+            startAutoScrollTimer();
           }
         });
       });
-    } else {
-      setTimeout(() => {
-        cards.forEach((id, i) => {
-          const cardElement = _domUtils?.$(`#${id}`) || document.getElementById(id);
-          if (!cardElement) {
-            console.warn(`[IntroAnimation] Element #${id} not found`);
-            return;
+    };
+
+    delayFn(totalLineDelay).then(() => {
+      if (isMobile) {
+        // 모바일: section2Text 페이드아웃 → cardsContainer 표시 → 카드 애니메이션
+        const section2Text = _domUtils?.$("#section2Text") || document.getElementById("section2Text");
+        const cardsContainer = _domUtils?.$("#cardsContainer") || document.getElementById("cardsContainer");
+
+        if (section2Text) {
+          if (_domUtils && _domUtils.addClasses) {
+            _domUtils.addClasses(section2Text, 'fade-out');
+          } else {
+            section2Text.classList.add("fade-out");
+          }
+        }
+
+        delayFn(400).then(() => {
+          if (section2Text) {
+            if (_domUtils && _domUtils.addClasses) {
+              _domUtils.addClasses(section2Text, 'hidden');
+              _domUtils.removeClasses(section2Text, 'fade-out');
+            } else {
+              section2Text.classList.add("hidden");
+              section2Text.classList.remove("fade-out");
+            }
           }
 
-          setTimeout(() => {
+          // 카드 표시 시 스크롤 인디케이터 숨기기
+          const scrollIndicator = _domUtils?.$("#scrollIndicator") || document.getElementById("scrollIndicator");
+          if (scrollIndicator) {
             if (_domUtils && _domUtils.addClasses) {
-              _domUtils.addClasses(cardElement, 'show');
+              _domUtils.addClasses(scrollIndicator, 'hidden');
             } else {
-              cardElement.classList.add("show");
+              scrollIndicator.classList.add("hidden");
             }
-            
-            if (i === 2) {
-              INTRO_STATE.section2AnimDone = true;
-              startAutoScrollTimer();
+          }
+
+          if (cardsContainer) {
+            if (_domUtils && _domUtils.setStyles) {
+              _domUtils.setStyles(cardsContainer, { display: 'flex' });
+            } else {
+              cardsContainer.style.display = "flex";
             }
-          }, i * cardDelay);
+          }
+          showCards();
         });
-      }, totalLineDelay);
-    }
+      } else {
+        // 데스크탑: 바로 카드 표시
+        showCards();
+      }
+    });
   } catch (error) {
     _handleError(error, 'animateSection2');
   }
@@ -299,7 +299,7 @@ function resetSection2() {
     }
 
     const lines = ["line1", "line2", "line3"];
-    const cards = ["card1", "card2", "card3"];
+    const cards = ["card1", "card2", "card3", "card4"];
 
     lines.forEach((id) => {
       const element = _domUtils?.$(`#${id}`) || document.getElementById(id);
@@ -366,6 +366,18 @@ function animateSection3() {
     addShowClass(ctaBtn, 100);
     addShowClass(ctaLine1, 300);
     addShowClass(ctaLine2, 500);
+
+    // 모바일: 마스크 중앙에서 전체 화면으로 자동 확장
+    if (window.innerWidth <= 992) {
+      const maskContainer = _domUtils?.$("#maskContainer") || document.getElementById("maskContainer");
+      if (maskContainer) {
+        if (_utils && _utils.delay) {
+          _utils.delay(200).then(() => maskContainer.classList.add("expand"));
+        } else {
+          setTimeout(() => maskContainer.classList.add("expand"), 200);
+        }
+      }
+    }
   } catch (error) {
     _handleError(error, 'animateSection3');
   }
@@ -393,6 +405,12 @@ function resetSection3() {
     removeShowClass(ctaLine1);
     removeShowClass(ctaLine2);
     removeShowClass(ctaBtn);
+
+    // 모바일: 마스크 확장 리셋
+    const maskContainer = _domUtils?.$("#maskContainer") || document.getElementById("maskContainer");
+    if (maskContainer) {
+      maskContainer.classList.remove("expand");
+    }
   } catch (error) {
     _handleError(error, 'resetSection3');
   }

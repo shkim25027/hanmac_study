@@ -80,7 +80,7 @@ function goToSection(index) {
       }
       
       // 카드 숨기기
-      ["card1", "card2", "card3"].forEach((id) => {
+      ["card1", "card2", "card3", "card4"].forEach((id) => {
         const card = _sectionDomUtils?.$(`#${id}`) || document.getElementById(id);
         if (card) {
           if (_sectionDomUtils && _sectionDomUtils.removeClasses) {
@@ -160,14 +160,16 @@ function goToSection(index) {
             scrollIndicator.classList.remove("hidden");
           }
           
+          // 모바일(≤992px): section2Text 먼저 보여준 뒤 animateSection2에서 카드 표시
+          const isMobile = window.innerWidth <= 992;
           if (_sectionDomUtils && _sectionDomUtils.setStyles) {
-            _sectionDomUtils.setStyles(cardsContainer, { display: 'flex' });
+            _sectionDomUtils.setStyles(cardsContainer, { display: isMobile ? 'none' : 'flex' });
             _sectionDomUtils.setStyles(ctaBtn, { display: 'none' });
           } else {
-            cardsContainer.style.display = "flex";
+            cardsContainer.style.display = isMobile ? "none" : "flex";
             ctaBtn.style.display = "none";
           }
-          
+
           resetSection2();
           setTimeout(animateSection2, 200);
         } else if (index === 2) {

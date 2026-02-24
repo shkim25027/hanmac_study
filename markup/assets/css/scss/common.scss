@@ -392,7 +392,7 @@ h5 {
   }
 
   &.video {
-    @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
+    @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
 
     .close {
       color: var(--text-revers);
@@ -458,7 +458,7 @@ h5 {
         text-align: left;
         color: var(--text-revers);
         overflow-y: auto;
-        @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
+        @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
         .tit-box {
           position: sticky;
           top: 0;
@@ -666,7 +666,7 @@ h5 {
       &-list {
         overflow-y: auto;
         align-self: start;
-        @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
+        @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
        
         .tit {
           color: #fff;
@@ -679,7 +679,7 @@ h5 {
     .learning-list {
       position: relative;
       color: var(--text-learning-base);
-      @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
+      @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
       &::before {
         @include pseudo(block, absolute, "");
         left: 56px;
@@ -817,7 +817,7 @@ h5 {
       resize: none;
       overflow-y: auto;
       transition: height 0.3s linear;
-      @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track));
+      @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
       &::placeholder {
         color: var(--bg-textarea-placeholder);
       }

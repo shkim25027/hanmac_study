@@ -482,6 +482,9 @@ function initContainerScrollEffect() {
  * - 스크롤, 스타일 변경 등으로 덮어써져도 복원
  */
 function initContainerRoundCorners() {
+  // 인트로 페이지에서는 clip-path 적용 안 함
+  if (document.querySelector(".wrap.intro")) return;
+
   const container = document.querySelector(".container");
   if (!container) return;
 

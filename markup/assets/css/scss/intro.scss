@@ -2,9 +2,23 @@
 
 @use "base" as *;
 
-// =======================================
-// Font Face
-// =======================================
+// =============================================
+// Intro Page Styles
+// 인트로 페이지 전용 스타일
+//
+// [구조]
+// 1. Font Face        - 커스텀 폰트
+// 2. Intro Section    - 레이아웃, 컨테이너
+// 3. Text Area        - Section 1 인사, Section 2 업데이트 텍스트
+// 4. Content Area     - 기능 카드 4종
+// 5. CTA Section      - Section 3 버튼, 마스크 효과
+// 6. Typing/Cursor    - 타이핑 애니메이션
+// 7. Scroll Indicator - 스크롤 안내
+// =============================================
+
+// ---------------------------------------------
+// 1. Font Face
+// ---------------------------------------------
 @font-face {
   font-family: "YeogiOttaeJalnan";
   src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.2/JalnanOTF00.woff")
@@ -13,9 +27,9 @@
   font-display: swap;
 }
 
-// =======================================
-// Intro Section
-// =======================================
+// ---------------------------------------------
+// 2. Intro Section (레이아웃)
+// ---------------------------------------------
 .intro {
   background: var(--bg-intro);
   background-attachment: fixed;
@@ -27,17 +41,19 @@
     height: var(--window-inner-height);
     margin-top: 0;
     padding: 0;
+    overflow: hidden;
     border: none;
     border-radius: 0;
+    clip-path: none;
     background: var(--bg-intro);
     color: var(--text-intro-base);
-    overflow: hidden;
     @include flex(column);
   }
 
-  // =======================================
-  // Text Animation Section
-  // =======================================
+  // -----------------------------------------
+  // 2-1. Text Animation Section
+  // welcome/update-line/card 애니메이션 중일 때만 표시
+  // -----------------------------------------
   .text-ani {
     display: none;
 
@@ -49,25 +65,37 @@
       display: block;
     }
 
+    // 모바일: 카드 표시 시 flex로 전환
+    @include mq(tablet, max) {
+      &:has(.card.show) {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        min-height: 0;
+        width: 100%;
+      }
+    }
   }
 
-  // =======================================
-  // Text Area
-  // =======================================
+  // -----------------------------------------
+  // 2-2. Text Area (인사/업데이트 텍스트 영역)
+  // -----------------------------------------
   .text-area {
     min-height: 160px;
     margin-bottom: 34px;
     text-align: center;
 
+    // 둘 다 숨겨진 상태일 때 높이 축소
     &:has(.greeting.hidden, .update-text.hidden) {
       min-height: 0;
       margin-bottom: 0;
     }
   }
 
-  // =======================================
-  // Section 1: Greeting
-  // =======================================
+  // -----------------------------------------
+  // 2-3. Section 1: Greeting (인사)
+  // 이름 타이핑 + 환영 문구
+  // -----------------------------------------
   .greeting {
     font-size: 36px;
     font-weight: 300;
@@ -112,17 +140,18 @@
     }
   }
 
-  // =======================================
-  // Section 2: Update
-  // =======================================
+  // -----------------------------------------
+  // 2-4. Section 2: Update (업데이트 소개 텍스트)
+  // line1, line2, line3 순차 slideUp 애니메이션
+  // -----------------------------------------
   .update {
     &-text {
       text-align: center;
     }
 
     &-line {
-      font-size: 36px;
       overflow: hidden;
+      font-size: 36px;
 
       @include mq(tablet-wide, max) {
         font-size: rem(28px);
@@ -151,9 +180,10 @@
     }
   }
 
-  // =======================================
-  // Section 3: CTA
-  // =======================================
+  // -----------------------------------------
+  // 2-5. Section 3: CTA (시작 버튼 영역)
+  // 메인 텍스트 + 마스크 오버레이 + 버튼
+  // -----------------------------------------
   .cta {
     &-text {
       position: relative;
@@ -182,8 +212,9 @@
             opacity: 0;
             transform: translateY(20px);
 
-            &:has(.show) {
-              background-image: url(../images/intro/promise.svg);
+      // 텍스트 노출 시 배경 이미지와 함께 페이드인
+      &:has(.show) {
+        background-image: url(../images/intro/promise.svg);
               background-position: bottom;
               background-size: 586px auto;
               background-repeat: no-repeat;
@@ -211,10 +242,11 @@
         translate: 0 -35%;
         opacity: 1;
         @include flex(column);
+
         @include mq(tablet-wide, max) {
-          height: rem(180px);
           width: calc(100% - 32px);
           max-width: 452px;
+          height: rem(180px);
           translate: 0 -40%;
         }
 
@@ -232,6 +264,7 @@
       position: absolute;
       top: 50%;
       left: 50%;
+      z-index: 99;
       width: calc(100% - 32px);
       max-width: 483px;
       height: 116px;
@@ -246,16 +279,13 @@
           rgba(255, 255, 255, 0) 100%
         ),
         #ff8200;
+      
       color: white;
       font-size: 36px;
       font-weight: bold;
       text-align: center;
       text-shadow: 0 2px 2px rgba(201, 121, 38, 0.5);
-      box-shadow:
-        0 -4px 4px 0 #e18d36 inset,
-        4px 4px 12px -4px rgba(220, 196, 172, 0.85);
       opacity: 0;
-      z-index: 99;
       transform: translate(-50%, 25%) translateY(50px);
       transition: all 0.3s;
 
@@ -264,6 +294,11 @@
         height: 68px;
         padding: 0;
         font-size: 28px;
+      }
+      @include mq(tablet, min) {
+        box-shadow:
+        0 -4px 4px 0 #e18d36 inset,
+        4px 4px 12px -4px rgba(220, 196, 172, 0.85);
       }
 
       &.show {
@@ -296,30 +331,32 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
-        transform: translateY(-50%);
         filter: drop-shadow(0 2px 2px rgba(201, 121, 38, 0.5));
+        transform: translateY(-50%);
         animation: arrow-next 3s infinite ease-in-out;
       }
     }
   }
 
-  // =======================================
-  // Mask Effect
-  // =======================================
+  // -----------------------------------------
+  // 2-6. Mask Effect (클릭 시 확대되는 오버레이)
+  // --size, --x, --y CSS 변수로 위치/크기 제어
+  // -----------------------------------------
   .mask {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 10;
     width: 100%;
     height: 100%;
     min-height: 100%;
     background-color: var(--bg-intro-mask);
     color: rgba(0, 0, 0, 0.2);
     pointer-events: none;
-    z-index: 10;
     --size: 0px;
     --x: 50vw;
     --y: 50vh;
+    // 커서 모양 마스크: 두 번째는 fallback(전체 표시)
     -webkit-mask-image: url(../images/cursor.svg);
     -webkit-mask-origin: content-box;
     -webkit-mask-position:
@@ -336,9 +373,16 @@
     mask-size: var(--size), contain;
     transition: mask-size 0.2s linear;
 
-    @include mq(tablet-wide, max) {
-      // 모바일: 화면 중앙에서 시작
-      transition: mask-size 1.5s ease-out;
+    // 모바일: SVG 마스크 대신 clip-path 원형 확장
+    @include mq(tablet, max) {
+      -webkit-mask-image: none;
+      mask-image: none;
+      clip-path: circle(0% at 50% 50%);
+      transition: clip-path 3.5s ease-out;
+
+      &.expand {
+        clip-path: circle(300% at 50% 50%);
+      }
     }
 
     .text-section {
@@ -346,9 +390,9 @@
       background-position: bottom;
       background-size: auto;
       background-repeat: no-repeat;
+
       @include mq(tablet-wide, max) {
         background-size: 95% auto;
-        
       }
     }
 
@@ -361,49 +405,91 @@
     }
   }
 
-  // =======================================
-  // Content Area
-  // =======================================
+  // -----------------------------------------
+  // 2-7. Content Area (카드 목록 영역)
+  // -----------------------------------------
   .content-area {
     margin-top: 34px;
     @include flex(column);
+
+    @include mq(tablet, max) {
+      flex: 1 1 0;
+      min-height: 0;
+      margin-top: 0;
+      align-items: stretch;
+    }
   }
 
-  // =======================================
-  // Cards
-  // =======================================
+  // -----------------------------------------
+  // 2-8. Cards (기능 소개 카드 4종)
+  // card-num, card-title, card-desc 구조
+  // -----------------------------------------
   .card {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: all 0.6s ease;
     background: white;
     border: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 0 0 12px 12px;
     box-shadow: 0 24px 24px 0 rgba(215, 209, 204, 0.5);
-    opacity: 0;
     text-align: center;
-    transform: translateY(60px);
-    transition: all 0.6s ease;
     @include flex(column);
-    @include mq(tablet-wide, min) {
-      width: 465px;
-      padding: 86px 40px 68px;
+
+    // 992px ~ 1399px: 2×2 그리드 (gap: 24px 기준 → 50% - 12px)
+    @include mq(tablet, min) {
+      flex: 0 0 calc(50% - 12px);
+      padding: 60px 32px 48px;
     }
-    @include mq(tablet-wide, max) {
-      width: 100%;
+
+    // 1400px 이상: 4열 1행 (override)
+    @include mq(desktop, min) {
+      flex: 1 1 0;
+      width: 340px;
+      padding: 86px 22px 68px;
+    }
+
+    @include mq(tablet, max) {
+      flex: 1 1 0;
+      min-height: 0;
+      width: calc(100vw - 32px);
+      padding: 0 24px;
       z-index: 9;
-    }
-    &-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 40px;
-      justify-content: center;
-      @include mq(tablet-wide, max) {
-        gap: rem(24px);
-        padding: 16px;
-      }
+      transition-duration: 0.9s;
+      @include flex(column, center, center);
+      box-shadow: 0 4px 12px rgba(215, 209, 204, 0.5);
+      border-radius: 12px;
     }
 
     &.show {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    &-list {
+      display: flex;
+      flex-wrap: wrap;       // 기본: 2×2 (tablet-wide 구간)
+      justify-content: center;
+      gap: 20px;
+      @include mq(desktop, min) {
+        flex-wrap: nowrap;   // 1400px 이상: 4열 1행
+      }
+      
+
+      @include mq(tablet-wide, max) {
+        gap: rem(24px);
+      }
+
+      // 992px 이하: 세로 배치
+      @include mq(tablet, max) {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        flex: 1 1 0;
+        min-height: var(--window-inner-height);
+        gap: 8px;
+        padding: 8px 16px;
+        align-items: stretch;
+        
+      }
     }
 
     &-num {
@@ -416,26 +502,38 @@
       background: linear-gradient(180deg, transparent 30%, #ffffff 80%) #1b1810;
       -webkit-background-clip: text;
       background-clip: text;
+
       @include mq(tablet-wide, max) {
-        font-size: rem(68px);
+        font-size: rem(60px);
       }
     }
 
     &-title {
-      font-size: 32px;
-      font-weight: 300;
       margin-top: -46px;
       margin-bottom: 42px;
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1.2;
+
       @include mq(tablet-wide, max) {
         font-size: rem(24px);
+      }
+
+      @include mq(tablet, max) {
+        margin-top: -32px;
+        margin-bottom: 0;
       }
     }
 
     &-desc {
       font-size: 24px;
-      margin-top: 1rem;
+
       @include mq(tablet-wide, max) {
         font-size: rem(16px);
+      }
+
+      @include mq(tablet, max) {
+        display: none;
       }
     }
 
@@ -445,9 +543,9 @@
   }
 }
 
-// =======================================
-// Typing Effect
-// =======================================
+// ---------------------------------------------
+// 6. Typing Effect (이름 타이핑)
+// ---------------------------------------------
 .typing {
   opacity: 0;
 }
@@ -461,13 +559,14 @@
   animation: blink 0.7s infinite;
 }
 
-// =======================================
-// Scroll Indicator
-// =======================================
+// ---------------------------------------------
+// 7. Scroll Indicator (스크롤 안내)
+// sec2 클래스: Section 2일 때 바 높이 변경
+// ---------------------------------------------
 .scroll-indicator {
   position: absolute;
-  left: 50%;
   bottom: 0;
+  left: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -492,8 +591,8 @@
   .bar {
     width: 2px;
     height: 110px;
-    background-color: rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.3);
     transition: height 0.5s linear;
 
     &::before {
