@@ -76,8 +76,11 @@ html {
       padding: 0 140px;
       margin: auto;
       @include flex(row, center, space-between);
-      @include mq("desktop-hd", max) {
-        padding: 0 7.2916%;
+      @include mq(desktop-xl, max) {
+        padding: 0 32px;
+      }
+      @include mq(desktop-wide, max) {
+        padding: 0 16px;
       }
     }
     .item {
@@ -402,6 +405,27 @@ html {
     .myclass {
       @include flex();
     }
+
+    // 1400px 이하: 데스크톱 nav·검색·mypage 숨김 / alerts는 기본 노출
+    @include mq(desktop-wide, max) {
+      .nav,
+      .input-group,
+      .item-box:has(.mypage) {
+        display: none;
+      }
+    }
+
+    // 사이트맵 열렸을 때: alerts 숨김, mypage 노출
+    &.is-sitemap-open {
+      @include mq(desktop-wide, max) {
+        .item-box:has(.alerts) {
+          display: none;
+        }
+        .item-box:has(.mypage) {
+          display: flex;
+        }
+      }
+    }
   }
 
   &-group {
@@ -544,6 +568,312 @@ html {
           width: 60px;
           aspect-ratio: 1 / 1;
         }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// 사이트맵 토글 버튼 (1400px 이하에서 표시)
+// =============================================================================
+.btn-sitemap {
+  display: none;
+  position: relative;
+  width: 42px;
+  height: 38px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 4px;
+  flex-shrink: 0;
+
+  @include mq(desktop-wide, max) {
+    @include flex();
+  }
+
+  // 햄버거 3선 (::before + box-shadow 활용)
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 22px;
+    height: 2px;
+    background: var(--text-revers, #fff);
+    border-radius: 1px;
+    translate: -50% 0;
+    transition: transform 0.3s ease, top 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  &::before {
+    top: calc(50% - 7px);
+    box-shadow: 0 7px 0 var(--text-revers, #fff); // 가운데 선
+  }
+
+  &::after {
+    top: calc(50% + 7px);
+  }
+
+  // 열렸을 때 X 모양으로 전환
+  .is-sitemap-open & {
+    &::before {
+      top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+      box-shadow: none;
+    }
+
+    &::after {
+      top: 50%;
+      transform: translateY(-50%) rotate(-45deg);
+    }
+  }
+}
+
+// =============================================================================
+// 사이트맵 패널
+// =============================================================================
+.site-map {
+  display: none;
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 100%;
+  height: calc(var(--window-inner-height, 100vh) - 64px);
+  background: var(--bg-primary);
+  z-index: 8;
+  overflow-y: auto;
+  border-radius: 16px 0 0 0;
+  @include scrollbar-style();
+
+  .is-sitemap-open & {
+    display: block;
+  }
+
+  &-inner {
+    padding: 24px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-top: 2px solid #FFEBBF;
+    background: radial-gradient(164.66% 55.74% at 50% 44.26%, #FDFAF0 62.61%, #EDE4D4 100%);
+  }
+
+  // ── 검색 ──
+  &-search {
+    margin-bottom: 28px;
+
+    .input-group {
+      position: relative;
+      display: block;
+    }
+
+    input[type="text"] {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      padding-left: 44px;
+      padding-right: 14px;
+      height: 44px;
+      border-radius: 4px;
+      border: 1px solid #E7E7E7;
+      background: #fff;
+      box-shadow: none;
+      filter: none;
+
+      &::placeholder {
+        color: rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .ico-search {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      @include bgImg("../images/ico/ico_search.svg", contain);
+    }
+  }
+
+  // ── 퀵 메뉴 ──
+  &-quick {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 28px;
+
+    .quick-item {
+      @include flex(column, center, flex-start);
+      gap: 4px;
+      padding: 12px 4px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: background 0.15s;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.04);
+      }
+    }
+
+    .quick-icon {
+      width: 64px;
+      height: 64px;
+      @include flex();
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .quick-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-align: center;
+    }
+
+    .state-box {
+      position: relative;
+      height: 16px;
+      @include flex();
+
+      .unit {
+        position: absolute;
+        left: 0px;
+        padding: 0 8px;
+        font-size: 12px;
+        height: 18px;
+        line-height: 15px;
+        font-weight: 700;
+        color: #fff;
+        border-radius: 14px;
+        background: var(--bg-lecture-state);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        white-space: nowrap;
+        translate: -50% 0;
+        z-index: 1;
+
+        small {
+          margin-left: 2px;
+          font-size: 10px;
+          font-weight: 400;
+        }
+      }
+
+      .progress {
+        display: inline-block;
+        width: 78px;
+        height: 4px;
+        border-radius: 4px;
+        background: var(--bg-lecture-progress-primary);
+
+        &-bar {
+          display: block;
+          min-width: 9px;
+          height: 100%;
+          border-radius: inherit;
+          background: var(--bg-lecture-progress-secondary);
+        }
+      }
+    }
+  }
+  // ── 아코디언 메뉴 ──
+  &-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .menu-section {
+    border-bottom: 1px solid #E7E1C2;
+
+    &:first-child {
+      border-top: 1px solid #E7E1C2;
+    }
+
+    &-title {
+      @include flex(row, center, space-between);
+      width: 100%;
+      padding: 20px 0;
+      border: none;
+      background: transparent;
+      cursor: default;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+
+      .ico-chevron {
+        display: none;
+        width: 10px;
+        height: 10px;
+        flex-shrink: 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.6);
+        border-right: 1px solid rgba(0, 0, 0, 0.6);
+        mask: none;
+        background: none;
+        transform: rotate(-45deg);
+        transition: transform 0.3s ease;
+      }
+    }
+
+    // 하위 메뉴가 있을 때만 클릭 커서·체브론 표시
+    &:has(.menu-section-list) {
+      .menu-section-title {
+        cursor: pointer;
+
+        .ico-chevron {
+          display: block;
+        }
+      }
+    }
+
+    &-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+
+      li a {
+        display: block;
+        padding: 14px 0;
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--text-primary);
+        text-decoration: none;
+
+        &:hover {
+          color: var(--text-secondary);
+        }
+
+        &.active {
+          font-weight: 700;
+          color: var(--bg-lecture-progress-secondary);
+        }
+      }
+
+      li:last-child {
+        a {
+          border-bottom: none;
+          padding-bottom: 20px;
+        }
+      }
+    }
+
+    &.is-open {
+      .menu-section-title .ico-chevron {
+        transform: rotate(135deg);
+      }
+
+      .menu-section-list {
+        max-height: 500px;
       }
     }
   }

@@ -131,7 +131,7 @@ class VideoCardRenderer {
       const categoryClass = this.getCategoryClass(videoModel.category);
       const pickerName = videoModel.picker && String(videoModel.picker).trim();
       const pickBadge = pickerName
-        ? `<div class="pick"><i class="ico-pick"></i>${this._escapeHtml(pickerName)}님<em>Pick!</em></div>`
+        ? `<div class="pick"><i class="ico-pick"></i><span class="pick-name">${this._escapeHtml(pickerName)}님</span><em>Pick!</em></div>`
         : "";
       
       const gauge = videoModel.gauge;

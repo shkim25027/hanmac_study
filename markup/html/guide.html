@@ -42,78 +42,169 @@
 <!-- JS 파일 import -->
 <script src="./assets/js/main/MultiGuide.js"></script>
 <script>
-// 전역 변수로 선언하여 다른 스크립트에서도 사용 가능하도록 함
-window.guideTargets = window.guideTargets || [
-  {
-    selector: ".guide-mask.nav",
-    label: "메뉴",
-    description: "마이클래스 : 분기별 업데이트 되는 권장 학습\n온보딩/법정교육 : 정해진 기간 내 이수해야 하는 필수 교육\n리더십/인사이트/비즈트렌드 : 지속적으로 업데이트 되는 자율 학습",
-    position: "left bottom",
-    class:"menu"
-  },
-  {
-    selector: ".input-group",
-    label: "검색",
-    description: "2개 단어 이상 검색 시 띄어쓰기로 구분해 검색",
-    position: "left bottom",
-    class:"search"
-  },
-  {
-    selector: ".alerts",
-    label: "공지사항",
-    description: "중요한 \n공지·알림 확인",
-    position: "right bottom",
-    class:"notice"
-  },
-  {
-    selector: ".mypage",
-    label: "마이페이지",
-    description: "나의 학습현황·최근 시청·저장한 콘텐츠·한줄소감을 한눈에 확인",
-    position: "left bottom",
-    class:"mypage"
-  },
-  {
-    selector: "#gauge",
-    useGaugeArc: true,
-    gaugeSize: 832,
-    gaugeStrokeWidth: 31,
-    gaugePadding: 20,
-    padding: 0,
-    startAngle: 180,
-    endAngle: 360,
-    label: "내 학습 vs 회사 평균",
-    description: "내 학습 정도를 회사 평균과 한눈에 비교",
-    position: "top center",
-    class:"learning"
-  },
-  {
-    selector: ".keyword-area",
-    label: "나의 관심 키워드 + 회사추천 키워드",
-    description: "키워드 버튼으로 ON/OFF, 나의 관심 키워드 편집가능",
-    position: "left bottom",
-    class:"interest"
-  },
-  {
-    selector: "#nextBtn",
-    label: "컨텐츠 변경",
-    description: "버튼을 클릭하여 다음 컨텐츠 확인",
-    position: "right bottom",
-    class:"change"
-  },
-  // 🔥 키워드 요소 - 마스크만 (label 없음)
-  {
-    selector: ".video-card:nth-child(3) .key-badge:first-child",
-    padding: 4,
-    borderRadius: 4,
-  },
-  {
-    selector: ".video-card:nth-child(5) .key-badge:first-child",
-    padding: 4,
-    borderRadius: 4,
-  },
-];
+  // ── 브레이크포인트별 가이드 타겟 정의 ──
+
+  // 기본 (> 1600px)
+  var guideTargets_default = [
+    {
+      selector: ".guide-mask.nav",
+      label: "메뉴",
+      description: "마이클래스 : 분기별 업데이트 되는 권장 학습\n온보딩/법정교육 : 정해진 기간 내 이수해야 하는 필수 교육\n리더십/인사이트/비즈트렌드 : 지속적으로 업데이트 되는 자율 학습",
+      position: "left bottom",
+      class: "menu"
+    },
+    {
+      selector: ".input-group",
+      label: "검색",
+      description: "2개 단어 이상 검색 시 띄어쓰기로 구분해 검색",
+      position: "left bottom",
+      class: "search"
+    },
+    {
+      selector: ".alerts",
+      label: "공지사항",
+      description: "중요한 \n공지·알림 확인",
+      position: "right bottom",
+      class: "notice"
+    },
+    {
+      selector: ".mypage",
+      label: "마이페이지",
+      description: "나의 학습현황·최근 시청·저장한 콘텐츠·한줄소감을 한눈에 확인",
+      position: "left bottom",
+      class: "mypage"
+    },
+    {
+      selector: "#gauge",
+      useGaugeArc: true,
+      gaugeSize: 832,
+      gaugeStrokeWidth: 31,
+      gaugePadding: 20,
+      padding: 0,
+      startAngle: 180,
+      endAngle: 360,
+      label: "내 학습 vs 회사 평균",
+      description: "내 학습 정도를 회사 평균과 한눈에 비교",
+      position: "top center",
+      class: "learning"
+    },
+    {
+      selector: ".keyword-area",
+      label: "나의 관심 키워드 + 회사추천 키워드",
+      description: "키워드 버튼으로 ON/OFF, 나의 관심 키워드 편집가능",
+      position: "left bottom",
+      class: "interest"
+    },
+    {
+      selector: "#nextBtn",
+      label: "컨텐츠 변경",
+      description: "버튼을 클릭하여 다음 컨텐츠 확인",
+      position: "right bottom",
+      class: "change"
+    },
+    { selector: ".video-card:nth-child(3) .key-badge:first-child", padding: 4, borderRadius: 4 },
+    { selector: ".video-card:nth-child(5) .key-badge:first-child", padding: 4, borderRadius: 4 },
+  ];
+
+  // 1600px 이하
+  var guideTargets_1600 = [
+    {
+      selector: ".alerts",
+      label: "공지사항",
+      description: "중요한 \n공지·알림 확인",
+      position: "right bottom",
+      class: "notice"
+    },
+    {
+      selector: "#gauge",
+      useGaugeArc: true,
+      gaugeSize: 832,
+      gaugeStrokeWidth: 31,
+      gaugePadding: 20,
+      padding: 0,
+      startAngle: 180,
+      endAngle: 360,
+      label: "내 학습 vs 회사 평균",
+      description: "내 학습 정도를 회사 평균과 한눈에 비교",
+      position: "top center",
+      class: "learning"
+    },
+    {
+      selector: ".keyword-area",
+      label: "나의 관심 키워드 + 회사추천 키워드",
+      description: "키워드 버튼으로 ON/OFF, 나의 관심 키워드 편집가능",
+      position: "left bottom",
+      class: "interest"
+    },
+    {
+      selector: "#nextBtn",
+      label: "컨텐츠 변경",
+      description: "버튼을 클릭하여 다음 컨텐츠 확인",
+      position: "right bottom",
+      class: "change"
+    },
+    { selector: ".video-card:nth-child(3) .key-badge:first-child", padding: 4, borderRadius: 4 },
+    { selector: ".video-card:nth-child(5) .key-badge:first-child", padding: 4, borderRadius: 4 },
+  ];
+
+  // 1024px 이하
+  var guideTargets_1024 = [
+    {
+      selector: ".alerts",
+      label: "공지사항",
+      description: "중요한 \n공지·알림 확인",
+      position: "right bottom",
+      class: "notice"
+    },
+    {
+      selector: ".keyword-area",
+      label: "나의 관심 키워드 + 회사추천 키워드",
+      description: "키워드 버튼으로 ON/OFF, 나의 관심 키워드 편집가능",
+      position: "left bottom",
+      class: "interest"
+    },
+    { selector: ".video-card:nth-child(2) .key-badge:first-child", padding: 4, borderRadius: 4 },
+    { selector: ".video-card:nth-child(3) .key-badge:first-child", padding: 4, borderRadius: 4 },
+  ];
+
+  // 화면 너비에 따라 적절한 타겟 반환
+  function getGuideTargets() {
+    var w = window.innerWidth;
+    if (w <= 1024) return guideTargets_1024;
+    if (w <= 1600) return guideTargets_1600;
+    return guideTargets_default;
+  }
+
+  // 현재 브레이크포인트 키 반환 (변경 감지용)
+  function getBreakpointKey() {
+    var w = window.innerWidth;
+    if (w <= 1024) return '1024';
+    if (w <= 1600) return '1600';
+    return 'default';
+  }
+
+  window.guideTargets = getGuideTargets();
+
   // 가이드 초기화
   if (window.initMultiGuide) {
     window.initMultiGuide(window.guideTargets);
   }
+
+  // 리사이즈 시 브레이크포인트가 바뀌면 재초기화
+  var _currentBp = getBreakpointKey();
+  var _resizeTimer = null;
+
+  window.addEventListener('resize', function () {
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(function () {
+      var newBp = getBreakpointKey();
+      if (newBp !== _currentBp) {
+        _currentBp = newBp;
+        window.guideTargets = getGuideTargets();
+        if (window.initMultiGuide) {
+          window.initMultiGuide(window.guideTargets);
+        }
+      }
+    }, 200);
+  });
 </script>

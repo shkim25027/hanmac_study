@@ -34,6 +34,9 @@
     font-size: 26px;
     font-weight: 700;
     color: #000;
+    @include mq(tablet-wide, max) {
+      font-size: 18px;  
+    }
   }
 }
 
@@ -180,6 +183,9 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
       padding: 14px 0;
       @include flex(column, flex-start, stretch);
       gap: 16px;
+       @include mq(tablet-wide, max) {
+        padding: 8px 0;
+       }
 
     }
 
@@ -191,6 +197,10 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
       height: calc(#{$title-size} * 1.4 * 2);
       color: var(--text-primary);
       @include ellipsis(2);
+      @include mq(tablet-wide, max) {
+        font-size: 14px;
+        height: calc(14px * 1.4 * 2);
+      }
     }
 
     .item-meta {
@@ -198,16 +208,25 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
       font-size: 14px;
       font-weight: 500;
       color: var(--text-keyword-secondary);
+      @include mq(tablet-wide, max) {
+        font-size: 12px;
+      }
     }
     .tag-list {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      @include mq(tablet-wide, max) {
+        gap: 4px;
+      }
       .tag {
         display: inline-block;
         font-size: 14px;
         font-weight: 500;
         color: var(--text-keyword-secondary);
+        @include mq(tablet-wide, max) {
+          font-size: 12px;
+        }
       }
     }
   }
@@ -230,6 +249,10 @@ $select-sort-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000
     background: var(--bg-gauge-base);
     padding-bottom: 4px;
     @include maskContents();
+
+    @include mq(tablet-wide, max) {
+     padding-bottom: 6px;
+    }
 
     // rect형: 각진 모서리
     &.rect {

@@ -58,6 +58,91 @@
       <div class="item-box">
         <a class="mypage" title="마이페이지" href="./mypage.html"></a>
       </div>
+      <div class="item-box">
+        <button class="btn-sitemap" type="button" title="메뉴 열기/닫기" aria-expanded="false" aria-controls="siteMap"></button>
+      </div>
+    </div>
+
+    <div class="site-map" id="siteMap" aria-hidden="true">
+      <div class="site-map-inner">
+
+        <!-- 검색 -->
+        <div class="site-map-search">
+          <div class="input-group">
+            <input type="text" placeholder="검색" />
+            <i class="ico-search"></i>
+          </div>
+        </div>
+
+        <!-- 퀵 메뉴 -->
+        <div class="site-map-quick">
+          <a href="./myclass.html" class="quick-item">
+            <span class="quick-icon">
+              <img src="./assets/images/img_sitemap_01.svg" alt="" />
+            </span>
+            <span class="quick-title">마이클래스</span>
+            <div class="state-box">
+              <span class="unit">0<small>%</small></span>
+              <span class="progress">
+                <span class="progress-bar" style="width: 0%"></span>
+              </span>
+            </div>
+          </a>
+          <a href="./onboarding.html" class="quick-item">
+            <span class="quick-icon">
+              <img src="./assets/images/img_sitemap_02.svg" alt="" />
+            </span>
+            <span class="quick-title">온보딩</span>
+            <div class="state-box">
+              <span class="unit" style="left: 68%;">68<small>%</small></span>
+              <span class="progress">
+                <span class="progress-bar" style="width: 68%"></span>
+              </span>
+            </div>
+          </a>
+          <a href="./learning.html" class="quick-item">
+            <span class="quick-icon">
+              <img src="./assets/images/img_sitemap_03.svg" alt="" />
+            </span>
+            <span class="quick-title">법정교육</span>
+            <div class="state-box">
+              <span class="unit" style="left:100%;">100<small>%</small></span>
+              <span class="progress">
+                <span class="progress-bar" style="width: 100%"></span>
+              </span>
+            </div>
+          </a>
+        </div>
+
+        <!-- 아코디언 메뉴 -->
+        <ul class="site-map-menu">
+          <li class="menu-section">
+            <a href="#" class="menu-section-title">
+              리더십
+            </a>
+          </li>
+          <li class="menu-section is-open">
+            <button type="button" class="menu-section-title">
+              인사이트
+              <i class="ico-chevron"></i>
+            </button>
+            <ul class="menu-section-list">
+              <li><a href="./insight.html">경제와 사회</a></li>
+              <li><a href="#">기술과 미래</a></li>
+              <li><a href="#">트렌드 업</a></li>
+              <li><a href="#">행복과 건강</a></li>
+              <li><a href="#">피플스토리</a></li>
+              <li><a href="#">라이프</a></li>
+            </ul>
+          </li>
+          <li class="menu-section">
+            <a href="./biztrend.html" class="menu-section-title">
+              비즈트렌드
+            </a>
+          </li>
+        </ul>
+
+      </div>
     </div>
   </div>
 </div>

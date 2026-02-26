@@ -89,10 +89,11 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  z-index: 1;
 }
 
 @mixin arrow-button-hover($property: left) {
-  &:not(.disabled) {
+  &:not(.disabled):not(.swiper-button-disabled) {
     &:hover {
       #{$property}: 30px;
     }
@@ -107,6 +108,10 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
     position: relative;
     height: $main-height;
     overflow: hidden;
+    // 모바일: 다음 슬라이드 peek를 위해 overflow 허용
+    @include mq(tablet-wide, max) {
+      overflow: visible;
+    }
 
     .bg-circle {
       @include center-absolute;
@@ -116,6 +121,10 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
       @include circle-mask;
       @include flex();
       overflow: hidden;
+
+      @include mq(tablet-wide, max) {
+        display: none;
+      }
 
       &::before {
         @include pseudo(block, absolute, " ");
@@ -200,15 +209,20 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
     width: 100%;
     height: $main-height;
     @include flex(column);
-
     .text-box {
       text-align: center;
-      z-index: 1;
-
+      z-index: 2;
+      @include mq(tablet-wide, max) {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding-top: 32px;
+      }
       span {
         color: var(--text-main-primary);
         font-size: 32px;
-
+        @include mq(tablet-wide, max) {
+          font-size: 18px;
+        }
         em {
           font-weight: 700;
         }
@@ -217,7 +231,9 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
       p {
         color: var(--text-main-primary);
         font-size: 38px;
-
+        @include mq(tablet-wide, max) {
+          font-size: 24px;
+    }
         em {
           color: var(--text-main-secondary);
           font-weight: 700;
@@ -234,6 +250,10 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
         width: max-content;
         margin: auto;
         @include flex(column, center, center);
+        @include mq(tablet-wide, max) {
+          grid-row: 3/4;
+          margin-top: 24px;
+        }
 
         button {
           font-size: 13px;
@@ -255,15 +275,24 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 
   .video {
     &-wrap {
-      position: absolute;
-      width: 100%;
-      height: $main-height;
-      pointer-events: none;
+      @include mq(tablet-wide, min) {
+       position: absolute;
+        width: 100%;
+        height: $main-height;
+        pointer-events: none;
+      }
+      @include mq(tablet-wide, max) {
+        flex: 1;
+        width: 100%;
+      }
       .btn {
         &-prev,
         &-next {
           pointer-events: auto;
           @include arrow-button-base;
+          @include mq(tablet-wide, max) {
+            display: none;
+          }
         }
 
         &-prev {
@@ -272,11 +301,12 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
           @include transition(left, 0.2s, linear);
           @include arrow-button-hover(left);
 
-          &.disabled {
+          &.disabled,
+          &.swiper-button-disabled {
             background-image: $svg-arrow-prev-disabled;
           }
 
-          &:not(.disabled):hover {
+          &:not(.disabled):not(.swiper-button-disabled):hover {
             background-image: $svg-arrow-prev-hover;
           }
         }
@@ -287,11 +317,12 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
           @include transition(right, 0.2s, linear);
           @include arrow-button-hover(right);
 
-          &.disabled {
+          &.disabled,
+          &.swiper-button-disabled {
             background-image: $svg-arrow-next-disabled;
           }
 
-          &:not(.disabled):hover {
+          &:not(.disabled):not(.swiper-button-disabled):hover {
             background-image: $svg-arrow-next-hover;
           }
         }
@@ -305,32 +336,85 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
         font-size: 20px;
         color: var(--shadow-pagination);
         font-weight: 400;
-
-        .current {
+        @include mq(tablet-wide, max) {
+          font-size: 14px;
+        }
+        .current,
+        .swiper-pagination-current {
           font-size: 24px;
           font-weight: 700;
+          @include mq(tablet-wide, max) {
+            font-size: 16px;
+          }
         }
       }
     }
 
-    &-cards-container {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      align-items: center;
-      justify-items: center;
-      height: 100%;
-      column-gap: 10%;
+    &-card {
+      margin: auto;
+
+      @include mq(desktop-wide, min){
+        &:nth-child(3) {
+          translate: -50% 0;
+        }
+
+        &:nth-child(4) {
+          translate: 50% 0;
+        }
+      }
+      @include mq(desktop-wide, max) {
+        @include mq(tablet-wide, min) {
+          &:nth-child(3) {
+          margin-left: 0;
+          }
+
+          &:nth-child(4) {
+            margin-right: 0; 
+          }
+        }
+      }
+    }
+  }
+
+  .videoSwiper {
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+
+    // 모바일: 양옆 다음 슬라이드가 보이도록 overflow 허용
+    @include mq(tablet-wide, max) {
+      overflow: visible;
     }
 
-    &-card {
-      
-      &:nth-child(3) {
-        margin-left: -30%;
-      }
+    .swiper-slide {
+      @include mq(tablet-wide, max) {
+        width: auto;
+        height: auto;
+        transition: opacity 0.3s ease;
 
-      &:nth-child(4) {
-        margin-right: -30%;
+        &.swiper-slide-active {
+          opacity: 1 !important;
+        }
+      }
+    }
+
+    .video-grid {
+      position: relative;
+      display: grid;
+      // PC: 2열, 3행 균등 배분 (1fr)
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 16px;
+      padding: 24px 16px;
+      align-items: center;
+      height: 100%;
+      overflow: hidden;
+
+      // MO: 1열, 자연스러운 높이 (카드 간격 벌어짐 방지)
+      @include mq(tablet-wide, max) {
+        grid-template-columns: 1fr;
+        align-content: start;
+        padding: 24px 16px 64px 16px;
       }
     }
   }
@@ -370,6 +454,15 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 }
 
 // =======================================
+// Responsive: learning-area 1024px 이하 숨김
+// =======================================
+@include mq(tablet-wide, max) {
+  .learning-area {
+    display: none;
+  }
+}
+
+// =======================================
 // Modal Styles
 // =======================================
 .modal {
@@ -381,6 +474,9 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
         color: var(--bg-modal-header);
         font-size: 14px;
         font-weight: 700;
+        @include mq(tablet-wide, max) {
+          font-size: 18px;
+        }
         .btn-close {
           color: inherit;
           font : inherit;
@@ -392,6 +488,10 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
           height: 8px;
           cursor: pointer;
           @include bgImg("../images/ico/ico_check.svg", contain, center);
+          @include mq(tablet-wide, max) {
+            width: 10px;
+            height: 12px;
+          }
         }
       }
 
@@ -412,5 +512,86 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
         }
       }
     }
+
+    .keyword-limit-txt {
+      font-size: 14px;
+      color: #666666;
+      text-align: center;
+      gap: 0;
+      @include mq(tablet-wide, min) {
+        position: absolute;
+        top: 20px;
+        right: 26px;
+        font-size: 13px;
+      }
+      strong {
+        font-weight: 700;
+        @include mq(tablet-wide, min) {
+          font-size: 13px;
+        }
+      }
+    }
+
+    .modal-footer{
+      display: none;
+    }
+
+    // 1024px 이하: 하단에서 올라오는 bottom sheet
+    @include mq(tablet-wide, max) {
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+
+      .modal-content {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        gap: 20px;
+        max-height: 90dvh;
+        translate: none;
+        transform: none;
+        border-radius: 20px 20px 0 0;
+        padding: 30px 16px 24px;
+        overflow-y: auto;
+        animation: kwModalSlideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+
+      }
+      .modal-header {
+        margin-bottom: 8px;
+      }
+
+      .modal-footer {
+        display: block;
+        width: 100%;
+      }
+
+      .btn-primary {
+        width: 100%;
+        height: 56px;
+        border-radius: 12px;
+        font-size: 20px;
+        font-weight: 700;
+        text-shadow: 0 2px 2px rgba(201, 121, 38, 0.50);
+        line-height: 1.2;
+        background-blend-mode: screen, normal;
+        box-shadow: 0 -4px 4px 0 #E18D36 inset, 4px 4px 12px -4px rgba(220, 196, 172, 0.85);
+        /*
+        &::after {
+          content: "→";
+        }
+          */
+      }
+    }
+  }
+}
+
+@keyframes kwModalSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }

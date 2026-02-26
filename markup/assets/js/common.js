@@ -729,6 +729,127 @@ async function includehtml() {
   return await htmlIncludeManager.include();
 }
 
+/**
+ * 사이트맵 패널 관리 클래스 (1400px 이하에서 사용)
+ * - 햄버거 버튼 클릭 시 .nav-wrap에 is-sitemap-open 토글
+ * - 아코디언: .menu-section 클릭 시 is-open 토글
+ */
+class SiteMapManager {
+  constructor() {
+    this.navWrap = null;
+    this.btnSitemap = null;
+    this.siteMap = null;
+    this.isOpen = false;
+    this._onKeydown = this._handleKeydown.bind(this);
+  }
+
+  init() {
+    this.navWrap = document.querySelector('.nav-wrap');
+    this.btnSitemap = document.querySelector('.btn-sitemap');
+    this.siteMap = document.getElementById('siteMap');
+
+    if (!this.btnSitemap || !this.siteMap || !this.navWrap) return;
+
+    // 햄버거 버튼 클릭
+    this.btnSitemap.addEventListener('click', () => this.toggle());
+
+    // 아코디언 메뉴 초기화
+    this._initAccordion();
+
+    // 현재 페이지에 해당하는 하위 메뉴 링크 active 처리
+    this._setActiveLinks();
+
+    // 리사이즈 시 1400px 초과이면 자동으로 닫기
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1400 && this.isOpen) {
+        this.close();
+      }
+    });
+  }
+
+  toggle() {
+    this.isOpen ? this.close() : this.open();
+  }
+
+  open() {
+    this.isOpen = true;
+    this.navWrap.classList.add('is-sitemap-open');
+    this.btnSitemap.setAttribute('aria-expanded', 'true');
+    this.siteMap.setAttribute('aria-hidden', 'false');
+    scrollManager.lock();
+    document.addEventListener('keydown', this._onKeydown);
+  }
+
+  close() {
+    this.isOpen = false;
+    this.navWrap.classList.remove('is-sitemap-open');
+    this.btnSitemap.setAttribute('aria-expanded', 'false');
+    this.siteMap.setAttribute('aria-hidden', 'true');
+    scrollManager.unlock();
+    document.removeEventListener('keydown', this._onKeydown);
+  }
+
+  _handleKeydown(e) {
+    if (e.key === 'Escape') this.close();
+  }
+
+  _setActiveLinks() {
+    const currentPath = window.location.pathname;
+    const currentFile = currentPath.split('/').pop();
+
+    // 하위 메뉴 링크 + 섹션 타이틀 직링크(<a>) 모두 체크
+    const links = this.siteMap.querySelectorAll('.menu-section-list a, a.menu-section-title');
+
+    links.forEach((link) => {
+      const href = link.getAttribute('href');
+      if (!href || href === '#') return;
+
+      const hrefFile = href.replace('./', '');
+      const isActive = hrefFile === currentFile
+        || currentPath.endsWith(hrefFile)
+        || currentPath.includes(hrefFile.replace('.html', ''));
+
+      if (isActive) {
+        link.classList.add('active');
+        // 하위 메뉴 링크인 경우 부모 섹션 자동 열기
+        const section = link.closest('.menu-section');
+        if (section && link.closest('.menu-section-list')) {
+          section.classList.add('is-open');
+        }
+      }
+    });
+  }
+
+  _initAccordion() {
+    const sections = this.siteMap.querySelectorAll('.menu-section');
+
+    sections.forEach((section) => {
+      const btn = section.querySelector('.menu-section-title');
+      const list = section.querySelector('.menu-section-list');
+      // 하위 메뉴가 없는 섹션은 아코디언 동작 생략
+      if (!btn || !list) return;
+
+      btn.addEventListener('click', () => {
+        const isOpen = section.classList.contains('is-open');
+
+        // 다른 섹션 닫기
+        sections.forEach((s) => s.classList.remove('is-open'));
+
+        // 현재 섹션 토글
+        if (!isOpen) {
+          section.classList.add('is-open');
+        }
+      });
+    });
+  }
+}
+
+const siteMapManager = new SiteMapManager();
+
+document.addEventListener('DOMContentLoaded', () => {
+  siteMapManager.init();
+});
+
 // 전역으로 내보내기 (선택사항)
 if (typeof window !== 'undefined') {
   window.CommonUtils = {
@@ -738,10 +859,12 @@ if (typeof window !== 'undefined') {
     ContainerScrollEffect,
     NavigationManager,
     HTMLIncludeManager,
+    SiteMapManager,
     scrollManager,
     modalManager,
     navigationManager,
     htmlIncludeManager,
+    siteMapManager,
     // 기존 함수들
     syncHeight,
     isMobile,

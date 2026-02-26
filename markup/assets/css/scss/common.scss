@@ -1,47 +1,80 @@
 @charset "UTF-8";
 
-// ================================================================
+// =============================================================================
 // 공통 스타일 (common.scss) → common.css
-// ================================================================
-// 모든 페이지에 공통으로 적용됩니다.
-// - 리셋, 타이포그래피, 폰트
-// - 전역 버튼(.btn-primary), 아이콘(.ico-play 등)
-// - 유틸 클래스(.blind, .hidden, .clearfix)
-// - 스크롤바, 모달 등
-// ================================================================
+// =============================================================================
+// 모든 페이지에 공통 적용. 빌드 시 common.css로 출력됨.
+//
+// 목차
+// 1. Variables       - 모달/비디오 사이즈, 폰트사이즈 맵
+// 2. Utils           - clearfix, blind, hidden
+// 3. Buttons & Forms - btn-primary, input-group, checkbox
+// 4. Components      - icons, keyword, badge, bookmark
+// 5. Typography      - page-title, h5
+// 6. Modal           - 기본 모달, video 모달 (레이아웃/사이드바/댓글)
+// 7. Video & Comment - video-list, comment-wrap (모달 외부 사용)
+// 8. Responsive      - html font-size (rem 기준)
+// =============================================================================
 
 @use "sass:map";
+@use "sass:color";
 @use "base" as *;
 @forward "import/typography";
 @forward "import/lib-fonts";
 @forward "import/reset-css";
 
-// =======================================
-// Variables
-// =======================================
-// Note: Colors are now managed via CSS variables in _root.scss
+// =============================================================================
+// 1. Variables
+// =============================================================================
+// 색상은 _root.scss의 CSS 변수로 관리됨
 
-// Sizes
+// Modal / Video sizes
 $modal-width: 470px;
 $modal-min-height: 500px;
 $video-modal-width: 1720px;
 $video-modal-height: 900px;
 $video-sidebar-width: 437px;
 
-// =======================================
-// Global Styles
-// =======================================
-// Scrollbar
+// Responsive font sizes (rem 기준 - Media Queries에서 사용)
+$font-sizes: (
+  desktop: 10px,
+  tablet: 14px,
+  mobile-large: 13px,
+  mobile: 12px,
+  mobile-small: 10px,
+  mobile-xs: 9px,
+  mobile-xxs: 8px,
+);
+
+// 비디오/댓글 영역용 다크 스크롤바 (반복 사용)
+@mixin scrollbar-dark {
+  &::-webkit-scrollbar {
+    width: 7px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--bg-scrollbar-thumb-dark);
+    border-radius: 8px;
+    &:hover {
+      background: color.adjust(#383838, $lightness: 10%);
+    }
+  }
+}
+
+// =============================================================================
+// 2. Utils
+// =============================================================================
 html {
   @include scrollbar-style();
 }
 
-// Clearfix
 .clearfix {
   @include clearfix;
 }
 
-// Hidden
 .blind {
   @include blind;
 }
@@ -51,8 +84,9 @@ html {
   display: none !important;
 }
 
-
-// Button - Primary
+// =============================================================================
+// 3. Buttons & Forms
+// =============================================================================
 .btn-full {
   width: 100%;
 }
@@ -72,33 +106,32 @@ html {
   }
 }
 
-// Icon - Play (시청 아이콘)
-.ico-play {
+// --- Icons ---
+[class^="ico-"] {
   display: inline-block;
+}
+.ico-play {
   width: 18px;
   height: 18px;
   @include bgImg("../images/ico/ico_watch.svg", contain, center);
 }
 .ico-bookmark {
-  display: inline-block;
   width: 18px;
   height: 18px;
   @include bgImg("../images/ico/ico_bookmark.svg", contain, center);
 }
 .ico-pin {
-  display: inline-block;
   width: 24px;
   height: 32px;
   @include bgImg("../images/ico/ico_pin.svg", contain, center);
 }
 .ico-comment {
-  display: inline-block;
   width: 22px;
   height: 22px;
   @include bgImg("../images/ico/ico_comment.svg", contain, center);
 }
 
-// Input
+// --- Input ---
 .input {
   &-group {
     position: relative;
@@ -141,14 +174,23 @@ html {
   }
 }
 
-// Keyword
+// --- Keyword ---
 [class^="keyword"] {
   flex-wrap: wrap;
-  gap: 8px;
+  column-gap: 8px;
+  row-gap: 10px;
   @include flex();
+  @include mq(tablet-wide, max) {
+    column-gap: 16px;
+    row-gap: 12px;
+  }
 
   &[class*="list"] {
     max-width: 470px;
+    @include mq(tablet-wide, max) {
+      column-gap: 8px;
+      row-gap: 6px;
+    }
   }
 
   &[class*="tag"] {
@@ -243,6 +285,8 @@ html {
     }
   }
 }
+
+// --- Category Badge ---
 .item-info {
   .leader {
     background: var(--bg-cate-primary);
@@ -255,10 +299,9 @@ html {
   }
 }
 
-
-// =======================================
-// Page Title Styles
-// =======================================
+// =============================================================================
+// 5. Typography & Components
+// =============================================================================
 .page-title {
   padding-top: 74px;
   text-align: center;
@@ -296,15 +339,12 @@ html {
   }
 }
 
-
-// Typography
 h5 {
   font-size: 16px;
   font-weight: 700;
   text-align: left;
 }
 
-// Badge
 .badge {
   &-danger {
     border-radius: 4px;
@@ -314,7 +354,6 @@ h5 {
   }
 }
 
-// Bookmark
 .bookmark {
   padding: 8px;
   border-radius: 4px;
@@ -336,15 +375,28 @@ h5 {
   }
 }
 
-.m-br{
+.m-br {
   display: none;
-  @include mq(tablet-wide, max){
+  @include mq(tablet-wide, max) {
     display: block;
   }
 }
-// =======================================
-// Modal Styles
-// =======================================
+
+.pc-txt {
+  display: block;
+  @include mq(tablet-wide, max) {
+    display: none;
+  }
+}
+.mo-txt {
+  display: none;
+  @include mq(tablet-wide, max) {
+    display: block;
+  }
+}
+// =============================================================================
+// 6. Modal
+// =============================================================================
 .modal {
   display: none;
   position: fixed;
@@ -392,7 +444,77 @@ h5 {
   }
 
   &.video {
-    @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
+    @include scrollbar-dark;
+
+    // 모바일: 댓글 영역을 하단 시트로 (comment-wrap 직계 자식)
+    @include mq(tablet-wide, max) {
+      > .comment-wrap {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 55vh;
+        max-height: 85vh;
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        z-index: 100;
+        pointer-events: none;
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+        background: rgba(42, 42, 42, 0.98);
+        backdrop-filter: blur(12px);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+
+        .comment-resizer {
+          position: relative;
+          left: auto;
+          top: 0;
+          width: 100%;
+          height: 28px;
+          min-height: 28px;
+          flex-shrink: 0;
+          background: transparent;
+          border: none;
+          border-radius: 0;
+          cursor: pointer;
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+          border-bottom: 1px solid #161616;
+
+          &::before {
+            content: "";
+            width: 36px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.35);
+          }
+
+          .resizer-handle {
+            display: none;
+          }
+        }
+
+        .comment-list-wrap {
+          flex: 1;
+          min-height: 0;
+          max-height: none;
+        }
+      }
+    }
+
+    // 모바일: 댓글 시트 열림 상태
+    &.is-comment-open {
+      @include mq(tablet-wide, max) {
+        > .comment-wrap {
+          transform: translateY(0);
+          pointer-events: auto;
+          justify-content: space-between;
+        }
+      }
+    }
 
     .close {
       color: var(--text-revers);
@@ -404,9 +526,10 @@ h5 {
       right: 16px;
     }
 
+    // 비디오 모달 레이아웃
     .modal {
       &-content {
-        width:90%;
+        width: 90%;
         max-width: $video-modal-width;
         height: $video-modal-height;
         max-height: $video-modal-height;
@@ -415,24 +538,41 @@ h5 {
         border: none;
         border-radius: 20px;
         overflow: hidden;
+        @include mq(tablet-wide, max) {
+          width: 100%;
+          border-radius: 0;
+          height: var(--window-inner-height);
+          max-height: var(--window-inner-height);
+        }
       }
 
       &-body {
         display: grid;
         grid-template-columns: 1fr $video-sidebar-width;
         height: 100%;
+        @include mq(tablet-wide, max) {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          border-right: 1px solid var(--border-video);
+          overflow: hidden;
+        }
       }
     }
 
+    // 비디오 콘텐츠 (왼쪽: 영상 + 정보)
     .video {
       &-contents {
         display: flex;
         flex-direction: column;
         height: $video-modal-height;
         border-right: 1px solid var(--border-video);
+        @include mq(tablet-wide, max) {
+          height: auto;
+        }
       }
-      &-area{
-        flex:1;
+      &-area {
+        flex: 1;
         border-bottom: 1px solid var(--border-video);
         @include flex();
       }
@@ -452,50 +592,103 @@ h5 {
         }
       }
 
+      // 비디오 제목/메타/설명
       &-info {
         height: 188px;
         padding: 0 36px;
         text-align: left;
         color: var(--text-revers);
         overflow-y: auto;
-        @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
+        @include scrollbar-dark;
+        @include mq(tablet-wide, max) {
+          height: auto;
+          padding: 0 16px;
+        }
         .tit-box {
-          position: sticky;
-          top: 0;
           width: 100%;
           min-height: 80px;
           padding: 16px 0;
           border-bottom: 1px solid var(--border-video);
           background: var(--bg-video);
-          @include flex(column, flex-start, center);
+          @include mq(tablet-wide, min) {
+            position: sticky;
+            top: 0;
+            @include flex(column, flex-start, center);
+          }
+          @include mq(tablet-wide, max) {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 4px;
+          }
 
           h3 {
             font-size: 20px;
             font-weight: 700;
             padding-right: 80px;
+            @include mq(tablet-wide, max) {
+              padding-right: 0;
+              font-size: 18px;
+              grid-column: 1 / 4;
+            }
           }
 
+          .tit-right {
+            @include mq(tablet-wide, max) {
+              grid-column: 2 / 3;
+              grid-row: 1 / 2;
+              padding-right: 12px;
+              gap: 8px;
+              @include flex(row, center, flex-end);
+            }
+            .btn-comment {
+              gap: 4px;
+              border: 1px solid var(--border-btn);
+              background: #1F1F1F;
+              border-radius: 4px;
+              padding: 8px 8px;
+              color: rgba(255, 255, 255, 0.5);
+              @include flex(row, center, center);
+              @include mq(tablet-wide, min) {
+                display: none;
+              }
+              .ico-comment {
+                width: 12px;
+                height: 12px;
+                @include bgImg("../images/ico/ico_chat_msg.svg", contain, center);
+              }
+            }
+          }
           .bookmark {
-            position: absolute;
-            bottom: 18px;
-            right: 0;
             color: rgba(255, 255, 255, 0.5);
+            width: max-content;
+            @include mq(tablet-wide, min) {
+              position: absolute;
+              bottom: 18px;
+              right: 0;
+            }
+            @include mq(tablet-wide, max) {
+              background: #1F1F1F;
+            }
           }
         }
 
         .meta {
           font-size: 14px;
           color: var(--text-video-primary);
+          @include mq(tablet-wide, max) {
+            font-size: 12px;
+          }
           span {
             position: relative;
             display: inline-block;
             color: var(--text-video-primary);
-            &::after{
-              content:" ";
+            &::after {
+              content: " ";
               display: inline-block;
               width: 12px;
               height: 10px;
-              background:url('../images/ico/ico_arrow_meta.svg') no-repeat center center;
+              background: url("../images/ico/ico_arrow_meta.svg") no-repeat center center;
             }
           }
 
@@ -512,17 +705,31 @@ h5 {
         }
       }
 
+      // 사이드바 (헤더, 목록, 댓글)
       &-side {
         display: grid;
         grid-template-rows: auto minmax(0, 1fr) auto;
         grid-auto-rows: auto;
         max-height: $video-modal-height;
         overflow: hidden;
-
+        @include mq(tablet-wide, max) {
+          flex-grow: 1;
+          max-height: max-content;
+          overflow-y: auto;
+          @include scrollbar-dark;
+        }
         & > * {
           min-height: 0;
         }
 
+        @include mq(tablet-wide, max) {
+          .video-list {
+            height: auto !important;
+            overflow-y: visible !important;
+          }
+        }
+
+        // 모바일: 댓글 영역 하단 시트 (사이드 내부)
         .comment-wrap {
           display: flex;
           flex-direction: column;
@@ -534,12 +741,81 @@ h5 {
             border-top: 1px solid var(--border-video);
             box-shadow: var(--shadow-comment);
           }
+
+          @include mq(tablet-wide, max) {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 55vh;
+            max-height: 85vh;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            z-index: 100;
+            pointer-events: none;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.5);
+            background: rgba(42, 42, 42, 0.98);
+            backdrop-filter: blur(12px);
+            overflow: hidden;
+            flex-direction: column;
+
+            .modal.is-comment-open &,
+            .modal.video.is-comment-open & {
+              transform: translateY(0);
+              pointer-events: auto;
+              justify-content: space-between;
+            }
+
+            .comment-resizer {
+              position: relative;
+              left: auto;
+              top: 0;
+              width: 100%;
+              height: 44px;
+              min-height: 44px;
+              flex-shrink: 0;
+              background: transparent;
+              border: none;
+              border-radius: 0;
+              cursor: pointer;
+              @include flex(row, center, space-between);
+              padding: 0 16px;
+
+              &::before {
+                content: "";
+                width: 36px;
+                height: 4px;
+                border-radius: 2px;
+                background: rgba(255, 255, 255, 0.35);
+              }
+
+              &::after {
+                content: "×";
+                font-size: 24px;
+                font-weight: 400;
+                color: rgba(255, 255, 255, 0.8);
+                line-height: 1;
+              }
+
+              .resizer-handle {
+                display: none;
+              }
+            }
+
+            .comment-list-wrap {
+              flex: 1;
+              min-height: 0;
+              max-height: none;
+            }
+          }
         }
 
+        // 학습 단계형 (게이지 바 포함)
         &.step {
-          &:has(:not(.comment-wrap)){
+          &:has(:not(.comment-wrap)) {
             .video-list {
-              padding-bottom: 20px;       
+              padding-bottom: 20px;
             }
           }
           .video-header {
@@ -564,6 +840,9 @@ h5 {
               word-break: keep-all;
               text-align: left;
               @include ellipsis(2);
+              @include mq(tablet-wide, max) {
+                font-size: 16px;
+              }
             }
 
             .gauge {
@@ -635,9 +914,7 @@ h5 {
 
           .video-list {
             padding-top: 20px;
-     
           }
-         
         }
       }
 
@@ -647,9 +924,14 @@ h5 {
         color: var(--text-revers);
         gap: 16px;
         @include flex(row, flex-start, flex-start);
-
+        @include mq(tablet-wide, max) {
+          padding: 22px 16px;
+        }
         .tit {
           line-height: 26px;
+          @include mq(tablet-wide, max) {
+            font-size: 14px;
+          }
         }
 
         .badge {
@@ -666,20 +948,19 @@ h5 {
       &-list {
         overflow-y: auto;
         align-self: start;
-        @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
-       
+        @include scrollbar-dark;
+
         .tit {
           color: #fff;
           margin-bottom: 8px;
         }
-
       }
     }
 
     .learning-list {
       position: relative;
       color: var(--text-learning-base);
-      @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
+      @include scrollbar-dark;
       &::before {
         @include pseudo(block, absolute, "");
         left: 56px;
@@ -739,11 +1020,20 @@ h5 {
           max-width: 105px;
         }
 
-        .sep,
+        .seq,
         .state {
           font-size: 14px;
           white-space: nowrap;
+          @include mq(tablet-wide, max) {
+            font-size: 12px;
+          }
         }
+        .seq {
+          @include mq(tablet-wide, max) {
+            font-size: 14px;
+          }
+        }
+
       }
 
       .active {
@@ -803,6 +1093,7 @@ h5 {
         @include flex(row, flex-end, flex-start);
       }
     }
+
     textarea {
       flex-grow: 1;
       min-height: 32px;
@@ -817,7 +1108,7 @@ h5 {
       resize: none;
       overflow-y: auto;
       transition: height 0.3s linear;
-      @include scrollbar-style($scrollbar-width, $scrollbar-height, var(--bg-scrollbar-thumb-dark), var(--bg-scrollbar-track-light));
+      @include scrollbar-dark;
       &::placeholder {
         color: var(--bg-textarea-placeholder);
       }
@@ -861,6 +1152,9 @@ h5 {
   }
 }
 
+// =============================================================================
+// 7. Video & Comment (모달 외부에서 사용하는 공통 스타일)
+// =============================================================================
 .video {
   &-list {
     padding: 0 16px;
@@ -927,6 +1221,9 @@ h5 {
         color: var(--text-revers);
         text-align: left;
         @include ellipsis(2);
+        @include mq(tablet-wide, max) {
+          font-size: 14px;
+        }
       }
     }
   }
@@ -1025,65 +1322,39 @@ h5 {
   }
 }
 
-// =======================================
-// Media Queries
-// =======================================
-$font-sizes: (
-  desktop: 10px,
-  tablet: 14px,
-  mobile-large: 13px,
-  mobile: 12px,
-  mobile-small: 10px,
-  mobile-xs: 9px,
-  mobile-xxs: 8px,
-);
-
-// Desktop (1024px ~)
+// =============================================================================
+// 8. Responsive - html font-size (rem 기준)
+// =============================================================================
 @include mq(desktop) {
-  html {
-    font-size: map.get($font-sizes, desktop);
-  }
+  html { font-size: map.get($font-sizes, desktop); }
 }
 
 // Tablet (1023px 이하)
 @include mq(tablet, max) {
-  html {
-    font-size: map.get($font-sizes, tablet);
-  }
+  html { font-size: map.get($font-sizes, tablet); }
 }
 
 // Mobile Large (767px 이하)
 @include mq(tablet-small, max) {
-  html {
-    font-size: map.get($font-sizes, mobile-large);
-  }
+  html { font-size: map.get($font-sizes, mobile-large); }
 }
 
 // Mobile (639px 이하)
 @include mq(mobile, max) {
-  html {
-    font-size: map.get($font-sizes, mobile);
-  }
+  html { font-size: map.get($font-sizes, mobile); }
 }
 
 // Mobile Small (479px 이하)
 @include mq(mobile-medium, max) {
-  html {
-    font-size: map.get($font-sizes, mobile-small);
-  }
+  html { font-size: map.get($font-sizes, mobile-small); }
 }
 
 // Mobile XS (359px 이하)
 @include mq(phone, max) {
-  html {
-    font-size: map.get($font-sizes, mobile-xs);
-  }
+  html { font-size: map.get($font-sizes, mobile-xs); }
 }
 
 // Mobile XXS (319px 이하)
 @include mq(mobile-xs, max) {
-  html {
-    font-size: map.get($font-sizes, mobile-xxs);
-  }
+  html { font-size: map.get($font-sizes, mobile-xxs); }
 }
-

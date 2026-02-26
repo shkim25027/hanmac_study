@@ -84,8 +84,9 @@ $transition-speed: 0.1s;
       position: absolute;
       left: -110px;
       top: -10px;
-      width: $pick-width;
+      width: max-content;
       height: $pick-height;
+      padding: 0 10px;
       border-radius: 24px 24px 0 24px;
       border: 1px solid var(--border-pick);
       background: var(--bg-pick);
@@ -95,7 +96,16 @@ $transition-speed: 0.1s;
       backdrop-filter: blur($backdrop-blur-small);
       gap: 2px;
       @include flex();
-
+      @include mq(tablet-wide, max) {
+        top: -4px;
+        left: -0px;
+        height: 28px;
+        font-size: 12px;
+        font-weight: 700;
+        .pick-name {
+          display: none;
+        }
+      }
       em {
         margin-left: 2px;
         font-weight: 700;
@@ -104,6 +114,9 @@ $transition-speed: 0.1s;
       .ico-pick {
         z-index: 1;
         @include svgIcon("../images/ico/ico_pick.svg", 24px);
+        @include mq(tablet-wide, max) {
+          width: 16px;
+        }
       }
     }
 
@@ -120,6 +133,12 @@ $transition-speed: 0.1s;
       z-index: 1;
       @include flex();
 
+      @include mq(tablet-wide, max) {
+        width: 300px;
+        height: 120px;
+        gap: 16px;
+      }
+
       &:hover {
         box-shadow: 0 8px 12px 0 var(--bg-card-shadow);
       }
@@ -133,6 +152,11 @@ $transition-speed: 0.1s;
       aspect-ratio: 1 / 1;
       overflow: hidden;
       @include flex();
+
+      @include mq(tablet-wide, max) {
+        min-width: 88px;
+        max-width: 88px;
+      }
 
       &::after {
         width: 100%;
@@ -178,7 +202,10 @@ $transition-speed: 0.1s;
         padding: 4px 6px;
         border-radius: 4px;
         background: var(--bg-cate-primary);
-
+        @include mq(tablet-wide, max) {
+          padding: 2px 4px;
+          font-size: 11px;
+        } 
         &.leader {
           background: var(--bg-cate-primary);
         }
@@ -198,6 +225,9 @@ $transition-speed: 0.1s;
         line-height: 1.2;
         color: var(--text-primary);
         @include ellipsis(2);
+        @include mq(tablet-wide, max) {
+          font-size: 16px;
+        }
       }
 
       .author {
@@ -208,6 +238,10 @@ $transition-speed: 0.1s;
         gap: 8px;
         @include flex();
         @include ellipsis(1);
+        @include mq(tablet-wide, max) {
+          margin-top: 8px;
+          font-size: 12px;
+        }
       }
     }
 

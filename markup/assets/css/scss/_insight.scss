@@ -62,7 +62,11 @@
   }
 
   .swiper-slide {
-    padding: 84px 32px 84px;
+    padding: 32px ;
+    height: max-content;
+    @include mq(tablet-wide, max) {
+       
+    }
   }
   .pick-head {
     position: absolute;
@@ -87,6 +91,9 @@
     font-weight:700;
     line-height: 1.1;
     font-style: normal;
+    @include mq(tablet-wide, max) {
+      font-size: 24px;
+    }
     em {
       background-color: #FF8922;
       color: #fff;
@@ -99,6 +106,10 @@
       align-self: flex-end;
       line-height: 1;
       margin-right: -56px;
+      @include mq(tablet-wide, max) {
+        padding: 3px 6px;
+        font-size: 12px;
+      }
     }
   }
 
@@ -126,6 +137,10 @@
     @include flex(row, stretch, flex-start);
     gap: 112px;
     margin-bottom: 16px;
+    @include mq(tablet-wide, max) {
+      flex-direction: column;
+      gap: 0px;
+    }
   }
 
   .pick-left {
@@ -197,9 +212,16 @@
     gap: 40px;
     text-align: center;
     @include flex(column, center, center);
+    @include mq(tablet-wide, max) {
+      padding: 12px 0;
+      gap: 24px;
+    }
     .pick-title {
       font-size: 32px;
       font-weight: 400;
+      @include mq(tablet-wide, max) {
+        font-size: 16px;
+      }
       em {
         font-weight: 700;
       }
@@ -209,6 +231,9 @@
       font-size: 24px;
       line-height: 1.2;
       color: var(--text-secondary);
+       @include mq(tablet-wide, max) {
+        font-size: 13px;
+      }
     }
   }
   .pick-dday {
@@ -219,10 +244,17 @@
     font-weight: 900;
     color: #00CE85;
     line-height: 1;
-    padding-bottom: 12px;;
+    padding-bottom: 12px;
     border-radius: 4px;
     border: 4px solid #00CE85;
     transform: rotate(-12deg);
+    @include mq(tablet-wide, max) {
+      font-size: 32px;
+      bottom: 20px;
+      left: calc(50% - 20px);
+      padding-bottom:6px;
+      border: 2px solid #00CE85;
+    }
   }
 
   .pick-video {
@@ -356,11 +388,16 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
       font-size: 16px;
       font-weight: 400;
       color: var(--text-secondary);
-
+      @include mq(tablet-wide, max) {
+        font-size: 14px;
+      }
       em {
         font-style: normal;
         font-weight: 700;
         font-size: 20px;
+        @include mq(tablet-wide, max) {
+          font-size: 16px;
+        }
       }
     }
 
@@ -412,6 +449,8 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 @media (max-width: 1200px) {
   .insight .video-grid {
     grid-template-columns: repeat(2, 1fr);
+    column-gap: 12px;
+    row-gap: 32px;
   }
 }
 
@@ -419,7 +458,7 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 @media (max-width: 768px) {
   .insight {
     .insight-inner {
-      padding: 16px 20px 32px;
+      padding: 16px 16px 32px;
     }
 
     .pick-body {
@@ -438,7 +477,7 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
 
 
     .video-grid {
-      grid-template-columns: 1fr;
+      //grid-template-columns: 1fr;
     }
   }
 }

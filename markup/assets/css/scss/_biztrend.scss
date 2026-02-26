@@ -2,49 +2,77 @@
 
 @use "base" as *;
 
-// =======================================
-// Biztrend Page (성공예감&별책부록)
-// =======================================
-// 공통 컴포넌트: @include page-header, breadcrumb
-// =======================================
+// =============================================================================
+// 비즈트렌드 페이지 (성공예감 & 별책부록)
+// =============================================================================
+// 구조 요약
+// .biztrend                    ← 페이지 최상위 wrapper
+//   ├─ .page-header            ← 브레드크럼 + 페이지 타이틀
+//   └─ .biztrend-wrap
+//        └─ .biztrend-inner
+//             ├─ .biztrend-header     ← 소개(사진+설명) + 날짜 선택
+//             └─ .article-grid       ← 달력형 기사 그리드
+//                  ├─ .article-grid-head    ← 요일 헤더 (월~토)
+//                  └─ .article-grid-body    ← 기사 카드 목록
+//                       └─ .article-card    ← 날짜별 카드 1개
+// =============================================================================
+
 .biztrend {
+
+  // ---------------------------------------------------------------------------
+  // 1. 컨테이너 배경
+  //    - 상단은 베이지톤 그라데이션, 하단은 흰색으로 자연스럽게 전환
+  // ---------------------------------------------------------------------------
   .container {
-    background: linear-gradient(180deg, rgba(236, 232, 228, 0.60) -5.19%, #FEFDFD 21.11%, #FFF 73.7%, #FFF 100%), #FFF;    
+    background: linear-gradient(
+      180deg,
+      rgba(236, 232, 228, 0.60) -5.19%,
+      #FEFDFD 21.11%,
+      #FFF 73.7%,
+      #FFF 100%
+    ), #FFF;
   }
 
-  // [공통] 페이지 헤더
-  .page-header {
-    @include page-header;
-  }
 
-  // [공통] 브레드크럼
-  .breadcrumb {
-    @include breadcrumb;
-  }
+  // ---------------------------------------------------------------------------
+  // 2. 공통 컴포넌트 (mixin 호출)
+  //    - _common-components.scss 에 정의된 mixin 을 불러옴
+  // ---------------------------------------------------------------------------
+  .page-header { @include page-header; }
+  .breadcrumb  { @include breadcrumb;  }
 
-  // ---------------------------------------
-  // 소개 섹션 (biztrend-header)
-  // ---------------------------------------
+
+  // ---------------------------------------------------------------------------
+  // 3. 소개 섹션 래퍼 (.biztrend-wrap / .biztrend-inner)
+  //    - margin-top 음수값: 헤더와 겹치게 올려서 배경 이어지는 효과
+  // ---------------------------------------------------------------------------
   .biztrend-wrap {
-    margin-top: -48px;
-    margin-top: -72px;
+    margin-top: -72px;  // 헤더(64px) + 여유(8px) 만큼 위로 올림
   }
 
   .biztrend-inner {
     max-width: 1600px;
-    margin: 0 auto;
+    margin: 0 auto;  // 중앙 정렬
   }
 
+
+  // ---------------------------------------------------------------------------
+  // 4. 소개 헤더 (.biztrend-header)
+  //    - 좌측: 프로필 사진 + 소개 텍스트 / 우측: 날짜 선택 버튼
+  // ---------------------------------------------------------------------------
   .biztrend-header {
     margin-bottom: 10px;
-    @include flex(row, center, space-between);
     gap: 24px;
+    @include flex(row, center, space-between);  // 좌우 양끝 정렬
 
+    // 프로필 사진 + 소개 텍스트를 묶는 영역
     .biztrend-sub-title {
       gap: 16px;
       @include flex(row, center, flex-start);
+      @include mq(tablet-wide, max) { display: none; }
     }
 
+    // 프로필 사진 (원형 마스크)
     .biztrend-photo {
       width: 48px;
       height: 48px;
@@ -52,22 +80,24 @@
       overflow: hidden;
     }
 
+    // 소개 텍스트
     .biztrend-intro-desc {
       margin: 0;
       font-size: 15px;
       line-height: 1.28;
       color: var(--text-base, #333);
 
-      em { font-weight: 700; }
+      em { font-weight: 700; }  // 강조 텍스트 볼드
     }
   }
 
+  // 현재 미사용 요소 (display: none 처리됨)
   .biztrend-intro-inner {
     position: relative;
-    @include flex(row, center, flex-start);
     gap: 24px;
     padding: 24px 0;
     display: none;
+    @include flex(row, center, flex-start);
   }
 
   .biztrend-intro-photo {
@@ -86,29 +116,42 @@
     }
   }
 
-  // ---------------------------------------
-  // 기사 그리드 (달력형)
-  // ---------------------------------------
-  $article-grid-gap: 8px;
-  $article-grid-cols: 6;
+
+  // ---------------------------------------------------------------------------
+  // 5. 기사 그리드 (달력형 레이아웃)
+  //    - 6열 구조: 월 ~ 금(각 1열) + 토/별책부록(1열, 약간 더 넓음)
+  //    - 변수 설명:
+  //        $article-grid-gap       : 열 사이 간격 (8px)
+  //        $article-grid-cols      : 총 열 수 (6)
+  //        $article-grid-last-extra: 마지막 열(토)이 다른 열보다 더 넓은 너비 (28px)
+  //        $article-grid-total     : grid calc() 계산에 쓰이는 총 여백 합산값
+  // ---------------------------------------------------------------------------
+  $article-grid-gap:        8px;
+  $article-grid-cols:       6;
   $article-grid-last-extra: 28px;
+  // 전체 여백 = (열수 - 1) × gap + 마지막 열 추가 너비
   $article-grid-total: ($article-grid-cols - 1) * $article-grid-gap + $article-grid-last-extra;
 
+  // 그리드 전체 스크롤 영역
   .article-grid {
     max-width: 1600px;
     margin: 0 auto;
     padding: 0 10px;
+    // 화면 높이에서 헤더(64px)와 소개 영역(234px)을 뺀 높이만큼만 표시
     max-height: calc(var(--window-inner-height) - 234px - 64px);
     overflow-y: auto;
     @include scrollbar-style();
   }
 
+  // 요일 헤더 + 카드 바디를 세로로 쌓는 래퍼
   .article-grid-inner {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
 
+  // 요일 헤더 (월, 화, 수, 목, 금, 토)
+  // - sticky: 스크롤해도 상단에 고정
   .article-grid-head {
     position: sticky;
     top: 0;
@@ -117,18 +160,23 @@
     background: #fff;
   }
 
+  // 요일 목록 (ul > li)
   .article-grid-days {
-    display: grid;
-    grid-template-columns: repeat(5, calc((100% - #{$article-grid-total}) / #{$article-grid-cols})) calc((100% - #{$article-grid-total}) / #{$article-grid-cols} + #{$article-grid-last-extra});
+    // 앞 5열(월~금)은 동일 너비, 마지막 열(토)은 28px 더 넓게
+    grid-template-columns:
+      repeat(5, calc((100% - #{$article-grid-total}) / #{$article-grid-cols}))
+      calc((100% - #{$article-grid-total}) / #{$article-grid-cols} + #{$article-grid-last-extra});
     gap: $article-grid-gap;
     list-style: none;
     margin: 0;
     padding: 0;
+    width: 100%;
+    display: grid;
     font-size: 14px;
     font-weight: 600;
     color: var(--text-secondary);
-    width: 100%;
 
+    // '&' 구분자: 금과 토 사이에 절대 위치로 표시
     &::after {
       content: '&';
       position: absolute;
@@ -149,6 +197,7 @@
       font-size: 17px;
       color: #C3C3C3;
 
+      // 마지막 열(토)은 '&' 구분자 너비(28px)를 제외한 크기로 선 조정
       &:last-child::before,
       &:last-child::after {
         left: auto;
@@ -156,16 +205,18 @@
         width: calc(100% - 28px);
       }
 
+      // 위쪽 굵은 선 (2px)
       &::before {
         content: " ";
         position: absolute;
         top: 0;
         left: 0;
-        width: calc(100% + 8px);
+        width: calc(100% + 8px);  // gap 만큼 연장해서 이웃 열과 이어지게
         height: 2px;
         background: #E5E4E3;
       }
 
+      // 아래쪽 얇은 선 (1px)
       &::after {
         content: " ";
         position: absolute;
@@ -178,49 +229,44 @@
     }
   }
 
-  // 날짜 선택 (드롭다운)
-  .article-grid-date {
-    position: relative;
 
+  // ---------------------------------------------------------------------------
+  // 6. 날짜 선택 드롭다운 (.article-grid-date)
+  //    - 버튼 클릭 시 드럼롤(wheel) 형태의 연도·월 선택 UI 표시
+  // ---------------------------------------------------------------------------
+  .article-grid-date {
+    position: relative;  // 드롭다운 기준점
+
+    // 날짜 선택 트리거 버튼 (예: "2025년 12월 ▼")
     .date-select-trigger {
       padding: 8px 32px 8px 12px;
       font-size: 14px;
       color: var(--text-primary);
-     // background-color: #fff;
+      // 삼각형 화살표 아이콘 (SVG inline)
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='11' viewBox='0 0 13 11' fill='none'%3E%3Cpath d='M6.06226 10.5L7.81656e-05 -1.88258e-07L12.1244 8.71687e-07L6.06226 10.5Z' fill='%230C0C0C'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 10px center;
       cursor: pointer;
       @include flex(row, center, flex-start);
 
+      // "2025년" + "12월" 레이블 묶음
       .date-select-label {
         gap: 8px;
         @include flex(row, flex-end, flex-start);
       }
 
-      .date-year {
-        color: #979797;
-        font-size: 20px;
-      }
+      .date-year  { color: #979797; font-size: 20px; }  // 연도: 회색·작게
+      .date-month { color: #020202; font-size: 25px; }  // 월: 검정·크게
 
-      .date-month {
-        font-size: 25px;
-        color: #020202;
-      }
-
-      .date-select-month {
-        font-weight: bold;
-      }
-
-      .date-select-icon {
-        display: none;
-      }
+      .date-select-month { font-weight: bold; }  // 월 숫자 볼드
+      .date-select-icon  { display: none; }       // 별도 아이콘 요소 미사용
     }
 
+    // 드롭다운 패널 (기본 숨김, .is-open 시 표시)
     .datepicker-dropdown {
       display: none;
       position: absolute;
-      top: 100%;
+      top: 100%;   // 버튼 바로 아래
       right: 0;
       margin-top: 4px;
       z-index: 50;
@@ -230,18 +276,15 @@
       border-radius: 8px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 
-      &.is-open {
-        display: block;
-      }
+      &.is-open { display: block; }
 
-      .datepicker-dropdown-inner {
-        padding: 16px;
-      }
+      .datepicker-dropdown-inner { padding: 16px; }
 
+      // 연도 휠 + 월 휠을 가로로 나란히 배치
       .datepicker-wheels {
-        @include flex(row, stretch, center);
         gap: 16px;
         margin-bottom: 16px;
+        @include flex(row, stretch, center);
       }
 
       .datepicker-wheel-wrap {
@@ -257,6 +300,7 @@
         color: var(--text-secondary);
       }
 
+      // 휠 영역: 높이 고정, 내부 스크롤로 항목 선택
       .datepicker-wheel {
         height: 180px;
         overflow: hidden;
@@ -264,6 +308,7 @@
         border-radius: 6px;
         position: relative;
 
+        // 상·하 페이드 오버레이 (현재 주석 처리됨)
         &::before,
         &::after {
           content: '';
@@ -274,50 +319,39 @@
           pointer-events: none;
           z-index: 1;
         }
-
-        &::before {
-          top: 0;
-          //background: linear-gradient(to bottom, #fff 0%, transparent 100%);
-        }
-
-        &::after {
-          bottom: 0;
-          //background: linear-gradient(to top, #fff 0%, transparent 100%);
-        }
+        &::before { top: 0; }
+        &::after  { bottom: 0; }
       }
 
+      // 실제 스크롤 가능한 트랙
       .datepicker-wheel-track {
         height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
-        //padding: 72px 0;
         scroll-behavior: smooth;
         @include scrollbar-style(6px, 6px, var(--bg-scrollbar-thumb), var(--bg-scrollbar-track));
       }
 
+      // 휠 개별 항목
       .datepicker-wheel-item {
         height: 36px;
-        @include flex(row, center, center);
         font-size: 16px;
         color: var(--text-secondary);
         cursor: pointer;
         transition: color 0.15s, font-weight 0.15s;
-
-        &.is-selected {
-          font-weight: 700;
-          color: var(--text-primary);
-        }
-
-        &:hover {
-          color: var(--text-primary);
-        }
-      }
-
-      .datepicker-actions {
         @include flex(row, center, center);
-        gap: 10px;
+
+        &.is-selected { font-weight: 700; color: var(--text-primary); }
+        &:hover       { color: var(--text-primary); }
       }
 
+      // 취소 / 확인 버튼 영역
+      .datepicker-actions {
+        gap: 10px;
+        @include flex(row, center, center);
+      }
+
+      // 취소 / 확인 버튼 공통 스타일
       .btn-datepicker-cancel,
       .btn-datepicker-confirm {
         padding: 8px 20px;
@@ -344,33 +378,43 @@
     }
   }
 
+
+  // ---------------------------------------------------------------------------
+  // 7. 기사 카드 바디 (.article-grid-body)
+  //    - 앞 5열(월~금) + 마지막 1열(토/별책부록) 구조의 Grid
+  //    - 세로 구분선(::before): 금과 토 사이에 점선으로 표시
+  // ---------------------------------------------------------------------------
   .article-grid-body {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(5, calc((100% - #{$article-grid-total}) / #{$article-grid-cols})) calc((100% - #{$article-grid-total}) / #{$article-grid-cols} + #{$article-grid-last-extra});
+    grid-template-columns:
+      repeat(5, calc((100% - #{$article-grid-total}) / #{$article-grid-cols}))
+      calc((100% - #{$article-grid-total}) / #{$article-grid-cols} + #{$article-grid-last-extra});
     column-gap: $article-grid-gap;
-    //row-gap: 32px;
     row-gap: 54px;
 
+    // 금/토 사이 세로 점선 구분자
     &::before {
       content: '';
       position: absolute;
+      top: 0;
       bottom: 0;
-      right: calc(16.6666% + 4px);
+      right: calc(16.6666% + 4px);  // 오른쪽에서 마지막 열 너비만큼 떨어진 위치
       width: 1px;
-      height: 100%;
-      //background: repeating-linear-gradient(180deg, #CBCACA 0, #CBCACA 2px, transparent 2px, transparent 2px);
       border-right: 1px dashed #CBCACA;
     }
   }
 
-  // ---------------------------------------
-  // 기사 카드
-  // ---------------------------------------
+
+  // ---------------------------------------------------------------------------
+  // 8. 기사 카드 (.article-card)
+  //    - 날짜 숫자 + 성공예감 콘텐츠 + 별책부록 콘텐츠로 구성
+  //    - 상태 클래스: .weekend / .is-future / .today
+  // ---------------------------------------------------------------------------
   .article-card {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;  // 콘텐츠 1열 (세로 쌓기)
     align-items: flex-start;
     min-height: 160px;
     min-width: 0;
@@ -378,67 +422,68 @@
     background: linear-gradient(180deg, #EFF4F3 0%, #F9F9F9 71.15%, rgba(249, 249, 249, 0) 96.63%);
     border-radius: 6px;
 
-    &:nth-child(6n) {
-      margin-left: 28px;
-    }
+    // 6번째 카드(토 열)는 '&' 구분자 너비(28px)만큼 왼쪽 여백 추가
+    &:nth-child(6n) { margin-left: 28px; }
 
+    // 평일 카드 콘텐츠 최소 높이 확보
     &:not(.weekend) .article-card-content {
-      height: 144px;
+      min-height: 144px;
+      padding-bottom: 24px;
     }
 
+    // ── 토요일(별책부록) 카드 ──
     &.weekend {
       display: flex;
       background: linear-gradient(180deg, #F8F3EE 0%, rgba(248, 243, 238, 0) 100%);
 
-      .article-card-num::before {
-        background-color: #8C7B6A;
-      }
-
-      .article-card-content .article-card-title-box {
-        background: #EDDFD1;
-      }
+      .article-card-num::before  { background-color: #8C7B6A; }             // 날짜 배지 갈색
+      .article-card-content .article-card-title-box { background: #EDDFD1; } // 제목 바 연갈색
     }
 
-    &.is-future {
-      opacity: 0.3;
-    }
+    // ── 미래 날짜: 흐리게 표시 ──
+    &.is-future { opacity: 0.3; }
 
+    // ── 오늘 날짜: 상단 강조선 + 날짜 배지 주황색 ──
     &.today {
       &::before {
         content: '';
         position: absolute;
         top: 0;
         left: 6px;
-        height: 2px;
         width: calc(100% - 12px);
+        height: 2px;
         z-index: 1;
         background: linear-gradient(90deg, #FF5905 75%, rgba(255, 89, 5, 0) 100%);
       }
 
       .article-card-num {
         filter: drop-shadow(3px 0 2px rgba(0, 0, 0, 0.25));
-
-        &::before {
-          background-color: #FF5905;
-        }
+        &::before { background-color: #FF5905; }  // 배지 주황색
       }
     }
   }
 
+
+  // ---------------------------------------------------------------------------
+  // 9. 날짜 배지 (.article-card-num)
+  //    - 카드 좌상단에 절대 위치로 붙음
+  //    - ::before 로 SVG 마스크(꼬리달린 사각형 모양) 배경 적용
+  // ---------------------------------------------------------------------------
   .article-card-num {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 2;
+    width: 39px;
+    height: 33px;
+    padding-left: 6px;
+    padding-right: 12px;
     font-size: 15px;
     font-weight: 700;
     color: #fff;
-    width: 39px;
-    height: 33px;
-    z-index: 2;
-    padding-left: 6px;
-    padding-right: 12px;
     @include flex(row, center, center);
 
+    // SVG 마스크로 꼬리 달린 배지 모양 구현
     &::before {
       content: ' ';
       position: absolute;
@@ -446,13 +491,20 @@
       left: 0;
       width: 100%;
       height: 100%;
+      z-index: -1;
       background-color: #6A7B77;
       mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 39 33'%3E%3Cpath fill='white' d='M0 33C32 33 29.5 28.5 38.5 0H6C2.68629 0 0 2.68629 0 6V33Z'/%3E%3C/svg%3E") center/contain no-repeat;
       -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 39 33'%3E%3Cpath fill='white' d='M0 33C32 33 29.5 28.5 38.5 0H6C2.68629 0 0 2.68629 0 6V33Z'/%3E%3C/svg%3E") center/contain no-repeat;
-      z-index: -1;
     }
   }
 
+
+  // ---------------------------------------------------------------------------
+  // 10. 기사 콘텐츠 영역 (.article-card-content)
+  //     - 카드 1장에 최대 2개 (성공예감 / 별책부록)
+  //     - 첫 번째: 제목 바에 날짜 배지 공간(padding-left: 32px) 확보
+  //     - 두 번째: 제목 바 색상 보라색 계열로 변경
+  // ---------------------------------------------------------------------------
   .article-card-content {
     position: relative;
     width: 100%;
@@ -461,40 +513,34 @@
     gap: 8px;
     @include flex(column, center, flex-start);
 
-    &:first-of-type .article-card-title-box {
-      padding-left: 32px;
-    }
+    // 성공예감(첫 번째) 제목 바: 날짜 배지 공간 확보
+    &:first-of-type .article-card-title-box { padding-left: 32px; }
 
-    &:not(:first-of-type):last-of-type .article-card-title-box {
-      background: #EBE3EB;
-    }
+    // 별책부록(두 번째) 제목 바: 보라색 배경
+    &:not(:first-of-type):last-of-type .article-card-title-box { background: #EBE3EB; }
 
+    // 호버 시 그림자 + 배경 변경
     &:hover {
       box-shadow: 0 0 5.4px 0 rgba(0, 0, 0, 0.30);
       z-index: 1;
-
-      &::before {
-        background: linear-gradient(180deg, var(--bg-card-hover-start) 0%, var(--bg-card-hover-end) 100%);
-      }
+      &::before { background: linear-gradient(180deg, var(--bg-card-hover-start) 0%, var(--bg-card-hover-end) 100%); }
     }
 
+    // 호버 배경용 가상 요소 (display: none → hover 시에만 배경 전환)
     &::before {
       content: ' ';
       display: none;
       position: absolute;
+      top: -8px;
+      left: -8px;
       width: 100%;
       height: 100%;
       padding: 8px;
-      @include maskContents();
-      top: -8px;
-      left: -8px;
       border-radius: 10px;
+      @include maskContents();
     }
-  }
 
-  .article-card-content {
-    position: relative;
-
+    // 카드 내 링크 (전체 영역 클릭 가능)
     .article-card-link {
       display: block;
       width: 100%;
@@ -502,10 +548,11 @@
       color: inherit;
     }
 
+    // 북마크(좋아요) 버튼: 제목 바 우측에 절대 위치
     > .article-card-like {
       position: absolute;
-      right: 10px;
       top: 8px;
+      right: 10px;
       z-index: 1;
       flex-shrink: 0;
       width: 20px;
@@ -522,21 +569,28 @@
     }
   }
 
+
+  // ---------------------------------------------------------------------------
+  // 11. 카드 내부 요소들
+  // ---------------------------------------------------------------------------
+
+  // 제목 바 (배경색 + 하단 둥근 캡슐 형태)
   .article-card-title-box {
     position: relative;
-    padding-left: 16px;
-    padding-right: 32px;
-    margin-bottom: 8px;
     width: 100%;
     min-width: 0;
     height: 36px;
     min-height: 36px;
-    background: #DBE8E5;
+    padding-left: 16px;
+    padding-right: 32px;
+    margin-bottom: 8px;
     gap: 8px;
-    border-radius: 2px 2px 20px 20px;
+    background: #DBE8E5;              // 기본: 민트 계열 (성공예감)
+    border-radius: 2px 2px 20px 20px; // 상단 약간, 하단 크게 둥글게
     @include flex(row, center);
   }
 
+  // 카드 제목 텍스트 (1줄 말줄임)
   .article-card-title {
     position: relative;
     flex: 1;
@@ -549,6 +603,7 @@
     @include ellipsis(1);
   }
 
+  // 카드 내용 목록 (bullet 리스트, 2줄 말줄임)
   .article-card-list {
     padding: 0 16px;
     width: 100%;
@@ -563,11 +618,12 @@
       text-align: left;
       @include ellipsis(2);
 
+      // bullet 기호: 짧은 가로선
       &::before {
         content: " ";
         position: absolute;
-        left: 0;
         top: 10px;
+        left: 0;
         width: 4px;
         height: 1px;
         background: #000;
@@ -575,12 +631,14 @@
     }
   }
 
+  // 저자 표기 (현재 거의 미사용)
   .article-card-author {
     margin: 0;
     font-size: 11px;
     color: var(--text-keyword-secondary, #999);
   }
 
+  // BEST 뱃지 (카드 상단 우측 빨간 라벨)
   .article-card-badge {
     position: absolute;
     top: -14px;
@@ -593,6 +651,7 @@
     border-radius: 4px;
   }
 
+  // 호버 라벨 (카드 우측 상단 주황 라벨)
   .article-card-hover-label {
     position: absolute;
     top: 12px;
@@ -605,17 +664,19 @@
     border-radius: 4px;
   }
 
+  // 이미지 + 텍스트 2열 레이아웃 (별책부록 카드 내부)
   .article-card-image {
     display: grid;
-    grid-template-columns: 68fr 149fr;
+    grid-template-columns: 68fr 149fr;  // 이미지 : 텍스트 = 약 3:7 비율
     gap: 12px;
     max-width: 100%;
   }
 
+  // 이미지 플레이스홀더 (책 표지 영역)
   .article-card-image-placeholder {
     width: 100%;
     height: 100%;
-    aspect-ratio: 2/3;
+    aspect-ratio: 2 / 3;  // 세로 긴 비율 (책 표지)
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -625,23 +686,158 @@
     padding-left: 12px;
     padding-top: 4px;
 
-    + .article-card-list {
-      padding-left: 0;
-    }
+    // 이미지 플레이스홀더 다음 목록은 왼쪽 패딩 제거
+    + .article-card-list { padding-left: 0; }
   }
 
+  // 이미지가 있는 카드 modifier
   .article-card--with-image {
     .article-card-content {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-
-    .article-card-title {
-      padding-top: 0;
-    }
+    .article-card-title { padding-top: 0; }
   }
 
-  // [공통] 진행률 게이지 (기사 카드 내)
+
+  // ---------------------------------------------------------------------------
+  // 12. 진행률 게이지 바 (공통 mixin 호출)
+  //     - _common-components.scss 의 gauge-bar mixin 적용
+  // ---------------------------------------------------------------------------
   @include gauge-bar;
-}
+
+
+  // ===========================================================================
+  // 13. 반응형: 1024px 이하 (태블릿 · 모바일)
+  //     레이아웃 변경:
+  //       - 요일 헤더를 좌측에 세로로 고정
+  //       - 카드 영역은 가로 스크롤 (주 단위 열이 오른쪽으로 늘어남)
+  //       - 소개 텍스트(biztrend-sub-title) 숨김
+  // ===========================================================================
+  @include mq(tablet-wide, max) {
+
+    // 소개 텍스트 영역 숨김
+    .biztrend-sub-title { display: none; }
+
+    // 헤더: 세로 방향으로 변경
+    .biztrend-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    // 그리드 스크롤 해제 (내부 body 에서 처리)
+    .article-grid {
+      max-height: none;
+      overflow: visible;
+      padding: 0 10px;
+    }
+
+    // 요일 헤더(왼쪽 고정) + 카드 바디(오른쪽 스크롤)를 가로로 배치
+    .article-grid-inner {
+      flex-direction: row;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    // ── 좌측: 요일 헤더 (고정 48px 너비) ──
+    .article-grid-head {
+      position: relative;
+      flex-shrink: 0;  // 너비 줄지 않게 고정
+      width: 48px;
+      z-index: 2;
+      background: #fff;
+    }
+
+    .article-grid-days {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: 48px;
+
+      &::after { display: none; }  // '&' 구분자 숨김
+
+      li {
+        flex: 1;
+        min-height: 80px;  // 카드 행 높이와 맞춤
+        padding: 12px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: #C3C3C3;
+
+        // 데스크톱용 구분선 숨김
+        &::before,
+        &::after { display: none; }
+      }
+    }
+
+    // ── 우측: 카드 바디 (가로 스크롤) ──
+    .article-grid-body {
+      flex: 1;
+      min-width: 0;
+      overflow-x: auto;                    // 가로 스크롤 활성화
+      overflow-y: visible;
+      padding-bottom: 16px;
+      -webkit-overflow-scrolling: touch;   // iOS 부드러운 스크롤
+      @include scrollbar-style();
+
+      // 6행(월~토) 고정, 열은 주 단위로 오른쪽으로 자동 추가
+      display: grid;
+      grid-template-rows: repeat(6, minmax(80px, auto));
+      grid-auto-flow: column;                     // 아이템을 열 방향으로 배치
+      grid-auto-columns: minmax(220px, 1fr);      // 열 최소 220px
+      column-gap: 12px;
+      row-gap: 12px;
+
+      &::before { display: none; }  // 데스크톱 세로 구분선 숨김
+    }
+
+    // ── 기사 카드: 날짜 배지 + 콘텐츠 가로 배치 ──
+    .article-card {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 8px;
+      min-height: 80px;
+      padding: 8px 10px;
+      margin-left: 0;  // 데스크톱 6n 마진 초기화
+
+      &:nth-child(6n) { margin-left: 0; }
+
+      // 날짜 배지: 모바일에서는 일반 박스 형태로 변경
+      .article-card-num {
+        flex-shrink: 0;
+        position: relative;  // absolute → relative 로 변경 (flex 참여)
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 14px;
+        border-radius: 8px;
+        background: rgba(106, 123, 119, 0.9);
+
+        &::before { display: none; }  // SVG 마스크 배지 모양 숨김
+      }
+
+      // 콘텐츠 영역: flex 비율로 너비 배분, 최소 160px 유지
+      .article-card-content {
+        flex: 1;
+        min-width: 160px;
+        flex-shrink: 0;
+
+        // 날짜 배지가 분리되므로 첫 번째 콘텐츠 padding-left 축소
+        &:first-of-type .article-card-title-box { padding-left: 12px; }
+      }
+
+      // 토요일 카드 제목 바 색상 (연갈색 유지)
+      &.weekend .article-card-content .article-card-title-box {
+        background: #EDDFD1;
+      }
+    }
+
+  } // end @include mq(tablet-wide, max)
+
+} // end .biztrend

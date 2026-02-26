@@ -60,33 +60,31 @@
           </div>
 
           <div class="video-wrap">
-            <!-- 비디오 카드 컨테이너 -->
-            <div class="video-cards-container" id="videoCardsContainer"></div>
+            <!-- Swiper -->
+            <div class="swiper videoSwiper">
+              <div class="swiper-wrapper" id="videoCardsContainer"></div>
+              <div class="pagination swiper-pagination" id="pagination"></div>
+            </div>
             <!-- 네비게이션 버튼 -->
             <button class="btn-prev" id="prevBtn">‹</button>
             <button class="btn-next" id="nextBtn">›</button>
-            <!-- 페이지네이션 -->
-            <div class="pagination" id="pagination">
-              <span class="current">1</span> / 1
-            </div>
           </div>
 
-          <!-- keyword modal -->
-          @@include("_modal/keyword.html")
-          <!-- // keyword modal -->
 
-        
         </div>
       </div>
 
       <!-- // container -->
+      <!-- keyword modal -->
+        @@include("_modal/keyword.html")
+      <!-- // keyword modal -->
       @@include("./guide.html")
     </div>
     <!-- 메인 페이지 스크립트 (의존성 순서 유지하며 defer로 비동기 로드) -->
     <script src="./assets/js/main/VideoCardRenderer.js" defer></script>
     <script src="./assets/js/main/VideoSlider.js" defer></script>
     <script src="./assets/js/main/Videomodalmanager.js" defer></script>
-    <script src="./assets/js/main/Gaugechart.js" defer></script>
+    <script>if (window.innerWidth > 1024) { document.write('<script src="./assets/js/main/Gaugechart.js" defer><\/script>'); }</script>
     <script>
       // defer 스크립트가 로드된 후 실행되도록 DOMContentLoaded 사용
       document.addEventListener("DOMContentLoaded", function() {
@@ -206,46 +204,42 @@
         animationDelay: 50,
       });
 
-      // 슬라이더 초기화
+      // 슬라이더 초기화 (PC: 6카드/페이지, MO: 3카드/페이지)
       const slider = new VideoSlider({
         videos: videos,
-        videosPerPage: 6,
-        onPageChange: (pageVideos) => {
-          renderer.renderCards(pageVideos);
-        },
+        renderer: renderer,
       });
+      slider.init();
 
       // 비디오 모달 매니저 초기화
       const modalManager = new VideoModalManager({
         videos: videos,
       });
 
-      // 슬라이더 초기화 (첫 페이지 렌더링 포함)
-      slider.init();
-      renderer.renderCards(slider.getCurrentPageVideos());
-
       // 모달 매니저 초기화 (카드 클릭 이벤트 등록)
       modalManager.init();
 
       // ========================================
-      // 게이지 차트 초기화
+      // 게이지 차트 초기화 (PC 전용)
       // ========================================
 
-      const gauge = new GaugeChart({
-        size: 832,
-        strokeWidth: 31,
-        maxValue: 50,
-        padding: 20,
-        outerTextOffset: 6,
-        innerTextOffset: 35,
-        dotRadius: 7,
-      });
+      if (typeof GaugeChart !== 'undefined') {
+        const gauge = new GaugeChart({
+          size: 832,
+          strokeWidth: 31,
+          maxValue: 50,
+          padding: 20,
+          outerTextOffset: 6,
+          innerTextOffset: 35,
+          dotRadius: 7,
+        });
 
-      // 게이지 초기화
-      gauge.init();
+        // 게이지 초기화
+        gauge.init();
 
-      // 예시: 학습 시간 업데이트 (35분)
-      gauge.update(25);
+        // 예시: 학습 시간 업데이트 (35분)
+        gauge.update(25);
+      }
 
       // ========================================
       // MultiGuide 초기화 (게이지 초기화 후)
@@ -398,6 +392,14 @@
           updateMainKeywordDisplay();
         };
       }
+
+      // 확인 버튼 / 핸들 닫기 버튼 클릭 시 닫기
+      modal.querySelectorAll(".btn-primary, .btn-sheet-close").forEach((btn) => {
+        btn.onclick = () => {
+          modal.style.display = "none";
+          updateMainKeywordDisplay();
+        };
+      });
 
       // 모달 내 체크박스 이벤트
       const modalCheckboxes = modal.querySelectorAll(

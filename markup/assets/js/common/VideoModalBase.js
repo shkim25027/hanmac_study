@@ -294,6 +294,7 @@ class VideoModalBase extends ModalBase {
         if (this.config.enableHeightAdjustment) {
           this.initializeHeightAdjustment(modalElement);
         }
+        this.setupCommentToggle(modalElement);
         break;
 
       case "comment":
@@ -301,6 +302,7 @@ class VideoModalBase extends ModalBase {
           this.setupCommentBox(modalElement);
         }
         this.adjustCommentOnlyLayout(modalElement);
+        this.setupCommentToggle(modalElement);
         break;
 
       case "onboarding":
@@ -350,6 +352,88 @@ class VideoModalBase extends ModalBase {
   }
 
   /**
+   * 1024px 이하에서 btn-comment 클릭 시 comment-wrap 토글 (하단 슬라이드업 패널)
+   * @param {HTMLElement} modalElement - 모달 요소
+   */
+  setupCommentToggle(modalElement) {
+    const btnComment = modalElement.querySelector(".btn-comment");
+    const videoSide = modalElement.querySelector(".video-side");
+    const commentWrap = modalElement.querySelector(".comment-wrap");
+
+    if (!btnComment || !videoSide || !commentWrap) return;
+
+    const isMobileView = () => window.matchMedia("(max-width: 1024px)").matches;
+
+    const openComment = () => {
+      modalElement.classList.add("is-comment-open");
+    };
+
+    const closeComment = () => {
+      modalElement.classList.remove("is-comment-open");
+    };
+
+    const toggleComment = () => {
+      if (!isMobileView()) return;
+      if (modalElement.classList.contains("is-comment-open")) {
+        closeComment();
+      } else {
+        openComment();
+      }
+    };
+
+    const clearMobileStyles = () => {
+      if (commentWrap?.style) commentWrap.style.cssText = "";
+      const commentListWrap = commentWrap?.querySelector(".comment-list-wrap");
+      if (commentListWrap?.style) commentListWrap.style.cssText = "";
+    };
+
+    const restoreToVideoSide = () => {
+      closeComment();
+      if (commentWrap.parentNode === modalElement) {
+        videoSide.appendChild(commentWrap);
+      }
+      clearMobileStyles();
+    };
+
+    const moveToModal = () => {
+      if (commentWrap.parentNode !== modalElement) {
+        modalElement.appendChild(commentWrap);
+      }
+    };
+
+    const handleResize = () => {
+      if (isMobileView()) {
+        moveToModal();
+      } else {
+        restoreToVideoSide();
+      }
+    };
+
+    if (isMobileView()) {
+      moveToModal();
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 1024px)");
+    mediaQuery.addEventListener("change", handleResize);
+
+    modalElement._commentToggleCleanup = () => {
+      mediaQuery.removeEventListener("change", handleResize);
+    };
+
+    btnComment.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleComment();
+    });
+
+    const commentResizer = commentWrap.querySelector(".comment-resizer");
+    if (commentResizer) {
+      commentResizer.addEventListener("click", () => {
+        if (isMobileView()) closeComment();
+      });
+    }
+  }
+
+  /**
    * 모달 닫기 (오버라이드)
    * @returns {Promise}
    */
@@ -363,6 +447,16 @@ class VideoModalBase extends ModalBase {
 
       // Observer들 정리
       this.cleanupObservers();
+
+      // comment-toggle 리사이즈 리스너 정리
+      if (typeof this.currentModalElement._commentToggleCleanup === "function") {
+        this.currentModalElement._commentToggleCleanup();
+      }
+
+      // height-adjust media query 리스너 정리
+      if (typeof this.currentModalElement._heightAdjustMediaQueryCleanup === "function") {
+        this.currentModalElement._heightAdjustMediaQueryCleanup();
+      }
 
       // 페이드아웃 효과
       await AnimationUtils.fade(this.currentModalElement, "out", 300);
@@ -448,6 +542,9 @@ class VideoModalBase extends ModalBase {
     // 6단계: ResizeObserver 설정
     this.setupResizeObserver(modalElement);
 
+    // 6-1: PC 전환 시 높이 재측정 (media query)
+    this.setupHeightAdjustMediaQuery(modalElement);
+
     // 7단계: MutationObserver 설정
     this.setupMutationObserver(modalElement);
 
@@ -497,6 +594,26 @@ class VideoModalBase extends ModalBase {
     if (commentWrap) {
       this.resizeObserver.observe(commentWrap);
     }
+  }
+
+  /**
+   * PC 전환 시 video-list 높이 재측정 (media query)
+   * @param {HTMLElement} modalElement - 모달 요소
+   */
+  setupHeightAdjustMediaQuery(modalElement) {
+    const mediaQuery = window.matchMedia("(min-width: 1025px)");
+
+    const handleMediaChange = () => {
+      if (mediaQuery.matches) {
+        this._scheduleHeightAdjust(modalElement);
+      }
+    };
+
+    mediaQuery.addEventListener("change", handleMediaChange);
+
+    modalElement._heightAdjustMediaQueryCleanup = () => {
+      mediaQuery.removeEventListener("change", handleMediaChange);
+    };
   }
 
   /**
@@ -576,6 +693,22 @@ class VideoModalBase extends ModalBase {
 
     if (!videoSide || !videoHeader || !targetList) {
       console.warn("[VideoModalBase] 필요한 요소를 찾을 수 없습니다");
+      return false;
+    }
+
+    const isPC = () => window.matchMedia("(min-width: 1025px)").matches;
+
+    if (!isPC()) {
+      if (videoList?.style) {
+        videoList.style.removeProperty("height");
+        videoList.style.removeProperty("overflow-y");
+      }
+      if (targetList?.style && targetList !== videoList) {
+        targetList.style.removeProperty("height");
+        targetList.style.removeProperty("overflow-y");
+      }
+      if (learningList?.style) learningList.style.removeProperty("--scroll-height");
+      this._isAdjustingHeight = false;
       return false;
     }
 

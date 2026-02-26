@@ -73,10 +73,6 @@ const paths = {
       dest: "./dist/_coding_list",
     },
   },
-  guide: {
-    src: "./markup/_guide/**/*",
-    dest: "./dist/_guide",
-  },
 };
 
 // ------------------------------------
@@ -95,9 +91,11 @@ function fonts() {
 
 // Images
 function images() {
-  // 프로덕션 빌드에서는 더 높은 최적화 레벨 사용
-  const optimizationLevel = isProduction ? 5 : 3;
-  
+  // dev 모드에서는 imagemin 생략 (메모리 절약), 단순 복사
+  if (!isProduction) {
+    return src(paths.img.src, { encoding: false }).pipe(dest(paths.img.dest));
+  }
+
   return src(paths.img.src, {
     encoding: false,
     buffer: true,
@@ -105,14 +103,12 @@ function images() {
     .pipe(
       imagemin(
         [
-          imagemin.optipng({ optimizationLevel }),
+          imagemin.optipng({ optimizationLevel: 5 }),
           imagemin.svgo({
             plugins: [{ name: "removeViewBox", active: false }],
           }),
         ],
-        {
-          verbose: isProduction, // 프로덕션에서만 로그 출력
-        }
+        { verbose: true }
       )
     )
     .pipe(dest(paths.img.dest));
@@ -196,14 +192,20 @@ function jscopy() {
 
 // HTML SSI
 function html() {
-  return src([paths.html.src, ...paths.html.ignore]) // 배열로 합침
+  let stream = src([paths.html.src, ...paths.html.ignore]) // 배열로 합침
     .pipe(
       includer({
         prefix: "@@", // include 구문: @@include("header.html")
         basepath: "./markup/html", // ✅ 기준 경로를 html 폴더 전체로 설정
       })
-    )
-    .pipe(prettier())
+    );
+
+  // dev 모드에서는 prettier 생략 (메모리 절약)
+  if (isProduction) {
+    stream = stream.pipe(prettier());
+  }
+
+  return stream
     .pipe(dest(paths.html.dest))
     .pipe(browserSync.stream());
 }
@@ -221,10 +223,6 @@ function cdlindex() {
 
 function cdlfolder() {
   return src(paths.cdl.folder.src).pipe(dest(paths.cdl.folder.dest));
-}
-
-function guide() {
-  return src(paths.guide.src).pipe(dest(paths.guide.dest));
 }
 
 // BrowserSync
@@ -247,42 +245,21 @@ function serve() {
 // ------------------------------------
 // Series / Parallel Tasks
 // ------------------------------------
+// ※ parallel 대신 series 사용: 9개 태스크 동시 실행 시 8GB+ 메모리 초과 → 순차 실행으로 피크 메모리 절감
+
+const buildTasks = series(
+  parallel(fonts, csscopy, jscopy, cdlindex, cdlfolder), // 가벼운 태스크 (병렬)
+  images,
+  scss,
+  scripts,
+  html,
+);
 
 // 프로덕션 빌드 (압축 및 최적화 포함)
-const build = series(
-  clean,
-  parallel(
-    fonts,
-    images,
-    scss,
-    csscopy,
-    scripts,
-    jscopy,
-    html,
-    cdlindex,
-    cdlfolder,
-    guide
-  ),
-  cache
-);
+const build = series(clean, buildTasks, cache);
 
 // 개발 빌드 (압축 없음, 빠른 빌드)
-const dev = series(
-  clean,
-  parallel(
-    fonts,
-    images,
-    scss,
-    csscopy,
-    scripts,
-    jscopy,
-    html,
-    cdlindex,
-    cdlfolder,
-    guide
-  ),
-  parallel(serve)
-);
+const dev = series(clean, buildTasks, parallel(serve));
 
 export { build, dev, clean };
 export default dev;
