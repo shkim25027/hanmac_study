@@ -51,7 +51,7 @@ const DEFAULT_CONFIG = {
 
   PLAY_BUTTON: {
     RADIUS: 28,
-    ICON_SIZE: { width: 22, height: 26 },
+    ICON_SIZE: { width: 18, height: 18 },
     COLOR: "#E8643D",
     OPACITY: 0.9,
   },
@@ -78,6 +78,11 @@ const DEFAULT_CONFIG = {
     BG_OPACITY: 0.4,
     FILL_COLOR: "#D74800",
   },
+
+  TITLE: {
+    FONT_SIZE: 30,
+    LINE_HEIGHT: 36,
+  },
 };
 
 const CONFIG = {
@@ -91,7 +96,7 @@ const CELEBRATION_RIBBON_POSITION = {
   offsetY: -200,
 };
 
-const PUZZLE_PIECES = [
+let PUZZLE_PIECES = [
   {
     id: 1,
     title: "왜 다윈인인가 (최재천 교수)",
@@ -155,7 +160,7 @@ const PUZZLE_PIECES = [
 ];
 
 // PUZZLE_PIECES 정의 바로 아래에 추가
-const BOUNDARY_LINES = [
+let BOUNDARY_LINES = [
   // 수직 경계선들 (세로)
   { x1: 709, y1: 11, x2: 709, y2: 780, label: "vertical-709" },
   { x1: 1162, y1: 11, x2: 1162, y2: 780, label: "vertical-1162" },
@@ -169,7 +174,7 @@ const BOUNDARY_LINES = [
   { x1: 256, y1: 267, x2: 330, y2: 267, label: "horizontal-267" },
 ];
 
-const BOARD_PATHS = [
+let BOARD_PATHS = [
   {
     d: "M1866 258C1866 263.523 1861.52 268 1856 268L709 268L709 9.99991C709 4.47706 713.477 -0.000100757 719 -0.000100274L1856 -8.74227e-07C1861.52 -3.91404e-07 1866 4.47715 1866 10L1866 258Z",
     fill: `url(#${CONFIG.GRADIENT_IDS.BOARD_1})`,
@@ -235,7 +240,7 @@ const GRADIENTS = [
   },
 ];
 
-const BUTTON_POSITIONS = [
+let BUTTON_POSITIONS = [
   { id: 1, x: 475, y: 686 },
   { id: 2, x: 935, y: 175 },
   { id: 3, x: 1388, y: 175 },
@@ -249,7 +254,7 @@ const BUTTON_POSITIONS = [
 ];
 
 // 초기 타이틀은 PUZZLE_PIECES에서 가져오고, 챕터 데이터로 업데이트됨
-const TITLE_POSITIONS = [
+let TITLE_POSITIONS = [
   {
     id: 1,
     x: 475,
@@ -267,7 +272,7 @@ const TITLE_POSITIONS = [
   { id: 10, x: 176, y: 365, lines: ["삼안 소개"] },
 ];
 
-const GAUGE_CONFIG = {
+let GAUGE_CONFIG = {
   POSITIONS: {
     1: 780,
     2: 268,
@@ -305,6 +310,188 @@ const GAUGE_CONFIG = {
     10: 309,
   },
 };
+
+// ============================================================================
+// 반응형 설정 (모바일 / PC 분기)
+// ============================================================================
+const BREAKPOINT = 1024;
+
+// PC 데이터 백업
+const PC_PUZZLE_PIECES    = PUZZLE_PIECES;
+const PC_BOUNDARY_LINES   = BOUNDARY_LINES;
+const PC_BOARD_PATHS      = BOARD_PATHS;
+const PC_BUTTON_POSITIONS = BUTTON_POSITIONS;
+const PC_TITLE_POSITIONS  = TITLE_POSITIONS;
+const PC_GAUGE_CONFIG     = GAUGE_CONFIG;
+const PC_IMAGE_PATHS      = DEFAULT_CONFIG.IMAGE_PATHS;
+
+// ────────────────────────────────────────────────────────────
+// 모바일 SVG (board.svg 기준: 331 × 566)
+// piece.svg(315×550) 좌표 → board 좌표 변환
+//   x_new = 4 + x * (323/315)   y_new = 2 + y * (558/550)
+// ────────────────────────────────────────────────────────────
+const MO_SVG = {
+  VIEWBOX:    "0 0 331 566",
+  DIMENSIONS: { width: 331, height: 566 },
+};
+
+// 모바일 전용 이미지 경로 (_m 파일)
+const MO_IMAGE_PATHS = {
+  BASE: "./assets/images/onboarding/bg_piece_m.png",
+  COMPLETED: {
+    ACTIVE:        "./assets/images/onboarding/bg_piece_completed_m.png",
+    COMPLETED:     "./assets/images/onboarding/bg_piece_finish_m.png",
+    ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed_m.png",
+  },
+  FINISH: {
+    ACTIVE:        "./assets/images/onboarding/bg_piece_all_completed_m.png",
+    COMPLETED:     "./assets/images/onboarding/bg_piece_finish_m.png",
+    ALL_COMPLETED: "./assets/images/onboarding/bg_piece_all_completed_m.png",
+  },
+};
+
+// board_piece.svg 기준 좌표 (board 내부 여백 포함, id = 챕터 pieceId)
+// 모바일 피스 순서: 이미지 기준 좌→우, 상→하 (9,8,10,3,1,2,6,4,5,7)
+// ※ 9=좌중단(삼안), 10=좌상탭(한맥가족)
+const MO_PUZZLE_PIECES = [
+  { id: 9,  path: "M9 124H134V281H9Z" },                    // 좌중단  (삼안소개)
+  { id: 8,  path: "M323 360V438H164V360H323Z" },            // 우중하  (기술개발센터소개) 8↔4 교체
+  { id: 10, path: "M87 44H9V124H165V6H87V44Z" },            // 좌상탭  (한맥가족소개)
+  { id: 3,  path: "M244 45H323V124H165V6H244V45Z" },        // 우상탭  (새로운시대) 5↔3 교체
+  { id: 1,  path: "M164 419V281H8V419H164Z" },              // 좌3  (왜다윈인가)
+  { id: 2,  path: "M323 200H134V124H323V200Z" },            // 우상단  (건설산업디지털전환) 5↔2 교체
+  { id: 6,  path: "M164 419V556H87V518H8V419H164Z" },       // 좌4  (축적의시간)
+  { id: 4,  path: "M134 200H323V281H134Z" },                // 우중상  (상용S/W소개) 4↔5 교체
+  { id: 5,  path: "M323 281H164V360H323V281Z" },            // 우중단  (회사생활신규) 5↔2 교체
+  { id: 7,  path: "M164 438V556H242V517H323V438H164Z" },    // 우5-2 (회사생활경력)
+];
+
+// board.svg 4개 영역 (그라데이션 fill 적용)
+const MO_BOARD_PATHS = [
+  // 상단 좌측 (green, BOARD_2)
+  {
+    d: "M3.9375 5.9058C3.9375 3.73142 5.70018 1.96875 7.87455 1.96875H161C163.175 1.96875 164.938 3.73143 164.938 5.9058V280.969H7.87456C5.70018 280.969 3.9375 279.206 3.9375 277.032V5.9058Z",
+    fill: `url(#${DEFAULT_CONFIG.GRADIENT_IDS.BOARD_2})`,
+  },
+  // 하단 좌측 (blue, BOARD_4) — rect 3.9375,280.969 w83 h279 rx3.937
+  {
+    d: "M7.875 280.969H82.969C85.14 280.969 86.938 282.78 86.938 284.906V556.031C86.938 558.201 85.14 559.969 82.969 559.969H7.875C5.705 559.969 3.938 558.201 3.938 556.031V284.906C3.938 282.78 5.705 280.969 7.875 280.969Z",
+    fill: `url(#${DEFAULT_CONFIG.GRADIENT_IDS.BOARD_4})`,
+  },
+  // 우측 (red-orange, BOARD_1)
+  {
+    d: "M164.938 5.9058C164.938 3.73142 166.7 1.96875 168.875 1.96875H323C325.175 1.96875 326.938 3.73143 326.938 5.9058V434.032C326.938 436.206 325.175 437.969 323 437.969H164.938V5.9058Z",
+    fill: `url(#${DEFAULT_CONFIG.GRADIENT_IDS.BOARD_1})`,
+  },
+  // 하단 우측 (gold, BOARD_3) — rect 86.9375,437.969 w240 h122 rx3.937
+  {
+    d: "M90.875 437.969H322.969C325.14 437.969 326.938 439.768 326.938 441.906V556.031C326.938 558.201 325.14 559.969 322.969 559.969H90.875C88.705 559.969 86.938 558.201 86.938 556.031V441.906C86.938 439.768 88.705 437.969 90.875 437.969Z",
+    fill: `url(#${DEFAULT_CONFIG.GRADIENT_IDS.BOARD_3})`,
+  },
+];
+
+// 조각 경계선 (board_piece.svg 기준 좌표)
+const MO_BOUNDARY_LINES = [
+  { x1: 134, y1: 124, x2: 134, y2: 281, label: "mo-vertical-134" },
+  { x1: 165, y1: 281, x2: 165, y2: 556, label: "mo-vertical-165" },
+  { x1: 9,   y1: 124, x2: 323, y2: 124, label: "mo-horizontal-124" },
+  { x1: 134, y1: 200, x2: 323, y2: 200, label: "mo-horizontal-200" },
+  { x1: 9,   y1: 281, x2: 323, y2: 281, label: "mo-horizontal-281" },
+  { x1: 165, y1: 360, x2: 323, y2: 360, label: "mo-horizontal-360" },
+  { x1: 9,   y1: 419, x2: 165, y2: 419, label: "mo-horizontal-419" },
+  { x1: 165, y1: 438, x2: 323, y2: 438, label: "mo-horizontal-438" },
+];
+
+// 재생 버튼 위치 (각 조각 중앙, board_piece.svg 기준 좌표)
+const MO_BUTTON_POSITIONS = [
+  { id: 9,  x: 71,  y: 222 },  // 모바일 좌중단  (삼안소개)
+  { id: 8,  x: 243, y: 412 },  // 모바일 우중하  (기술개발센터소개)
+  { id: 10, x: 87,  y: 94  },  // 모바일 좌상탭  (한맥가족소개)
+  { id: 3,  x: 244, y: 94  },  // 모바일  우상탭  (새로운시대)
+  { id: 1,  x: 86, y: 372 },  // 모바일 좌3  (왜다윈인가)
+  { id: 2,  x: 228, y: 178 },  // 우상단  (건설산업디지털전환)
+  { id: 6,  x: 86,  y: 487 },  // 모바일 좌4  (축적의시간)
+  { id: 4,  x: 228, y: 252 },  // 우중상  (상용S/W소개)
+  { id: 5,  x: 243, y: 332 },  // 모바일 우중단  (회사생활신규)
+  { id: 7,  x: 243, y: 494 },  // 우5-2 (회사생활경력)
+];
+
+// 타이틀 위치 (board_piece.svg 기준 좌표)
+const MO_TITLE_POSITIONS = [
+  { id: 9,  x: 71,  y: 181, lines: ["삼안", "소개"] },                  // 좌중단  (삼안소개) 2줄
+  { id: 8,  x: 243, y: 388, lines: ["기술개발센터소개"] },               // 우중하  (기술개발센터소개) 1줄
+  { id: 10, x: 87,  y: 70,  lines: ["한맥가족 소개 및 경영이념"] },      // 좌상탭  (한맥가족소개) 1줄
+  { id: 3,  x: 244, y: 70,  lines: ["새로운 시대", "준비된 우리"] },      // 우상탭  (새로운시대)
+  { id: 1,  x: 86,  y: 346, lines: ["왜 다윈인가", "(최재천 교수)"] },  // 좌3  (왜다윈인가)
+  { id: 2,  x: 228, y: 154, lines: ["건설산업의 디지털 전환을"] },       // 우상단  (건설산업디지털전환) 1줄
+  { id: 6,  x: 86,  y: 466, lines: ["축적의 시간"] },                     // 좌4  (축적의시간)
+  { id: 4,  x: 228, y: 228, lines: ["상용 S/W 소개"] },                   // 우중상  (상용S/W소개)
+  { id: 5,  x: 243, y: 308, lines: ["회사생활 (신규입사자편)"] },        // 우중단  (회사생활신규) 1줄
+  { id: 7,  x: 243, y: 470, lines: ["회사생활 (경력)"] },                 // 우5-2 (회사생활경력)
+];
+
+// 게이지 설정 (board_piece.svg 기준 좌표)
+const MO_GAUGE_CONFIG = {
+  POSITIONS: {
+    9: 281,  10: 124, 1: 419,  6: 518,   // 좌측: 좌중단(9), 좌상탭(10), 좌3, 좌4
+    2: 124,  3: 124,  4: 200,  5: 281,  8: 360,  7: 517,  // 우측 (5↔2 교체)
+  },
+  X_RANGES: {
+    9:  { left: 9,   right: 134 },  // 좌중단  (삼안소개)
+    10: { left: 9,   right: 165 },  // 좌상탭  (한맥가족소개)
+    1:  { left: 8,   right: 164 },  // 좌 중장  (왜다윈인가)
+    6:  { left: 8,   right: 164 },  // 좌 하단  (축적의시간)
+    2:  { left: 134, right: 323 },  // 우상단  (건설산업디지털전환)
+    3:  { left: 165, right: 323 },  // 우상탭  (새로운시대)
+    4:  { left: 134, right: 323 },  // 우중상  (상용S/W소개)
+    5:  { left: 164, right: 323 },  // 우중단  (회사생활신규)
+    8:  { left: 164, right: 323 },  // 우중하  (기술개발센터소개)
+    7:  { left: 164, right: 323 },  // 우 하단  (회사생활경력)
+  },
+  MAX_LENGTHS: {
+    9: 125,  10: 156, 1: 156, 6: 156,
+    2: 189,  3: 158,  4: 189,  5: 159, 8: 159, 7: 159,
+  },
+};
+
+/**
+ * 뷰포트에 따라 전역 데이터를 PC / 모바일로 전환
+ */
+function applyResponsiveConfig() {
+  const mobile = window.innerWidth < BREAKPOINT;
+
+  if (mobile) {
+    CONFIG.SVG.VIEWBOX    = MO_SVG.VIEWBOX;
+    CONFIG.SVG.DIMENSIONS = MO_SVG.DIMENSIONS;
+    CONFIG.TITLE          = { FONT_SIZE: 14, LINE_HEIGHT: 18, STROKE_WIDTH: "3" };
+    CONFIG.PLAY_BUTTON    = { ...DEFAULT_CONFIG.PLAY_BUTTON, RADIUS: 11, ICON_SIZE: { width: 12, height: 12 }, STROKE_WIDTH: "2" };  // 모바일 12
+    CONFIG.GAUGE          = { ...DEFAULT_CONFIG.GAUGE, HEIGHT: 4 };
+    CONFIG.PIECE_STROKE_WIDTH = "1";
+
+    PUZZLE_PIECES        = MO_PUZZLE_PIECES;
+    BOUNDARY_LINES       = MO_BOUNDARY_LINES;
+    BOARD_PATHS          = MO_BOARD_PATHS;
+    BUTTON_POSITIONS     = MO_BUTTON_POSITIONS;
+    TITLE_POSITIONS      = MO_TITLE_POSITIONS;
+    GAUGE_CONFIG         = MO_GAUGE_CONFIG;
+    CONFIG.IMAGE_PATHS   = MO_IMAGE_PATHS;
+  } else {
+    CONFIG.SVG.VIEWBOX    = DEFAULT_CONFIG.SVG.VIEWBOX;
+    CONFIG.SVG.DIMENSIONS = DEFAULT_CONFIG.SVG.DIMENSIONS;
+    CONFIG.TITLE          = { ...DEFAULT_CONFIG.TITLE, STROKE_WIDTH: "8" };
+    CONFIG.PLAY_BUTTON    = { ...DEFAULT_CONFIG.PLAY_BUTTON, ICON_SIZE: { width: 28, height: 28 }, STROKE_WIDTH: "4" };  // PC 18
+    CONFIG.GAUGE          = { ...DEFAULT_CONFIG.GAUGE };
+    CONFIG.PIECE_STROKE_WIDTH = "2";
+
+    PUZZLE_PIECES        = PC_PUZZLE_PIECES;
+    BOUNDARY_LINES       = PC_BOUNDARY_LINES;
+    BOARD_PATHS          = PC_BOARD_PATHS;
+    BUTTON_POSITIONS     = PC_BUTTON_POSITIONS;
+    TITLE_POSITIONS      = PC_TITLE_POSITIONS;
+    GAUGE_CONFIG         = PC_GAUGE_CONFIG;
+    CONFIG.IMAGE_PATHS   = PC_IMAGE_PATHS;
+  }
+}
 
 // ============================================================================
 // 챕터 관리 클래스
@@ -1497,11 +1684,12 @@ class PuzzlePiece {
     opacity = "1.0",
     hidden = false
   ) {
-    const strokeWidth = 
-      className === "piece-base-image" ? "2" :
+    const pieceStroke = CONFIG.PIECE_STROKE_WIDTH || "2";
+    const strokeWidth =
+      className === "piece-base-image" ? pieceStroke :
       className === "piece-all-completed-image" ? "0" :
-      className === "piece-completed-image" ? "2" :
-      className === "piece-finish-image" ? "2" : "2";
+      className === "piece-completed-image" ? pieceStroke :
+      className === "piece-finish-image" ? pieceStroke : pieceStroke;
   
     // ✅ 모든 레이어에서 stroke 색상을 #333 (검은색)으로 통일
     const strokeColor = "#000";
@@ -2043,7 +2231,7 @@ class UIElementFactory {
       fill: "none",
       stroke: "white",
       "stroke-opacity": "0.9",
-      "stroke-width": "4",
+      "stroke-width": CONFIG.PLAY_BUTTON.STROKE_WIDTH,
     });
     outerCircleGroup.appendChild(strokeCircle);
 
@@ -2091,7 +2279,7 @@ class UIElementFactory {
       fill: "none",
       stroke: "white",
       "stroke-opacity": "0.9",
-      "stroke-width": "4",
+      "stroke-width": CONFIG.PLAY_BUTTON.STROKE_WIDTH,
     });
     outerCircleGroup.appendChild(strokeCircle);
 
@@ -2101,13 +2289,16 @@ class UIElementFactory {
   }
 
   static _createFileIcon(group, centerX, centerY, groupColor = "#8F360B") {
-    const iconWidth = 32;
-    const iconHeight = 28;
-    const x = centerX - iconWidth / 2;
-    const y = centerY - iconHeight / 2;
+    const srcWidth = 32;
+    const srcHeight = 28;
+    const targetSize = CONFIG.PLAY_BUTTON.ICON_SIZE;
+    const scaleX = targetSize.width / srcWidth;
+    const scaleY = targetSize.height / srcHeight;
+    const x = centerX - targetSize.width / 2;
+    const y = centerY - targetSize.height / 2;
 
     const iconGroup = SVGHelper.createElement("g", {
-      transform: `translate(${x}, ${y})`,
+      transform: `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`,
     });
 
     const pdfBox = SVGHelper.createElement("rect", {
@@ -2144,17 +2335,17 @@ class UIElementFactory {
         "dominant-baseline": "middle",
         fill: "black",
         stroke: "white",
-        "stroke-width": "8",
+        "stroke-width": CONFIG.TITLE.STROKE_WIDTH,
         "stroke-linejoin": "round",
         "stroke-linecap": "round",
         "paint-order": "stroke fill",
-        "font-size": "30",
+        "font-size": String(CONFIG.TITLE.FONT_SIZE),
         "font-weight": "bold",
         "pointer-events": "none",
         filter: "url(#text-shadow-filter)",
       });
 
-      const lineHeight = 36;
+      const lineHeight = CONFIG.TITLE.LINE_HEIGHT;
       const totalHeight = (pos.lines.length - 1) * lineHeight;
       const startY = pos.y - totalHeight / 2;
 
@@ -3299,6 +3490,15 @@ class PuzzleManager {
     }
   }
 
+  destroy() {
+    if (this.svg && this.svg.parentNode) {
+      this.svg.parentNode.removeChild(this.svg);
+    }
+    this.svg = null;
+    this.pieces = [];
+    PuzzleManager.instance = null;
+  }
+
   initialize() {
     this.svg = this._createSVG();
     this._setupDefs();
@@ -3999,12 +4199,39 @@ function initializePuzzleOnboarding() {
   }
 }
 
+// ============================================================================
+// 리사이즈 핸들러 (mo ↔ pc 전환 시 SVG 재생성)
+// ============================================================================
+let _puzzleIsMobile = window.innerWidth < BREAKPOINT;
+let _puzzleResizeTimer;
+
+function _onPuzzleResize() {
+  clearTimeout(_puzzleResizeTimer);
+  _puzzleResizeTimer = setTimeout(() => {
+    const nowMobile = window.innerWidth < BREAKPOINT;
+    if (nowMobile !== _puzzleIsMobile) {
+      _puzzleIsMobile = nowMobile;
+      if (PuzzleManager.instance) {
+        PuzzleManager.instance.destroy();
+      }
+      applyResponsiveConfig();
+      initializePuzzleOnboarding();
+    }
+  }, 300);
+}
+
 // DOMContentLoaded 이벤트 처리
 if (document.readyState === 'loading') {
-  document.addEventListener("DOMContentLoaded", initializePuzzleOnboarding);
+  document.addEventListener("DOMContentLoaded", () => {
+    applyResponsiveConfig();
+    initializePuzzleOnboarding();
+    window.addEventListener('resize', _onPuzzleResize);
+  });
 } else {
   // 이미 로드된 경우 즉시 실행
+  applyResponsiveConfig();
   initializePuzzleOnboarding();
+  window.addEventListener('resize', _onPuzzleResize);
 }
 
 // ============================================================================

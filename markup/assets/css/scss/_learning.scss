@@ -128,6 +128,10 @@ $chapter-widths: (
       ),
       linear-gradient(180deg, #f9f6f0 0%, #e6ddcc 100%);
     box-shadow: 0 -2px 3px 0 rgba(0, 0, 0, 0.5);
+
+    @include mq(desktop, max) {
+      background: linear-gradient(180deg, #F8F4ED 0%, #E6DDCD 100%);
+    }
   }
 
   .puzzle {
@@ -139,23 +143,42 @@ $chapter-widths: (
       position: relative;
       width: 100%;
       flex-grow: 1;
+      max-height: 100%;
       @include flex(row, center, center);
+      @include mq(desktop, max) {
+        padding: 24px 0;
+      }
     }
 
     &-board {
       position: relative;
-      width: 90%;
-      margin-top: -4%;
+      
+      @include mq(desktop, min) {
+        width: 90%;
+        margin-top: -4%;
+      }
+      @include mq(desktop, max) {
+        width: auto;
+        height: 100%;
+      }
 
       svg {
         width: 100%;
         height: auto;
         display: block;
-        transform: perspective(794px) rotateX(6deg);
-        transform-origin: bottom;
+        @include mq(desktop, min) {
+          transform: perspective(794px) rotateX(6deg);
+          transform-origin: bottom;
+        }
+        @include mq(desktop, max) {
+          height: 100%;
+        }
       }
 
       .img-box {
+        @include mq(desktop, max) {
+          display: none;
+        }
         &.family {
           @include puzzle-img-box(14.07089%, $left: 0.75187%, $top: 5.03778%);
         }
