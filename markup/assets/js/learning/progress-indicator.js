@@ -21,7 +21,7 @@ class ProgressIndicator {
       this.indicator = null;
       this.stateIndicator = null; // 평균 상태 표시 요소
       
-      this.gaugeSvg = this.domUtils?.$("#gauge-svg") || document.getElementById("gauge-svg");
+      this.gaugeSvg = this.gaugeManager.gaugeSvg || this.domUtils?.$("#gauge-svg") || document.getElementById("gauge-svg") || document.getElementById("gauge-svg-mo");
       if (!this.gaugeSvg) {
         this._handleError(new Error('gauge-svg 요소를 찾을 수 없습니다.'), 'constructor');
       }
@@ -433,8 +433,8 @@ class ProgressIndicator {
       return;
     }
 
-    // maskPath 기준으로 끝 지점 계산 (가장 정확함)
-    const maskPath = document.getElementById("maskPath");
+    // maskPath 기준으로 끝 지점 계산 (가장 정확함) - PC/모바일 공통 gaugeManager.maskPath 사용
+    const maskPath = this.gaugeManager.maskPath || document.getElementById("maskPath") || document.getElementById("maskPath-mo");
 
     console.log("타겟 마커 : " + targetMarkerIndex);
     // ========== 특정 범위로 제한 ==========

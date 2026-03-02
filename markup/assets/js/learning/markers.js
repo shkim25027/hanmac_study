@@ -19,7 +19,7 @@ class MarkerManager {
       this.config = config;
       this.markers = [];
       
-      this.gaugeSvg = this.domUtils?.$("#gauge-svg") || document.getElementById("gauge-svg");
+      this.gaugeSvg = this.gaugeManager.gaugeSvg || this.domUtils?.$("#gauge-svg") || document.getElementById("gauge-svg") || document.getElementById("gauge-svg-mo");
       this.markersContainer = this.domUtils?.$("#markers-container") || document.getElementById("markers-container");
       
       if (!this.gaugeSvg) {

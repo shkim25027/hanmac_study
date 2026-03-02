@@ -11,8 +11,12 @@ class GaugeManager {
     this.utils = dependencies.utils || (typeof Utils !== 'undefined' ? Utils : null);
 
     try {
-      this.maskPath = this.domUtils?.$("#maskPath") || document.getElementById("maskPath");
-      this.gaugeSvg = this.domUtils?.$("#gauge-svg") || document.getElementById("gauge-svg");
+      // PC/모바일 구분: 768px 미만이면 모바일 게이지 SVG 사용
+      this.isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+      const gaugeSvgId = this.isMobile ? 'gauge-svg-mo' : 'gauge-svg';
+      const maskPathId = this.isMobile ? 'maskPath-mo' : 'maskPath';
+      this.maskPath = this.domUtils?.$("#" + maskPathId) || document.getElementById(maskPathId);
+      this.gaugeSvg = this.domUtils?.$("#" + gaugeSvgId) || document.getElementById(gaugeSvgId);
       this.pathLength = 0;
 
       if (!this.maskPath) {
@@ -79,8 +83,7 @@ class GaugeManager {
         targetPathPercent = Math.max(0, Math.min(1, percent / 100));
       }
 
-      // maskPath는 아래에서 위로 채워지므로, pathPercent에 해당하는 길이까지만 채움
-      // pathPercent가 0이면 시작점, 1이면 끝점
+      // maskPath: path 0%=시작부터 채움. 시작점(하단)→끝점(상단) 방향이 PC/MO 동일하므로 같은 offset 공식 사용
       const targetLength = this.pathLength * targetPathPercent;
       const targetOffset = this.pathLength - targetLength;
       
@@ -188,7 +191,9 @@ class GaugeManager {
         }
       }
 
-      return this.maskPath.getPointAtLength(this.pathLength * clampedPercent);
+      // PC/MO 모두 path가 START(0%)→트로피(100%) 방향. 동일 공식 사용
+      const lengthPercent = clampedPercent;
+      return this.maskPath.getPointAtLength(this.pathLength * lengthPercent);
     } catch (error) {
       this._handleError(error, 'getPointAtPercent', { percent });
       return null;
@@ -261,7 +266,8 @@ class GaugeManager {
         }
       }
 
-      return Math.max(0, Math.min(1, closestPercent));
+      const resultPercent = closestPercent;
+      return Math.max(0, Math.min(1, resultPercent));
     } catch (error) {
       this._handleError(error, 'findClosestPathPercent', { markerPercentX, markerPercentY });
       return 0;

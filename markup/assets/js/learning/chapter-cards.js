@@ -35,7 +35,7 @@ class ChapterCardManager {
       style.id = "chapter-card-styles";
       style.textContent = `
         .chapter-card:hover .card-play-button {
-          transform: translate(-50%, -50%) scale(1.1);
+          transform: scale(1.1);
         }
 
         /* 호버 효과 */
@@ -375,7 +375,7 @@ class ChapterCardManager {
    */
   _positionCard(li, chapterLesson) {
     try {
-      const gaugeSvg = document.getElementById("gauge-svg");
+      const gaugeSvg = this.gaugeManager.gaugeSvg || document.getElementById("gauge-svg") || document.getElementById("gauge-svg-mo");
       if (!gaugeSvg) {
         console.warn('[ChapterCardManager] gauge-svg 요소를 찾을 수 없습니다.');
         return;
