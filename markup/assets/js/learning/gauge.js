@@ -275,6 +275,29 @@ class GaugeManager {
   }
 
   /**
+   * PC/모바일 상태 업데이트 (리사이즈 시 호출)
+   * isMobile 플래그와 gaugeSvg, maskPath를 현재 창 너비에 맞게 전환
+   */
+  updateMobileState() {
+    try {
+      const newIsMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+      if (newIsMobile === this.isMobile) return; // 변경 없으면 스킵
+
+      this.isMobile = newIsMobile;
+      const gaugeSvgId = this.isMobile ? 'gauge-svg-mo' : 'gauge-svg';
+      const maskPathId = this.isMobile ? 'maskPath-mo' : 'maskPath';
+
+      this.maskPath = this.domUtils?.('#' + maskPathId) || document.getElementById(maskPathId);
+      this.gaugeSvg = this.domUtils?.('#' + gaugeSvgId) || document.getElementById(gaugeSvgId);
+      this.pathLength = 0; // 재계산을 위해 초기화
+
+      console.log(`[GaugeManager] 상태 전환: ${this.isMobile ? '모바일' : 'PC'}`);
+    } catch (error) {
+      this._handleError(error, 'updateMobileState');
+    }
+  }
+
+  /**
    * 초기 진행률 계산 (타겟 마커 config 반환)
    * @param {Array} allMarkers - 전체 마커 배열
    * @param {Object} config - 설정 객체

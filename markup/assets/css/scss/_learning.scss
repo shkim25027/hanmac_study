@@ -110,6 +110,26 @@ $chapter-widths: (
         mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
       }
     }
+
+    .page-title {
+      @include mq(tablet-small, max) {
+        padding-top: 24px;
+        padding-bottom: 24px;
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-bottom: 12px;
+
+        h3 {
+          margin-bottom: 10px;
+          line-height: 1.4;
+        }
+        p {
+          line-height: 1.5;
+          text-wrap: balance;
+          word-break: keep-all;
+        }
+      }
+    }
   }
 }
 
@@ -118,6 +138,23 @@ $chapter-widths: (
 // Onboarding Styles
 // =======================================
 .onboarding {
+  .page-title {
+    @include mq(tablet-small, max) {
+      padding-top: 24px;
+      padding-bottom: 16px;
+      padding-left: 8px;
+      padding-right: 8px;
+
+      h3 {
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+      p {
+        line-height: 1.5;
+      }
+    }
+  }
+
   .container {
     background:
       radial-gradient(
@@ -137,6 +174,10 @@ $chapter-widths: (
   .puzzle {
     &-wrap {
       @include learning-container;
+
+      @include mq(tablet-small, max) {
+        padding: 0 24px;
+      }
     }
 
     &-area {
@@ -147,6 +188,10 @@ $chapter-widths: (
       @include flex(row, center, center);
       @include mq(desktop, max) {
         padding: 24px 0;
+      }
+      @include mq(tablet-small, max) {
+        padding: 20px 0 32px;
+        margin-top: 8px;
       }
     }
 
@@ -309,6 +354,10 @@ $chapter-widths: (
     @include learning-container;
     padding: 0;
     z-index: 2;
+
+    @include mq(tablet-small, max) {
+      padding: 0px;
+    }
   }
 
   &-area {
@@ -318,13 +367,56 @@ $chapter-widths: (
     @include bgImg("../images/learning/bg_grid.svg", auto, center);
     padding-top: 3%;
     @include flex();
+
+    @include mq(tablet-small, max) {
+      padding-top: 16px;
+      padding-bottom: 32px;
+      padding-left: 0px;
+      padding-right: 24px;
+    }
   }
 
   &-gauge {
+    position: relative;
     text-align: center;
     width: 84.427%;
     margin: auto;
     translate: 4% 0;
+
+    /* PC/모바일 게이지 전환 (768px 기준)
+     * display:none 대신 visibility 사용 → getTotalLength() 측정 가능 (모바일 path-fill 동작) */
+    .gauge-svg-pc {
+      display: block;
+    }
+    .gauge-svg-mo {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    @include mq(tablet-small, max) {
+      .gauge-svg-pc {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .gauge-svg-mo {
+        position: relative;
+        visibility: visible;
+        pointer-events: auto;
+      }
+      width: 100%;
+      margin: 0 auto;
+      translate: 0;
+      padding: 0px;
+    }
 
     svg {
       width: 100%;
@@ -338,20 +430,42 @@ $chapter-widths: (
     left: 0;
     width: 3.91304%;
     translate: -8% -32%;
+    @include mq(tablet-small, max) {
+      width: calc(38px / 360px * 100%);
+      translate: calc(6px / 360px * 100%) -0%;
+    }
   }
 
   #markers-container {
+    position: absolute;
+    inset: 0;
     translate: none;
+    pointer-events: none;
+
+    > .marker {
+      pointer-events: auto;
+    }
   }
 
   .marker {
     position: absolute;
     cursor: pointer;
 
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
     &[data-type="chapter"] {
       width: 2.4676%;
+      min-width: 20px;
       transform: scale(1.4);
-
+      @include mq(tablet-small, max) {
+        width: calc(26px / 360px * 100%);
+        min-width: 22px;
+        transform: scale(1.4);
+      }
       &::before,
       &::after {
         @include pseudo(block, absolute, "");
@@ -360,7 +474,7 @@ $chapter-widths: (
         left: 50%;
         translate: -50% -100%;
         mix-blend-mode: multiply;
-        z-index: 9;
+        z-index: -1;
       }
 
       &::before {
@@ -393,6 +507,11 @@ $chapter-widths: (
     &[data-type="normal"] {
       width: 2.3442%;
       translate: 0 -40%;
+      @include mq(tablet-small, max) {
+        width: calc(20px / 360px * 100%);
+        min-width: 20px;
+        translate: 0 -40%;
+      }
 
       &.current {
         transform: scale(1.6) !important;
@@ -402,11 +521,17 @@ $chapter-widths: (
     // Marker positioning
     &:first-child {
       translate: 0 -80%;
+      @include mq(tablet-small, max) {
+        translate: -35% -60%;
+      }
     }
 
     &:nth-child(n + 2):nth-child(-n + 9) {
       translate: 0 -90%;
       transform: scale(1.2);
+      @include mq(tablet-small, max) {
+        translate: -35% -60%;
+      }
     }
 
     &:nth-child(n + 11):nth-child(-n + 12),
@@ -417,6 +542,9 @@ $chapter-widths: (
     &:nth-child(10),
     &:nth-child(13) {
       translate: 0 -50%;
+      @include mq(tablet-small, max) {
+        translate: -35% -70%;
+      }
     }
 
     &:nth-child(16),
@@ -457,21 +585,33 @@ $chapter-widths: (
           @for $i from 1 through 3 {
             &:nth-child(#{$i}) {
               @include chapter-width(map.get($chapter-widths, base));
+              @include mq(tablet-small, max) {
+                width: calc(88px / 360px * 100%);
+              }
             }
           }
+         
 
           &:nth-child(4) {
             @include chapter-width(map.get($chapter-widths, base-4));
+            @include mq(tablet-small, max) {
+              width: calc(82px / 360px * 100%);
+            }
           }
 
           &:nth-child(5) {
             @include chapter-width(map.get($chapter-widths, base-5));
+            @include mq(tablet-small, max) {
+              width: calc(76px / 360px * 100%);
+            }
           }
         }
 
         &.completed {
           @include chapter-width(map.get($chapter-widths, completed));
-
+          @include mq(tablet-small, max) {
+            width: calc(120px / 360px * 100%);
+          }
           svg {
             animation: bounce 0.5s ease;
           }
@@ -479,7 +619,9 @@ $chapter-widths: (
 
         &.current {
           @include chapter-width(map.get($chapter-widths, current));
-
+          @include mq(tablet-small, max) {
+            width: calc(120px / 360px * 100%);
+          }
           svg {
             animation: bounce 0.5s ease;
           }
@@ -541,6 +683,9 @@ $chapter-widths: (
         .card-title {
           font-size: 14px;
           color: var(--bg-card-base);
+          @include mq(tablet-small, max) {
+            font-size: 11px;
+          }
         }
       }
 
@@ -584,6 +729,9 @@ $chapter-widths: (
           font-size: 24px;
           padding: 8px 0;
           color: var(--bg-card-current);
+          @include mq(tablet-small, max) {
+            font-size: 16px;
+          }
         }
 
         .card-play-button {
@@ -647,6 +795,9 @@ $chapter-widths: (
         .card-title {
           font-size: 20px;
           color: var(--bg-card-completed);
+          @include mq(tablet-small, max) {
+            font-size: 14px;
+          }
         }
 
         .card-play-button {
@@ -748,9 +899,15 @@ $chapter-widths: (
     &-indicator {
       @include chapter-width(131px);
       height: auto;
+      @include mq(tablet-small, max) {
+        width: calc(92px / 360px * 100%);
+      }
 
       &.completed {
         @include chapter-width(140px);
+        @include mq(tablet-small, max) {
+          width: calc(96px / 360px * 100%);
+        }
       }
 
       svg {

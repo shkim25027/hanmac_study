@@ -162,6 +162,10 @@ class MarkerManager {
     try {
       const resizeHandler = () => {
         try {
+          if (this.gaugeManager && typeof this.gaugeManager.updateMobileState === 'function') {
+            this.gaugeManager.updateMobileState();
+          }
+          this.gaugeSvg = this.gaugeManager?.gaugeSvg || this.gaugeSvg;
           console.log("[MarkerManager] 리사이즈 감지: 마커 위치 재계산");
           this._updateMarkerPositions();
         } catch (error) {
@@ -223,9 +227,9 @@ class MarkerManager {
             return;
           }
 
-          const point = this.gaugeManager.getPointAtPercent(
-            marker.config.pathPercent
-          );
+          const isMobile = this.gaugeManager.isMobile;
+          const pathPercent = (isMobile && marker.config.pathPercentMo != null) ? marker.config.pathPercentMo : (marker.config.pathPercent || 0);
+          const point = this.gaugeManager.getPointAtPercent(pathPercent);
 
           if (!point) {
             console.warn(`[MarkerManager] 마커 ${index}의 포인트를 가져올 수 없습니다.`);
@@ -274,7 +278,9 @@ class MarkerManager {
         return;
       }
 
-      const point = this.gaugeManager.getPointAtPercent(config.pathPercent);
+      const isMobile = this.gaugeManager.isMobile;
+      const pathPercent = (isMobile && config.pathPercentMo != null) ? config.pathPercentMo : (config.pathPercent || 0);
+      const point = this.gaugeManager.getPointAtPercent(pathPercent);
       if (!point) {
         console.warn(`[MarkerManager] 마커 ${index}의 포인트를 가져올 수 없습니다.`);
         return;
@@ -641,9 +647,10 @@ class MarkerManager {
         `[MarkerManager] 모든 학습 완료: 게이지바 100%로 설정`
       );
     } else if (targetMarker && targetMarker.element) {
-      // gaugePercent가 있으면 우선 사용, 없으면 마커의 실제 DOM 위치 기반으로 계산
-      if (targetConfig.gaugePercent !== undefined) {
-        targetPathPercent = targetConfig.gaugePercent;
+      // gaugePercent가 있으면 우선 사용, 없으면 마커의 실제 DOM 위치 기반으로 계산 (모바일은 gaugePercentMo)
+      const gaugeVal = this.gaugeManager.isMobile && targetConfig.gaugePercentMo != null ? targetConfig.gaugePercentMo : targetConfig.gaugePercent;
+      if (gaugeVal !== undefined) {
+        targetPathPercent = gaugeVal;
         progressPercent = targetPathPercent * 100;
         console.log(
           `[MarkerManager] gaugePercent 사용: ${progressPercent.toFixed(1)}%`
@@ -662,8 +669,9 @@ class MarkerManager {
         );
       }
     } else if (targetConfig) {
-      // 마커를 찾을 수 없는 경우 gaugePercent 우선 사용, 없으면 pathPercent 사용
-      targetPathPercent = targetConfig.gaugePercent !== undefined ? targetConfig.gaugePercent : (targetConfig.pathPercent || 0);
+      // 마커를 찾을 수 없는 경우 gaugePercent 우선 사용, 없으면 pathPercent 사용 (모바일은 Mo 버전)
+      const gaugeVal = this.gaugeManager.isMobile && targetConfig.gaugePercentMo != null ? targetConfig.gaugePercentMo : targetConfig.gaugePercent;
+      targetPathPercent = gaugeVal !== undefined ? gaugeVal : (targetConfig.pathPercentMo != null && this.gaugeManager.isMobile ? targetConfig.pathPercentMo : (targetConfig.pathPercent || 0));
       progressPercent = targetPathPercent * 100;
       console.log(
         `[MarkerManager] 마커를 찾을 수 없음, ${targetConfig.gaugePercent !== undefined ? 'gaugePercent' : 'pathPercent'} 직접 사용: ${progressPercent.toFixed(1)}%`

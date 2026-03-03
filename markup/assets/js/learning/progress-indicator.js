@@ -220,10 +220,25 @@ class ProgressIndicator {
   }
 
   /**
+   * state-indicator 표시 여부 반환 (pc/mo 구분)
+   * @private
+   * @returns {boolean}
+   */
+  _isStateIndicatorEnabled() {
+    const setting = this.config.settings?.showStateIndicator;
+    if (setting === undefined || setting === null) return true;
+    if (typeof setting === 'boolean') return setting;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    return isMobile ? setting.mo !== false : setting.pc !== false;
+  }
+
+  /**
    * 평균 상태 표시 생성
    * @private
    */
   _createStateIndicator() {
+    if (!this._isStateIndicatorEnabled()) return;
+
     try {
       this.stateIndicator = this.domUtils?.createElement('div', {
         class: 'state-indicator',
@@ -254,6 +269,7 @@ class ProgressIndicator {
    * @param {number} currentProgress - 현재 진행률 (0-100)
    */
   _updateStateIndicator(currentProgress) {
+    if (!this._isStateIndicatorEnabled()) return;
     if (!this.stateIndicator || !this.config.averageProgress) return;
 
     // 모든 챕터가 완료되었는지 확인
@@ -656,7 +672,7 @@ class ProgressIndicator {
   /**
    * 경로를 따라 애니메이션으로 이동
    * @private
-   * @param {SVGPathElement} pathFill - path-fill 경로 요소
+   * @param {SVGPathElement} pathFill - path-fill (PC) 또는 path-fill-mo (모바일) 경로 요소
    * @param {number} startProgress - 시작 진행률 (0-1)
    * @param {number} endProgress - 끝 진행률 (0-1)
    * @param {number} targetMarkerLeft - 목표 마커의 left 위치 (%)
@@ -847,6 +863,8 @@ class ProgressIndicator {
     try {
       const resizeHandler = () => {
         try {
+          // gaugeManager의 최신 gaugeSvg 참조 업데이트 (PC↔모바일 전환 시)
+          this.gaugeSvg = this.gaugeManager?.gaugeSvg || this.gaugeSvg;
           console.log("[ProgressIndicator] 리사이즈 감지: 위치 재계산");
           this._positionIndicator();
 

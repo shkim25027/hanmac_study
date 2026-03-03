@@ -15,6 +15,7 @@ class ChapterCardManager {
     this.eventManager = dependencies.eventManager || (typeof eventManager !== 'undefined' ? eventManager : null);
     this.errorHandler = dependencies.errorHandler || (typeof ErrorHandler !== 'undefined' ? ErrorHandler : null);
     this.animationUtils = dependencies.animationUtils || (typeof AnimationUtils !== 'undefined' ? AnimationUtils : null);
+    this.utils = dependencies.utils || (typeof Utils !== 'undefined' ? Utils : null);
 
     // 이벤트 리스너 ID 저장 (정리용)
     this.listenerIds = [];
@@ -96,11 +97,72 @@ class ChapterCardManager {
         }
       });
 
+      this._setupResizeHandler();
+
       console.log(
         `[ChapterCardManager] ${this.chapterCards.length}개의 챕터 카드 생성 완료`
       );
     } catch (error) {
       this._handleError(error, 'ChapterCardManager.createChapterCards');
+    }
+  }
+
+  /**
+   * 리사이즈 핸들러 설정 (PC/모바일 전환 시 카드 위치 재계산)
+   * @private
+   */
+  _setupResizeHandler() {
+    try {
+      const resizeHandler = () => {
+        try {
+          if (this.gaugeManager && typeof this.gaugeManager.updateMobileState === 'function') {
+            this.gaugeManager.updateMobileState();
+          }
+          this._repositionCards();
+        } catch (error) {
+          this._handleError(error, 'ChapterCardManager._setupResizeHandler.resizeHandler');
+        }
+      };
+
+      if (this.utils && this.utils.throttle) {
+        const throttledResize = this.utils.throttle(resizeHandler, 100);
+        if (this.eventManager) {
+          const listenerId = this.eventManager.on(window, "resize", throttledResize);
+          this.listenerIds.push({ element: window, id: listenerId, type: 'resize' });
+        } else {
+          window.addEventListener("resize", throttledResize);
+        }
+      } else {
+        let resizeTimer;
+        const debouncedResize = () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(resizeHandler, 100);
+        };
+        if (this.eventManager) {
+          const listenerId = this.eventManager.on(window, "resize", debouncedResize);
+          this.listenerIds.push({ element: window, id: listenerId, type: 'resize' });
+        } else {
+          window.addEventListener("resize", debouncedResize);
+        }
+      }
+    } catch (error) {
+      this._handleError(error, 'ChapterCardManager._setupResizeHandler');
+    }
+  }
+
+  /**
+   * 카드 위치 재설정 (리사이즈 시)
+   * @private
+   */
+  _repositionCards() {
+    try {
+      this.chapterCards.forEach((card) => {
+        if (card && card.element && card.chapterLesson) {
+          this._positionCard(card.element, card.chapterLesson);
+        }
+      });
+    } catch (error) {
+      this._handleError(error, 'ChapterCardManager._repositionCards');
     }
   }
 
@@ -196,13 +258,6 @@ class ChapterCardManager {
       }
       
       thumbnailContainer.appendChild(playButton);
-
-      // 스탬프 아이콘 추가 (completed 상태일 때만 표시)
-      if (state === "completed") {
-        const stamp = this.domUtils?.createElement('div', { class: 'ico-stamp' }) || document.createElement("div");
-        stamp.className = "ico-stamp";
-        inner.appendChild(stamp);
-      }
 
       // 게이지바 추가
       const gaugeBar = this.domUtils?.createElement('div', { class: 'card-gauge-bar' }) || document.createElement("div");
@@ -387,9 +442,9 @@ class ChapterCardManager {
         return;
       }
 
-      const point = this.gaugeManager.getPointAtPercent(
-        chapterLesson.pathPercent
-      );
+      const isMobile = this.gaugeManager.isMobile;
+      const pathPercent = (isMobile && chapterLesson.pathPercentMo != null) ? chapterLesson.pathPercentMo : (chapterLesson.pathPercent || 0);
+      const point = this.gaugeManager.getPointAtPercent(pathPercent);
 
       if (!point || typeof point.x !== 'number' || typeof point.y !== 'number') {
         console.warn('[ChapterCardManager] 유효하지 않은 포인트입니다.');
@@ -472,26 +527,6 @@ class ChapterCardManager {
                 this.animationUtils.progressBar(gaugeFill, newProgress, 300);
               } else {
                 gaugeFill.style.width = newProgress + "%";
-              }
-            }
-
-            // 스탬프 업데이트
-            const inner = this.domUtils?.$(".chapter-card-inner", card.element) || card.element.querySelector(".chapter-card-inner");
-            if (inner) {
-              const existingStamp = this.domUtils?.$(".ico-stamp", inner) || inner.querySelector(".ico-stamp");
-
-              if (newState === "completed" && !existingStamp) {
-                const stamp = this.domUtils?.createElement('div', { class: 'ico-stamp' }) || document.createElement("div");
-                stamp.className = "ico-stamp";
-                // 제목 앞에 삽입
-                const title = this.domUtils?.$(".card-title", inner) || inner.querySelector(".card-title");
-                if (title) {
-                  inner.insertBefore(stamp, title);
-                } else {
-                  inner.appendChild(stamp);
-                }
-              } else if (newState !== "completed" && existingStamp) {
-                this.domUtils?.remove(existingStamp) || existingStamp.remove();
               }
             }
 

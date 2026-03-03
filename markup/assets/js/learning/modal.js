@@ -753,6 +753,10 @@ class VideoModal extends VideoModalBase {
    * @private
    */
   _adjustModalContentHeight() {
+    // 모바일에서는 modal-content 인라인 스타일 조정 안 함 (video-area 상단 고정 유지)
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (isMobile) return;
+
     const modalContent = this.currentModal?.querySelector(".modal-content");
     if (!modalContent) {
       console.warn("modal-content 요소를 찾을 수 없습니다");
