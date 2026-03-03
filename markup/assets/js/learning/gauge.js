@@ -123,17 +123,15 @@ class GaugeManager {
         void this.maskPath.offsetHeight;
       }
       
-      // stroke-dasharray를 pathLength로 설정하여 gap이 없도록 함
-      // [dash, gap] 형태에서 gap을 0으로 설정하면 연속된 선이 됨
-      // setAttribute를 사용하여 인라인 스타일을 확실하게 덮어쓰기
-      this.maskPath.setAttribute('stroke-dasharray', `${this.pathLength} 0`);
-      
-      // offset 업데이트
+      // stroke-dasharray를 인라인 스타일로 설정 (단일 값 → dash=pathLength, gap=pathLength)
+      // SVG 속성(setAttribute) 대신 인라인 스타일 사용: PC/MO 모두 동일하게 dashoffset으로 제어 가능
       if (this.domUtils) {
         this.domUtils.setStyles(this.maskPath, {
+          strokeDasharray: `${this.pathLength}`,
           strokeDashoffset: targetOffset
         });
       } else {
+        this.maskPath.style.strokeDasharray = `${this.pathLength}`;
         this.maskPath.style.strokeDashoffset = targetOffset;
       }
       
