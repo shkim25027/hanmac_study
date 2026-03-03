@@ -6,7 +6,7 @@
 // =======================================
 // Variables
 // =======================================
-$learning-height: calc(var(--window-inner-height) - 64px);
+$learning-height: calc(var(--window-inner-height) - 66px);
 $gauge-base-width: 1610px;
 
 // Note: Colors are now managed via CSS variables in _root.scss
@@ -184,7 +184,7 @@ $chapter-widths: (
         }
 
         &.hanmac {
-          @include puzzle-img-box(13.4264%, $top: 3.77833%, $right: 2.68528%);
+          @include puzzle-img-box(13.4264%, $top: 0, $right: 0.68528%);
         }
 
         &.value {
@@ -193,25 +193,6 @@ $chapter-widths: (
 
         &.company {
           @include puzzle-img-box(12.88936%, $right: -2.68528%, $bottom: -8.07926%);
-        }
-      }
-
-      .tit-box {
-        &.family {
-          @include puzzle-title(var(--bg-puzzle-family), $left: 8.2706%, $top: 31.1083%);
-        }
-
-        &.hanmac {
-          @include puzzle-title(var(--bg-puzzle-hanmac), $top: 31.1083%, $right: 6.44468%);
-          opacity: 0.45;
-        }
-
-        &.value {
-          @include puzzle-title(var(--bg-puzzle-value), $left: 8.05585%, $bottom: 10.51829%);
-        }
-
-        &.company {
-          @include puzzle-title(var(--bg-puzzle-company), $right: 8.05585%, $bottom: 15.1133%);
         }
       }
     }

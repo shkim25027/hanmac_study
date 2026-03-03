@@ -311,6 +311,16 @@ let GAUGE_CONFIG = {
   },
 };
 
+// 보드 코너 레이블 (PC 기준 좌표)
+// 각 exposed 영역: 가족사소개(x:4~256,y:0~267) / 한맥가족의DX(x:1615~1866,y:0~268)
+//                  가치공유(x:22~257,y:651~793)  / 회사생활(x:1615~1866,y:617~793)
+let BOARD_LABELS = [
+  { lines: ["가족사소개"],       x: 160,  y: 220, anchor: "middle", fontSize: 32, color: "#7ED29B", opacity: 0.5 },
+  { lines: ["한맥가족의 DX"],    x: 1730, y: 220, anchor: "middle", fontSize: 32, color: "#FFCCCA", opacity: 0.45  },
+  { lines: ["가치공유"],         x: 180,  y: 700, anchor: "middle", fontSize: 32, color: "#6B9EEA", opacity: 0.8 },
+  { lines: ["회사생활"],         x: 1690, y: 670, anchor: "middle", fontSize: 32, color: "#A7884A", opacity: 1 },
+];
+
 // ============================================================================
 // 반응형 설정 (모바일 / PC 분기)
 // ============================================================================
@@ -324,6 +334,7 @@ const PC_BUTTON_POSITIONS = BUTTON_POSITIONS;
 const PC_TITLE_POSITIONS  = TITLE_POSITIONS;
 const PC_GAUGE_CONFIG     = GAUGE_CONFIG;
 const PC_IMAGE_PATHS      = DEFAULT_CONFIG.IMAGE_PATHS;
+const PC_BOARD_LABELS     = BOARD_LABELS;
 
 // ────────────────────────────────────────────────────────────
 // 모바일 SVG (board.svg 기준: 331 × 566)
@@ -351,19 +362,18 @@ const MO_IMAGE_PATHS = {
 };
 
 // board_piece.svg 기준 좌표 (board 내부 여백 포함, id = 챕터 pieceId)
-// 모바일 피스 순서: 이미지 기준 좌→우, 상→하 (9,8,10,3,1,2,6,4,5,7)
-// ※ 9=좌중단(삼안), 10=좌상탭(한맥가족)
+// 모바일 피스 생성 순서: 10 → 9 → 1 → 6 → 3 → 2 → 4 → 5 → 8 → 7
 const MO_PUZZLE_PIECES = [
-  { id: 9,  path: "M9 124H134V281H9Z" },                    // 좌중단  (삼안소개)
-  { id: 8,  path: "M323 360V438H164V360H323Z" },            // 우중하  (기술개발센터소개) 8↔4 교체
   { id: 10, path: "M87 44H9V124H165V6H87V44Z" },            // 좌상탭  (한맥가족소개)
-  { id: 3,  path: "M244 45H323V124H165V6H244V45Z" },        // 우상탭  (새로운시대) 5↔3 교체
-  { id: 1,  path: "M164 419V281H8V419H164Z" },              // 좌3  (왜다윈인가)
-  { id: 2,  path: "M323 200H134V124H323V200Z" },            // 우상단  (건설산업디지털전환) 5↔2 교체
-  { id: 6,  path: "M164 419V556H87V518H8V419H164Z" },       // 좌4  (축적의시간)
-  { id: 4,  path: "M134 200H323V281H134Z" },                // 우중상  (상용S/W소개) 4↔5 교체
-  { id: 5,  path: "M323 281H164V360H323V281Z" },            // 우중단  (회사생활신규) 5↔2 교체
-  { id: 7,  path: "M164 438V556H242V517H323V438H164Z" },    // 우5-2 (회사생활경력)
+  { id: 9,  path: "M9 124H134V281H9Z" },                    // 좌중단  (삼안소개)
+  { id: 1,  path: "M164 419V281H8V419H164Z" },               // 좌3  (왜다윈인가)
+  { id: 6,  path: "M164 419V556H87V518H8V419H164Z" },        // 좌4  (축적의시간)
+  { id: 3,  path: "M244 45H323V124H165V6H244V45Z" },         // 우상탭  (새로운시대)
+  { id: 2,  path: "M323 200H134V124H323V200Z" },             // 우상단  (건설산업디지털전환)
+  { id: 4,  path: "M134 200H323V281H134Z" },                  // 우중상  (상용S/W소개)
+  { id: 5,  path: "M323 281H164V360H323V281Z" },             // 우중단  (회사생활신규)
+  { id: 8,  path: "M323 360V438H164V360H323Z" },             // 우중하  (기술개발센터소개)
+  { id: 7,  path: "M164 438V556H242V517H323V438H164Z" },     // 우5-2 (회사생활경력)
 ];
 
 // board.svg 4개 영역 (그라데이션 fill 적용)
@@ -433,26 +443,37 @@ const MO_TITLE_POSITIONS = [
 // 게이지 설정 (board_piece.svg 기준 좌표)
 const MO_GAUGE_CONFIG = {
   POSITIONS: {
-    9: 281,  10: 124, 1: 419,  6: 518,   // 좌측: 좌중단(9), 좌상탭(10), 좌3, 좌4
-    2: 124,  3: 124,  4: 200,  5: 281,  8: 360,  7: 517,  // 우측 (5↔2 교체)
+    9: 281,  10: 124, 1: 419,  6: 556,   // 좌측: 좌중단(9), 좌상탭(10), 좌3, 좌4(하단꼬리 바닥)
+    2: 200,  3: 124,  4: 281,  5: 360,  8: 438,  7: 556,  // 우측: 하단 경계 기준 / 7=하단꼬리 바닥
   },
   X_RANGES: {
     9:  { left: 9,   right: 134 },  // 좌중단  (삼안소개)
     10: { left: 9,   right: 165 },  // 좌상탭  (한맥가족소개)
     1:  { left: 8,   right: 164 },  // 좌 중장  (왜다윈인가)
-    6:  { left: 8,   right: 164 },  // 좌 하단  (축적의시간)
+    6:  { left: 87,  right: 164 },  // 좌 하단  (축적의시간) — 하단꼬리 x:87~164
     2:  { left: 134, right: 323 },  // 우상단  (건설산업디지털전환)
     3:  { left: 165, right: 323 },  // 우상탭  (새로운시대)
     4:  { left: 134, right: 323 },  // 우중상  (상용S/W소개)
     5:  { left: 164, right: 323 },  // 우중단  (회사생활신규)
     8:  { left: 164, right: 323 },  // 우중하  (기술개발센터소개)
-    7:  { left: 164, right: 323 },  // 우 하단  (회사생활경력)
+    7:  { left: 164, right: 242 },  // 우 하단  (회사생활경력) — 하단꼬리 x:164~242
   },
   MAX_LENGTHS: {
-    9: 125,  10: 156, 1: 156, 6: 156,
-    2: 189,  3: 158,  4: 189,  5: 159, 8: 159, 7: 159,
+    // 피스 폭(X_RANGE) + 12px
+    9: 137,  10: 168, 1: 168, 6: 89,
+    2: 201,  3: 170,  4: 201,  5: 171, 8: 171, 7: 90,
   },
 };
+
+// 보드 코너 레이블 (모바일 기준 좌표)
+// 각 exposed 영역: 가족사소개(x:4~87,y:2~44) / 한맥가족의DX(x:244~327,y:2~45)
+//                  가치공유(x:4~87,y:518~556)  / 회사생활(x:242~327,y:517~556)
+const MO_BOARD_LABELS = [
+  { lines: ["가족사소개"],       x: 46,  y: 26,  anchor: "middle", fontSize: 16, color: "#7ED29B", opacity: 0.5 },
+  { lines: ["한맥가족의", "DX"], x: 320, y: 26,  anchor: "end",    fontSize: 16, lineHeight: 20, color: "#A7542B ", opacity:1 },
+  { lines: ["가치공유"],         x: 40,  y: 540, anchor: "middle", fontSize: 16, color: "#6B9EEA", opacity: 0.8 },
+  { lines: ["회사생활"],         x: 290, y: 540, anchor: "middle", fontSize: 16, color: "#A7884A", opacity: 1 },
+];
 
 /**
  * 뷰포트에 따라 전역 데이터를 PC / 모바일로 전환
@@ -465,7 +486,7 @@ function applyResponsiveConfig() {
     CONFIG.SVG.DIMENSIONS = MO_SVG.DIMENSIONS;
     CONFIG.TITLE          = { FONT_SIZE: 14, LINE_HEIGHT: 18, STROKE_WIDTH: "3" };
     CONFIG.PLAY_BUTTON    = { ...DEFAULT_CONFIG.PLAY_BUTTON, RADIUS: 11, ICON_SIZE: { width: 12, height: 12 }, STROKE_WIDTH: "2" };  // 모바일 12
-    CONFIG.GAUGE          = { ...DEFAULT_CONFIG.GAUGE, HEIGHT: 4 };
+    CONFIG.GAUGE          = { ...DEFAULT_CONFIG.GAUGE, HEIGHT: 4, VERTICAL_OFFSET: -7 };
     CONFIG.PIECE_STROKE_WIDTH = "1";
 
     PUZZLE_PIECES        = MO_PUZZLE_PIECES;
@@ -475,6 +496,7 @@ function applyResponsiveConfig() {
     TITLE_POSITIONS      = MO_TITLE_POSITIONS;
     GAUGE_CONFIG         = MO_GAUGE_CONFIG;
     CONFIG.IMAGE_PATHS   = MO_IMAGE_PATHS;
+    BOARD_LABELS         = MO_BOARD_LABELS;
   } else {
     CONFIG.SVG.VIEWBOX    = DEFAULT_CONFIG.SVG.VIEWBOX;
     CONFIG.SVG.DIMENSIONS = DEFAULT_CONFIG.SVG.DIMENSIONS;
@@ -490,6 +512,7 @@ function applyResponsiveConfig() {
     TITLE_POSITIONS      = PC_TITLE_POSITIONS;
     GAUGE_CONFIG         = PC_GAUGE_CONFIG;
     CONFIG.IMAGE_PATHS   = PC_IMAGE_PATHS;
+    BOARD_LABELS         = PC_BOARD_LABELS;
   }
 }
 
@@ -1202,7 +1225,7 @@ class FilterFactory {
     return filter;
   }
 
-  static createBoardFilter() {
+  static createBoardFilter(mobile = false) {
     const filter = SVGHelper.createElement("filter", {
       id: "board-3d-effect",
       x: "-10%",
@@ -1213,7 +1236,20 @@ class FilterFactory {
       "color-interpolation-filters": "sRGB",
     });
 
-    // Drop shadow (외부 그림자)
+    // 모바일: drop-shadow 효과만
+    if (mobile) {
+      filter.appendChild(
+        SVGHelper.createElement("feDropShadow", {
+          dx: "0",
+          dy: "4",
+          stdDeviation: "2",
+          "flood-opacity": "0.5",
+        })
+      );
+      return filter;
+    }
+
+    // PC: Drop shadow (외부 그림자)
     filter.appendChild(
       SVGHelper.createElement("feFlood", {
         "flood-opacity": "0",
@@ -1274,7 +1310,7 @@ class FilterFactory {
       })
     );
 
-    // Inner shadow (내부 그림자 - 상단)
+    // PC: Inner shadow (내부 그림자 - 상단)
     filter.appendChild(
       SVGHelper.createElement("feColorMatrix", {
         in: "SourceAlpha",
@@ -1320,17 +1356,23 @@ class FilterFactory {
 
   /**
    * 퍼즐 조각 엠보싱 효과 필터 생성
-   * box-shadow: 13px 12px 6px 0 rgba(254, 227, 179, 0.80) inset,
-   *             -11px -11px 5px 0 rgba(0, 0, 0, 0.40) inset
-   * filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.80))
+   * PC:     box-shadow: 13px 12px 6px 0 rgba(254, 227, 179, 0.80) inset,
+   *                     -11px -11px 5px 0 rgba(0, 0, 0, 0.40) inset
+   *         filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.80))
+   * Mobile: 모바일 좌표계(331×566) 기준으로 스케일 축소
    */
-  static createPieceEmbossingFilter() {
+  static createPieceEmbossingFilter(mobile = false) {
+    // 모바일은 조각이 작아 offset/blur 값을 축소, 필터 영역도 타이트하게 설정
+    const shadow1 = mobile ? { dx: "5",  dy: "4",  blur: "2"   } : { dx: "13", dy: "12", blur: "3"   };
+    const shadow2 = mobile ? { dx: "-4", dy: "-4", blur: "2"   } : { dx: "-11",dy: "-11",blur: "2.5" };
+    const drop    = mobile ? { dx: "1",  dy: "1",  blur: "1"   } : { dx: "1",  dy: "1",  blur: "1"   };
+
     const filter = SVGHelper.createElement("filter", {
       id: "piece-embossing-effect",
-      x: "-50%",
-      y: "-50%",
-      width: "200%",
-      height: "200%",
+      ...(mobile
+        ? { x: "-5", y: "-5", width: "341", height: "576" }
+        : { x: "-50%", y: "-50%", width: "200%", height: "200%" }
+      ),
       filterUnits: "userSpaceOnUse",
       "color-interpolation-filters": "sRGB",
     });
@@ -1368,18 +1410,18 @@ class FilterFactory {
       })
     );
 
-    // 오프셋 (13px, 12px)
+    // 오프셋
     filter.appendChild(
       SVGHelper.createElement("feOffset", {
-        dx: "13",
-        dy: "12",
+        dx: shadow1.dx,
+        dy: shadow1.dy,
       })
     );
 
-    // 블러 (6px)
+    // 블러
     filter.appendChild(
       SVGHelper.createElement("feGaussianBlur", {
-        stdDeviation: "2", // 6px / 2
+        stdDeviation: shadow1.blur,
       })
     );
 
@@ -1425,18 +1467,18 @@ class FilterFactory {
       })
     );
 
-    // 오프셋 (-11px, -11px)
+    // 오프셋
     filter.appendChild(
       SVGHelper.createElement("feOffset", {
-        dx: "-11",
-        dy: "-11",
+        dx: shadow2.dx,
+        dy: shadow2.dy,
       })
     );
 
-    // 블러 (5px)
+    // 블러
     filter.appendChild(
       SVGHelper.createElement("feGaussianBlur", {
-        stdDeviation: "2.5", // 5px / 2
+        stdDeviation: shadow2.blur,
       })
     );
 
@@ -1481,18 +1523,18 @@ class FilterFactory {
       })
     );
 
-    // 오프셋 (1px, 1px)
+    // 오프셋
     filter.appendChild(
       SVGHelper.createElement("feOffset", {
-        dx: "1",
-        dy: "1",
+        dx: drop.dx,
+        dy: drop.dy,
       })
     );
 
-    // 블러 (2px)
+    // 블러
     filter.appendChild(
       SVGHelper.createElement("feGaussianBlur", {
-        stdDeviation: "1", // 2px / 2
+        stdDeviation: drop.blur,
       })
     );
 
@@ -2008,15 +2050,16 @@ class GaugeManager {
       bgWidth = GAUGE_CONFIG.MAX_LENGTHS[pieceId];
     }
 
-    // 1번 피스는 하단 영역 안쪽 중앙에 배치
+    // 1번 피스는 PC에서 하단 영역 안쪽 중앙에 배치 (모바일은 단순 중앙)
+    const isMobile = window.innerWidth < BREAKPOINT;
     let centerX;
-    if (pieceId === 1) {
-      // 하단 영역: 256부터 right까지의 영역의 중앙
+    if (pieceId === 1 && !isMobile) {
+      // PC 전용: 하단 영역(256~right)의 중앙
       const bottomAreaLeft = 256;
       const bottomAreaRight = xRange.right;
       centerX = (bottomAreaLeft + bottomAreaRight) / 2;
     } else {
-      // 다른 피스는 전체 xRange의 중앙
+      // 모바일 및 기타 피스: 전체 xRange의 중앙
       centerX = (xRange.left + xRange.right) / 2;
     }
     
@@ -3503,6 +3546,7 @@ class PuzzleManager {
     this.svg = this._createSVG();
     this._setupDefs();
     this._createBoardBackground();
+    this._createBoardLabels();
     this._createPuzzlePieces();
     
     // ✅ 경계선 추가 (타이틀과 버튼 전에 추가하여 아래에 배치)
@@ -3578,9 +3622,9 @@ class PuzzleManager {
     defs.appendChild(FilterFactory.createInnerShadowFilter());
     defs.appendChild(FilterFactory.createHoverShadowFilter());
     defs.appendChild(FilterFactory.createGaugeFillFilter());
-    defs.appendChild(FilterFactory.createBoardFilter()); // 보드
+    defs.appendChild(FilterFactory.createBoardFilter(window.innerWidth < BREAKPOINT)); // 보드
     //  3D 효과 필터
-    defs.appendChild(FilterFactory.createPieceEmbossingFilter());
+    defs.appendChild(FilterFactory.createPieceEmbossingFilter(window.innerWidth < BREAKPOINT));
     
     FilterFactory.createPlayButtonFilters().forEach((filter) => {
       defs.appendChild(filter);
@@ -3643,6 +3687,35 @@ class PuzzleManager {
     });
 
     this.svg.appendChild(defs);
+  }
+
+  _createBoardLabels() {
+    BOARD_LABELS.forEach((label) => {
+      const text = SVGHelper.createElement("text", {
+        "text-anchor": label.anchor || "middle",
+        "dominant-baseline": "middle",
+        fill: label.color || "white",
+        opacity: label.opacity !== undefined ? label.opacity : 1,
+        "font-size": String(label.fontSize),
+        "font-weight": "bold",
+        "pointer-events": "none",
+      });
+
+      const lineHeight = label.lineHeight || label.fontSize * 1.4;
+      const totalHeight = (label.lines.length - 1) * lineHeight;
+      const startY = label.y - totalHeight / 2;
+
+      label.lines.forEach((line, index) => {
+        const tspan = SVGHelper.createElement("tspan", {
+          x: label.x,
+          y: startY + index * lineHeight,
+        });
+        tspan.textContent = line;
+        text.appendChild(tspan);
+      });
+
+      this.svg.appendChild(text);
+    });
   }
 
   _createBoardBackground() {
@@ -3788,105 +3861,156 @@ class PuzzleManager {
   }
 
   async _showRibbonAnimation() {
-    const piece2 = this.pieces.find((p) => p.data.id === 2);
-    if (!piece2) return;
+    const isMobile = window.innerWidth < BREAKPOINT;
 
-    const piece2Group = piece2.group;
-    const piece2Bbox = piece2Group.getBBox();
-    const boardRect = this.boardElement.getBoundingClientRect();
-    const svgRect = this.svg.getBoundingClientRect();
+    if (isMobile) {
+      // ── 모바일: img_ribbon_m.svg, 기존 SVG에 직접 삽입 ──
+      // 가로 41.6666%(= 5/12) of 331 = ~138px, top center
+      const vbW = CONFIG.SVG.DIMENSIONS.width;   // 331
+      const ribbonOriginalWidth = 150;
+      const ribbonWidthInSVG   = vbW * (5 / 12);  // 41.6666%
+      const ribbonScale        = ribbonWidthInSVG / ribbonOriginalWidth;
+      const translateX         = (vbW - ribbonWidthInSVG) / 2;
+      const translateY = 0;
 
-    const piece2CenterX = piece2Bbox.x + piece2Bbox.width / 2.1;
-    const piece2BottomY = piece2Bbox.y + piece2Bbox.height / 2.2;
+      try {
+        const response = await fetch("./assets/images/onboarding/img_ribbon_m.svg");
+        const svgText  = await response.text();
 
-    const ribbonOriginalWidth = 377;
-    const ribbonOriginalHeight = 336;
-    const ribbonAspectRatio = ribbonOriginalWidth / ribbonOriginalHeight;
-    const ribbonWidthInSVG = piece2Bbox.width * 0.9;
-    const ribbonHeightInSVG = ribbonWidthInSVG / ribbonAspectRatio;
+        const ribbonGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
+        ribbonGroup.setAttribute(
+          "transform",
+          `translate(${translateX}, ${translateY}) scale(${ribbonScale})`
+        );
 
-    try {
-      const response = await fetch("./assets/images/onboarding/img_ribbon.svg");
-      const svgText = await response.text();
+        const parser  = new DOMParser();
+        const svgDoc  = parser.parseFromString(svgText, "image/svg+xml");
+        Array.from(svgDoc.documentElement.children).forEach((child) => {
+          ribbonGroup.appendChild(document.importNode(child, true));
+        });
 
-      const ribbonContainer = document.createElement("div");
-      ribbonContainer.className = "ribbon-animation-container";
-      ribbonContainer.style.cssText = `
-      position: fixed;
-      top: ${svgRect.top}px;
-      left: ${svgRect.left}px;
-      width: ${svgRect.width}px;
-      height: ${svgRect.height}px;
-      pointer-events: none;
-      z-index: 10000;
-      overflow: visible;
-    `;
+        this.svg.appendChild(ribbonGroup);
 
-      const svg = document.createElementNS(CONFIG.SVG.NAMESPACE, "svg");
-      svg.setAttribute("viewBox", CONFIG.SVG.VIEWBOX);
-      svg.setAttribute("width", "100%");
-      svg.setAttribute("height", "100%");
-      svg.style.cssText = `overflow: visible;`;
+        // 애니메이션
+        const circles = ribbonGroup.querySelectorAll("circle");
+        circles.forEach((circle) => {
+          circle.style.opacity = "0";
+          circle.style.transition = "opacity 0.8s ease";
+          circle.style.mixBlendMode = "overlay";
+          setTimeout(() => { circle.style.opacity = "1"; }, 100);
+        });
 
-      const ribbonGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
-      const ribbonScale = ribbonWidthInSVG / ribbonOriginalWidth;
-
-      ribbonGroup.setAttribute(
-        "transform",
-        `translate(${piece2CenterX - ribbonWidthInSVG / 2}, ${piece2BottomY - ribbonHeightInSVG / 2}) scale(${ribbonScale})`
-      );
-
-      const parser = new DOMParser();
-      const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
-      const ribbonSvg = svgDoc.documentElement;
-
-      Array.from(ribbonSvg.children).forEach((child) => {
-        const importedNode = document.importNode(child, true);
-        ribbonGroup.appendChild(importedNode);
-      });
-
-      svg.appendChild(ribbonGroup);
-      ribbonContainer.appendChild(svg);
-      document.body.appendChild(ribbonContainer);
-
-      const circles = ribbonGroup.querySelectorAll("circle");
-      circles.forEach((circle) => {
-        circle.style.opacity = "0";
-        circle.style.transition = "opacity 0.8s ease";
-        circle.style.mixBlendMode = "overlay";
-        setTimeout(() => {
-          circle.style.opacity = "1";
-        }, 100);
-      });
-
-      const pathGroups = ribbonGroup.querySelectorAll("g[filter]");
-
-      pathGroups.forEach((pathGroup, index) => {
-        const startY = -300 - Math.random() * 200;
-        const delay = index * 100 + Math.random() * 100;
-        const duration = 800 + Math.random() * 400;
-
-        pathGroup.style.opacity = "0";
-        pathGroup.style.transform = `translateY(${startY}px)`;
-        pathGroup.style.transition = `all ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
-        pathGroup.style.transitionDelay = `${delay}ms`;
+        ribbonGroup.querySelectorAll("g[filter]").forEach((pathGroup, index) => {
+          const startY   = -200 - Math.random() * 100;
+          const delay    = index * 100 + Math.random() * 100;
+          const duration = 800 + Math.random() * 400;
+          pathGroup.style.opacity        = "0";
+          pathGroup.style.transform      = `translateY(${startY}px)`;
+          pathGroup.style.transition     = `all ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
+          pathGroup.style.transitionDelay = `${delay}ms`;
+          setTimeout(() => {
+            pathGroup.style.opacity   = "1";
+            pathGroup.style.transform = `translateY(0)`;
+          }, 50);
+        });
 
         setTimeout(() => {
-          pathGroup.style.opacity = "1";
-          pathGroup.style.transform = `translateY(0)`;
-        }, 50);
-      });
+          ribbonGroup.style.transition = "opacity 0.5s ease";
+          ribbonGroup.style.opacity    = "0";
+        }, 2500);
+        setTimeout(() => { ribbonGroup.remove(); }, 3000);
 
-      setTimeout(() => {
-        ribbonContainer.style.transition = "opacity 0.5s ease";
-        ribbonContainer.style.opacity = "0";
-      }, 2500);
+      } catch (error) {
+        console.error("모바일 리본 SVG 로드 실패:", error);
+      }
 
-      setTimeout(() => {
-        ribbonContainer.remove();
-      }, 3000);
-    } catch (error) {
-      console.error("리본 SVG 로드 실패:", error);
+    } else {
+      // ── PC: img_ribbon.svg, 기존 overlay 방식 ──
+      const piece2 = this.pieces.find((p) => p.data.id === 2);
+      if (!piece2) return;
+
+      const piece2Group = piece2.group;
+      const piece2Bbox  = piece2Group.getBBox();
+      const svgRect     = this.svg.getBoundingClientRect();
+
+      const piece2CenterX = piece2Bbox.x + piece2Bbox.width / 2.1;
+      const piece2BottomY = piece2Bbox.y + piece2Bbox.height / 2.2;
+
+      const ribbonOriginalWidth  = 377;
+      const ribbonOriginalHeight = 336;
+      const ribbonWidthInSVG     = piece2Bbox.width * 0.9;
+      const ribbonHeightInSVG    = ribbonWidthInSVG / (ribbonOriginalWidth / ribbonOriginalHeight);
+
+      try {
+        const response = await fetch("./assets/images/onboarding/img_ribbon.svg");
+        const svgText  = await response.text();
+
+        const ribbonContainer = document.createElement("div");
+        ribbonContainer.className = "ribbon-animation-container";
+        ribbonContainer.style.cssText = `
+          position: fixed;
+          top: ${svgRect.top}px;
+          left: ${svgRect.left}px;
+          width: ${svgRect.width}px;
+          height: ${svgRect.height}px;
+          pointer-events: none;
+          z-index: 10000;
+          overflow: visible;
+        `;
+
+        const svg = document.createElementNS(CONFIG.SVG.NAMESPACE, "svg");
+        svg.setAttribute("viewBox", CONFIG.SVG.VIEWBOX);
+        svg.setAttribute("width",   "100%");
+        svg.setAttribute("height",  "100%");
+        svg.style.cssText = `overflow: visible;`;
+
+        const ribbonGroup = document.createElementNS(CONFIG.SVG.NAMESPACE, "g");
+        ribbonGroup.setAttribute(
+          "transform",
+          `translate(${piece2CenterX - ribbonWidthInSVG / 2}, ${piece2BottomY - ribbonHeightInSVG / 2}) scale(${ribbonWidthInSVG / ribbonOriginalWidth})`
+        );
+
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+        Array.from(svgDoc.documentElement.children).forEach((child) => {
+          ribbonGroup.appendChild(document.importNode(child, true));
+        });
+
+        svg.appendChild(ribbonGroup);
+        ribbonContainer.appendChild(svg);
+        document.body.appendChild(ribbonContainer);
+
+        const circles = ribbonGroup.querySelectorAll("circle");
+        circles.forEach((circle) => {
+          circle.style.opacity        = "0";
+          circle.style.transition     = "opacity 0.8s ease";
+          circle.style.mixBlendMode   = "overlay";
+          setTimeout(() => { circle.style.opacity = "1"; }, 100);
+        });
+
+        ribbonGroup.querySelectorAll("g[filter]").forEach((pathGroup, index) => {
+          const startY   = -300 - Math.random() * 200;
+          const delay    = index * 100 + Math.random() * 100;
+          const duration = 800 + Math.random() * 400;
+          pathGroup.style.opacity        = "0";
+          pathGroup.style.transform      = `translateY(${startY}px)`;
+          pathGroup.style.transition     = `all ${duration}ms cubic-bezier(0.34, 1.56, 0.64, 1)`;
+          pathGroup.style.transitionDelay = `${delay}ms`;
+          setTimeout(() => {
+            pathGroup.style.opacity   = "1";
+            pathGroup.style.transform = `translateY(0)`;
+          }, 50);
+        });
+
+        setTimeout(() => {
+          ribbonContainer.style.transition = "opacity 0.5s ease";
+          ribbonContainer.style.opacity    = "0";
+        }, 2500);
+        setTimeout(() => { ribbonContainer.remove(); }, 3000);
+
+      } catch (error) {
+        console.error("리본 SVG 로드 실패:", error);
+      }
     }
   }
 
@@ -3899,78 +4023,15 @@ class PuzzleManager {
   }
 
   _runCompletionAnimationOverlay() {
-    const boardRect = this.boardElement.getBoundingClientRect();
-
-    const animationContainer = document.createElement("div");
-    animationContainer.className = "completion-animation-container";
-    animationContainer.style.cssText = `
-      position: fixed;
-      top: ${boardRect.top}px;
-      left: ${boardRect.left}px;
-      width: ${boardRect.width}px;
-      height: ${boardRect.height}px;
-      pointer-events: none;
-      z-index: 9999;
-      opacity: 0;
-      animation: completionFadeIn 0.5s ease forwards, completionPulse 2.5s ease-in-out 0.5s infinite;
-    `;
-
     // CSS 애니메이션 스타일 추가
     if (!document.getElementById('completion-animation-styles')) {
       const style = document.createElement('style');
       style.id = 'completion-animation-styles';
       style.textContent = `
         @keyframes completionFadeIn {
-          0% {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1);
-          }
+          0% { opacity: 0; }
+          100% { opacity: 1; }
         }
-        @keyframes completionPulse {
-          0%, 100% {
-            transform: scale(1);
-            filter: drop-shadow(0 0 20px rgba(255, 235, 59, 0.6));
-          }
-          50% {
-            transform: scale(1.02);
-            filter: drop-shadow(0 0 35px rgba(255, 235, 59, 0.9)) drop-shadow(0 0 50px rgba(255, 193, 7, 0.5));
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
-
-    const svg = SVGHelper.createElement("svg", {
-      viewBox: CONFIG.SVG.VIEWBOX,
-      style: `
-      width: 100%;
-      height: 100%;
-    `,
-    });
-
-    const defs = SVGHelper.createElement("defs");
-    const completedPattern = SVGHelper.createPattern(
-      "completion-animation-pattern",
-      CONFIG.IMAGE_PATHS[CONFIG.COMPLETION_MODE].ALL_COMPLETED,
-      false
-    );
-    defs.appendChild(completedPattern);
-    svg.appendChild(defs);
-
-    const boardGroup = SVGHelper.createElement("g");
-    boardGroup.style.cssText = `
-      animation: completionGlow 2.5s ease-in-out infinite;
-    `;
-
-    // 글로우 애니메이션 스타일 추가
-    if (!document.getElementById('completion-glow-styles')) {
-      const glowStyle = document.createElement('style');
-      glowStyle.id = 'completion-glow-styles';
-      glowStyle.textContent = `
         @keyframes completionGlow {
           0%, 100% {
             filter: drop-shadow(0 0 15px rgba(255, 235, 59, 0.4));
@@ -3979,59 +4040,58 @@ class PuzzleManager {
             filter: drop-shadow(0 0 30px rgba(255, 235, 59, 0.8)) drop-shadow(0 0 45px rgba(255, 193, 7, 0.4));
           }
         }
+        @keyframes completionFadeOut {
+          0% { opacity: 1; }
+          100% { opacity: 0; }
+        }
       `;
-      document.head.appendChild(glowStyle);
+      document.head.appendChild(style);
     }
 
+    // 기존 SVG의 defs에 completion 패턴 추가
+    const defs = this.svg.querySelector('defs');
+    const existingPattern = defs.querySelector('#completion-animation-pattern');
+    if (existingPattern) existingPattern.remove();
+    defs.appendChild(SVGHelper.createPattern(
+      "completion-animation-pattern",
+      CONFIG.IMAGE_PATHS[CONFIG.COMPLETION_MODE].ALL_COMPLETED,
+      false
+    ));
+
+    // 기존 SVG에 직접 <g> 삽입 (좌표계 동일 → PC/모바일 모두 피스와 정확히 일치)
+    const boardGroup = SVGHelper.createElement("g");
+    boardGroup.style.cssText = `
+      opacity: 0;
+      animation: completionFadeIn 0.5s ease forwards, completionGlow 2.5s ease-in-out 0.5s infinite;
+    `;
+
     PUZZLE_PIECES.forEach((piece) => {
-      const path = SVGHelper.createElement("path", {
+      boardGroup.appendChild(SVGHelper.createElement("path", {
         d: piece.path,
         fill: "url(#completion-animation-pattern)",
-        stroke: "#333",
-        "stroke-width": "0",  // ✅ stroke: 0 (하나의 이미지처럼)
-        // ✅ 엠보싱 없음 (필터 적용 안 함)
-      });
-      boardGroup.appendChild(path);
+        "stroke-width": "0",
+      }));
     });
 
-    svg.appendChild(boardGroup);
-    animationContainer.appendChild(svg);
-    document.body.appendChild(animationContainer);
+    this.svg.appendChild(boardGroup);
 
-    // 페이드 아웃 애니메이션
+    // 페이드 아웃
     setTimeout(() => {
-      animationContainer.style.animation = 'completionFadeOut 0.5s ease forwards';
-      
-      // 페이드 아웃 애니메이션 스타일 추가
-      if (!document.getElementById('completion-fadeout-styles')) {
-        const fadeOutStyle = document.createElement('style');
-        fadeOutStyle.id = 'completion-fadeout-styles';
-        fadeOutStyle.textContent = `
-          @keyframes completionFadeOut {
-            0% {
-              opacity: 1;
-              transform: scale(1);
-            }
-            100% {
-              opacity: 0;
-              transform: scale(0.98);
-            }
-          }
-        `;
-        document.head.appendChild(fadeOutStyle);
-      }
+      boardGroup.style.animation = 'completionFadeOut 0.5s ease forwards';
     }, 3000);
 
     setTimeout(() => {
-      animationContainer.remove();
-  
+      boardGroup.remove();
+      const p = defs.querySelector('#completion-animation-pattern');
+      if (p) p.remove();
+
       // ✅ 애니메이션 후 Finish Image 표시
       console.log('[PuzzleManager] 애니메이션 종료 - showFinish 호출 시작');
       this.pieces.forEach((piece) => {
         piece.showFinish();
       });
       console.log('[PuzzleManager] 애니메이션 종료 - showFinish 호출 완료');
-  
+
       // ✅ 애니메이션 종료 시 문구 변경
       this._showCelebrationEnd();
     }, 3500);
