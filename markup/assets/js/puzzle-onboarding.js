@@ -4271,11 +4271,9 @@ function _onPuzzleResize() {
     const nowMobile = window.innerWidth < BREAKPOINT;
     if (nowMobile !== _puzzleIsMobile) {
       _puzzleIsMobile = nowMobile;
-      if (PuzzleManager.instance) {
-        PuzzleManager.instance.destroy();
-      }
-      applyResponsiveConfig();
-      initializePuzzleOnboarding();
+
+      // PC ↔ 모바일 전환 시 전체 화면 새로 그리기
+      location.reload();
     }
   }, 300);
 }

@@ -181,7 +181,7 @@ const LEARNING_CONFIG = {
           gaugePercent: 0.582,
           gaugePercentMo: 0.582,
           type: "normal",
-          label: "성희롱 예방 교육 1", 
+          label: "성희롱 예방 교육 1",
           url: "OXTYn3JkkCQ",
           completed: false,
         },

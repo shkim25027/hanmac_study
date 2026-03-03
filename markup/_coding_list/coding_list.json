@@ -34,6 +34,9 @@
         "팝업_온보딩": ["../modal.html?video=3", "mainframe", "컨펌대기", ""],
         "팝업_법정교육": ["../modal.html?video=4", "mainframe", "컨펌대기", ""]
       },
+      "마이클래스": {
+        "목표설정": ["../myclass.html", "mainframe", "컨펌대기", ""]
+      },
       "온보딩": {
         "온보딩": ["../onboarding.html", "mainframe", "컨펌대기", ""],
         "온보딩_신규입사": [
@@ -62,7 +65,7 @@
       "검색결과": {
         "검색결과": ["../search_result.html", "mainframe", "컨펌대기", ""]
       },
-      
+
       "마이페이지": {
         "마이페이지": ["../mypage.html", "mainframe", "컨펌대기", ""]
       }

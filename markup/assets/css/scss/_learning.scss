@@ -108,6 +108,9 @@ $chapter-widths: (
         @include bgImg("../images/learning/bg_cloud.png", 100% 100%, 0px 0px);
         pointer-events: none;
         mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 100%);
+        @include mq(tablet-small, max) {
+          @include bgImg("../images/learning/bg_cloud_m.png", 100% 100%, 0px 0px);
+        }
       }
     }
 
@@ -430,9 +433,11 @@ $chapter-widths: (
     left: 0;
     width: 3.91304%;
     translate: -8% -32%;
+    z-index: 1;
     @include mq(tablet-small, max) {
       width: calc(38px / 360px * 100%);
       translate: calc(6px / 360px * 100%) -0%;
+      
     }
   }
 
@@ -546,6 +551,15 @@ $chapter-widths: (
         translate: -35% -70%;
       }
     }
+    &:nth-child(11),
+    &:nth-child(12),
+    &:nth-child(14),
+    &:nth-child(15){
+      @include mq(tablet-small, max) {
+        translate: -35% -70%;
+      }
+    }
+
 
     &:nth-child(16),
     &:nth-child(19) {
@@ -560,6 +574,15 @@ $chapter-widths: (
 
     &:nth-child(n + 20):nth-child(-n + 25) {
       translate: 0 -60%;
+      @include mq(tablet-small, max) {
+        translate: 40% -80% ;
+      }
+    }
+
+     &:nth-child(n + 21):nth-child(-n + 25) {
+      @include mq(tablet-small, max) {
+        translate: -35% -60%;
+      }
     }
 
     &:nth-child(n + 22):nth-child(-n + 24) {
@@ -578,6 +601,14 @@ $chapter-widths: (
         position: absolute;
         @include transition(all, 0.3s, ease);
         pointer-events: auto;
+
+        @for $i from 1 through 5 {
+          &:nth-child(#{$i}) {
+            z-index: 15 - $i !important;
+          }
+        }
+
+       
 
         &:not(.completed, .current) {
           filter: grayscale(100%);
@@ -620,7 +651,7 @@ $chapter-widths: (
         &.current {
           @include chapter-width(map.get($chapter-widths, current));
           @include mq(tablet-small, max) {
-            width: calc(120px / 360px * 100%);
+            width: calc(140px / 360px * 100%);
           }
           svg {
             animation: bounce 0.5s ease;
@@ -731,6 +762,7 @@ $chapter-widths: (
           color: var(--bg-card-current);
           @include mq(tablet-small, max) {
             font-size: 16px;
+            padding: 4px 0;
           }
         }
 

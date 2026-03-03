@@ -198,6 +198,10 @@ class MarkerManager {
           window.addEventListener("resize", debouncedResize);
         }
       }
+
+      // 모바일 ↔ PC 전환 시 페이지 새로고침
+      const mq = window.matchMedia('(max-width: 767px)');
+      mq.addEventListener('change', () => location.reload());
     } catch (error) {
       this._handleError(error, '_setupResizeHandler');
     }
@@ -802,34 +806,25 @@ class MarkerManager {
       }
 
       // SVG 배경 추가
-      const svgWrapper = this.domUtils?.createElement('div', {
-        style: {
-          position: 'absolute',
-          top: '49%',
-          left: '51%',
-          width: '100%',
-          height: '100%',
-          opacity: '0',
-          translate: '-50% -50%',
-          animation: 'fadeIn 1.5s ease-in-out forwards'
-        }
-      }) || document.createElement("div");
-      
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+      const svgWrapperStyle = isMobile
+        ? { position: 'absolute', top: '0', left: '0', width: '100%', height: 'auto', opacity: '0', animation: 'fadeIn 1.5s ease-in-out forwards' }
+        : { position: 'absolute', top: '49%', left: '51%', width: '100%', height: '100%', opacity: '0', translate: '-50% -50%', animation: 'fadeIn 1.5s ease-in-out forwards' };
+
+      const svgWrapper = this.domUtils?.createElement('div', { style: svgWrapperStyle }) || document.createElement("div");
+
       if (!this.domUtils) {
-        svgWrapper.style.cssText = `
-          position: absolute;
-          top: 49%;
-          left: 51%;
-          width: 100%;
-          height: 100%;
-          opacity: 0;
-          translate: -50% -50%;
-          animation: fadeIn 1.5s ease-in-out forwards;
-        `;
+        svgWrapper.style.cssText = isMobile
+          ? `position: absolute; top: 0; left: 0; width: 100%; height: auto; opacity: 0; animation: fadeIn 1.5s ease-in-out forwards;`
+          : `position: absolute; top: 49%; left: 51%; width: 100%; height: 100%; opacity: 0; translate: -50% -50%; animation: fadeIn 1.5s ease-in-out forwards;`;
       }
 
       // SVG 로드 및 추가
-      fetch("./assets/images/learning/completion-bg.svg")
+      const svgUrl = isMobile
+        ? "./assets/images/learning/completion-bg_m.svg"
+        : "./assets/images/learning/completion-bg.svg";
+      fetch(svgUrl)
         .then((response) => {
           if (!response.ok) {
             throw new Error(`SVG 로드 실패: ${response.status}`);
@@ -912,19 +907,20 @@ class MarkerManager {
               const screenWidth = window.innerWidth;
               const screenHeight = window.innerHeight;
               const screenRatio = screenWidth / screenHeight;
-              const svgRatio = 1911 / 918;
 
               let newViewBox;
-              if (screenRatio > svgRatio) {
-                // 화면이 더 넓음 - 세로 기준으로 viewBox 확장
-                const newWidth = 918 * screenRatio;
-                const offsetX = (newWidth - 1911) / 2;
-                newViewBox = `${-offsetX} 0 ${newWidth} 918`;
-              } else {
-                // 화면이 더 높음 - 가로 기준으로 viewBox 확장
-                const newHeight = 1911 / screenRatio;
-                const offsetY = (newHeight - 918) / 2;
-                newViewBox = `0 ${-offsetY} 1911 ${newHeight}`;
+              if (!isMobile) {
+                const svgW = 1920, svgH = 918;
+                const svgRatio = svgW / svgH;
+                if (screenRatio > svgRatio) {
+                  const newWidth = svgH * screenRatio;
+                  const offsetX = (newWidth - svgW) / 2;
+                  newViewBox = `${-offsetX} 0 ${newWidth} ${svgH}`;
+                } else {
+                  const newHeight = svgW / screenRatio;
+                  const offsetY = (newHeight - svgH) / 2;
+                  newViewBox = `0 ${-offsetY} ${svgW} ${newHeight}`;
+                }
               }
 
               svg.setAttribute("viewBox", newViewBox);
