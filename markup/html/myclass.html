@@ -49,6 +49,7 @@
                 <span class="quarter-badge">1분기</span>
               </div>
               <h2 class="selected-goal-title" id="selectedGoalTitle"></h2>
+              <button class="btn-select-goal" type="button" id="btnSelectGoal">추가 목표 고르기</button>
             </div>
             <div class="selected-goal-bookshelf">
               <div class="selected-books-wrap">
@@ -65,7 +66,7 @@
           </section>
 
           <!-- 책장 -->
-          <section class="bookshelf" id="bookshelf" aria-label="학습 목표 선택">
+          <section class="bookshelf goal" id="bookshelf" aria-label="학습 목표 선택">
 
             <!-- 1행 -->
             <div class="shelf-row">
@@ -271,33 +272,28 @@
       <div class="goal-layer hidden" id="goalLayer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="학습목표 상세">
 
         <div class="goal-layer-content">
-          <!-- prev + 팝업 + next 가로 배치 -->
-          <div class="goal-layer-main"> 
-
-            <button class="btn-goal-prev" type="button" id="btnGoalPrev" aria-label="이전 목표">
-              <span class="blind">이전</span>
-              <span class="prev-goal-name" id="prevGoalName" aria-hidden="true"></span>
+          <div class="goal-layer-header">
+            <button class="btn-close-layer" type="button" id="btnCloseLayer" aria-label="닫기">
+              <span class="blind">닫기</span>
             </button>
-
+          </div>
+          <div class="goal-layer-main">
             <div class="goal-popup" role="document">
-              <span class="popup-side-deco popup-side-deco--left" aria-hidden="true">커리어 탐색과 역량 개발</span>
-              <span class="popup-side-deco popup-side-deco--right" aria-hidden="true">커리어 탐색과 역량 개발</span>
-              <button class="btn-close-layer" type="button" id="btnCloseLayer" aria-label="닫기">
-                <span class="blind">닫기</span>
-              </button>
-
-              <div class="popup-scroll">
-                <div class="popup-body">
-                  <!-- 상단: 제목 영역 + 추천 대상 -->
-                  <div class="popup-top">
-                    <div class="title-box">
-                      <div class="title-icon" id="popupIcon" aria-hidden="true"></div>
-                      <div class="title-area">
-                        <strong class="popup-title" id="popupTitle"></strong>
-                        <p class="popup-desc" id="popupDesc"></p>
-                      </div>
-                    </div>
-                    <div class="recs-list" id="popupRecs">
+              <div class="swiper goal-popup-swiper">
+                <div class="swiper-wrapper" id="goalSlideWrapper">
+                  <!-- 슬라이드 1 (템플릿, JS에서 2~8번 복제) -->
+                  <div class="swiper-slide goal-slide" data-goal-id="1">
+                    <div class="popup-scroll">
+                      <div class="popup-body">
+                        <div class="popup-top">
+                          <div class="title-box">
+                            <div class="title-icon goal-slide-icon" aria-hidden="true"></div>
+                            <div class="title-area">
+                              <strong class="popup-title goal-slide-title"></strong>
+                              <p class="popup-desc goal-slide-desc"></p>
+                            </div>
+                          </div>
+                          <div class="recs-list goal-slide-recs">
                       <div class="rec-item">
                         <span class="rec-label">추천.01</span>
                         <div class="rec-content">
@@ -323,74 +319,141 @@
                   </div>
 
                   <!-- 하단: 추천 도서 책장 -->
-                  <div class="bookshelf">
-                    <div class="books-list">
-                      <div class="books-item">
-                        <div class="book-img-wrap">
-                          <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
+                  <section class="bookshelf-section goal-slide-bookshelf" aria-label="추천 도서 책장">
+                    <div class="bookshelf">
+                      <div class="books-list">
+                        <div class="books-item">
+                          <div class="book-img-wrap">
+                            <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
+                          </div>
+                          <div class="book-info-wrap">
+                            <div class="book-video-area">
+                              <button type="button" class="book-video-thumb-btn" data-video-id="1" aria-label="영상 재생">
+                                <img src="https://img.youtube.com/vi/KE_MeQZgnPM/sddefault.jpg" alt="" class="book-video-thumb">
+                              </button>
+                              <label class="bookmark" for="like_book_1" onclick="event.stopPropagation();">
+                                <input type="checkbox" id="like_book_1" title="저장">
+                              </label>
+                            </div>
+                            <strong class="book-title">조직도가 리셋된다!</strong>
+                            <div class="book-desc">
+                              <p class="book-desc-sub">위계 중심 조직은 <br>더 이상 통하지 않습니다.</p>
+                              <p class="book-desc-main"><strong>더 유연하게 <br>일할 방법</strong></p>
+                            </div>
+                            <span class="book-tag">IT 테크</span>
+                          </div>
                         </div>
-                        <div class="book-info-wrap">
-                          <span class="book-tag">IQ</span>
+                        <div class="books-item">
+                          <div class="book-img-wrap">
+                            <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
+                          </div>
+                          <div class="book-info-wrap">
+                            <div class="book-video-area">
+                              <button type="button" class="book-video-thumb-btn" data-video-id="2" aria-label="영상 재생">
+                                <img src="https://img.youtube.com/vi/a2l1uZfsRi0/sddefault.jpg" alt="" class="book-video-thumb">
+                              </button>
+                              <label class="bookmark" for="like_book_2" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_2" title="저장"></label>
+                            </div>
+                            <strong class="book-title">혈당 스파이크</strong>
+                            <div class="book-desc">
+                              <p class="book-desc-sub">식후 졸림은 의지 문제가 <br>아니라 혈당의 문제!</p>
+                              <p class="book-desc-main">혈당을 안정시켜줄 <br><strong>실생활 관리법</strong></p> 
+                            </div>
+                            <span class="book-tag">웰니스</span>
+                          </div>
                         </div>
-                        
+                        <div class="books-item">
+                          <div class="book-img-wrap">
+                            <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
+                          </div>
+                          <div class="book-info-wrap">
+                            <div class="book-video-area">
+                              <button type="button" class="book-video-thumb-btn" data-video-id="3" aria-label="영상 재생">
+                                <img src="https://img.youtube.com/vi/IeF8r0ycgVg/sddefault.jpg" alt="" class="book-video-thumb">
+                              </button>
+                              <label class="bookmark" for="like_book_3" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_3" title="저장"></label>
+                            </div>
+                            <strong class="book-title">제대로 쉬는 방법</strong>
+                            <div class="book-desc">
+                              <p class="book-desc-sub">아무리 자도 <br>피곤한가요?</p>
+                              <p class="book-desc-main"><strong>진짜 회복되는 쉼</strong>이 <br>무엇인지 알게됩니다.</p> 
+                            </div>
+                            <span class="book-tag">마인드셋</span>
+                          </div>
+                        </div>
+                        <div class="books-item">
+                          <div class="book-img-wrap">
+                            <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
+                          </div>
+                          <div class="book-info-wrap">
+                            <div class="book-video-area">
+                              <button type="button" class="book-video-thumb-btn" data-video-id="4" aria-label="영상 재생">
+                                <img src="https://img.youtube.com/vi/KMZXMI0QPoA/sddefault.jpg" alt="" class="book-video-thumb">
+                              </button>
+                              <label class="bookmark" for="like_book_4" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_4" title="저장"></label>
+                            </div>
+                            <strong class="book-title">'AI 도파민'의 바다에 빠진 이유</strong>
+                            <div class="book-desc">
+                              <p class="book-desc-sub">AI는 선택이 아닌 <br>생존의 도구</p>
+                              <p class="book-desc-main">AI는 도구가 아닌 <br><strong>업무 파트너</strong></p>
+                            </div>
+                            <span class="book-tag">IT 테크</span>
+                          </div>
+                        </div>
+                        <div class="books-item">
+                          <div class="book-img-wrap">
+                            <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
+                          </div>
+                          <div class="book-info-wrap">
+                            <div class="book-video-area">
+                              <button type="button" class="book-video-thumb-btn" data-video-id="5" aria-label="영상 재생">
+                                <img src="https://img.youtube.com/vi/CRKwszz6l2M/sddefault.jpg" alt="" class="book-video-thumb">
+                              </button>
+                              <label class="bookmark" for="like_book_5" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_5" title="저장"></label>
+                            </div>
+                            <strong class="book-title">살찌고 망가진몸 되살리는 방법</strong>
+                            <div class="book-desc">
+                              <p class="book-desc-sub">몸을 망쳤다면? <br>다이어트 아닌 리셋이 답!</p>
+                              <p class="book-desc-main"><strong>건강한 몸 되찾기</strong></p>
+                            </div>
+                            <span class="book-tag">웰니스</span>
+                          </div>
+                        </div>
+                        <div class="books-item">
+                          <div class="book-img-wrap">
+                            <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
+                          </div>
+                          <div class="book-info-wrap">
+                            <div class="book-video-area">
+                              <button type="button" class="book-video-thumb-btn" data-video-id="6" aria-label="영상 재생">
+                                <img src="https://img.youtube.com/vi/Gf5WoZ3BmgI/sddefault.jpg" alt="" class="book-video-thumb">
+                              </button>
+                              <label class="bookmark" for="like_book_6" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_6" title="저장"></label>
+                            </div>
+                            <strong class="book-title">자기 관점의 힘</strong>
+                            <div class="book-desc">
+                              <p class="book-desc-sub">당신의 삶을 바꾸는 <br>가장 강력한 무기?</p>
+                              <p class="book-desc-main">자신만의 관점으로 <br><strong>경쟁력을 키우는 방법</strong></p>
+                            </div>
+                            <span class="book-tag">리더십</span>
+                          </div>
+                        </div>
                       </div>
-                      <div class="books-item">
-                        <div class="book-img-wrap">
-                          <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
-                        </div>
-                        <div class="book-info-wrap">
-                          <span class="book-tag">IQ</span>
-                        </div>
-                        
-                      </div>
-                      <div class="books-item">
-                        <div class="book-img-wrap">
-                          <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
-                        </div>
-                        <div class="book-info-wrap">
-                          <span class="book-tag">비트스</span>
-                        </div>
-                      </div>
-                      <div class="books-item">
-                        <div class="book-img-wrap">
-                          <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
-                        </div>
-                        <div class="book-info-wrap">
-                          <span class="book-tag">웰니스</span>
-                        </div>
-                        
-                      </div>
-                      <div class="books-item">
-                        <div class="book-img-wrap">
-                          <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
-                        </div>
-                        <div class="book-info-wrap">
-                          <span class="book-tag">마인드셋</span>
-                        </div>
-                      </div>
-                      <div class="books-item">
-                        <div class="book-img-wrap">
-                          <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
-                        </div>
-                        <div class="book-info-wrap">
-                          <span class="book-tag">리더십</span>
-                        </div>
+                      
+                      <div class="shelf-plank">
+                        <p class="shelf-tags"><span>1Q</span> IT 테크 웰니스 마인드셋 리더십</p>
                       </div>
                     </div>
-                    <div class="shelf-plank"></div>
-                  </div>
+                  </section>
                 </div>
               </div>
-
-              <!-- 팝업 하단: 페이지네이션 dots -->
-              <div class="popup-pagination" id="popupPagination" aria-hidden="true"></div>
+                  </div>
+                  <!-- // 슬라이드 1 -->
+                </div>
+                <!-- 팝업 하단: 목표 페이지네이션 (Swiper 연동) -->
+                <div class="popup-pagination swiper-pagination" id="popupPagination"></div>
+              </div>
             </div>
-
-            <button class="btn-goal-next" type="button" id="btnGoalNext" aria-label="다음 목표">
-              <span class="blind">다음</span>
-              <span class="next-goal-name" id="nextGoalName" aria-hidden="true"></span>
-            </button>
-
           </div>
           <!-- // goal-layer-main -->
 
@@ -461,95 +524,128 @@
 
       const goalLayer       = document.getElementById('goalLayer');
       const btnCloseLayer   = document.getElementById('btnCloseLayer');
-      const btnGoalPrev     = document.getElementById('btnGoalPrev');
-      const btnGoalNext     = document.getElementById('btnGoalNext');
       const btnSetGoal      = document.getElementById('btnSetGoal');
       const btnSelectGoal   = document.getElementById('btnSelectGoal');
-      const popupTitle      = document.getElementById('popupTitle');
-      const popupDesc       = document.getElementById('popupDesc');
-      const popupIcon       = document.getElementById('popupIcon');
-      const prevGoalName    = document.getElementById('prevGoalName');
-      const nextGoalName    = document.getElementById('nextGoalName');
-      const popupPagination = document.getElementById('popupPagination');
+      const popupPagination  = document.getElementById('popupPagination');
+      const goalSlideWrapper = document.getElementById('goalSlideWrapper');
 
-      // 페이지네이션 dots 초기 생성
-      goals.forEach(function (g) {
-        const dot = document.createElement('span');
-        dot.className = 'pagination-dot';
-        dot.setAttribute('data-goal-id', g.id);
-        popupPagination.appendChild(dot);
-      });
+      let goalPopupSwiper = null;
 
-      // ====================================================
-      // 팝업 열기
-      // ====================================================
+      // 목표별 카드 배경색 (비활성 슬라이드용)
+      const goalCardColors = {
+        1: '#46B8A5',
+        2: '#3EAEBC',
+        3: '#46B8A5',
+        4: '#3B9EAC',
+        5: '#3EB09C',
+        6: '#42ACBA',
+        7: '#3DAE9E',
+        8: '#40B2A2',
+      };
+
+      function buildGoalSlides() {
+        const templateSlide = goalSlideWrapper && goalSlideWrapper.querySelector('.goal-slide');
+        if (!templateSlide) return;
+
+        for (let i = 1; i < goals.length; i++) {
+          const clone = templateSlide.cloneNode(true);
+          clone.dataset.goalId = goals[i].id;
+          clone.classList.remove('swiper-slide-active', 'swiper-slide-prev', 'swiper-slide-next');
+          goalSlideWrapper.appendChild(clone);
+        }
+
+        goals.forEach(function (goal) {
+          const slide = goalSlideWrapper.querySelector(`.goal-slide[data-goal-id="${goal.id}"]`);
+          const goalItem = document.querySelector(`.goal-item[data-goal-id="${goal.id}"]`);
+          if (!slide) return;
+
+          // 비활성 슬라이드 카드 배경색 CSS 변수 주입
+          const color = goalCardColors[goal.id] || '#46B8A5';
+          slide.style.setProperty('--card-color-1', color);
+
+          const titleEl = slide.querySelector('.goal-slide-title');
+          const descEl  = slide.querySelector('.goal-slide-desc');
+          const iconEl  = slide.querySelector('.goal-slide-icon');
+          if (titleEl) titleEl.textContent = goal.title;
+          if (descEl)  descEl.textContent  = goal.desc;
+          if (iconEl && goalItem) {
+            const cardIcon = goalItem.querySelector('.card-icon');
+            iconEl.innerHTML = cardIcon ? cardIcon.innerHTML : '';
+          }
+        });
+      }
+
+      function initGoalPopupSwiper() {
+        if (goalPopupSwiper) return;
+        goalPopupSwiper = new Swiper('.goal-popup-swiper', {
+          slidesPerView: 'auto',
+          centeredSlides: true,
+          spaceBetween: 20,
+          observer: true,
+          observeParents: true,
+          pagination: {
+            el: '#popupPagination',
+            clickable: true,
+            bulletClass: 'pagination-dot',
+            bulletActiveClass: 'is-active',
+          },
+          on: {
+            slideChange: function () {
+              const idx = this.activeIndex;
+              currentGoalId = goals[idx] ? goals[idx].id : currentGoalId;
+            },
+            slideChangeTransitionEnd: function () {
+              var sw = this;
+              sw.updateSize();
+              sw.updateSlides();
+              sw.slideTo(sw.activeIndex, 250);
+            },
+          },
+        });
+      }
+
+      function destroyGoalPopupSwiper() {
+        if (goalPopupSwiper) {
+          goalPopupSwiper.destroy(true, true);
+          goalPopupSwiper = null;
+        }
+      }
+
       function openGoalLayer(goalId) {
         currentGoalId = goalId;
-        updatePopupContent();
         goalLayer.removeAttribute('aria-hidden');
         goalLayer.classList.remove('hidden');
         goalLayer.classList.add('is-open');
         document.body.classList.add('layer-open');
+        buildGoalSlides();
+        initGoalPopupSwiper();
+        const slideIdx = goals.findIndex(g => g.id === goalId);
+        if (slideIdx >= 0 && goalPopupSwiper) {
+          goalPopupSwiper.slideTo(slideIdx, 0);
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              if (goalPopupSwiper) {
+                goalPopupSwiper.updateSize();
+                goalPopupSwiper.updateSlides();
+                goalPopupSwiper.slideTo(slideIdx, 0);
+              }
+            });
+          });
+        }
         btnCloseLayer.focus();
       }
 
-      // ====================================================
-      // 팝업 닫기
-      // ====================================================
       function closeGoalLayer() {
+        destroyGoalPopupSwiper();
+        if (goalSlideWrapper) {
+          const slides = goalSlideWrapper.querySelectorAll('.goal-slide');
+          slides.forEach(function (s, i) { if (i > 0) s.remove(); });
+        }
         goalLayer.setAttribute('aria-hidden', 'true');
         goalLayer.classList.remove('is-open');
         goalLayer.classList.add('hidden');
         document.body.classList.remove('layer-open');
       }
-
-      // ====================================================
-      // 팝업 내용 업데이트
-      // ====================================================
-      function updatePopupContent() {
-        const goal = goals.find(g => g.id === currentGoalId);
-        const goalItem = document.querySelector(`.goal-item[data-goal-id="${currentGoalId}"]`);
-        if (!goal || !goalItem) return;
-
-        // 제목 / 설명
-        popupTitle.textContent = goal.title;
-        popupDesc.textContent  = goal.desc;
-
-        // 아이콘 복사
-        const iconEl = goalItem.querySelector('.card-icon');
-        popupIcon.innerHTML = iconEl ? iconEl.innerHTML : '';
-
-        // 이전/다음 이름
-        const prevGoal = goals.find(g => g.id === currentGoalId - 1);
-        const nextGoal = goals.find(g => g.id === currentGoalId + 1);
-        prevGoalName.textContent = prevGoal ? prevGoal.title : '';
-        nextGoalName.textContent = nextGoal ? nextGoal.title : '';
-
-        btnGoalPrev.disabled = !prevGoal;
-        btnGoalNext.disabled = !nextGoal;
-
-        // 페이지네이션 dots 활성화
-        popupPagination.querySelectorAll('.pagination-dot').forEach(function (dot) {
-          dot.classList.toggle('is-active', Number(dot.dataset.goalId) === currentGoalId);
-        });
-      }
-
-      // ====================================================
-      // 이전/다음 이동
-      // ====================================================
-      btnGoalPrev.addEventListener('click', function () {
-        if (currentGoalId > 1) {
-          currentGoalId--;
-          updatePopupContent();
-        }
-      });
-
-      btnGoalNext.addEventListener('click', function () {
-        if (currentGoalId < goals.length) {
-          currentGoalId++;
-          updatePopupContent();
-        }
-      });
 
       // ====================================================
       // 목표 설정하기
@@ -569,12 +665,9 @@
       function applySelectedState(goalId) {
         const goal = goals.find(g => g.id === goalId);
 
-        // 모든 goal-item 리셋
         document.querySelectorAll('.goal-item').forEach(function (item) {
           item.classList.remove('is-selected');
-          const booksArea   = item.querySelector('.card-books-area');
           const defaultArea = item.querySelector('.card-default-area');
-          if (booksArea)   booksArea.hidden = true;
           if (defaultArea) defaultArea.hidden = false;
         });
 
@@ -599,10 +692,7 @@
           el.classList.toggle('hidden', !isDone);
         });
 
-        // 버튼 텍스트 변경
         if (btnSelectGoal) btnSelectGoal.textContent = '추가 목표 고르기';
-
-        // bookshelf에 선택 완료 클래스 추가 (CSS 활용)
         document.getElementById('bookshelf').classList.add('has-selected');
       }
 
@@ -617,18 +707,12 @@
         });
       });
 
-      // ====================================================
-      // "학습목표 고르기" 버튼 클릭 → 첫 번째 카드 팝업 오픈
-      // ====================================================
       if (btnSelectGoal) {
         btnSelectGoal.addEventListener('click', function () {
-          if (!selectedGoalId) {
-            openGoalLayer(1);
-          } else {
-            // 선택 후 상태: 첫 번째 미선택 카드 오픈
-            const firstAvailable = goals.find(g => g.id !== selectedGoalId);
-            if (firstAvailable) openGoalLayer(firstAvailable.id); 
-          }
+          const firstAvailable = selectedGoalId
+            ? goals.find(g => g.id !== selectedGoalId)
+            : goals[0];
+          if (firstAvailable) openGoalLayer(firstAvailable.id);
         });
       }
 

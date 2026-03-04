@@ -11,6 +11,9 @@
       <div class="container">
         <div class="myclass-wrap myclass-layout">
 
+          <div class="myclass-top-bar">
+
+          </div>
           <!-- 좌측: 연도·분기·목표 -->
           <aside class="myclass-sidebar">
             <div class="year-selector">
@@ -52,103 +55,117 @@
                   <div class="books-item">
                     <div class="book-img-wrap">
                       <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
-                      <div class="book-info-wrap">
-                        <div class="book-video-area">
-                          <button type="button" class="book-video-thumb-btn" data-video-id="1" aria-label="영상 재생">
-                            <img src="./assets/images/myclass/img_book_01.png" alt="" class="book-video-thumb">
-                            <span class="book-video-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-                          </button>
-                          <span class="book-heart-area" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                        </div>
-                        <strong class="book-title">조직도가 리셋된다!</strong>
-                        <p class="book-desc">위계 중심 조직은 더 이상 통하지 않습니다. 더 유연하게 일할 방법</p>
-                        <span class="book-tag">IT 테크</span>
+                    </div>
+                    <div class="book-info-wrap">
+                      <div class="book-video-area">
+                        <button type="button" class="book-video-thumb-btn" data-video-id="1" aria-label="영상 재생">
+                          <img src="https://img.youtube.com/vi/KE_MeQZgnPM/sddefault.jpg" alt="" class="book-video-thumb">
+                        </button>
+                        <label class="bookmark" for="like_book_02_1" onclick="event.stopPropagation();">
+                          <input type="checkbox" id="like_book_02_1" title="저장">
+                        </label>
                       </div>
+                      <strong class="book-title">조직도가 리셋된다!</strong>
+                      <div class="book-desc">
+                        <p class="book-desc-sub">위계 중심 조직은 <br>더 이상 통하지 않습니다.</p>
+                        <p class="book-desc-main"><strong>더 유연하게 <br>일할 방법</strong></p>
+                      </div>
+                      <span class="book-tag">IT 테크</span>
                     </div>
                   </div>
                   <div class="books-item">
                     <div class="book-img-wrap">
                       <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
-                      <div class="book-info-wrap">
-                        <div class="book-video-area">
-                          <button type="button" class="book-video-thumb-btn" data-video-id="2" aria-label="영상 재생">
-                            <img src="./assets/images/myclass/img_book_02.png" alt="" class="book-video-thumb">
-                            <span class="book-video-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-                          </button>
-                          <span class="book-heart-area" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                        </div>
-                        <strong class="book-title">혈당 스파이크</strong>
-                        <p class="book-desc">식후 졸림은 의지 문제가 아니라 혈당의 문제! 혈당을 안정시켜줄 실생활 관리법</p>
-                        <span class="book-tag">웰니스</span>
+                    </div>
+                    <div class="book-info-wrap">
+                      <div class="book-video-area">
+                        <button type="button" class="book-video-thumb-btn" data-video-id="2" aria-label="영상 재생">
+                          <img src="https://img.youtube.com/vi/a2l1uZfsRi0/sddefault.jpg" alt="" class="book-video-thumb">
+                        </button>
+                        <label class="bookmark" for="like_book_02_2" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_02_2" title="저장"></label>
                       </div>
+                      <strong class="book-title">혈당 스파이크</strong>
+                      <div class="book-desc">
+                        <p class="book-desc-sub">식후 졸림은 의지 문제가 <br>아니라 혈당의 문제!</p>
+                        <p class="book-desc-main">혈당을 안정시켜줄 <br><strong>실생활 관리법</strong></p>
+                      </div>
+                      <span class="book-tag">웰니스</span>
                     </div>
                   </div>
                   <div class="books-item">
                     <div class="book-img-wrap">
                       <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
-                      <div class="book-info-wrap">
-                        <div class="book-video-area">
-                          <button type="button" class="book-video-thumb-btn" data-video-id="3" aria-label="영상 재생">
-                            <img src="./assets/images/myclass/img_book_03.png" alt="" class="book-video-thumb">
-                            <span class="book-video-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-                          </button>
-                          <span class="book-heart-area" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                        </div>
-                        <strong class="book-title">제대로 쉬는 방법</strong>
-                        <p class="book-desc">아무리 자도 피곤한가요? 진짜 회복되는 쉼이 무엇인지 알게됩니다.</p>
-                        <span class="book-tag">마인드셋</span>
+                    </div>
+                    <div class="book-info-wrap">
+                      <div class="book-video-area">
+                        <button type="button" class="book-video-thumb-btn" data-video-id="3" aria-label="영상 재생">
+                          <img src="https://img.youtube.com/vi/IeF8r0ycgVg/sddefault.jpg" alt="" class="book-video-thumb">
+                        </button>
+                        <label class="bookmark" for="like_book_02_3" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_02_3" title="저장"></label>
                       </div>
+                      <strong class="book-title">제대로 쉬는 방법</strong>
+                      <div class="book-desc">
+                        <p class="book-desc-sub">아무리 자도 <br>피곤한가요?</p>
+                        <p class="book-desc-main"><strong>진짜 회복되는 쉼</strong>이 <br>무엇인지 알게됩니다.</p>
+                      </div>
+                      <span class="book-tag">마인드셋</span>
                     </div>
                   </div>
                   <div class="books-item">
                     <div class="book-img-wrap">
                       <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
-                      <div class="book-info-wrap">
-                        <div class="book-video-area">
-                          <button type="button" class="book-video-thumb-btn" data-video-id="4" aria-label="영상 재생">
-                            <img src="./assets/images/myclass/img_book_04.png" alt="" class="book-video-thumb">
-                            <span class="book-video-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-                          </button>
-                          <span class="book-heart-area" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                        </div>
-                        <strong class="book-title">'AI 도파민'의 바다에 빠진 이유</strong>
-                        <p class="book-desc">AI는 선택이 아닌 생존의 도구 AI는 도구가 아닌 업무 파트너</p>
-                        <span class="book-tag">IT 테크</span>
+                    </div>
+                    <div class="book-info-wrap">
+                      <div class="book-video-area">
+                        <button type="button" class="book-video-thumb-btn" data-video-id="4" aria-label="영상 재생">
+                          <img src="https://img.youtube.com/vi/KMZXMI0QPoA/sddefault.jpg" alt="" class="book-video-thumb">
+                        </button>
+                        <label class="bookmark" for="like_book_02_4" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_02_4" title="저장"></label>
                       </div>
+                      <strong class="book-title">'AI 도파민'의 바다에 빠진 이유</strong>
+                      <div class="book-desc">
+                        <p class="book-desc-sub">AI는 선택이 아닌 <br>생존의 도구</p>
+                        <p class="book-desc-main">AI는 도구가 아닌 <br><strong>업무 파트너</strong></p>
+                      </div>
+                      <span class="book-tag">IT 테크</span>
                     </div>
                   </div>
                   <div class="books-item">
                     <div class="book-img-wrap">
                       <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
-                      <div class="book-info-wrap">
-                        <div class="book-video-area">
-                          <button type="button" class="book-video-thumb-btn" data-video-id="5" aria-label="영상 재생">
-                            <img src="./assets/images/myclass/img_book_05.png" alt="" class="book-video-thumb">
-                            <span class="book-video-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-                          </button>
-                          <span class="book-heart-area" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                        </div>
-                        <strong class="book-title">살찌고 망가진몸 되살리는 방법</strong>
-                        <p class="book-desc">몸을 망쳤다면? 다이어트 아닌 리셋이 답! 건강한 몸 되찾기</p>
-                        <span class="book-tag">웰니스</span>
+                    </div>
+                    <div class="book-info-wrap">
+                      <div class="book-video-area">
+                        <button type="button" class="book-video-thumb-btn" data-video-id="5" aria-label="영상 재생">
+                          <img src="https://img.youtube.com/vi/CRKwszz6l2M/sddefault.jpg" alt="" class="book-video-thumb">
+                        </button>
+                        <label class="bookmark" for="like_book_02_5" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_02_5" title="저장"></label>
                       </div>
+                      <strong class="book-title">살찌고 망가진몸 되살리는 방법</strong>
+                      <div class="book-desc">
+                        <p class="book-desc-sub">몸을 망쳤다면? <br>다이어트 아닌 리셋이 답!</p>
+                        <p class="book-desc-main"><strong>건강한 몸 되찾기</strong></p>
+                      </div>
+                      <span class="book-tag">웰니스</span>
                     </div>
                   </div>
                   <div class="books-item">
                     <div class="book-img-wrap">
                       <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
-                      <div class="book-info-wrap">
-                        <div class="book-video-area">
-                          <button type="button" class="book-video-thumb-btn" data-video-id="6" aria-label="영상 재생">
-                            <img src="./assets/images/myclass/img_book_06.png" alt="" class="book-video-thumb">
-                            <span class="book-video-play-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-                          </button>
-                          <span class="book-heart-area" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                        </div>
-                        <strong class="book-title">자기 관점의 힘</strong>
-                        <p class="book-desc">당신의 삶을 바꾸는 가장 강력한 무기? 자신만의 관점으로 경쟁력을 키우는 방법</p>
-                        <span class="book-tag">리더십</span>
+                    </div>
+                    <div class="book-info-wrap">
+                      <div class="book-video-area">
+                        <button type="button" class="book-video-thumb-btn" data-video-id="6" aria-label="영상 재생">
+                          <img src="https://img.youtube.com/vi/Gf5WoZ3BmgI/sddefault.jpg" alt="" class="book-video-thumb">
+                        </button>
+                        <label class="bookmark" for="like_book_02_6" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_02_6" title="저장"></label>
                       </div>
+                      <strong class="book-title">자기 관점의 힘</strong>
+                      <div class="book-desc">
+                        <p class="book-desc-sub">당신의 삶을 바꾸는 <br>가장 강력한 무기?</p>
+                        <p class="book-desc-main">자신만의 관점으로 <br><strong>경쟁력을 키우는 방법</strong></p>
+                      </div>
+                      <span class="book-tag">리더십</span>
                     </div>
                   </div>
                 </div>

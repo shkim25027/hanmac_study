@@ -35,7 +35,11 @@
         "팝업_법정교육": ["../modal.html?video=4", "mainframe", "컨펌대기", ""]
       },
       "마이클래스": {
-        "목표설정": ["../myclass.html", "mainframe", "컨펌대기", ""]
+        "목표설정": ["../myclass.html", "mainframe", "컨펌대기", ""],
+        "학습하기": ["../myclass_02.html", "mainframe", "컨펌대기", ""],
+        "학습완료": ["../myclass_03.html", "mainframe", "컨펌대기", ""],
+        "추가목표설정": ["../myclass_04.html", "mainframe", "컨펌대기", ""],
+        "추가목표설정 후 학습": ["../myclass_05.html", "mainframe", "컨펌대기", ""]
       },
       "온보딩": {
         "온보딩": ["../onboarding.html", "mainframe", "컨펌대기", ""],

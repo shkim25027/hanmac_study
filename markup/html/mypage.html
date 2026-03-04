@@ -164,15 +164,13 @@
                     <span class="activity-value"><em>60</em>분</span>
                   </div>
                   <div class="progress-track">
-                    <div class="tag-list">
-                      <span class="tag-wrap" style="width: 40%;"><span class="tag">소통</span></span>
-                      <span class="tag-wrap" style="width: 28%;"><span class="tag">협업</span></span>
-                      <span class="tag-wrap" style="width: 37%;"><span class="tag">웰니스</span></span>
+                    <div class="gauge-bar">
+                      <div class="gauge-fill" style="width: 40%;"></div>
                     </div>
                     <div class="gauge-value">
                       <span class="gauge-start">0</span>
                       <span class="gauge-separator">&middot;</span>
-                      <span class="gauge-end">60분</span>
+                      <span class="gauge-end">240분</span>
                     </div>
                   </div>
                 </li>
@@ -182,15 +180,13 @@
                     <span class="activity-value"><em>43</em>분</span>
                   </div>
                   <div class="progress-track">
-                    <div class="tag-list">
-                      <span class="tag-wrap" style="width: 60%;"><span class="tag">인물</span></span>
-                      <span class="tag-wrap" style="width: 32%;"><span class="tag">마인드셋</span></span>
-                      <span class="tag-wrap" style="width: 8%;"><span class="tag">기술과 미래</span></span>
+                    <div class="gauge-bar">
+                      <div class="gauge-fill" style="width: 60%;"></div>
                     </div>
                     <div class="gauge-value">
                       <span class="gauge-start">0</span>
                       <span class="gauge-separator">&middot;</span>
-                      <span class="gauge-end">43분</span>
+                      <span class="gauge-end">90분</span>
                     </div>
                   </div>
                   
@@ -201,14 +197,13 @@
                     <span class="activity-value"><em>23</em>분</span>
                   </div>
                   <div class="progress-track">
-                    <div class="tag-list">
-                      <span class="tag-wrap" style="width: 75%;"><span class="tag">금리</span></span>
-                      <span class="tag-wrap" style="width: 35%;"><span class="tag">증시</span></span>
+                    <div class="gauge-bar">
+                      <div class="gauge-fill" style="width: 20%;"></div>
                     </div>
                     <div class="gauge-value">
                       <span class="gauge-start">0</span>
                       <span class="gauge-separator">&middot;</span>
-                      <span class="gauge-end">23분</span>
+                      <span class="gauge-end">80분</span>
                     </div>
                   </div>
                   
@@ -217,14 +212,27 @@
             </section>
 
             <div class="mylist-area">
+              <!-- 콘텐츠 탭 영역 -->
+              <div class="content-tab-wrap">
+                <div class="content-tabs" role="tablist">
+                  <button type="button" class="content-tab active" role="tab" aria-selected="true" aria-controls="panel-watching" id="tab-watching" data-tab="watching">
+                    <i class="ico-play"></i>
+                    시청중인 콘텐츠 <span class="count">15</span>
+                  </button>
+                  <button type="button" class="content-tab" role="tab" aria-selected="false" aria-controls="panel-completed" id="tab-completed" data-tab="completed">
+                    <i class="ico-check"></i>
+                    시청완료 콘텐츠 <span class="count">15</span>
+                  </button>
+                  <button type="button" class="content-tab" role="tab" aria-selected="false" aria-controls="panel-saved" id="tab-saved" data-tab="saved">
+                    <i class="ico-bookmark"></i>
+                    저장한 콘텐츠 <span class="count">3</span>
+                  </button>
+                </div>
+                <div class="content-panels">
               <!-- 시청중인 콘텐츠: 진행률은 gauge-fill의 style="width: N%" 에서 조정 -->
-              <!-- 시청중인 콘텐츠: 진행률은 gauge-fill의 style="width: N%" 에서 조정 -->
-              <section class="content-section">
-                <h3 class="section-title">
-                  <i class="ico-play"></i>
-                  시청중인 콘텐츠 <span class="count">15</span>
-                </h3>
+              <section class="content-section content-panel active" id="panel-watching" role="tabpanel" aria-labelledby="tab-watching" data-panel="watching">
                 <ul class="content-grid">
+                  <!-- 시청중: 진행률 gauge-fill style="width: N%" -->
                   <li class="content-card">
                     <a href="#" class="card-link">
                       <label class="bookmark" for="like_watching_1" onclick="event.stopPropagation();">
@@ -467,13 +475,195 @@
                   </li>
                 </ul>
               </section>
-  
+
+              <!-- 시청완료 콘텐츠: 100% 진행률 표시 -->
+              <section class="content-section content-panel" id="panel-completed" role="tabpanel" aria-labelledby="tab-completed" data-panel="completed">
+                <ul class="content-grid">
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_1" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_1" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_01.png" alt="어색한 침묵 스몰토크" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">어색한 침묵 스몰토크</strong>
+                        <div class="tag-list"><span class="tag">소통</span><span class="tag">협업</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_2" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_2" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_02.png" alt="한국에서 가장 유명한 회계사의 조언" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag leader">리더십</span>
+                        <strong class="item-title">한국에서 가장 유명한 회계사의 조언</strong>
+                        <div class="tag-list"><span class="tag">소통</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_3" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_3" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_03.png" alt="무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 법" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하..</strong>
+                        <div class="tag-list"><span class="tag">협업</span><span class="tag">웰니스</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_4" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_4" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_04.png" alt="꼰대가 되지 않고 건설적인 피드백을 하는 법" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag leader">리더십</span>
+                        <strong class="item-title">꼰대가 되지 않고 건설적인 피드백을 하는 법</strong>
+                        <div class="tag-list"><span class="tag">마인드셋</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_5" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_5" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_05.png" alt="프로와 아마추어를 가르는 차이점" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">프로와 아마추어를 가르는 차이점!</strong>
+                        <div class="tag-list"><span class="tag">자기개발</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_6" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_6" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_06.png" alt="트럼프 반도체 관세, 한국 기업" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag biz">비즈트렌드</span>
+                        <strong class="item-title">트럼프 반도체 관세…한국 기업 불똥?</strong>
+                        <div class="tag-list"><span class="tag">금리</span><span class="tag">증시</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_7" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_7" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_01.png" alt="어색한 침묵 스몰토크" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">어색한 침묵 스몰토크</strong>
+                        <div class="tag-list"><span class="tag">소통</span><span class="tag">협업</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_8" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_8" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_02.png" alt="한국에서 가장 유명한 회계사의 조언" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag leader">리더십</span>
+                        <strong class="item-title">한국에서 가장 유명한 회계사의 조언</strong>
+                        <div class="tag-list"><span class="tag">소통</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_9" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_9" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_03.png" alt="무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 법" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하..</strong>
+                        <div class="tag-list"><span class="tag">협업</span><span class="tag">웰니스</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_10" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_10" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_04.png" alt="꼰대가 되지 않고 건설적인 피드백을 하는 법" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag leader">리더십</span>
+                        <strong class="item-title">꼰대가 되지 않고 건설적인 피드백을 하는 법</strong>
+                        <div class="tag-list"><span class="tag">마인드셋</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_11" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_11" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_05.png" alt="프로와 아마추어를 가르는 차이점" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag insight">인사이트</span>
+                        <strong class="item-title">프로와 아마추어를 가르는 차이점!</strong>
+                        <div class="tag-list"><span class="tag">자기개발</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="content-card content-card--completed">
+                    <a href="#" class="card-link">
+                      <label class="bookmark" for="like_completed_12" onclick="event.stopPropagation();"><input type="checkbox" id="like_completed_12" title="저장"></label>
+                      <div class="item-thumb">
+                        <img src="./assets/images/video/img_thumb_06.png" alt="트럼프 반도체 관세, 한국 기업" />
+                        <div class="gauge-bar rect"><div class="gauge-fill" style="width: 100%"></div></div>
+                      </div>
+                      <div class="item-info">
+                        <span class="category-tag biz">비즈트렌드</span>
+                        <strong class="item-title">트럼프 반도체 관세…한국 기업 불똥?</strong>
+                        <div class="tag-list"><span class="tag">금리</span><span class="tag">증시</span></div>
+                        <button type="button" class="btn-remove-card" title="삭제"></button>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </section>
+
               <!-- 저장한 콘텐츠: 체크된 상태로 표시 (checked) -->
-              <section class="content-section">
-                <h3 class="section-title">
-                  <i class="ico-bookmark"></i>
-                  저장한 콘텐츠 <span class="count">3</span>
-                </h3>
+              <section class="content-section content-panel" id="panel-saved" role="tabpanel" aria-labelledby="tab-saved" data-panel="saved">
                 <ul class="content-grid">
                   <li class="content-card content-card--saved">
                     <a href="#" class="card-link">
@@ -597,7 +787,9 @@
                   </li>
                 </ul>
               </section>
-  
+                </div>
+              </div>
+
               <!-- 한줄 소감: 사용자가 작성한 짧은 리뷰 목록 -->
               <section class="review-section">
                 <h3 class="section-title"> 

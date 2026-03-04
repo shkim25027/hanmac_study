@@ -212,6 +212,11 @@ $card-colors: (
     display: flex;
     gap: 8px;
     flex-direction: column;
+
+    &.goal {
+      max-width: 1720px;
+      margin: auto;
+    }
   }
 
    
@@ -224,8 +229,13 @@ $card-colors: (
 
   .selected-goal-header {
     @include flex(row, center, flex-start);
+    flex-wrap: wrap;
     gap: 12px;
     margin-bottom: 16px;
+
+    .btn-select-goal {
+      margin-left: auto;
+    }
   }
 
   .selected-goal-meta {
@@ -298,6 +308,7 @@ $card-colors: (
     background-repeat: no-repeat;
     background-size: calc(100% - 12px) auto;
     padding-bottom: 4px;
+    aspect-ratio: 396/234;
   }
 
   // -------
@@ -308,7 +319,6 @@ $card-colors: (
     position: relative;
     width: 100%;
     min-width: 100%;
-    min-height: 230px;
     height: 100%;
     padding: 20px 20px 24px;
     
@@ -529,74 +539,18 @@ $card-colors: (
   @include flex(column, center, center);
   gap: 20px;
   width: 100%;
-  max-width: calc(1300px + 90px * 2 + 48px);
+  max-width:max-content;
   max-height: 100%;
 }
 
 // prev + 팝업박스 + next 가로 배치
 .goal-layer-main {
   @include flex(row, center, center);
-  gap: 24px;
   width: 100%;
+  max-width: 1100px;
   min-height: 0;
   flex: 1;
-
-  // 이전/다음 버튼 (양 사이드)
-  .btn-goal-prev,
-  .btn-goal-next {
-    flex-shrink: 0;
-    @include flex(column, center, center);
-    width: 90px;
-    min-height: 200px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.4;
-    text-align: center;
-    padding: 16px 8px;
-    transition: color 0.2s;
-
-    &:disabled {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    &:not(:disabled):hover {
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .prev-goal-name,
-    .next-goal-name {
-      word-break: keep-all;
-    }
-  }
-
-  .btn-goal-prev::before {
-    content: "";
-    display: block;
-    width: 40px;
-    height: 80px;
-    margin: 0 auto 8px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='80' viewBox='0 0 40 80' fill='none'%3E%3Cpath d='M36 4C30 20 8 36 4 40C8 44 30 60 36 76' stroke='rgba(255,255,255,0.5)' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-  }
-
-  .btn-goal-next::before {
-    content: "";
-    display: block;
-    width: 40px;
-    height: 80px;
-    margin: 0 auto 8px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='80' viewBox='0 0 40 80' fill='none'%3E%3Cpath d='M4 4C10 20 32 36 36 40C32 44 10 60 4 76' stroke='rgba(255,255,255,0.5)' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-  }
+  padding: 0 24px;
 }
 
 // 팝업 외부 하단 버튼 영역
@@ -608,54 +562,18 @@ $card-colors: (
 // =======================================
 // 목표 팝업 박스
 // =======================================
-.goal-popup {
-  position: relative;
-  flex: 1;
-  max-width: 1300px;
-  max-height: calc(100vh - 60px);
+.goal-layer-header {
   display: flex;
-  flex-direction: column;
-  background: linear-gradient(180deg, #F9F6F0 65.77%, #F6E3BF 102.95%);
-  border: 3px solid $popup-border;
-  border-radius: 12px;
-  overflow: hidden;
-
-  // 좌우 장식 문구 (팝업 양 옆)
-  .popup-side-deco {
-    position: absolute;
-    top: 50%;
-    font-size: 14px;
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
-    white-space: nowrap;
-    letter-spacing: 0.1em;
-    pointer-events: none;
-    z-index: 0;
-
-    &--left {
-      left: -110px;
-      transform: translateY(-50%) rotate(-90deg);
-    }
-
-    &--right {
-      right: -110px;
-      transform: translateY(-50%) rotate(90deg);
-    }
-  }
-
+  justify-content: flex-end;
+  width: 100%;
   // 닫기 버튼
   .btn-close-layer {
-    position: absolute;
-    top: 20px;
-    right: 20px;
     z-index: 10;
     width: 36px;
     height: 36px;
     padding: 0;
-    border-radius: 50%;
     cursor: pointer;
     @include flex(row, center, center);
-    transition: background 0.2s;
 
     &::before,
     &::after {
@@ -663,14 +581,157 @@ $card-colors: (
       position: absolute;
       width: 28px;
       height: 3px;
-      background: #333;
+      background: #fff;
       border-radius: 2px;
     }
     &::before { transform: rotate(45deg); }
     &::after  { transform: rotate(-45deg); }
 
-    &:hover {
-      //background: rgba(0, 0, 0, 0.14);
+  }
+
+}
+.goal-popup {
+  position: relative;
+  flex: 1;
+  max-width: 100%;
+  max-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: visible; /* 좌우 슬라이드(목표) 노출을 위해 */
+
+  // 목표 Swiper: active 슬라이드 화면 중앙 정렬
+  .goal-popup-swiper {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    height: calc(100vh - 200px);
+    overflow: visible;
+    padding: 0;
+
+    .swiper-wrapper {
+      align-items: stretch;
+      height: 100%;
+      transition-duration: 0.25s;
+      transition-timing-function: ease-out;
+    }
+
+    .swiper-slide {
+      width: 220px;
+      max-width: 220px;
+      height: 100% !important; /* 고정 - Swiper 기본 height 동작 무시 */
+      background: linear-gradient(180deg, #F9F6F0 65.77%, #F6E3BF 102.95%);
+      border-radius: 12px;
+      border: 3px solid transparent;
+
+      &.swiper-slide-active {
+        width:1020px;
+        max-width: none;
+        max-height: 678px;
+        overflow: hidden;
+        opacity: 1;
+        border-color: #FF7020;
+      }
+
+      // 비활성: recs-list, bookshelf 숨김 → 카드형 표시
+      &:not(.swiper-slide-active) {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+        align-self: center;
+        overflow: hidden;
+        min-width: 264px;
+        min-height: 356px;
+        margin-top: 64px;
+        &:after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.30);
+          z-index: 1;
+        }
+
+        .goal-slide-recs,
+        .goal-slide-bookshelf {
+          display: none !important;
+        }
+
+        .popup-scroll {
+          flex: 1;
+          overflow-y: hidden;
+          padding: 24px 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .popup-body {
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          gap: 12px;
+          height: auto;
+        }
+
+        .popup-top {
+          flex-direction: column;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .title-box {
+          align-items: flex-start;
+          max-width: 100%;
+          gap: 16px;
+        }
+        .title-area{
+          gap:56px;
+        }
+
+        .popup-title {
+          position: relative;
+          font-size: 24px;
+          word-break: keep-all;
+          text-align: left;
+          color: #3A200D;
+          &::before {
+            content: "";
+            position: absolute;
+            left: 16px;
+            bottom: -26px;
+            width: 32px;
+            height: 4px;
+            background: #614A39;
+            border-radius: 2px;
+            transform: translateX(-50%);
+
+          }
+        }
+
+        .popup-desc {
+          font-size: 16px;
+          word-break: keep-all;
+          text-align: left;
+          color: #614A39;
+        }
+      }
+
+      // 활성: title-box 너비 고정, recs-list 나머지 공간 배분
+      &.swiper-slide-active {
+        .title-box {
+          flex: 0 0 auto;
+          min-width: 260px;
+          max-width: 320px;
+        }
+
+        .recs-list {
+          flex: 1;
+          min-width: 0;
+        }
+      }
     }
   }
 
@@ -681,7 +742,7 @@ $card-colors: (
     flex: 1;
     min-height: 0;
     overflow-y: auto;
-    padding: 40px 48px 32px;
+    padding: 40px 48px 96px;
     @include scrollbar-style();
   }
 
@@ -694,8 +755,8 @@ $card-colors: (
 
   // 상단: title-box + recs-list
   .popup-top {
-    @include flex(row, flex-start, flex-start);
-    gap: 34px; 
+    @include flex(row, center, flex-start);
+    gap:0px; 
     width: 100%;
   }
 
@@ -703,6 +764,7 @@ $card-colors: (
     @include flex(column , flex-start, flex-start);
     gap: 16px;
     margin-bottom: 0;
+    padding-right: 24px;
   }
 
   .title-icon {
@@ -742,8 +804,10 @@ $card-colors: (
   // -------
   .recs-list {
     @include flex(column, flex-start, flex-start);
-    gap: 28px;
+    gap: 16px;
     width: 100%;
+    padding-left: 32px;
+    border-left: 1px solid #E0E0E0;
   }
 
   .rec-item {
@@ -786,21 +850,51 @@ $card-colors: (
   // -------
   // 추천 도서 책장 영역
   // -------
+
+  .goal-slide-bookshelf {
+    .books-item {
+      .book-video-area {
+        margin-bottom: 16px;
+      }
+      .book-info-wrap{
+        padding: 42px 4px 12px;
+        max-width: 116px;
+      }
+
+      .book-title {
+        font-size: 16px;
+        height: calc(16px * 1.2 * 2);
+        margin: 0 0 12px;
+      }
+      .book-desc {
+         gap: 18px;
+         &::before {
+          top: 8px !important;
+          width: 62px !important;
+         }
+        .book-desc-main {
+          font-size: 12px;
+        }
+        .book-desc-sub {
+          font-size: 11px;
+        }
+      }
+
+      .book-tag {
+        font-size: 10px;
+      }
+     
+
+    }
+  }
+
   .bookshelf {
     position: relative;
     max-width: 928px;
     margin: auto;
 
   }
-  .books-list {
-    display: flex;
-    align-items: flex-end;
-  }
-  .books-item {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
+
   .book-info-wrap {
     position: absolute;
     top: 0;
@@ -852,15 +946,18 @@ $card-colors: (
   // 팝업 하단 페이지네이션 dots
   // -------
   .popup-pagination {
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
     flex-shrink: 0;
     @include flex(row, center, center);
     gap: 8px;
-    padding: 14px 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 8px 0 38px;
 
     .pagination-dot {
-      width: 8px;
-      height: 8px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: rgba(0, 0, 0, 0.18);
       transition: background 0.2s, transform 0.2s;
@@ -868,7 +965,6 @@ $card-colors: (
 
       &.is-active {
         background: $popup-border;
-        transform: scale(1.35);
       }
     }
   }
@@ -911,7 +1007,7 @@ $card-colors: (
   .myclass-layout {
     display: flex;
     gap: 2rem;
-    max-width: 1280px;
+    max-width: 1506px;
     margin: 0 auto;
     padding: 24px 24px 48px;
   }
@@ -1077,28 +1173,37 @@ $card-colors: (
 
   // 책장 섹션: Component 1040.svg 기준 (myclass_03)
   .bookshelf-section {
-    margin-top: 2rem;
+    margin: auto;
 
     .bookshelf {
       position: relative;
-      max-width: 928px;
+      max-width: 1506px;
       margin: 0 auto;
       padding: 0 24px;
       box-sizing: border-box;
     }
 
     .books-list {
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
+      display: grid;
+      grid-template-columns: 198fr 266fr 248fr 218fr 250fr 220fr;
+     justify-content: flex-end;
+      gap: 0;
+      padding: 0 calc(50px / 1506px * 100%);
     }
 
     .books-item {
       position: relative;
       width: 100%;
-      flex: 1;
       min-width: 0;
-      max-width: 160px;
+      display: flex;
+      height: 100%;
+      align-items: flex-end;
+
+      // 진행중 또는 완료 시 회색 필터 제거
+      &-progress .book-video-thumb-btn .book-video-thumb,
+      &-completed .book-video-thumb-btn .book-video-thumb {
+        filter: none;
+      }
     }
 
     .book-img-wrap {
@@ -1119,10 +1224,12 @@ $card-colors: (
     .book-info-wrap {
       position: absolute;
       top: 0;
-      left: 0;
-      width: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 170px; // 공통 너비 (모든 books-item에서 동일)
+      max-width: 100%;
       height: 100%;
-      padding: 10px 8px 12px;
+      padding: 72px 8px 12px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -1156,6 +1263,11 @@ $card-colors: (
         cursor: pointer;
         background: transparent;
         display: block;
+
+        // 진행중/완료가 아닐 때 회색 필터
+        .book-video-thumb {
+          filter: grayscale(100%);
+        }
       }
 
       .book-video-thumb {
@@ -1163,28 +1275,6 @@ $card-colors: (
         width: 100%;
         height: 100%;
         object-fit: cover;
-      }
-
-      .book-video-play-icon {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: rgba(0, 0, 0, 0.5);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        pointer-events: none;
-
-        svg {
-          width: 18px;
-          height: 18px;
-          margin-left: 2px;
-        }
       }
 
       .book-heart-area {
@@ -1208,39 +1298,100 @@ $card-colors: (
           color: #c75b6e;
         }
       }
+
+      .bookmark {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        padding: 0;
+        z-index: 2;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+
+        input[type="checkbox"] {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          cursor: pointer;
+          border: none;
+          background: transparent;
+          @include bgImg("../images/ico/ico_bookmark_off.svg", contain, center);
+
+          &:checked {
+            @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+          }
+        }
+      }
     }
 
     .book-title {
-      font-size: 13px;
+      height: calc(24px * 1.2 * 2);
+      font-size: 24px;
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.2;
       color: #1a1a1a;
-      margin: 0 0 6px;
+      margin: 0 0 24px;
       word-break: keep-all;
+      align-items: center;
+      text-align: center;
+      display: flex;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .book-desc {
+      position: relative;
       font-size: 11px;
       line-height: 1.4;
       color: #333;
       margin: 0 auto 8px;
       flex: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 38px;
       max-width: 100%;
+
+      .book-desc-main {
+        font-size: 16px;
+      }
+
+      .book-desc-sub {
+        font-size: 15px;
+      }
+    }
+
+    .books-item {
+      @for $i from 1 through 6 {
+        $colors: (779588, CAB389, A36E6B, 688679, CAB389, 998B87);
+        $color: nth($colors, $i);
+
+        &:nth-child(#{$i}) .book-desc::before {
+          content: "";
+          display: block;
+          position: absolute;
+          top: 12px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 124px;
+          height: 49px;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='124' height='49' viewBox='0 0 124 49' fill='none'%3E%3Cg opacity='0.5' style='mix-blend-mode:multiply'%3E%3Cpath d='M31.6548 13.1895V0H91.4473V13.1895H123.981L61.9907 48.9798L0 13.1895H31.6548Z' fill='url(%23paint0_linear_#{$i})'/%3E%3C/g%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_#{$i}' x1='61.9907' y1='0' x2='61.9907' y2='48.9798' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23#{$color}' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23#{$color}'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center;
+        }
+      }
     }
 
     .book-tag {
-      font-size: 10px;
-      font-weight: 500;
-      color: #555;
-      background: rgba(255, 255, 255, 0.85);
-      padding: 3px 8px;
-      border-radius: 4px;
-      border: 1px solid rgba(0, 0, 0, 0.08);
+      font-size: 12px;
+      font-weight: 700;
+      color: #181410;
       flex-shrink: 0;
     }
 
@@ -1413,6 +1564,34 @@ $card-colors: (
       position: relative;
       flex: 0 0 auto;
       padding: 8px 6px 10px;
+
+      .bookmark {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        padding: 0;
+        z-index: 2;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+
+        input[type="checkbox"] {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          cursor: pointer;
+          border: none;
+          background: transparent;
+          @include bgImg("../images/ico/ico_bookmark_off.svg", contain, center);
+
+          &:checked {
+            @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+          }
+        }
+      }
     }
   }
 
@@ -1425,6 +1604,34 @@ $card-colors: (
 
     .bookshelf {
       margin-top: 0.75rem;
+    }
+
+    .book-info-wrap .bookmark {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      padding: 0;
+      z-index: 2;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+        @include bgImg("../images/ico/ico_bookmark_off.svg", contain, center);
+
+        &:checked {
+          @include bgImg("../images/ico/ico_bookmark_on.svg", contain, center);
+        }
+      }
     }
   }
 
@@ -1442,6 +1649,7 @@ $card-colors: (
     margin: 0;
   }
 
+  .books-item-has-flag,
   .books-item--has-flag {
     position: relative;
   }

@@ -42,4 +42,31 @@
       accordionContent.hidden = !isOpen;
     });
   }
+
+  // ------------------------------
+  // 3. 콘텐츠 탭 전환
+  // ------------------------------
+  var contentTabs = document.querySelectorAll(".content-tab");
+  var contentPanels = document.querySelectorAll(".content-panel");
+
+  contentTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      var targetTab = this.getAttribute("data-tab");
+      if (!targetTab) return;
+
+      // 탭 버튼 active 전환
+      contentTabs.forEach(function (t) {
+        t.classList.remove("active");
+        t.setAttribute("aria-selected", "false");
+      });
+      this.classList.add("active");
+      this.setAttribute("aria-selected", "true");
+
+      // 패널 표시 전환
+      contentPanels.forEach(function (panel) {
+        var panelId = panel.getAttribute("data-panel");
+        panel.classList.toggle("active", panelId === targetTab);
+      });
+    });
+  });
 })();
