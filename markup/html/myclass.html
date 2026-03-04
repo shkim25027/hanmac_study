@@ -450,7 +450,17 @@
                   </div>
                   <!-- // 슬라이드 1 -->
                 </div>
-                <!-- 팝업 하단: 목표 페이지네이션 (Swiper 연동) -->
+                <!-- 썸네일 슬라이드 (Thumbs): 하단 작은 카드, 클릭 시 메인과 연동 -->
+                <div class="goal-popup-thumbs-wrap">
+                  <div class="swiper goal-popup-thumbs-swiper" id="goalThumbsSwiper">
+                    <div class="swiper-wrapper" id="goalThumbsWrapper">
+                      <div class="swiper-slide goal-thumb" data-goal-id="1">
+                        <span class="goal-thumb-title"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- 하단: 목표 페이지네이션 (동그라미) -->
                 <div class="popup-pagination swiper-pagination" id="popupPagination"></div>
               </div>
             </div>
@@ -522,14 +532,16 @@
       let currentGoalId = null;
       let selectedGoalId = null;
 
-      const goalLayer       = document.getElementById('goalLayer');
-      const btnCloseLayer   = document.getElementById('btnCloseLayer');
-      const btnSetGoal      = document.getElementById('btnSetGoal');
-      const btnSelectGoal   = document.getElementById('btnSelectGoal');
-      const popupPagination  = document.getElementById('popupPagination');
-      const goalSlideWrapper = document.getElementById('goalSlideWrapper');
+      const goalLayer        = document.getElementById('goalLayer');
+      const btnCloseLayer    = document.getElementById('btnCloseLayer');
+      const btnSetGoal        = document.getElementById('btnSetGoal');
+      const btnSelectGoal     = document.getElementById('btnSelectGoal');
+      const goalSlideWrapper  = document.getElementById('goalSlideWrapper');
+      const goalThumbsWrapper = document.getElementById('goalThumbsWrapper');
+      const popupPagination   = document.getElementById('popupPagination');
 
-      let goalPopupSwiper = null;
+      let goalPopupSwiper  = null;
+      let goalThumbsSwiper = null;
 
       // 목표별 카드 배경색 (비활성 슬라이드용)
       const goalCardColors = {
@@ -575,12 +587,45 @@
         });
       }
 
+      function buildGoalThumbs() {
+        const templateThumb = goalThumbsWrapper && goalThumbsWrapper.querySelector('.goal-thumb');
+        if (!templateThumb) return;
+        for (let i = 1; i < goals.length; i++) {
+          const clone = templateThumb.cloneNode(true);
+          clone.dataset.goalId = goals[i].id;
+          clone.classList.remove('swiper-slide-active', 'swiper-slide-thumb-active');
+          goalThumbsWrapper.appendChild(clone);
+        }
+        goals.forEach(function (goal) {
+          const thumb = goalThumbsWrapper.querySelector(`.goal-thumb[data-goal-id="${goal.id}"]`);
+          if (!thumb) return;
+          const titleEl = thumb.querySelector('.goal-thumb-title');
+          if (titleEl) titleEl.textContent = goal.title;
+        });
+      }
+
       function initGoalPopupSwiper() {
         if (goalPopupSwiper) return;
-        goalPopupSwiper = new Swiper('.goal-popup-swiper', {
+
+        goalThumbsSwiper = new Swiper('.goal-popup-thumbs-swiper', {
+          spaceBetween: 8,
           slidesPerView: 'auto',
-          centeredSlides: true,
-          spaceBetween: 20,
+          watchSlidesProgress: true,
+          slideToClickedSlide: true,
+          breakpoints: {
+            320: { slidesPerView: 2 },
+            640: { slidesPerView: 3 },
+            900: { slidesPerView: 4 },
+            1200: { slidesPerView: 5 },
+          },
+        });
+
+        goalPopupSwiper = new Swiper('.goal-popup-swiper', {
+          slidesPerView: 1,
+          spaceBetween: 0,
+          thumbs: {
+            swiper: goalThumbsSwiper,
+          },
           observer: true,
           observeParents: true,
           pagination: {
@@ -594,12 +639,6 @@
               const idx = this.activeIndex;
               currentGoalId = goals[idx] ? goals[idx].id : currentGoalId;
             },
-            slideChangeTransitionEnd: function () {
-              var sw = this;
-              sw.updateSize();
-              sw.updateSlides();
-              sw.slideTo(sw.activeIndex, 250);
-            },
           },
         });
       }
@@ -608,6 +647,10 @@
         if (goalPopupSwiper) {
           goalPopupSwiper.destroy(true, true);
           goalPopupSwiper = null;
+        }
+        if (goalThumbsSwiper) {
+          goalThumbsSwiper.destroy(true, true);
+          goalThumbsSwiper = null;
         }
       }
 
@@ -618,6 +661,7 @@
         goalLayer.classList.add('is-open');
         document.body.classList.add('layer-open');
         buildGoalSlides();
+        buildGoalThumbs();
         initGoalPopupSwiper();
         const slideIdx = goals.findIndex(g => g.id === goalId);
         if (slideIdx >= 0 && goalPopupSwiper) {
@@ -640,6 +684,10 @@
         if (goalSlideWrapper) {
           const slides = goalSlideWrapper.querySelectorAll('.goal-slide');
           slides.forEach(function (s, i) { if (i > 0) s.remove(); });
+        }
+        if (goalThumbsWrapper) {
+          const thumbs = goalThumbsWrapper.querySelectorAll('.goal-thumb');
+          thumbs.forEach(function (t, i) { if (i > 0) t.remove(); });
         }
         goalLayer.setAttribute('aria-hidden', 'true');
         goalLayer.classList.remove('is-open');
