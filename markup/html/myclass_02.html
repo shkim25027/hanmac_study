@@ -11,43 +11,48 @@
       <div class="container">
         <div class="myclass-wrap myclass-layout">
 
+          <!-- 상단바: 좌(사용자/연도) + 우(환영 문구) -->
           <div class="myclass-top-bar">
-
-          </div>
-          <!-- 좌측: 연도·분기·목표 -->
-          <aside class="myclass-sidebar">
-            <div class="year-selector">
-              <button class="btn-year" type="button" aria-haspopup="listbox">
-                <span>2026년</span>
-                <i class="ico-year-arrow" aria-hidden="true"></i>
-              </button>
-            </div>
-            <p class="sidebar-quarter">▶ 1분기</p>
-            <div class="sidebar-goal-detail">
-              <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
-              <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
-              <button class="btn-reset-goal" type="button">
-                <span class="ico-arrow-left" aria-hidden="true"></span> 목표 다시 선택
-              </button>
-            </div>
-          </aside>
-
-          <!-- 메인: 랭크 + 인트로 + 책장 -->
-          <div class="myclass-main">
-
-            <div class="user-info-bar">
-              <div class="user-rank-area">
-                <span class="ico-trophy" aria-hidden="true">🏆</span>
-                <span class="rank-text">홍길동님 현재 <em>128등</em> <span class="rank-change">(지난 주 대비 4↑)</span></span>
-                <button class="btn-rank-toggle" type="button" aria-label="순위 상세"><span class="ico-chevron-down"></span></button>
+            <div class="top-bar-left">
+              <div class="user-info-bar">
+                <div class="user-rank-area">
+                  <span class="ico-trophy" aria-hidden="true">🏆</span>
+                  <span class="rank-text">홍길동님 현재 <em>128등</em> <span class="rank-change">(지난 주 대비 4↑)</span></span>
+                  <button class="btn-rank-toggle" type="button" aria-label="순위 상세"><span class="ico-chevron-down"></span></button>
+                </div>
+              </div>
+              <div class="year-selector">
+                <button class="btn-year" type="button" aria-haspopup="listbox">
+                  <span>2026년</span>
+                  <i class="ico-year-arrow" aria-hidden="true"></i>
+                </button>
               </div>
             </div>
-
-            <div class="page-intro">
-              <p class="intro-greeting"><strong class="intro-goal-name">[자기이해와 강점찾기]</strong>, 지금부터 하나씩 완독해보세요.</p>
-              <p class="intro-desc intro-desc--dday"><em class="intro-dday">D-64(3월 30일)</em> 까지 나만의 지식을 채워갈 시간입니다.</p>
+            <div class="page-intro" id="pageIntro">
+              <!-- 상태: 목표 선택 후 학습 중 -->
+              <div class="page-title">
+                <h3>
+                  <strong class="intro-goal-name">[자기이해와 강점찾기]</strong>, 지금부터 하나씩 완독해보세요.
+                </h3>
+                <p><em class="intro-dday">D-64<small>(3월 30일)</small></em> 까지 나만의 지식을 채워갈 시간입니다.</p>
+              </div>
             </div>
+          </div>
 
+          <!-- 좌측: 분기·목표 | 우측: 메인 콘텐츠 -->
+          <div class="myclass-content">
+            <aside class="myclass-sidebar">
+              <p class="sidebar-quarter"><span class="ico-quarter-triangle" aria-hidden="true"></span> <strong>1</strong>분기</p>
+              <div class="sidebar-goal-detail">
+                <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
+                <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
+                <button class="btn-reset-goal" type="button">
+                  <span class="ico-arrow-back" aria-hidden="true"></span> 목표 다시 선택
+                </button>
+              </div>
+            </aside>
+
+            <div class="myclass-main">
             <!-- 추천 도서 책장: 표지 위에 하트·제목·설명·태그 배치 -->
             <section class="bookshelf-section" aria-label="추천 도서 책장">
               <div class="bookshelf">
@@ -176,8 +181,11 @@
               </div>
             </section>
 
+            </div>
+            <!-- // myclass-main -->
+
           </div>
-          <!-- // myclass-main -->
+          <!-- // myclass-content -->
 
         </div>
         <!-- // myclass-wrap -->

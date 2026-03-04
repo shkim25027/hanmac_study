@@ -1006,10 +1006,17 @@ $card-colors: (
 .myclass {
   .myclass-layout {
     display: flex;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 0;
     max-width: 1506px;
     margin: 0 auto;
     padding: 24px 24px 48px;
+  }
+
+  .myclass-content {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
   }
 
   .myclass-sidebar {
@@ -1021,9 +1028,36 @@ $card-colors: (
   }
 
   .sidebar-quarter {
-    font-size: 0.9rem;
-    color: #666;
-    margin: 0 0 1rem;
+    position: relative;
+    font-size: 34px;
+    color: var(--text-primary);
+
+    /* CSS 삼각형: 채움 #FFA149, 아웃라인 #fff 0.4, 중심 정렬 */
+    .ico-quarter-triangle {
+      display: inline-block;
+      width: 0;
+      height: 0;
+      position: relative;
+      vertical-align: middle;
+      margin-right: 0.25em;
+      border-left: 14px solid #FFA149;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+
+      /* 아웃라인: 채움보다 2px 크게, 채움과 중심 일치 */
+      &::before {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: -1px;
+        top: -2px;
+        border-left: 16px solid rgba(255, 255, 255, 0.4);
+        border-top: 10px solid transparent;
+        border-bottom: 10px solid transparent;
+        z-index: -1;
+      }
+    }
   }
 
   .sidebar-goal-detail {
@@ -1032,15 +1066,15 @@ $card-colors: (
   }
 
   .sidebar-goal-title {
-    font-size: 1rem;
+    font-size:18px;
     margin: 0 0 0.5rem;
-    color: #1a1a1a;
+    color: var(--text-primary);
     font-weight: 700;
   }
 
   .sidebar-goal-desc {
-    font-size: 0.85rem;
-    color: #666;
+    font-size: 16px;
+    color: var(--text-secondary);
     line-height: 1.5;
     margin: 0 0 1rem;
   }
@@ -1048,21 +1082,22 @@ $card-colors: (
   .btn-reset-goal {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-size: 0.9rem;
-    color: #E86B2E;
-    background: none;
+    gap: 0;
+    font-size: 18px;
+    height: 50px;
+    width: 166px;
+    border-radius: 8px;
+    color: var(--text-primary);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%), #ffcf70;
     border: none;
     cursor: pointer;
     padding: 0;
 
-    .ico-arrow-left {
+    .ico-arrow-back {
       display: inline-block;
-      width: 0.5rem;
-      height: 0.5rem;
-      border-left: 2px solid currentColor;
-      border-bottom: 2px solid currentColor;
-      transform: rotate(-45deg);
+      width: 24px;
+      height: 24px;
+      @include bgImg("../images/ico/ico_arrow_back.svg", contain, center);
     }
   }
 
