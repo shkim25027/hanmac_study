@@ -44,7 +44,10 @@
               </div>
               <section class="suggest-section">
                 <h3 class="suggest-title">컨텐츠 제안하기</h3>
-                <textarea class="suggest-input" placeholder="URL, 추천이유 작성" rows="4"></textarea>
+                <div class="suggest-fields">
+                  <input type="url" class="suggest-input suggest-url" placeholder="URL" id="suggest-url" />
+                  <textarea class="suggest-input suggest-reason" placeholder="추천이유" rows="4" id="suggest-reason"></textarea>
+                </div>
                 <button type="button" class="btn-primary btn-full" disabled>
                   제안 보내기
                   <i class="ico-arrow"></i>
@@ -216,19 +219,16 @@
               <div class="content-tab-wrap">
                 <div class="content-tabs" role="tablist">
                   <button type="button" class="content-tab active" role="tab" aria-selected="true" aria-controls="panel-watching" id="tab-watching" data-tab="watching">
-                    <i class="ico-play"></i>
                     시청중인 콘텐츠 <span class="count">15</span>
                   </button>
                   <button type="button" class="content-tab" role="tab" aria-selected="false" aria-controls="panel-completed" id="tab-completed" data-tab="completed">
-                    <i class="ico-check"></i>
                     시청완료 콘텐츠 <span class="count">15</span>
                   </button>
                   <button type="button" class="content-tab" role="tab" aria-selected="false" aria-controls="panel-saved" id="tab-saved" data-tab="saved">
-                    <i class="ico-bookmark"></i>
                     저장한 콘텐츠 <span class="count">3</span>
                   </button>
                 </div>
-                <div class="content-panels">
+              <div class="content-panels">
               <!-- 시청중인 콘텐츠: 진행률은 gauge-fill의 style="width: N%" 에서 조정 -->
               <section class="content-section content-panel active" id="panel-watching" role="tabpanel" aria-labelledby="tab-watching" data-panel="watching">
                 <ul class="content-grid">

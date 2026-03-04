@@ -144,22 +144,61 @@
     color: #5E4311;
   }
 
+  // URL + 추천이유를 하나의 그룹 박스로 표시
+  .suggest-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    background: #FAFAFA;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    .suggest-input {
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      border-bottom: 1px dashed #D0D0D0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
   .suggest-input {
     width: 100%;
-    min-height: 140px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     font-size: 14px;
     line-height: 1.5;
     color: var(--text-primary);
     background: #FAFAFA;
     border: 1px solid #ccc;
     border-radius: 4px;
-    resize: none;
     box-sizing: border-box;
 
     &::placeholder {
-      color:#C8C8C8;
+      color: #C8C8C8;
     }
+  }
+
+  .suggest-fields .suggest-input {
+    padding: 12px 14px;
+  }
+
+  .suggest-url {
+    height: 44px;
+    min-height: 44px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .suggest-reason {
+    min-height: 88px;
+    resize: none;
   }
 
   // 제안현황 아코디언
@@ -639,7 +678,7 @@
     gap: 0;
     margin-bottom: 16px;
     flex-shrink: 0;
-    border-bottom: 1px solid #ddd;
+    
   }
 
   .content-tab {
@@ -654,7 +693,10 @@
     transition: all 0.2s ease;
     @include flex(row, center, center);
     gap: 8px;
-
+    border-bottom: 1px solid #CF6800;
+    border-radius: 8px 8px 0 0;
+    background: rgb(227, 220, 207,0.34);
+    width: 100%;
     .ico-play,
     .ico-check,
     .ico-bookmark {
@@ -676,15 +718,9 @@
     &.active {
       color: var(--text-primary);
       font-weight: 700;
-      &::after {
-        content: "";
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(91deg, #B08100 20%, #936F23 72.48%);
-      }
+      border:1px solid #CF6800;
+      background: linear-gradient(180deg, #F7E8D7 0%, rgb(247, 232, 215, 0) 100%);
+      border-bottom: none;
     }
   }
 
@@ -726,7 +762,8 @@
     }
   }
 
-  .content-section {
+  // 탭 패널(.content-panel)은 위 .content-panel 규칙으로 표시 제어. 그 외 섹션만 flex
+  .content-section:not(.content-panel) {
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -738,16 +775,26 @@
     }
   }
 
+  .content-section.content-panel {
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+
+    .section-title {
+      flex-shrink: 0;
+    }
+  }
+
   .content-grid {
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: min-content;
     gap: 12px;
     list-style: none;
     margin: 0;
-    padding: 0 4px 48px 0;
+    padding: 0 4px 24px 0;
     overflow-y: auto;
     align-content: start;
 
@@ -882,7 +929,7 @@
     display: flex;
     flex-direction: column;
     min-height: 0;
-    margin-bottom: 48px;
+    margin-bottom: 24px;
     overflow: hidden;
 
     .section-title {

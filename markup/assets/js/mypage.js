@@ -11,17 +11,20 @@
   // ------------------------------
   // 1. 컨텐츠 제안 영역
   // ------------------------------
-  // 사용자가 텍스트를 입력하면 "제안 보내기" 버튼이 활성화됩니다.
-  var suggestInput = document.querySelector(".suggest-section .suggest-input");
+  // URL과 추천이유가 모두 입력되면 "제안 보내기" 버튼이 활성화됩니다.
+  var suggestUrl = document.querySelector(".suggest-section .suggest-url");
+  var suggestReason = document.querySelector(".suggest-section .suggest-reason");
   var suggestBtn = document.querySelector(".suggest-section .btn-primary");
 
-  if (suggestInput && suggestBtn) {
-    suggestInput.addEventListener("input", function () {
-      // trim(): 앞뒤 공백 제거. 빈 칸만 입력한 경우도 비활성화
-      var hasText = suggestInput.value.trim().length > 0;
-      suggestBtn.disabled = !hasText;
-    });
+  function checkSuggestForm() {
+    if (!suggestBtn) return;
+    var hasUrl = suggestUrl && suggestUrl.value.trim().length > 0;
+    var hasReason = suggestReason && suggestReason.value.trim().length > 0;
+    suggestBtn.disabled = !(hasUrl && hasReason);
   }
+
+  if (suggestUrl) suggestUrl.addEventListener("input", checkSuggestForm);
+  if (suggestReason) suggestReason.addEventListener("input", checkSuggestForm);
 
   // ------------------------------
   // 2. 제안현황 아코디언
