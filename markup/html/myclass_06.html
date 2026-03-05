@@ -60,7 +60,7 @@
                   </div>
                 </div>
               </div>
-              
+
             </div>
             <div class="page-intro" id="pageIntro">
               <!-- 상태: 두 번째 목표 학습 중 -->
@@ -91,21 +91,30 @@
                 </div>
               </div>
               <p class="sidebar-quarter"><span class="ico-quarter-triangle" aria-hidden="true"></span> <strong>1</strong>분기</p>
-              <div class="sidebar-goal-detail">
-                <span class="sidebar-goal-icon" aria-hidden="true">
-                  <img src="./assets/images/myclass/icon_communication.png" alt="효과적인 의사소통 배우기 아이콘">
-                </span>
-                <h3 class="sidebar-goal-title">효과적인 의사소통 배우기</h3>
-                <p class="sidebar-goal-desc">말과 글, 경청과 공감을 통해 관계를 풍성하게 만드는 과정</p>
-                <button class="btn-reset-goal" type="button">
-                  <span class="ico-arrow-back" aria-hidden="true"></span> 목표 다시 선택
-                </button>
-              </div>
+              <nav class="sidebar-goal-list" aria-label="학습 목표 선택">
+                <a href="#bookshelf-section-communication" class="sidebar-goal-item is-active" data-section="bookshelf-section-communication">
+                  <span class="sidebar-goal-icon" aria-hidden="true">
+                    <img src="./assets/images/myclass/icon_communication.png" alt="효과적인 의사소통 배우기 아이콘">
+                  </span>
+                  <h3 class="sidebar-goal-title">효과적인 의사소통 배우기</h3>
+                  <p class="sidebar-goal-desc">말과 글, 경청과 공감을 통해 관계를 풍성하게 만드는 과정</p>
+                  <button class="btn-reset-goal" type="button" onclick="event.preventDefault(); event.stopPropagation();">
+                    <span class="ico-arrow-back" aria-hidden="true"></span> 목표 다시 선택
+                  </button>
+                </a>
+                <a href="#bookshelf-section-self" class="sidebar-goal-item" data-section="bookshelf-section-self">
+                  <span class="sidebar-goal-icon" aria-hidden="true">
+                    <img src="./assets/images/myclass/icon_self.png" alt="자기이해와 강점 찾기 아이콘">
+                  </span>
+                  <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
+                  <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
+                </a>
+              </nav>
             </aside>
 
             <div class="myclass-main">
-            <!-- 상단 책장: 텍스트만, 동일 높이 (첫 번째 목표 책들) -->
-            <section class="bookshelf-section" aria-label="첫 번째 목표 책장">
+            <!-- 상단 책장: 효과적인 의사소통 배우기 (현재 학습 목표) -->
+            <section id="bookshelf-section-communication" class="bookshelf-section" aria-label="효과적인 의사소통 배우기 책장">
               <div class="bookshelf">
                 <div class="books-list books-list--same-height">
                   <div class="books-item books-item-completed" data-video-id="1">
@@ -303,10 +312,8 @@
               </div>
             </section>
 
-            <!-- 하단 책장: 자기이해와 강점 찾기 + CHECK! 박스 + 빨간 깃발 -->
-            <section class="bookshelf-section" aria-label="자기이해와 강점 찾기 책장">
-              <h3 class="bookshelf-goal-title">자기이해와 강점 찾기</h3>
-              <p class="bookshelf-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
+            <!-- 하단 책장: 자기이해와 강점 찾기 + CHECK! 박스 -->
+            <section id="bookshelf-section-self" class="bookshelf-section" aria-label="자기이해와 강점 찾기 책장">
               <div class="bookshelf">
                 <div class="books-list">
                   <div class="books-item books-item-completed" data-video-id="1">
@@ -539,6 +546,41 @@
             if (!isNaN(id) && id >= 1) modalManager.loadVideoModal(id);
           });
         });
+
+        /* 사이드바 목표 ↔ 책장 섹션 연동 */
+        var sidebarGoals = document.querySelectorAll(".sidebar-goal-item");
+        var sections = document.querySelectorAll("#bookshelf-section-communication, #bookshelf-section-self");
+
+        sidebarGoals.forEach(function(goal) {
+          goal.addEventListener("click", function(e) {
+            if (e.target.closest(".btn-reset-goal")) return;
+            e.preventDefault();
+            var sectionId = this.getAttribute("data-section");
+            var section = document.getElementById(sectionId);
+            if (section) {
+              section.scrollIntoView({ behavior: "smooth", block: "start" });
+              sidebarGoals.forEach(function(g) { g.classList.remove("is-active"); });
+              this.classList.add("is-active");
+            }
+          });
+        });
+
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (!entry.isIntersecting) return;
+            var id = entry.target.id;
+            if (!id) return;
+            sidebarGoals.forEach(function(goal) {
+              if (goal.getAttribute("data-section") === id) {
+                goal.classList.add("is-active");
+              } else {
+                goal.classList.remove("is-active");
+              }
+            });
+          });
+        }, { rootMargin: "-20% 0px -60% 0px", threshold: 0 });
+
+        sections.forEach(function(s) { observer.observe(s); });
       });
     </script>
   </body>
