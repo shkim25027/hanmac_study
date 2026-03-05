@@ -14,26 +14,64 @@
           <!-- 상단바: 좌(사용자/연도) + 우(환영 문구) -->
           <div class="myclass-top-bar">
             <div class="top-bar-left">
-              <div class="user-info-bar">
-                <div class="user-rank-area">
-                  <span class="ico-trophy" aria-hidden="true">🏆</span>
-                  <span class="rank-text">홍길동님 현재 <em>1250등</em></span>
-                  <button class="btn-rank-toggle" type="button" aria-label="순위 상세"><span class="ico-chevron-down"></span></button>
+              <div class="user-rank-area">
+                <div class="user-rank-area-inner">
+                  <div class="user-profile">
+                    <img src="./assets/images/insight/profile.png" alt="프로필 이미지" />
+                  </div>
+                  <span class="rank-text">홍길동님 현재 <em>1250</em>등 <span class="rank-change">(지난 주 대비 4↑)</span></span>
+                </div>
+                <div class="rank-toggle-wrap">
+                  <button class="btn-rank-toggle" type="button" aria-label="순위 상세 보기" aria-expanded="false" aria-controls="rankListPopup">
+                    <span class="ico-trophy" aria-hidden="true">
+                      <img src="./assets/images/myclass/ico_trophy.png" alt="트로피 아이콘" />
+                    </span>
+                    <span class="ico-chevron-down" aria-hidden="true"></span>
+                  </button>
+                  <div class="rank-list-popup" id="rankListPopup" role="region" aria-label="순위 목록" hidden>
+                    <ul class="rank-list">
+                      <li class="rank-item rank-1">
+                        <span class="rank-medal rank-gold" aria-hidden="true">
+                          <img src="./assets/images/myclass/ico_medal_gold.png" alt="금메달 아이콘" />
+                        </span>
+                        <span class="rank-name">박길동 <small>(바론컨설턴트)</small></span>
+                      </li>
+                      <li class="rank-item rank-2">
+                        <span class="rank-medal rank-silver" aria-hidden="true">
+                          <img src="./assets/images/myclass/ico_medal_silver.png" alt="은메달 아이콘" />
+                        </span>
+                        <span class="rank-name">홍길동 <small>(한맥기술)</small></span>
+                      </li>
+                      <li class="rank-item rank-3">
+                        <span class="rank-medal rank-bronze" aria-hidden="true">
+                          <img src="./assets/images/myclass/ico_medal_bronze.png" alt="동메달 아이콘" />
+                        </span>
+                        <span class="rank-name">김철수 <small>(삼안)</small></span>
+                      </li>
+                      <li class="rank-item rank-4">
+                        <span class="rank-num">4.</span>
+                        <span class="rank-name">박철수 <small>(바른컨설턴트)</small></span>
+                      </li>
+                      <li class="rank-item rank-5">
+                        <span class="rank-num">5.</span>
+                        <span class="rank-name">김영희 <small>(한맥기술)</small></span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-              <div class="year-selector">
-                <button class="btn-year" type="button" aria-haspopup="listbox">
-                  <span>2026년</span>
-                  <i class="ico-year-arrow" aria-hidden="true"></i>
-                </button>
-              </div>
+              
             </div>
-            <div class="page-intro page-intro--completed" id="pageIntro">
-              <!-- 상태: 목표 완료 -->
-              <div class="page-title">
-                <h3>축하합니다. <strong class="intro-goal-name">[자기이해와 강점찾기]</strong>, 빛나는 책장을 완성했어요.</h3>
-                <p class="intro-desc--next">다음 책장을 열어볼까요?</p>
-                <a href="#" class="btn-next-growth">→ 다음 성장 이어가기</a>
+            <div class="page-intro" id="pageIntro">
+              <!-- 상태 1: 목표 미설정 -->
+              <div class="page-title" data-state="initial">
+                <h3><em>첫번째 목표를 완성했어요!</em></h3>
+                <p><em>다음 목표를 선택</em>해, 나만의 책장을 더 풍성하게 채워보세요.</p>
+              </div>
+              <!-- 상태 2: 목표 설정 후 -->
+              <div class="page-title hidden" data-state="done" hidden>
+                <h3>첫번째 목표를 완성했어요!</h3>
+                <p>다음 목표를 <strong>선택</strong>해, 나만의 책장을 더 풍성하게 채워보세요.</p>
               </div>
             </div>
           </div>
@@ -41,75 +79,100 @@
           <!-- 좌측: 분기·목표 | 우측: 메인 콘텐츠 -->
           <div class="myclass-content">
             <aside class="myclass-sidebar">
-              <p class="sidebar-quarter"><span class="ico-quarter-triangle" aria-hidden="true"></span> 1분기 <span class="sidebar-badge sidebar-badge--complete">완료</span></p>
+              <div class="year-selector">
+                <button class="btn-year" type="button" id="btnYearToggle" aria-haspopup="listbox" aria-expanded="false" aria-controls="yearListPopup">
+                  <span>
+                    <span class="year-display">20<strong>26</strong></span><small>년</small>
+                  </span>
+                  <i class="ico-year-arrow" aria-hidden="true"></i>
+                </button>
+                <div class="year-list-wrap" id="yearListPopup" role="listbox" aria-label="연도 선택" hidden>
+                  <ul class="year-list">
+                    <li class="year-item"><button type="button" class="year-option" data-year="2026">2026년</button></li>
+                    <li class="year-item"><button type="button" class="year-option" data-year="2025">2025년</button></li>
+                    <li class="year-item"><button type="button" class="year-option" data-year="2024">2024년</button></li>
+                    <li class="year-item"><button type="button" class="year-option" data-year="2023">2023년</button></li>
+                  </ul>
+                </div>
+              </div>
+              <p class="sidebar-quarter"><span class="ico-quarter-triangle" aria-hidden="true"></span> <strong>1</strong>분기</p>
               <div class="sidebar-goal-detail">
+                <span class="sidebar-goal-icon" aria-hidden="true">
+                  <img src="./assets/images/myclass/icon_self.png" alt="자기이해와 강점 찾기 아이콘">
+                </span>
                 <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
                 <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
                 <button class="btn-reset-goal" type="button">
-                  <span class="ico-arrow-left" aria-hidden="true"></span> 목표 다시 선택
+                  <span class="ico-arrow-back" aria-hidden="true"></span> 목표 다시 선택
                 </button>
               </div>
             </aside>
 
             <div class="myclass-main">
-            <!-- 완성된 책장: 연필 아이콘, 하트, 노란 포스트잇(CHECK!) -->
-            <section class="bookshelf-section bookshelf-section--completed" aria-label="완성된 추천 도서 책장">
+            <!-- 추천 도서 책장: 표지 위에 하트·제목·설명·태그 배치 -->
+            <section class="bookshelf-section" aria-label="추천 도서 책장">
               <div class="bookshelf">
                 <div class="books-list">
-                  <div class="books-item">
+                  <div class="books-item books-item-progress" data-video-id="1">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png')">
+                      <span class="book-ico-pencil" aria-hidden="true" title="감상문 쓰기"></span>
                       <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
                     </div>
-                    <div class="book-info-wrap">
-                      <span class="book-ico-pencil" aria-hidden="true" title="상세 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg></span>
-                      <span class="book-heart-area book-heart-area--center" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                      <strong class="book-title">조직도가 리셋된다!</strong>
+                    <button type="button" class="book-info-btn" data-video-id="1" aria-label="영상 상세 보기 - 조직도가 리셋된다!">
+                      <span class="book-info-wrap">
+                        <div class="book-video-area">
+                          <span class="book-video-thumb-wrap">
+                            <img src="https://img.youtube.com/vi/KE_MeQZgnPM/sddefault.jpg" alt="" class="book-video-thumb">
+                          </span>
+                          <label class="bookmark" for="like_book_03_1" onclick="event.stopPropagation();">
+                            <input type="checkbox" id="like_book_03_1" title="저장">
+                          </label>
+                        </div>
+                        <strong class="book-title">조직도가 리셋된다!</strong>
                       <div class="book-desc">
                         <p class="book-desc-sub">위계 중심 조직은 <br>더 이상 통하지 않습니다.</p>
                         <p class="book-desc-main"><strong>더 유연하게 <br>일할 방법</strong></p>
                       </div>
-                      <div class="book-postit">
-                        <strong class="book-postit-title">CHECK!</strong>
-                        <ul class="book-postit-list">
-                          <li>일의 도구를 갖추고 효율을 높인다.</li>
-                          <li>반복 업무는 자동화로 줄이다.</li>
-                          <li>협업은 체계적인 방식으로!</li>
-                        </ul>
-                      </div>
                       <span class="book-tag">IT 테크</span>
-                    </div>
+                      </span>
+                    </button>
                   </div>
-                  <div class="books-item">
+                  <div class="books-item books-item-progress" data-video-id="2">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_02.png')">
+                      <span class="book-ico-pencil" aria-hidden="true" title="감상문 쓰기"></span>
                       <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
                     </div>
-                    <div class="book-info-wrap">
-                      <span class="book-ico-pencil" aria-hidden="true" title="상세 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg></span>
-                      <span class="book-heart-area book-heart-area--center" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                      <strong class="book-title">혈당 스파이크</strong>
+                    <button type="button" class="book-info-btn" data-video-id="2" aria-label="영상 상세 보기 - 혈당 스파이크">
+                      <span class="book-info-wrap">
+                        <div class="book-video-area">
+                          <span class="book-video-thumb-wrap">
+                            <img src="https://img.youtube.com/vi/a2l1uZfsRi0/sddefault.jpg" alt="" class="book-video-thumb">
+                          </span>
+                          <label class="bookmark" for="like_book_03_2" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_03_2" title="저장"></label>
+                        </div>
+                        <strong class="book-title">혈당 스파이크</strong>
                       <div class="book-desc">
                         <p class="book-desc-sub">식후 졸림은 의지 문제가 <br>아니라 혈당의 문제!</p>
                         <p class="book-desc-main">혈당을 안정시켜줄 <br><strong>실생활 관리법</strong></p>
                       </div>
-                      <div class="book-postit">
-                        <strong class="book-postit-title">CHECK!</strong>
-                        <ul class="book-postit-list">
-                          <li>식후 피로의 원인을 혈당에서 찾는다.</li>
-                          <li>탄수화물 섭취 점검</li>
-                          <li>생활습관으로 혈당 안정</li>
-                        </ul>
-                      </div>
                       <span class="book-tag">웰니스</span>
-                    </div>
+                      </span>
+                    </button>
                   </div>
-                  <div class="books-item">
-                    <div class="book-img-wrap">
+                  <div class="books-item books-item-completed" data-video-id="3">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_03.png')">
+                      <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
                       <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
                     </div>
-                    <div class="book-info-wrap">
-                      <span class="book-ico-pencil" aria-hidden="true" title="상세 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg></span>
-                      <span class="book-heart-area book-heart-area--center" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                      <strong class="book-title">제대로 쉬는 방법</strong>
+                    <button type="button" class="book-info-btn" data-video-id="3" aria-label="영상 상세 보기 - 제대로 쉬는 방법">
+                      <span class="book-info-wrap">
+                        <div class="book-video-area">
+                          <span class="book-video-thumb-wrap">
+                            <img src="https://img.youtube.com/vi/IeF8r0ycgVg/sddefault.jpg" alt="" class="book-video-thumb">
+                          </span>
+                          <label class="bookmark" for="like_book_03_3" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_03_3" title="저장"></label>
+                        </div>
+                        <strong class="book-title">제대로 쉬는 방법</strong>
                       <div class="book-desc">
                         <p class="book-desc-sub">아무리 자도 <br>피곤한가요?</p>
                         <p class="book-desc-main"><strong>진짜 회복되는 쉼</strong>이 <br>무엇인지 알게됩니다.</p>
@@ -123,96 +186,129 @@
                         </ul>
                       </div>
                       <span class="book-tag">마인드셋</span>
-                    </div>
+                      </span>
+                    </button>
                   </div>
-                  <div class="books-item">
+                  <div class="books-item books-item-progress" data-video-id="4">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_04.png')">
+                      <span class="book-ico-pencil" aria-hidden="true" title="감상문 쓰기"></span>
                       <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
                     </div>
-                    <div class="book-info-wrap">
-                      <span class="book-ico-pencil" aria-hidden="true" title="상세 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg></span>
-                      <span class="book-heart-area book-heart-area--center" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                      <strong class="book-title">'AI 도파민'의 바다에 빠진 이유</strong>
+                    <button type="button" class="book-info-btn" data-video-id="4" aria-label="영상 상세 보기 - 'AI 도파민'의 바다에 빠진 이유">
+                      <span class="book-info-wrap">
+                        <div class="book-video-area">
+                          <span class="book-video-thumb-wrap">
+                            <img src="https://img.youtube.com/vi/KMZXMI0QPoA/sddefault.jpg" alt="" class="book-video-thumb">
+                          </span>
+                          <label class="bookmark" for="like_book_03_4" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_03_4" title="저장"></label>
+                        </div>
+                        <strong class="book-title">'AI 도파민'의 바다에 빠진 이유</strong>
                       <div class="book-desc">
                         <p class="book-desc-sub">AI는 선택이 아닌 <br>생존의 도구</p>
                         <p class="book-desc-main">AI는 도구가 아닌 <br><strong>업무 파트너</strong></p>
                       </div>
-                      <div class="book-postit">
-                        <strong class="book-postit-title">CHECK!</strong>
-                        <ul class="book-postit-list">
-                          <li>AI를 생존 도구가 아닌 성장 도구로 본다.</li>
-                          <li>반복 업무를 AI와 분담</li>
-                          <li>AI를 도구가 아닌 협업 파트너로</li>
-                        </ul>
-                      </div>
                       <span class="book-tag">IT 테크</span>
-                    </div>
+                      </span>
+                    </button>
                   </div>
-                  <div class="books-item">
-                    <div class="book-img-wrap">
+                  <div class="books-item books-item-progress" data-video-id="5">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_05.png')">
+                      <span class="book-ico-pencil" aria-hidden="true" title="감상문 쓰기"></span>
                       <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
                     </div>
-                    <div class="book-info-wrap">
-                      <span class="book-ico-pencil" aria-hidden="true" title="상세 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg></span>
-                      <span class="book-heart-area book-heart-area--center" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                      <strong class="book-title">살찌고 망가진몸 되살리는 방법</strong>
+                    <button type="button" class="book-info-btn" data-video-id="5" aria-label="영상 상세 보기 - 살찌고 망가진몸 되살리는 방법">
+                      <span class="book-info-wrap">
+                        <div class="book-video-area">
+                          <span class="book-video-thumb-wrap">
+                            <img src="https://img.youtube.com/vi/CRKwszz6l2M/sddefault.jpg" alt="" class="book-video-thumb">
+                          </span>
+                          <label class="bookmark" for="like_book_03_5" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_03_5" title="저장"></label>
+                        </div>
+                        <strong class="book-title">살찌고 망가진몸 되살리는 방법</strong>
                       <div class="book-desc">
                         <p class="book-desc-sub">몸을 망쳤다면? <br>다이어트 아닌 리셋이 답!</p>
                         <p class="book-desc-main"><strong>건강한 몸 되찾기</strong></p>
                       </div>
-                      <div class="book-postit">
-                        <strong class="book-postit-title">CHECK!</strong>
-                        <ul class="book-postit-list">
-                          <li>단순 감량보다 건강 회복이 우선</li>
-                          <li>다이어트보다 나은 루틴을 만들기</li>
-                          <li>몸을 되살리는 작은 습관 실천</li>
-                        </ul>
-                      </div>
                       <span class="book-tag">웰니스</span>
-                    </div>
+                      </span>
+                    </button>
                   </div>
-                  <div class="books-item">
+                  <div class="books-item books-item-progress" data-video-id="6">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_06.png')">
+                       <span class="book-ico-pencil" aria-hidden="true" title="감상문 쓰기"></span>
                       <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
                     </div>
-                    <div class="book-info-wrap">
-                      <span class="book-ico-pencil" aria-hidden="true" title="상세 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/></svg></span>
-                      <span class="book-heart-area book-heart-area--center" aria-hidden="true"><svg viewBox="0 0 20 18" fill="currentColor"><path d="M10 16.5l-1.1-1.02C4.5 11.5 1 8.5 1 5.1 1 2.5 3.1 1 5.5 1 7 1 8.4 1.7 9.2 2.6L10 3.4l.8-.8C11.6 1.7 13 1 14.5 1c2.4 0 4.5 1.5 4.5 4.1 0 3.4-3.5 6.4-8 10.38L10 16.5z"/></svg></span>
-                      <strong class="book-title">자기 관점의 힘</strong>
-                      <div class="book-desc">
-                        <p class="book-desc-sub">당신의 삶을 바꾸는 <br>가장 강력한 무기?</p>
-                        <p class="book-desc-main">자신만의 관점으로 <br><strong>경쟁력을 키우는 방법</strong></p>
-                      </div>
-                      <div class="book-postit">
-                        <strong class="book-postit-title">CHECK!</strong>
-                        <ul class="book-postit-list">
-                          <li>관점이 삶에 미치는 영향을 자각한다.</li>
-                          <li>나만의 강점과 가능성 정의</li>
-                          <li>더 넓은 시야로 삶을 바라본다.</li>
-                        </ul>
-                      </div>
-                      <span class="book-tag">리더십</span>
+                    <button type="button" class="book-info-btn" data-video-id="5" aria-label="영상 상세 보기 - 살찌고 망가진몸 되살리는 방법">
+                      <div class="book-info-wrap">
+                        <div class="book-video-area">
+                          <span class="book-video-thumb-wrap">
+                            <img src="https://img.youtube.com/vi/Gf5WoZ3BmgI/sddefault.jpg" alt="" class="book-video-thumb">
+                          </span>
+                          <label class="bookmark" for="like_book_02_6" onclick="event.stopPropagation();"><input type="checkbox" id="like_book_02_6" title="저장"></label>
+                        </div>
+                        <strong class="book-title">자기 관점의 힘</strong>
+                        <div class="book-desc">
+                          <p class="book-desc-sub">당신의 삶을 바꾸는 <br>가장 강력한 무기?</p>
+                          <p class="book-desc-main">자신만의 관점으로 <br><strong>경쟁력을 키우는 방법</strong></p>
+                        </div>
+                        <span class="book-tag">리더십</span>
+                        </span>
+                      </button>
                     </div>
-                  </div>
+                    </button>
+                    
                 </div>
                 <div class="shelf-plank">
-                  <p class="shelf-tags"><span>1Q</span> IT 테크 웰니스 마인드셋 리더십</p>
+                  <div class="shelf-tags">
+                    <span>1Q</span>
+                    <ul>
+                      <li>IT 테크</li>
+                      <li>웰니스</li>
+                      <li>마인드셋</li>
+                      <li>리더십</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </section>
-
             </div>
             <!-- // myclass-main -->
 
           </div>
           <!-- // myclass-content -->
-
         </div>
         <!-- // myclass-wrap -->
       </div>
       <!-- // container -->
 
     </div>
-    <!-- // wrap.myclass (완성 화면) -->
+    <!-- // wrap.myclass -->
+
+    <!-- modal.html?video=1 방식: VideoModalManager 사용, _modal/video.html 로드 -->
+    <script src="./assets/js/main/Videomodalmanager.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var videos = [
+          { id: 1, url: "Qjig6SHwZyE", category: "IT 테크", subcate: "", title: "조직도가 리셋된다!", type: "main", bookmark: false, keywords: [], gauge: 0 },
+          { id: 2, url: "a2l1uZfsRi0", category: "웰니스", subcate: "", title: "혈당 스파이크", type: "main", bookmark: false, keywords: [], gauge: 0 },
+          { id: 3, url: "8MugD6Cwhl8", category: "마인드셋", subcate: "", title: "제대로 쉬는 방법", type: "main", bookmark: false, keywords: [], gauge: 0 },
+          { id: 4, url: "Py7nutVN53s", category: "IT 테크", subcate: "", title: "'AI 도파민'의 바다에 빠진 이유", type: "main", bookmark: false, keywords: [], gauge: 0 },
+          { id: 5, url: "Py7nutVN53s", category: "웰니스", subcate: "", title: "살찌고 망가진몸 되살리는 방법", type: "main", bookmark: false, keywords: [], gauge: 0 },
+          { id: 6, url: "Qjig6SHwZyE", category: "리더십", subcate: "", title: "자기 관점의 힘", type: "main", bookmark: false, keywords: [], gauge: 0 },
+        ];
+
+        var modalManager = new VideoModalManager({ videos: videos });
+
+        document.querySelector(".books-list").addEventListener("click", function(e) {
+          var item = e.target.closest(".books-item");
+          if (!item || e.target.closest(".bookmark")) return;
+          e.preventDefault();
+          var id = parseInt(item.getAttribute("data-video-id"), 10);
+          if (!isNaN(id) && id >= 1) {
+            modalManager.loadVideoModal(id);
+          }
+        });
+      });
+    </script>
   </body>
 </html>

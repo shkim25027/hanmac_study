@@ -1437,10 +1437,10 @@ $card-colors: (
       &:nth-child(5) .book-video-area { background: rgba(255, 255, 255, 0.4); }
       &:nth-child(6) .book-video-area { background: rgba(255, 255, 255, 0.4); }
 
-      // 진행중 또는 완료 시 회색 필터 제거
-      &-progress .book-video-thumb-btn .book-video-thumb,
-      &-completed .book-video-thumb-btn .book-video-thumb {
-        filter: none;
+      // 진행중 또는 완료 시 회색 필터 제거, 컬러 표시
+      &-progress .book-video-thumb-wrap .book-video-thumb,
+      &-completed .book-video-thumb-wrap .book-video-thumb {
+        filter: grayscale(0%);
       }
     }
 
@@ -1450,7 +1450,7 @@ $card-colors: (
       z-index: 2;
       box-shadow: 0 -8px 24px rgba(255, 255, 255, 0.35), 0 8px 24px rgba(0, 0, 0, 0.12);
 
-      .book-video-area .book-video-thumb-btn .book-video-thumb {
+      .book-video-area .book-video-thumb-wrap .book-video-thumb {
         filter: grayscale(0%);
       }
 
@@ -1508,7 +1508,8 @@ $card-colors: (
       object-fit: contain;
     }
 
-    .book-info-wrap {
+    /* 전체 book-info 영역 클릭 시 팝업 오픈 */
+    .book-info-btn {
       position: absolute;
       top: 0;
       left: 50%;
@@ -1522,11 +1523,45 @@ $card-colors: (
       flex-direction: column;
       align-items: center;
       text-align: center;
-      pointer-events: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font: inherit;
+    }
 
-      * {
-        pointer-events: auto;
+    .book-info-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 연필 아이콘: book-img-wrap(책 표지) top-right에 위치, 수강중/완료 시에만 표시 */
+    .book-img-wrap .book-ico-pencil {
+      position: absolute;
+      top: 10px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      background: url("../images/myclass/ico_pencil.svg") center/contain no-repeat;
+      z-index: 1;
+      pointer-events: auto;
+      display: none; /* 기본 숨김, 수강중/완료 시에만 표시 */
+
+      &.book-ico-pencil-completed {
+        top:0;
+        right: 6px;
+        width: 43px;
+        height: 45px;
+        background-image: url("../images/myclass/ico_pencil_2.svg");
       }
+    }
+
+    /* 수강 중(.books-item-progress) 또는 학습 완료(.books-item-completed)일 때 연필 표시 */
+    .books-item-progress .book-img-wrap .book-ico-pencil:not(.book-ico-pencil-completed),
+    .books-item-completed .book-img-wrap .book-ico-pencil {
+      display: block;
     }
 
     .book-video-area {
@@ -1540,17 +1575,13 @@ $card-colors: (
       margin-bottom: 6px;
       box-shadow: 10px 5px 4px 0 rgba(0, 0, 0, 0.50) inset;
 
-      .book-video-thumb-btn {
+      .book-video-thumb-wrap {
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
-        padding: 0;
-        border: none;
-        cursor: pointer;
-        background: transparent;
         display: block;
-        padding:2px;
+        padding: 2px;
 
         // 진행중/완료가 아닐 때 회색 필터
         .book-video-thumb {
@@ -1614,6 +1645,12 @@ $card-colors: (
           }
         }
       }
+    }
+
+    /* 수강 중/학습 완료 시 비디오 썸네일 컬러 표시 - grayscale(100%) 기본값 override */
+    .books-item-progress .book-video-thumb-wrap .book-video-thumb,
+    .books-item-completed .book-video-thumb-wrap .book-video-thumb {
+      filter: grayscale(0%);
     }
 
     .book-title {
@@ -1683,6 +1720,74 @@ $card-colors: (
       flex-shrink: 0;
     }
 
+    /* 노란 포스트잇(CHECK!) - books-item-completed일 때만 표시 */
+    .book-postit {
+      display: none;
+    }
+
+    .books-item-completed .book-postit {
+      display: block;
+      position: absolute;
+      bottom: 10%;
+      width: 100%;
+      max-width: 92%;
+      margin: 6px auto 8px;
+      padding: 8px 14px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 30.81%), #FFEF84;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      text-align: left;
+      flex-shrink: 0;
+    }
+
+    .book-postit-title {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 0px;
+      font-size: 16px;
+      color: #ff4000;
+      margin: 0 0 6px;
+      font-family: "Aclonica", sans-serif;
+      font-weight: 400;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top:-4px;
+        left: -10px;
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        background: url("../images/myclass/ico_star.svg") center/contain no-repeat;
+        flex-shrink: 0;
+      }
+    }
+
+    .book-postit-list {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+      list-style: none;
+
+      li {
+        position: relative;
+        padding-left: 12px;
+
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0.35em;
+          width: 8px;
+          height: 12px;
+          background: url("../images/ico/ico_check.svg") center/contain no-repeat;
+        }
+      }
+    }
+
     .shelf-plank {
       position: relative;
       width: 100%;
@@ -1691,7 +1796,7 @@ $card-colors: (
       background: url("../images/myclass/img_shelf.png");
       background-position: center bottom;
       background-repeat: repeat;
-      background-size: contain;
+      background-size: cover;
       border-radius: 4px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.12);
       &:before{
@@ -1820,17 +1925,22 @@ $card-colors: (
 
     .book-ico-pencil {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 20px;
-      height: 20px;
-      color: #E86B2E;
+      top: 14px;
+      right: 10px;
+      width: 24px;
+      height: 24px;
+      background: url("../images/myclass/ico_pencil.svg") center/contain no-repeat;
       z-index: 1;
       pointer-events: auto;
+      display: block; 
 
-      svg {
-        width: 100%;
-        height: 100%;
+      /* 감상문 작성 완료: ico_pencil_2.svg (주황색 연필) */
+      &.book-ico-pencil-completed {
+        top:0;
+        right: 14px;
+        width: 43px;
+        height: 45px;
+        background-image: url("../images/myclass/ico_pencil_2.svg");
       }
     }
 
@@ -1839,35 +1949,6 @@ $card-colors: (
       left: 50%;
       right: auto;
       transform: translateX(-50%);
-    }
-
-    .book-postit {
-      width: 100%;
-      max-width: 92%;
-      margin: 6px auto 8px;
-      padding: 8px 10px;
-      background: #fff9c4;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      border-radius: 2px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-      text-align: left;
-      flex-shrink: 0;
-    }
-
-    .book-postit-title {
-      display: block;
-      font-size: 10px;
-      font-weight: 700;
-      color: #c75b6e;
-      margin: 0 0 6px;
-    }
-
-    .book-postit-list {
-      margin: 0;
-      padding: 0 0 0 12px;
-      font-size: 10px;
-      line-height: 1.5;
-      color: #333;
     }
   }
 
@@ -1979,23 +2060,6 @@ $card-colors: (
     color: #666;
     line-height: 1.4;
     margin: 0;
-  }
-
-  .books-item-has-flag,
-  .books-item--has-flag {
-    position: relative;
-  }
-
-  .book-flag {
-    position: absolute;
-    top: 0;
-    left: 4px;
-    z-index: 2;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 0 12px 8px;
-    border-color: transparent transparent #c62828 transparent;
   }
 
   .book-checkbox {
