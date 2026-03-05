@@ -15,17 +15,66 @@
           <div class="myclass-top-bar">
             <div class="top-bar-left">
               <div class="user-rank-area">
-                <span class="ico-trophy" aria-hidden="true">🏆</span>
-                <span class="rank-text">홍길동님 현재 <em>1250등</em></span>
-                <button class="btn-rank-toggle" type="button" aria-label="순위 상세 보기">
-                  <span class="ico-chevron-down" aria-hidden="true"></span>
-                </button>
+                <div class="user-rank-area-inner">
+                  <div class="user-profile">
+                    <img src="./assets/images/insight/profile.png" alt="프로필 이미지" />
+                  </div>
+                  <span class="rank-text">홍길동님 현재 <em>1250</em>등</span>
+                </div>               
+                <div class="rank-toggle-wrap">
+                  <button class="btn-rank-toggle" type="button" aria-label="순위 상세 보기" aria-expanded="false" aria-controls="rankListPopup">
+                    <span class="ico-trophy" aria-hidden="true">
+                      <img src="./assets/images/myclass/ico_trophy.png" alt="트로피 아이콘" />
+                    </span>
+                    <span class="ico-chevron-down" aria-hidden="true"></span>
+                  </button>
+                  <div class="rank-list-popup" id="rankListPopup" role="region" aria-label="순위 목록" hidden>
+                    <ul class="rank-list">
+                      <li class="rank-item rank-1">
+                        <span class="rank-medal rank-gold" aria-hidden="true">
+                          <img src="./assets/images/myclass/ico_medal_gold.png" alt="금메달 아이콘" />
+                        </span>
+                        <span class="rank-name">박길동 <small>(바론컨설턴트)</small></span>
+                      </li>
+                      <li class="rank-item rank-2">
+                        <span class="rank-medal rank-silver" aria-hidden="true">
+                          <img src="./assets/images/myclass/ico_medal_silver.png" alt="은메달 아이콘" />
+                        </span>
+                        <span class="rank-name">홍길동 <small>(한맥기술)</small></span>
+                      </li>
+                      <li class="rank-item rank-3">
+                        <span class="rank-medal rank-bronze" aria-hidden="true">
+                          <img src="./assets/images/myclass/ico_medal_bronze.png" alt="동메달 아이콘" />
+                        </span>
+                        <span class="rank-name">김철수 <small>(삼안)</small></span>
+                      </li>
+                      <li class="rank-item rank-4">
+                        <span class="rank-num">4.</span>
+                        <span class="rank-name">박철수 <small>(바른컨설턴트)</small></span>
+                      </li>
+                      <li class="rank-item rank-5">
+                        <span class="rank-num">5.</span>
+                        <span class="rank-name">김영희 <small>(한맥기술)</small></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
               <div class="year-selector">
-                <button class="btn-year" type="button" aria-haspopup="listbox" aria-expanded="false">
-                  <span>2026년</span>
+                <button class="btn-year" type="button" id="btnYearToggle" aria-haspopup="listbox" aria-expanded="false" aria-controls="yearListPopup">
+                  <span>
+                    <span class="year-display">20<strong>26</strong></span><small>년</small>
+                  </span>
                   <i class="ico-year-arrow" aria-hidden="true"></i>
                 </button>
+                <div class="year-list-wrap" id="yearListPopup" role="listbox" aria-label="연도 선택" hidden>
+                  <ul class="year-list">
+                    <li class="year-item"><button type="button" class="year-option" data-year="2026">2026년</button></li>
+                    <li class="year-item"><button type="button" class="year-option" data-year="2025">2025년</button></li>
+                    <li class="year-item"><button type="button" class="year-option" data-year="2024">2024년</button></li>
+                    <li class="year-item"><button type="button" class="year-option" data-year="2023">2023년</button></li>
+                  </ul>
+                </div>
               </div>
             </div>
             <div class="page-intro" id="pageIntro">
@@ -58,30 +107,29 @@
                   <span class="placeholder-text">추천 도서</span>
                 </div>
               </div>
-              <div class="shelf-board">
-                <span class="shelf-leg shelf-leg--left"></span>
-                <span class="shelf-leg shelf-leg--right"></span>
-              </div>
+              <div class="shelf-board"></div>
             </div>
           </section>
 
           <!-- 책장 -->
           <section class="bookshelf goal" id="bookshelf" aria-label="학습 목표 선택">
-
+            <div class="shelf-legs">
+              <span class="shelf-leg shelf-leg-left"></span>
+              <span class="shelf-leg shelf-leg-center"></span>
+              <span class="shelf-leg shelf-leg-center"></span>
+              <span class="shelf-leg shelf-leg-center"></span>
+              <span class="shelf-leg shelf-leg-right"></span>
+            </div>
             <!-- 1행 -->
             <div class="shelf-row">
               <ul class="goal-list">
                 <li class="goal-item" data-goal-id="1">
                   <button class="goal-card" type="button" aria-label="자기이해와 강점 찾기 목표 선택">
-                    <!-- 선택 후 상태: 책 이미지 영역 -->
-                    
-                    <!-- 기본 상태 -->
                     <div class="card-default-area">
                       <div class="card-title-wrap">
                         <div class="card-icon-wrap">
                           <span class="card-icon" aria-hidden="true">
-                            <!-- 자기이해 아이콘: 타겟 모양 -->
-                           <img src="./assets/images/myclass/icon_self.png" alt="자기이해와 강점 찾기 아이콘" >
+                            <img src="./assets/images/myclass/icon_self.png" alt="자기이해와 강점 찾기 아이콘">
                           </span>
                         </div>
                         <strong class="card-title">자기이해와 강점 찾기</strong>
@@ -101,8 +149,7 @@
                       <div class="card-title-wrap">
                         <div class="card-icon-wrap">
                           <span class="card-icon" aria-hidden="true">
-                            <!-- @ 아이콘 -->
-                            <img src="./assets/images/myclass/icon_communication.png" alt="효과적인 의사소통 배우기 아이콘" >
+                            <img src="./assets/images/myclass/icon_communication.png" alt="효과적인 의사소통 배우기 아이콘">
                           </span>
                         </div>
                         <strong class="card-title">효과적인<br>의사소통 배우기</strong>
@@ -122,8 +169,7 @@
                       <div class="card-title-wrap">
                         <div class="card-icon-wrap">
                           <span class="card-icon" aria-hidden="true">
-                            <!-- 스마일 아이콘 -->
-                           <img src="./assets/images/myclass/icon_emotion.png" alt="감정 조절과 자기관리 아이콘" >
+                            <img src="./assets/images/myclass/icon_emotion.png" alt="감정 조절과 자기관리 아이콘">
                           </span>
                         </div>
                         <strong class="card-title">감정 조절과 자기관리</strong>
@@ -143,8 +189,7 @@
                       <div class="card-title-wrap">
                         <div class="card-icon-wrap">
                           <span class="card-icon" aria-hidden="true">
-                            <!-- 시계 아이콘 -->
-                            <img src="./assets/images/myclass/icon_time.png" alt="목표 설정과 시간 관리 아이콘" >
+                            <img src="./assets/images/myclass/icon_time.png" alt="목표 설정과 시간 관리 아이콘">
                           </span>
                         </div>
                         <strong class="card-title">목표 설정과 시간 관리</strong>
@@ -158,10 +203,7 @@
                 </li>
               </ul>
 
-              <div class="shelf-board">
-                <span class="shelf-leg shelf-leg--left"></span>
-                <span class="shelf-leg shelf-leg--right"></span>
-              </div>
+              <div class="shelf-board"></div>
             </div>
             <!-- // 1행 -->
 
@@ -175,8 +217,7 @@
                       <div class="card-title-wrap">
                         <div class="card-icon-wrap">
                           <span class="card-icon" aria-hidden="true">
-                            <!-- 타겟 + 화살표 (디지털) -->
-                            <img src="./assets/images/myclass/icon_digital.png" alt="디지털 리터러시와 정보 활용 아이콘" >
+                            <img src="./assets/images/myclass/icon_digital.png" alt="디지털 리터러시와 정보 활용 아이콘">
                           </span>
                         </div>
                         <strong class="card-title">디지털 리터러시와<br>정보 활용</strong>
@@ -217,8 +258,7 @@
                       <div class="card-title-wrap">
                         <div class="card-icon-wrap">
                           <span class="card-icon" aria-hidden="true">
-                            <!-- 퍼즐 아이콘 -->
-                            <img src="./assets/images/myclass/icon_collaboration.png" alt="협업과 팀워크 기르기 아이콘" >
+                            <img src="./assets/images/myclass/icon_collaboration.png" alt="협업과 팀워크 기르기 아이콘">
                           </span>
                         </div>
                         <strong class="card-title">협업과 팀워크 기르기</strong>
@@ -252,10 +292,7 @@
                 </li>
               </ul>
 
-              <div class="shelf-board">
-                <span class="shelf-leg shelf-leg--left"></span>
-                <span class="shelf-leg shelf-leg--right"></span>
-              </div>
+              <div class="shelf-board"></div>
             </div>
             <!-- // 2행 -->
 
@@ -294,34 +331,32 @@
                             </div>
                           </div>
                           <div class="recs-list goal-slide-recs">
-                      <div class="rec-item">
-                        <span class="rec-label">추천.01</span>
-                        <div class="rec-content">
-                          <strong class="rec-target">업무에 익숙해졌지만 <em>성장 정체를 느끼는 구성원</em></strong>
-                          <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
+                            <div class="rec-item">
+                              <span class="rec-label">추천.01</span>
+                              <div class="rec-content">
+                                <strong class="rec-target">업무에 익숙해졌지만 <em>성장 정체를 느끼는 구성원</em></strong>
+                                <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
+                              </div>
+                            </div>
+                            <div class="rec-item">
+                              <span class="rec-label">추천.02</span>
+                              <div class="rec-content">
+                                <strong class="rec-target">문제 해결을 요구받기 시작한 <em>주니어, 중급 구성원</em></strong>
+                                <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
+                              </div>
+                            </div>
+                            <div class="rec-item">
+                              <span class="rec-label">추천.03</span>
+                              <div class="rec-content">
+                                <strong class="rec-target">팀 또는 프로젝트 단위로 <em>사고의 확장이 필요한 구성원</em></strong>
+                                <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div class="rec-item">
-                        <span class="rec-label">추천.02</span>
-                        <div class="rec-content">
-                          <strong class="rec-target">문제 해결을 요구받기 시작한 <em>주니어, 중급 구성원</em></strong>
-                          <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
-                        </div>
-                      </div>
-                      <div class="rec-item">
-                        <span class="rec-label">추천.03</span>
-                        <div class="rec-content">
-                          <strong class="rec-target">팀 또는 프로젝트 단위로 <em>사고의 확장이 필요한 구성원</em></strong>
-                          <p class="rec-text">창의적 사고를 '아이디어가 아니라 업무를 바라보는 방식으로 재정렬 할 수 있어요!</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- 하단: 추천 도서 책장 -->
-                  <section class="bookshelf-section goal-slide-bookshelf" aria-label="추천 도서 책장">
-                    <div class="bookshelf">
-                      <div class="books-list">
+                        <section class="bookshelf-section goal-slide-bookshelf" aria-label="추천 도서 책장">
+                          <div class="bookshelf">
+                            <div class="books-list">
                         <div class="books-item">
                           <div class="book-img-wrap">
                             <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
@@ -438,15 +473,14 @@
                             <span class="book-tag">리더십</span>
                           </div>
                         </div>
-                      </div>
-                      
-                      <div class="shelf-plank">
-                        <p class="shelf-tags"><span>1Q</span> IT 테크 웰니스 마인드셋 리더십</p>
+                            </div>
+                            <div class="shelf-plank">
+                              <p class="shelf-tags"><span>1Q</span> IT 테크 웰니스 마인드셋 리더십</p>
+                            </div>
+                          </div>
+                        </section>
                       </div>
                     </div>
-                  </section>
-                </div>
-              </div>
                   </div>
                   <!-- // 슬라이드 1 -->
                 </div>
@@ -482,6 +516,83 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+      // ====================================================
+      // 순위 목록 토글
+      // ====================================================
+      const btnRankToggle = document.querySelector('.btn-rank-toggle');
+      const rankListPopup = document.getElementById('rankListPopup');
+
+      if (btnRankToggle && rankListPopup) {
+        btnRankToggle.addEventListener('click', function () {
+          const isOpen = this.classList.toggle('is-open');
+          rankListPopup.hidden = !isOpen;
+          this.setAttribute('aria-expanded', isOpen);
+        });
+
+        document.addEventListener('click', function (e) {
+          if (btnRankToggle.classList.contains('is-open') &&
+              !btnRankToggle.contains(e.target) &&
+              !rankListPopup.contains(e.target)) {
+            btnRankToggle.classList.remove('is-open');
+            rankListPopup.hidden = true;
+            btnRankToggle.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      // ====================================================
+      // 연도 선택 셀렉트
+      // ====================================================
+      const btnYearToggle = document.getElementById('btnYearToggle');
+      const yearListPopup = document.getElementById('yearListPopup');
+      const yearDisplay = document.querySelector('.year-display');
+      const yearDisplayStrong = yearDisplay?.querySelector('strong');
+
+      function setYearDisplay(year) {
+        if (!yearDisplay || !yearDisplayStrong) return;
+        const prefix = String(year).slice(0, -2);
+        const suffix = String(year).slice(-2);
+        const textNode = Array.from(yearDisplay.childNodes).find(function (n) { return n.nodeType === Node.TEXT_NODE; });
+        if (textNode) {
+          textNode.textContent = prefix;
+        } else {
+          yearDisplay.insertBefore(document.createTextNode(prefix), yearDisplayStrong);
+        }
+        yearDisplayStrong.textContent = suffix;
+      }
+
+      function closeYearSelect() {
+        if (btnYearToggle) {
+          btnYearToggle.classList.remove('is-open');
+          btnYearToggle.setAttribute('aria-expanded', 'false');
+        }
+        if (yearListPopup) yearListPopup.hidden = true;
+      }
+
+      if (btnYearToggle && yearListPopup && yearDisplay) {
+        btnYearToggle.addEventListener('click', function () {
+          const isOpen = this.classList.toggle('is-open');
+          yearListPopup.hidden = !isOpen;
+          this.setAttribute('aria-expanded', isOpen);
+        });
+
+        yearListPopup.querySelectorAll('.year-option').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            const year = this.dataset.year;
+            setYearDisplay(year);
+            closeYearSelect();
+          });
+        });
+
+        document.addEventListener('click', function (e) {
+          if (btnYearToggle.classList.contains('is-open') &&
+              !btnYearToggle.contains(e.target) &&
+              !yearListPopup.contains(e.target)) {
+            closeYearSelect();
+          }
+        });
+      }
 
       // ====================================================
       // 목표 데이터
