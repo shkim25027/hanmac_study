@@ -126,6 +126,7 @@ $card-colors: (
         width: 100%;
         height: 100%;
         object-fit: contain;
+
       }
     }
 
@@ -627,23 +628,16 @@ $card-colors: (
   // -------
   .shelf-row {
     z-index: 1;
-    &:last-of-type {
-      .shelf-board {
-        background: url("../images/myclass/img_shelf.png") , linear-gradient(180deg, #483222 0%, rgba(72, 50, 34, 0.50) 100%), #6C3D20;
-        background-position: center bottom;
-        background-repeat: no-repeat;
-        background-size: 100% auto;
-        background-blend-mode: multiply;
-        mix-blend-mode: multiply;
-      }
-    }
   }
   .shelf-board {
     position: relative;
     margin-top: -2px;
     width: 100%;
     height: 20px;
-    background: #6C3D20;
+    background: url("../images/myclass/img_shelf.png") ;
+    background-position: center bottom;
+    background-repeat: repeat;
+    background-size: auto;
     border-radius: 2px;
     &::before{
       content: "";
@@ -1115,9 +1109,12 @@ $card-colors: (
   .popup-shelf-plank {
     width: 100%;
     height: 22px;
-    background: linear-gradient(180deg, #8B5E3C 0%, #6A4628 100%);
+    background: url("../images/myclass/img_shelf.png");
+    background-position: center bottom;
+    background-repeat: repeat;
+    background-size: auto;
     border-radius: 2px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.12);
+    box-shadow: -3px -3px 4px 0 rgba(0, 0, 0, 0.50) inset;
     margin-bottom: 14px;
   }
 
@@ -1206,9 +1203,9 @@ $card-colors: (
     display: flex;
     flex-direction: column;
     gap: 0;
-    max-width: 1506px;
+    //max-width: 1506px;
     margin: 0 auto;
-    padding: 24px 24px 48px;
+    padding: 24px 48px 48px;
   }
 
   .myclass-content {
@@ -1224,7 +1221,7 @@ $card-colors: (
     /* flex 기본값 stretch 때문에 사이드바가 컨테이너 전체 높이로 늘어나 sticky가 동작하지 않음 → 높이를 콘텐츠만큼만 쓰도록 함 */
     align-self: flex-start;
 
-    .year-selector { margin-bottom: 0.5rem; }
+    .year-selector { margin-bottom: 16px; }
   }
 
   .sidebar-quarter {
@@ -1234,12 +1231,13 @@ $card-colors: (
 
     /* CSS 삼각형: 채움 #FFA149, 아웃라인 #fff 0.4, 중심 정렬 */
     .ico-quarter-triangle {
+      position: absolute;
+      top: calc(50% - 8px);
+      left: -26px;
       display: inline-block;
       width: 0;
       height: 0;
-      position: relative;
       vertical-align: middle;
-      margin-right: 0.25em;
       border-left: 14px solid #FFA149;
       border-top: 8px solid transparent;
       border-bottom: 8px solid transparent;
@@ -1250,21 +1248,35 @@ $card-colors: (
         position: absolute;
         width: 0;
         height: 0;
-        left: -1px;
-        top: -2px;
-        border-left: 16px solid rgba(255, 255, 255, 0.4);
-        border-top: 10px solid transparent;
-        border-bottom: 10px solid transparent;
+        left: -16px;
+        top: calc(50% - 12px);
+        border-left: 20px solid rgba(255, 255, 255, 0.4);
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
         z-index: -1;
       }
     }
   }
 
   .sidebar-goal-detail {
-    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px 0 ;
     border-top: 1px solid #eee;
   }
 
+  .sidebar-goal-icon {
+    display: block;
+    width: 56px;
+    height: 56px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
   .sidebar-goal-title {
     font-size:18px;
     margin: 0 0 0.5rem;
@@ -1282,16 +1294,20 @@ $card-colors: (
   .btn-reset-goal {
     display: inline-flex;
     align-items: center;
-    gap: 0;
+    justify-content: center;
+    gap: 4px;
     font-size: 18px;
+    font-weight: 700;
     height: 50px;
     width: 166px;
     border-radius: 8px;
     color: var(--text-primary);
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.25) 50%, transparent 100%), #ffcf70;
-    border: none;
+    background: radial-gradient(117.51% 77.94% at 48.87% 100%, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.30) 24.58%, rgba(255, 255, 255, 0.00) 100%), #FFCF70;
+    background-blend-mode: screen, normal;
+    box-shadow: 0 -3.59px 3.59px 0 rgba(225, 141, 54, 0.50) inset, 3.59px 3.59px 10.769px -3.59px rgba(220, 196, 172, 0.85);
     cursor: pointer;
     padding: 0;
+    margin-top: 44px;
 
     .ico-arrow-back {
       display: inline-block;
@@ -1305,8 +1321,6 @@ $card-colors: (
     flex: 1;
     min-width: 0;
   }
-
-  .user-info-bar { margin-bottom: 0.5rem; }
 
   .rank-change {
     font-size: 0.9em;
@@ -1403,6 +1417,7 @@ $card-colors: (
      justify-content: flex-end;
       gap: 0;
       padding: 0 calc(50px / 1506px * 100%);
+      z-index: 3;
     }
 
     .books-item {
@@ -1412,6 +1427,15 @@ $card-colors: (
       display: flex;
       height: 100%;
       align-items: flex-end;
+      transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+
+      // books-item별 .book-video-area 배경 컬러
+      &:nth-child(1) .book-video-area { background: linear-gradient(180deg, rgba(70, 150, 116, 0.4) 0%, rgba(13, 33, 24, 0.4) 100%); }
+      &:nth-child(2) .book-video-area { background: rgba(255, 255, 255, 0.4); }
+      &:nth-child(3) .book-video-area { background: linear-gradient(180deg, rgba(250, 115, 70, 0.4) 0%, rgba(42, 20, 13, 0.4) 100%); }
+      &:nth-child(4) .book-video-area { background: linear-gradient(180deg, rgba(86, 129, 109, 0.4) 0%, rgba(58, 58, 58, 0.4) 100%); }
+      &:nth-child(5) .book-video-area { background: rgba(255, 255, 255, 0.4); }
+      &:nth-child(6) .book-video-area { background: rgba(255, 255, 255, 0.4); }
 
       // 진행중 또는 완료 시 회색 필터 제거
       &-progress .book-video-thumb-btn .book-video-thumb,
@@ -1420,12 +1444,61 @@ $card-colors: (
       }
     }
 
+    // 모달이 아닐 때만 books-item 호버 시 살짝 위로 + 쉐도우/글로우
+    &:not(.goal-slide-bookshelf) .books-item:hover {
+      transform: translateY(24px);
+      z-index: 2;
+      box-shadow: 0 -8px 24px rgba(255, 255, 255, 0.35), 0 8px 24px rgba(0, 0, 0, 0.12);
+
+      .book-video-area .book-video-thumb-btn .book-video-thumb {
+        filter: grayscale(0%);
+      }
+
+      // 좌우 쉐도우 (img_book_left/right_shadow.svg path 기울기 반영)
+      .book-img-wrap {
+        &::before,
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          height: calc(100% - 24px);
+          width: 48px;
+          pointer-events: none;
+          z-index: 1;
+          filter: blur(4px);
+        }
+        /* left: SVG path M6 486.8 L87 504 V6 L6 22.1 - 상단 좌하/우상, 하단 좌상/우하 */
+        &::before {
+          left: -44px;
+          background: linear-gradient(to right, transparent 0%, rgba(115, 115, 115, 0.35) 100%);
+          clip-path: polygon(6.5% 4.3%, 93.5% 1.2%, 93.5% 98.8%, 6.5% 95.5%);
+        }
+        /* right: SVG path 좌우 반전 (책 쪽=우측에 위치하므로) */
+        &::after {
+          right: -48px;
+          background: linear-gradient(to left, transparent 0%, rgba(115, 115, 115, 0.35) 100%);
+          clip-path: polygon(100% 4.3%, 0 1.1%, 0 98.9%, 100% 95.5%);
+        }
+      }
+
+      // 첫 번째: 좌측(before) 쉐도우 제거 / 마지막: 우측(after) 쉐도우 제거
+      &:first-child .book-img-wrap::before {
+        display: none;
+      }
+      &:last-child .book-img-wrap::after {
+        display: none;
+      }
+    }
+
+    // books-item 호버 시, 다른 books-item 어둡게 (filter로 확실히 적용)
+    &:not(.goal-slide-bookshelf):has(.books-item:hover) .books-item:not(:hover) {
+      filter: brightness(0.6);
+    }
+
     .book-img-wrap {
       position: relative;
       width: 100%;
-      border-radius: 6px 6px 2px 2px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      overflow: visible; /* 좌우 쉐도우가 잘리지 않도록 */
     }
 
     .book-img {
@@ -1440,7 +1513,7 @@ $card-colors: (
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 170px; // 공통 너비 (모든 books-item에서 동일)
+      width: 184px; // 공통 너비 (모든 books-item에서 동일)
       max-width: 100%;
       height: 100%;
       padding: 72px 8px 12px;
@@ -1460,12 +1533,12 @@ $card-colors: (
       position: relative;
       width: 100%;
       aspect-ratio: 16/9;
-      border: 1px solid rgba(0, 0, 0, 0.2);
+      padding: 2px;
       border-radius: 4px;
       overflow: hidden;
       flex-shrink: 0;
       margin-bottom: 6px;
-      background: rgba(0, 0, 0, 0.08);
+      box-shadow: 10px 5px 4px 0 rgba(0, 0, 0, 0.50) inset;
 
       .book-video-thumb-btn {
         position: absolute;
@@ -1477,6 +1550,7 @@ $card-colors: (
         cursor: pointer;
         background: transparent;
         display: block;
+        padding:2px;
 
         // 진행중/완료가 아닐 때 회색 필터
         .book-video-thumb {
@@ -1612,36 +1686,80 @@ $card-colors: (
     .shelf-plank {
       position: relative;
       width: 100%;
-      height: 28px;
+      height: 48px;
       margin-top: 0;
-      background: linear-gradient(180deg, #8B5E3C 0%, #6A4628 100%);
+      background: url("../images/myclass/img_shelf.png");
+      background-position: center bottom;
+      background-repeat: repeat;
+      background-size: contain;
       border-radius: 4px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.12);
+      &:before{
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: calc(100% - 6px);
+        height: 2px;
+        opacity: 0.1;
+        background: #FFF;
+        backdrop-filter: blur(2px);
+        z-index: 1;
+        border:inherit;
+      }
+      &:after{
+        content: "";
+        position: absolute;
+        top: -26px;
+        left: 2px;
+        width: calc(100% - 6px);
+        height: 26px;
+        background: linear-gradient(to top, rgba(0,0,0,0.2), transparent),
+        #56401A;
+        clip-path: polygon(
+        0% 100%,    /* 좌하단 */
+        100% 100%,  /* 우하단 */
+        97.5% 0%,   /* 우상단 (inset) */
+        3% 0%       /* 좌상단 (inset) */
+        );
+        z-index: -1;
+      }
     }
 
     .shelf-tags {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: calc(50% - 10px);
+      left: 20px;
       right: 0;
       bottom: 0;
       margin: 0;
       max-width: max-content;
+      height: 20px;
       display: flex;
       align-items: center;
-      padding: 0 12px;
       box-sizing: border-box;
       font-size: 12px;
-      color: #333;
-      background: #fff;
+      background-color: rgba(255, 255, 255, 0.9);
       pointer-events: none;
-
+      border-radius: 4px;
+      overflow: hidden;
       span {
-        background: #1a1a1a;
-        color: #fff;
-        padding: 2px 6px;
-        border-radius: 2px;
-        margin-right: 6px;
+        display: inline-block;
+        height: 100%;
+        padding: 0 12px;
+        font-size: 12px;
+        background-color: #000;
+        color:#fff;
+        font-weight: 700;
+      }
+      ul {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 12px;
+        font-size: 10px;
+        color: #181410;
+        font-weight: 700;
       }
     }
   }
