@@ -1106,6 +1106,12 @@ $card-colors: (
 
   .goal-slide.swiper-slide-active .popup-scroll {
     display: block;
+    animation: popupScrollReveal 0.3s ease 0.25s both;
+  }
+
+  @keyframes popupScrollReveal {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   // 미니 카드 내부

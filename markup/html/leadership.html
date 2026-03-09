@@ -20,25 +20,58 @@
             </ul>
           </div>
 
-          <div class="leadership-inner hero-body">
-            <div class="hero-text">
-              <span class="hero-badge">Leadership</span>
-              <h3 class="hero-title">
-                배움으로 준비하고,<br />
-                <strong>실천으로 완성하는 리더십</strong>
-              </h3>
-              <p class="hero-desc">나를 이끄는 힘에서 팀을 움직이는 역량까지.</p>
+          <div class="swiper hero-swiper">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <div class="leadership-inner hero-body">
+                  <div class="hero-text">
+                    <span class="hero-badge">Leadership</span>
+                    <h3 class="hero-title">
+                      배움으로 준비하고,<br />
+                      <strong>실천으로 완성하는 리더십</strong>
+                    </h3>
+                    <p class="hero-desc">나를 이끄는 힘에서 팀을 움직이는 역량까지.</p>
+                  </div>
+                  <div class="hero-illust" aria-hidden="true">
+                    <img src="./assets/images/leadership/hero_communication.svg" alt="" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide">
+                <div class="leadership-inner hero-body">
+                  <div class="hero-text">
+                    <span class="hero-badge">Self Leadership</span>
+                    <h3 class="hero-title">
+                      스스로를 이끄는 힘,<br />
+                      <strong>셀프 리더십의 시작</strong>
+                    </h3>
+                    <p class="hero-desc">목표 설정부터 실행력 강화까지, 나를 성장시키는 여정.</p>
+                  </div>
+                  <div class="hero-illust" aria-hidden="true">
+                    <img src="./assets/images/leadership/hero_communication.svg" alt="" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="swiper-slide">
+                <div class="leadership-inner hero-body">
+                  <div class="hero-text">
+                    <span class="hero-badge">Team Leadership</span>
+                    <h3 class="hero-title">
+                      함께 만들어가는 성과,<br />
+                      <strong>팀 리더십으로 완성</strong>
+                    </h3>
+                    <p class="hero-desc">소통과 신뢰를 기반으로 팀의 역량을 하나로 모으다.</p>
+                  </div>
+                  <div class="hero-illust" aria-hidden="true">
+                    <img src="./assets/images/leadership/hero_communication.svg" alt="" />
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="hero-illust" aria-hidden="true">
-              <img src="./assets/images/leadership/hero_communication.svg" alt="" />
-            </div>
-          </div>
-
-          <div class="hero-pagination" aria-hidden="true">
-            <span class="hero-dot is-active"></span>
-            <span class="hero-dot"></span>
-            <span class="hero-dot"></span>
+            <div class="swiper-pagination hero-pagination" aria-hidden="true"></div>
           </div>
         </section>
 
@@ -198,6 +231,24 @@
 
         <script>
           document.addEventListener('DOMContentLoaded', function () {
+            // Hero Swiper
+            new Swiper('.hero-swiper', {
+              loop: true,
+              autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+              },
+              speed: 600,
+              pagination: {
+                el: '.hero-pagination',
+                clickable: true,
+                renderBullet: function (index, className) {
+                  return '<span class="' + className + ' hero-dot"></span>';
+                },
+              },
+            });
+
+            // Tabs
             const tabs = Array.from(document.querySelectorAll('.leadership-tab'));
             if (!tabs.length) return;
 

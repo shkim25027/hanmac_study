@@ -68,6 +68,18 @@
       }
     }
 
+    .hero-swiper {
+      overflow: visible;
+
+      .swiper-wrapper {
+        align-items: stretch;
+      }
+
+      .swiper-slide {
+        height: auto;
+      }
+    }
+
     .hero-body {
       position: relative;
       display: grid;
@@ -154,18 +166,28 @@
       align-items: center;
       gap: 8px;
       margin-top: 18px;
-    }
 
-    .hero-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(126, 90, 15, 0.3);
+      // Swiper bullet 기본 스타일 초기화
+      &.swiper-pagination {
+        bottom: auto;
+        left: auto;
+        width: auto;
+      }
 
-      &.is-active {
-        width: 62px;
+      .swiper-pagination-bullet {
+        width: 6px;
         height: 6px;
-        background: #ff8922;
+        border-radius: 999px;
+        background: rgba(126, 90, 15, 0.3);
+        opacity: 1;
+        margin: 0;
+        transition: width 0.3s ease, background 0.3s ease;
+
+        &.swiper-pagination-bullet-active {
+          width: 62px;
+          background: #ff8922;
+          border-radius: 999px;
+        }
       }
     }
   }
