@@ -1,0 +1,288 @@
+@charset "UTF-8";
+
+@use "base" as *;
+
+// =======================================
+// Leadership Page (리더십)
+// =======================================
+// - Hero(카피 + 일러스트) + 카테고리 탭 + 비디오 카드 그리드
+// - 기존 Insight의 video-card-grid / select-sort 믹스인을 재사용
+// =======================================
+
+.leadership {
+  .container {
+    background-color: #fff;
+  }
+
+  .leadership-inner {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 40px;
+    @include mq(desktop-wide, max) {
+      padding: 0 24px;
+    }
+    @include mq(tablet-wide, max) {
+      padding: 0 16px;
+    }
+  }
+
+  // [공통] 브레드크럼 (우측 정렬)
+  .breadcrumb {
+    @include breadcrumb;
+    justify-content: flex-end;
+  }
+
+  // --------------------------
+  // Hero
+  // --------------------------
+  .leadership-hero {
+    position: relative;
+    padding: 20px 0 72px;
+    background: linear-gradient(
+      180deg,
+      #f5f2f0 0%,
+      rgba(242, 236, 223, 0.5) 67.371%,
+      #f5f2ef 95.764%
+    );
+    overflow: hidden;
+
+    // 상단 작은 장식 점(스크린샷의 confetti 느낌)
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 9%, rgba(0, 171, 102, 0.16) 0 6px, transparent 7px),
+        radial-gradient(circle at 44% 6%, rgba(5, 139, 176, 0.18) 0 5px, transparent 6px),
+        radial-gradient(circle at 63% 11%, rgba(255, 137, 34, 0.18) 0 5px, transparent 6px),
+        radial-gradient(circle at 73% 5%, rgba(197, 179, 150, 0.22) 0 4px, transparent 5px);
+      opacity: 0.9;
+    }
+
+    .hero-top {
+      position: relative;
+      padding-top: 8px;
+      .breadcrumb {
+        margin: 0;
+      }
+    }
+
+    .hero-body {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: 40px;
+      padding: 72px 0 44px;
+
+      @include mq(desktop-wide, max) {
+        grid-template-columns: 1fr 0.9fr;
+      }
+      @include mq(tablet-wide, max) {
+        grid-template-columns: 1fr;
+        padding: 44px 0 28px;
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 16px;
+      border-radius: 30px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.2) 34.034%, rgba(102, 102, 102, 0.2) 25.273%),
+        linear-gradient(90deg, #c5b396 0%, #c5b396 100%),
+        linear-gradient(90deg, #01a163 0%, #01a163 100%);
+      background-blend-mode: overlay, normal, normal;
+      width: max-content;
+      margin-bottom: 18px;
+    }
+
+    .hero-title {
+      font-size: 34px;
+      font-weight: 400;
+      line-height: 1.25;
+      letter-spacing: -0.6px;
+      color: #000;
+
+      strong {
+        font-weight: 800;
+      }
+
+      @include mq(tablet-wide, max) {
+        font-size: 28px;
+      }
+    }
+
+    .hero-desc {
+      margin-top: 16px;
+      font-size: 22px;
+      line-height: 1.4;
+      letter-spacing: -0.3px;
+      color: rgba(0, 0, 0, 0.9);
+      @include mq(tablet-wide, max) {
+        font-size: 18px;
+      }
+    }
+
+    .hero-illust {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      img {
+        width: min(504px, 100%);
+        height: auto;
+        opacity: 0.92;
+      }
+
+      @include mq(tablet-wide, max) {
+        justify-content: center;
+        margin-top: 10px;
+      }
+    }
+
+    .hero-pagination {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .hero-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(126, 90, 15, 0.3);
+
+      &.is-active {
+        width: 62px;
+        height: 6px;
+        background: #ff8922;
+      }
+    }
+  }
+
+  // --------------------------
+  // Tabs
+  // --------------------------
+  .leadership-tabs {
+    margin-top: -6px;
+    position: relative;
+  }
+
+  .leadership-tabs-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    align-items: end;
+    border-bottom: 1px solid rgba(207, 104, 0, 0.4);
+  }
+
+  .leadership-tab {
+    height: 58px;
+    border: 0;
+    background: rgba(227, 220, 207, 0.34);
+    color: #121212;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.9px;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    position: relative;
+
+    &:focus-visible {
+      outline: 2px solid rgba(207, 104, 0, 0.55);
+      outline-offset: 2px;
+    }
+
+    &.is-active {
+      background: #fefefe;
+      border-left: 1px solid #cf6800;
+      border-right: 1px solid #cf6800;
+      border-top: 1px solid #cf6800;
+      z-index: 2;
+    }
+  }
+
+  // --------------------------
+  // List (Video Grid)
+  // --------------------------
+  .leadership-video-list {
+    padding: 36px 0 56px;
+
+    .list-head {
+      @include flex(row, center, space-between);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .total {
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.4);
+      em {
+        font-style: normal;
+        font-weight: 700;
+        font-size: 20px;
+        color: rgba(0, 0, 0, 0.85);
+      }
+    }
+
+    // [공통] 정렬 셀렉트 박스
+    @include select-sort(16px);
+  }
+
+  // [공통] 비디오 카드 그리드 (4열)
+  @include video-card-grid(4, 24px, 56px, 18px);
+
+  // 리더십 카드: 카테고리 라벨만 노출 (tag-list 대신)
+  .video-item {
+    .item-desc {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.5);
+    }
+    .tag-list {
+      display: none;
+    }
+  }
+
+  // 반응형: 2열
+  @media (max-width: 1200px) {
+    .video-grid {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 12px;
+      row-gap: 32px;
+    }
+    .leadership-tabs-list {
+      grid-template-columns: repeat(3, 1fr);
+      row-gap: 8px;
+      border-bottom: none;
+    }
+    .leadership-tab {
+      border-radius: 8px;
+      &.is-active {
+        border-bottom: 1px solid #cf6800;
+      }
+    }
+  }
+
+  // 반응형: 1열
+  @media (max-width: 768px) {
+    .video-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+

@@ -479,7 +479,8 @@ $card-colors: (
   // -------
   // 완성된 목표 미리보기 (1분기 + 자기이해와 강점 찾기 + 6권 책)
   // -------
-  .goal-item-completed-preview {
+  .goal-item-completed-preview,
+  .goal-item--selected-preview {
     background-image: none;
 
     .shelf-plank {
@@ -690,6 +691,28 @@ $card-colors: (
     height: 100%;
     @include flex(column, flex-start, center);
     gap: 12px;
+  }
+
+  // 선택 후: 완료 프리뷰 형태로 보여줄 영역 (myclass_05)
+  .card-books-area {
+    height: 100%;
+  }
+
+  // 프리뷰가 들어간 선택 카드에서는 기존 카드 배경/패딩 효과 제거
+  .goal-item.is-selected:has(.card-books-area) {
+    .goal-card {
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    .goal-completed-preview {
+      height: 100%;
+    }
   }
 
   .card-title-wrap {

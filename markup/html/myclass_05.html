@@ -381,8 +381,37 @@
     </div>
     <!-- // wrap.myclass -->
 
+    <!-- 비디오 모달: 완료 프리뷰·선택 목표 카드 내 도서 클릭 시 재생 (myclass_02 참고) -->
+    <script src="./assets/js/main/Videomodalmanager.js" defer></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+      // ====================================================
+      // 비디오 모달용 데이터 (완료 프리뷰 책장 영상)
+      // ====================================================
+      var videos = [
+        { id: 1, url: 'KE_MeQZgnPM', category: '자기이해와 강점 찾기', subcate: '', title: '조직도가 리셋된다!', type: 'main', bookmark: false, keywords: [], gauge: 0 },
+        { id: 2, url: 'a2l1uZfsRi0', category: '자기이해와 강점 찾기', subcate: '', title: '혈당 스파이크', type: 'main', bookmark: false, keywords: [], gauge: 0 },
+        { id: 3, url: 'IeF8r0ycgVg', category: '자기이해와 강점 찾기', subcate: '', title: '제대로 쉬는 방법', type: 'main', bookmark: false, keywords: [], gauge: 0 },
+        { id: 4, url: 'KMZXMI0QPoA', category: '자기이해와 강점 찾기', subcate: '', title: "'AI 도파민'의 바다에 빠진 이유", type: 'main', bookmark: false, keywords: [], gauge: 0 },
+        { id: 5, url: 'CRKwszz6l2M', category: '자기이해와 강점 찾기', subcate: '', title: '살찌고 망가진몸 되살리는 방법', type: 'main', bookmark: false, keywords: [], gauge: 0 },
+        { id: 6, url: 'Gf5WoZ3BmgI', category: '자기이해와 강점 찾기', subcate: '', title: '자기 관점의 힘', type: 'main', bookmark: false, keywords: [], gauge: 0 },
+      ];
+      var modalManager = new VideoModalManager({ videos: videos });
+
+      // 도서(책) 클릭 시 비디오 모달 열기 (완료 프리뷰·선택 후 카드 내 책장 모두 위임 처리)
+      var wrap = document.querySelector('.myclass-wrap');
+      if (wrap) {
+        wrap.addEventListener('click', function (e) {
+          var item = e.target.closest('.books-item');
+          if (!item || e.target.closest('.bookmark')) return;
+          e.preventDefault();
+          var id = parseInt(item.getAttribute('data-video-id'), 10);
+          if (!isNaN(id) && id >= 1) {
+            modalManager.loadVideoModal(id);
+          }
+        });
+      }
 
       // ====================================================
       // 목표 데이터
@@ -566,31 +595,58 @@
       });
 
       function applySelectedState(goalId) {
+        const goalIdNum = Number(goalId);
+        const goal = goals.find(function (g) { return g.id === goalIdNum; }) || goals.find(function (g) { return g.id === goalId; });
+        const templatePreview = document.querySelector('.goal-item-completed-preview .goal-completed-preview');
+
+        // 기존 선택 상태 초기화 + 동적 프리뷰 제거
         document.querySelectorAll('.goal-item').forEach(function (item) {
           item.classList.remove('is-selected');
-          const booksArea   = item.querySelector('.card-books-area');
+          item.classList.remove('goal-item--selected-preview');
           const defaultArea = item.querySelector('.card-default-area');
-          if (booksArea)   booksArea.hidden = true;
-          if (defaultArea) defaultArea.hidden = false;
+          if (defaultArea) {
+            defaultArea.hidden = false;
+            defaultArea.classList.remove('hidden');
+          }
+          const booksArea = item.querySelector('.card-books-area');
+          if (booksArea) booksArea.remove();
         });
 
+        // 선택한 목표 카드에 프리뷰(완료 프리뷰 형태) 삽입
         const selectedItem = document.querySelector(`.goal-item[data-goal-id="${goalId}"]`);
         if (selectedItem) {
           selectedItem.classList.add('is-selected');
-          const booksArea   = selectedItem.querySelector('.card-books-area');
+          selectedItem.classList.add('goal-item--selected-preview');
+          const card = selectedItem.querySelector('.goal-card');
           const defaultArea = selectedItem.querySelector('.card-default-area');
-          if (booksArea)   booksArea.hidden = false;
-          if (defaultArea) defaultArea.hidden = true;
+          if (card && defaultArea && templatePreview && goal) {
+            defaultArea.hidden = true;
+            defaultArea.classList.add('hidden');
+
+            const booksArea = document.createElement('div');
+            booksArea.className = 'card-books-area';
+
+            const previewClone = templatePreview.cloneNode(true);
+            const titleEl = previewClone.querySelector('.goal-preview-title');
+            if (titleEl) titleEl.textContent = goal.title;
+            const badgeTextEl = previewClone.querySelector('.badge-text');
+            if (badgeTextEl) badgeTextEl.textContent = '선택';
+
+            booksArea.appendChild(previewClone);
+            card.appendChild(booksArea);
+          }
         }
 
-        document.querySelectorAll('.intro-state').forEach(function (el) {
-          const isDone = el.classList.contains('intro-state--done');
+        // 타이틀 상태 전환 (initial → done)
+        document.querySelectorAll('.page-title[data-state]').forEach(function (el) {
+          const isDone = el.getAttribute('data-state') === 'done';
           el.hidden = !isDone;
           el.classList.toggle('hidden', !isDone);
         });
 
         if (btnSelectGoal) btnSelectGoal.textContent = '추가 목표 고르기';
-        document.getElementById('bookshelf').classList.add('has-selected');
+        const shelf = document.getElementById('bookshelf');
+        if (shelf) shelf.classList.add('has-selected');
       }
 
       document.querySelectorAll('.goal-card').forEach(function (card) {
