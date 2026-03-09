@@ -411,11 +411,9 @@
       const btnSetGoal        = document.getElementById('btnSetGoal');
       const btnSelectGoal     = document.getElementById('btnSelectGoal');
       const goalSlideWrapper  = document.getElementById('goalSlideWrapper');
-      const goalThumbsWrapper = document.getElementById('goalThumbsWrapper');
       const popupPagination   = document.getElementById('popupPagination');
 
-      let goalPopupSwiper  = null;
-      let goalThumbsSwiper = null;
+      let goalPopupSwiper = null;
 
       // 목표별 카드 배경색 (비활성 슬라이드용)
       const goalCardColors = {
@@ -445,63 +443,44 @@
           const goalItem = document.querySelector(`.goal-item[data-goal-id="${goal.id}"]`);
           if (!slide) return;
 
-          // 비활성 슬라이드 카드 배경색 CSS 변수 주입
           const color = goalCardColors[goal.id] || '#46B8A5';
           slide.style.setProperty('--card-color-1', color);
 
+          // 풀 카드 텍스트/아이콘
           const titleEl = slide.querySelector('.goal-slide-title');
           const descEl  = slide.querySelector('.goal-slide-desc');
           const iconEl  = slide.querySelector('.goal-slide-icon');
           if (titleEl) titleEl.textContent = goal.title;
           if (descEl)  descEl.textContent  = goal.desc;
-          if (iconEl && goalItem) {
+
+          // 미니 카드 텍스트/아이콘
+          const miniTitleEl = slide.querySelector('.goal-slide-title-mini');
+          const miniDescEl  = slide.querySelector('.goal-slide-desc-mini');
+          const miniIconEl  = slide.querySelector('.goal-slide-icon-mini');
+          if (miniTitleEl) miniTitleEl.textContent = goal.title;
+          if (miniDescEl)  miniDescEl.textContent  = goal.desc;
+
+          if (goalItem) {
             const cardIcon = goalItem.querySelector('.card-icon');
-            iconEl.innerHTML = cardIcon ? cardIcon.innerHTML : '';
+            if (iconEl)     iconEl.innerHTML     = cardIcon ? cardIcon.innerHTML : '';
+            if (miniIconEl) miniIconEl.innerHTML = cardIcon ? cardIcon.innerHTML : '';
           }
         });
       }
 
-      function buildGoalThumbs() {
-        const templateThumb = goalThumbsWrapper && goalThumbsWrapper.querySelector('.goal-thumb');
-        if (!templateThumb) return;
-        for (let i = 1; i < goals.length; i++) {
-          const clone = templateThumb.cloneNode(true);
-          clone.dataset.goalId = goals[i].id;
-          clone.classList.remove('swiper-slide-active', 'swiper-slide-thumb-active');
-          goalThumbsWrapper.appendChild(clone);
-        }
-        goals.forEach(function (goal) {
-          const thumb = goalThumbsWrapper.querySelector(`.goal-thumb[data-goal-id="${goal.id}"]`);
-          if (!thumb) return;
-          const titleEl = thumb.querySelector('.goal-thumb-title');
-          if (titleEl) titleEl.textContent = goal.title;
-        });
-      }
-
-      function initGoalPopupSwiper() {
+      function initGoalPopupSwiper(slideIndex) {
         if (goalPopupSwiper) return;
 
-        goalThumbsSwiper = new Swiper('.goal-popup-thumbs-swiper', {
-          spaceBetween: 8,
-          slidesPerView: 'auto',
-          watchSlidesProgress: true,
-          slideToClickedSlide: true,
-          breakpoints: {
-            320: { slidesPerView: 2 },
-            640: { slidesPerView: 3 },
-            900: { slidesPerView: 4 },
-            1200: { slidesPerView: 5 },
-          },
-        });
+        const initialIndex = Math.max(0, Number(slideIndex) || 0);
 
         goalPopupSwiper = new Swiper('.goal-popup-swiper', {
-          slidesPerView: 1,
-          spaceBetween: 0,
-          thumbs: {
-            swiper: goalThumbsSwiper,
-          },
+          slidesPerView: 'auto',
+          centeredSlides: true,
+          spaceBetween: 16,
           observer: true,
           observeParents: true,
+          slideToClickedSlide: true,
+          initialSlide: initialIndex,
           pagination: {
             el: '#popupPagination',
             clickable: true,
@@ -510,8 +489,19 @@
           },
           on: {
             slideChange: function () {
-              const idx = this.activeIndex;
-              currentGoalId = goals[idx] ? goals[idx].id : currentGoalId;
+              currentGoalId = goals[this.activeIndex]?.id ?? currentGoalId;
+            },
+            slideChangeTransitionEnd: function () {
+              const swiper = this;
+              const swiperEl = swiper.el;
+              const activeIndex = swiper.activeIndex;
+              requestAnimationFrame(function () {
+                swiper.update();
+                swiper.slideTo(activeIndex, 300, false);
+                setTimeout(function () {
+                  swiperEl.classList.remove('swiper-no-anim');
+                }, 350);
+              });
             },
           },
         });
@@ -522,10 +512,6 @@
           goalPopupSwiper.destroy(true, true);
           goalPopupSwiper = null;
         }
-        if (goalThumbsSwiper) {
-          goalThumbsSwiper.destroy(true, true);
-          goalThumbsSwiper = null;
-        }
       }
 
       function openGoalLayer(goalId) {
@@ -535,21 +521,23 @@
         goalLayer.classList.add('is-open');
         document.body.classList.add('layer-open');
         buildGoalSlides();
-        buildGoalThumbs();
-        initGoalPopupSwiper();
-        const slideIdx = goals.findIndex(g => g.id === goalId);
-        if (slideIdx >= 0 && goalPopupSwiper) {
-          goalPopupSwiper.slideTo(slideIdx, 0);
-          requestAnimationFrame(function () {
+        // goalId를 숫자로 통일해서 인덱스 계산 (문자열 "1"도 1번 슬라이드로 매칭)
+        const goalIdNum = Number(goalId);
+        const slideIdx = goals.findIndex(function (g) { return g.id === goalIdNum || g.id === goalId; });
+        const safeIndex = slideIdx >= 0 ? slideIdx : 0;
+        // 초기 포지셔닝 시 transition 비활성화 → active 슬라이드 크기 확정 후 센터 재계산
+        const swiperEl = document.querySelector('.goal-popup-swiper');
+        swiperEl.classList.add('swiper-no-anim');
+        initGoalPopupSwiper(safeIndex);
+        requestAnimationFrame(function () {
+          if (goalPopupSwiper) {
+            goalPopupSwiper.update();
+            goalPopupSwiper.slideTo(safeIndex, 0);
             requestAnimationFrame(function () {
-              if (goalPopupSwiper) {
-                goalPopupSwiper.updateSize();
-                goalPopupSwiper.updateSlides();
-                goalPopupSwiper.slideTo(slideIdx, 0);
-              }
+              swiperEl.classList.remove('swiper-no-anim');
             });
-          });
-        }
+          }
+        });
         btnCloseLayer.focus();
       }
 
@@ -558,10 +546,6 @@
         if (goalSlideWrapper) {
           const slides = goalSlideWrapper.querySelectorAll('.goal-slide');
           slides.forEach(function (s, i) { if (i > 0) s.remove(); });
-        }
-        if (goalThumbsWrapper) {
-          const thumbs = goalThumbsWrapper.querySelectorAll('.goal-thumb');
-          thumbs.forEach(function (t, i) { if (i > 0) t.remove(); });
         }
         goalLayer.setAttribute('aria-hidden', 'true');
         goalLayer.classList.remove('is-open');

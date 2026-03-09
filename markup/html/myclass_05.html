@@ -459,9 +459,17 @@
         }
         goals.forEach(function (goal) {
           const thumb = goalThumbsWrapper.querySelector(`.goal-thumb[data-goal-id="${goal.id}"]`);
+          const goalItem = document.querySelector(`.goal-item[data-goal-id="${goal.id}"]`);
           if (!thumb) return;
           const titleEl = thumb.querySelector('.goal-thumb-title');
+          const descEl = thumb.querySelector('.goal-thumb-desc');
+          const iconEl = thumb.querySelector('.goal-thumb-icon');
           if (titleEl) titleEl.textContent = goal.title;
+          if (descEl) descEl.textContent = goal.desc;
+          if (iconEl && goalItem) {
+            const cardIcon = goalItem.querySelector('.card-icon');
+            iconEl.innerHTML = cardIcon ? cardIcon.innerHTML : '';
+          }
         });
       }
 
@@ -471,12 +479,11 @@
         goalThumbsSwiper = new Swiper('.goal-popup-thumbs-swiper', {
           spaceBetween: 8,
           slidesPerView: 'auto',
+          centeredSlides: true,
+          centeredSlidesBounds: true,
+          centerInsufficientSlides: true,
           watchSlidesProgress: true,
           slideToClickedSlide: true,
-          breakpoints: {
-            320: { slidesPerView: 2 }, 640: { slidesPerView: 3 },
-            900: { slidesPerView: 4 }, 1200: { slidesPerView: 5 },
-          },
         });
 
         goalPopupSwiper = new Swiper('.goal-popup-swiper', {
