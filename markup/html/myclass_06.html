@@ -71,28 +71,40 @@
             </div>
           </div>
 
-          <!-- 좌측: 분기·목표 | 우측: 메인 콘텐츠 -->
+          <!-- 타임라인 + 섹션 그룹 -->
           <div class="myclass-content">
-            <aside class="myclass-sidebar">
-              <div class="year-selector">
-                <button class="btn-year" type="button" id="btnYearToggle" aria-haspopup="listbox" aria-expanded="false" aria-controls="yearListPopup">
-                  <span>
-                    <span class="year-display">20<strong>26</strong></span><small>년</small>
-                  </span>
-                  <i class="ico-year-arrow" aria-hidden="true"></i>
-                </button>
-                <div class="year-list-wrap" id="yearListPopup" role="listbox" aria-label="연도 선택" hidden>
-                  <ul class="year-list">
-                    <li class="year-item"><button type="button" class="year-option" data-year="2026">2026년</button></li>
-                    <li class="year-item"><button type="button" class="year-option" data-year="2025">2025년</button></li>
-                    <li class="year-item"><button type="button" class="year-option" data-year="2024">2024년</button></li>
-                    <li class="year-item"><button type="button" class="year-option" data-year="2023">2023년</button></li>
-                  </ul>
-                </div>
+            <!-- 수직 타임라인 인디케이터 -->
+            <div class="scroll-timeline" aria-hidden="true">
+              <div class="timeline-track">
+                <div class="timeline-progress-fill"></div>
               </div>
-              <p class="sidebar-quarter"><span class="ico-quarter-triangle" aria-hidden="true"></span> <strong>1</strong>분기</p>
-              <nav class="sidebar-goal-list" aria-label="학습 목표 선택">
-                <a href="#bookshelf-section-communication" class="sidebar-goal-item is-active" data-section="bookshelf-section-communication">
+              <div class="timeline-dot is-active" data-index="0"></div>
+              <div class="timeline-dot" data-index="1"></div>
+            </div>
+
+            <div class="myclass-main">
+
+            <!-- ── 섹션 1: 효과적인 의사소통 배우기 ── -->
+            <div class="scroll-section">
+              <aside class="scroll-section-sidebar">
+                <div class="year-selector">
+                  <button class="btn-year" type="button" id="btnYearToggle" aria-haspopup="listbox" aria-expanded="false" aria-controls="yearListPopup">
+                    <span>
+                      <span class="year-display">20<strong>26</strong></span><small>년</small>
+                    </span>
+                    <i class="ico-year-arrow" aria-hidden="true"></i>
+                  </button>
+                  <div class="year-list-wrap" id="yearListPopup" role="listbox" aria-label="연도 선택" hidden>
+                    <ul class="year-list">
+                      <li class="year-item"><button type="button" class="year-option" data-year="2026">2026년</button></li>
+                      <li class="year-item"><button type="button" class="year-option" data-year="2025">2025년</button></li>
+                      <li class="year-item"><button type="button" class="year-option" data-year="2024">2024년</button></li>
+                      <li class="year-item"><button type="button" class="year-option" data-year="2023">2023년</button></li>
+                    </ul>
+                  </div>
+                </div>
+                <p class="sidebar-quarter"><span class="ico-quarter-triangle" aria-hidden="true"></span> <strong>1</strong>분기</p>
+                <a href="#bookshelf-section-communication" class="sidebar-goal-item is-active" data-index="0">
                   <span class="sidebar-goal-icon" aria-hidden="true">
                     <img src="./assets/images/myclass/icon_communication.png" alt="효과적인 의사소통 배우기 아이콘">
                   </span>
@@ -102,19 +114,10 @@
                     <span class="ico-arrow-back" aria-hidden="true"></span> 목표 다시 선택
                   </button>
                 </a>
-                <a href="#bookshelf-section-self" class="sidebar-goal-item" data-section="bookshelf-section-self">
-                  <span class="sidebar-goal-icon" aria-hidden="true">
-                    <img src="./assets/images/myclass/icon_self.png" alt="자기이해와 강점 찾기 아이콘">
-                  </span>
-                  <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
-                  <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
-                </a>
-              </nav>
-            </aside>
+              </aside>
 
-            <div class="myclass-main">
-            <!-- 상단 책장: 효과적인 의사소통 배우기 (현재 학습 목표) -->
-            <section id="bookshelf-section-communication" class="bookshelf-section" aria-label="효과적인 의사소통 배우기 책장">
+              <div class="scroll-section-content">
+              <section id="bookshelf-section-communication" class="bookshelf-section" aria-label="효과적인 의사소통 배우기 책장">
               <div class="bookshelf">
                 <div class="books-list books-list--same-height">
                   <div class="books-item books-item-completed" data-video-id="1">
@@ -311,9 +314,23 @@
                 </div>
               </div>
             </section>
+              </div><!-- // scroll-section-content -->
+            </div><!-- // scroll-section 1 -->
 
-            <!-- 하단 책장: 자기이해와 강점 찾기 + CHECK! 박스 -->
-            <section id="bookshelf-section-self" class="bookshelf-section" aria-label="자기이해와 강점 찾기 책장">
+            <!-- ── 섹션 2: 자기이해와 강점 찾기 ── -->
+            <div class="scroll-section">
+              <aside class="scroll-section-sidebar">
+                <a href="#bookshelf-section-self" class="sidebar-goal-item" data-index="1">
+                  <span class="sidebar-goal-icon" aria-hidden="true">
+                    <img src="./assets/images/myclass/icon_self.png" alt="자기이해와 강점 찾기 아이콘">
+                  </span>
+                  <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
+                  <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
+                </a>
+              </aside>
+
+              <div class="scroll-section-content">
+              <section id="bookshelf-section-self" class="bookshelf-section" aria-label="자기이해와 강점 찾기 책장">
               <div class="bookshelf">
                 <div class="books-list">
                   <div class="books-item books-item-completed" data-video-id="1">
@@ -510,6 +527,8 @@
                 </div>
               </div>
             </section>
+              </div><!-- // scroll-section-content -->
+            </div><!-- // scroll-section 2 -->
 
             </div>
             <!-- // myclass-main -->
@@ -526,8 +545,13 @@
     <!-- // wrap.myclass (두 책장) -->
 
     <script src="./assets/js/main/Videomodalmanager.js" defer></script>
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
+
+        /* ── 비디오 모달 ── */
         var videos = [
           { id: 1, url: "KE_MeQZgnPM", category: "IT 테크", subcate: "", title: "조직도가 리셋된다!", type: "main", bookmark: false, keywords: [], gauge: 0 },
           { id: 2, url: "a2l1uZfsRi0", category: "웰니스", subcate: "", title: "혈당 스파이크", type: "main", bookmark: false, keywords: [], gauge: 0 },
@@ -536,51 +560,138 @@
           { id: 5, url: "CRKwszz6l2M", category: "웰니스", subcate: "", title: "살찌고 망가진몸 되살리는 방법", type: "main", bookmark: false, keywords: [], gauge: 0 },
           { id: 6, url: "Gf5WoZ3BmgI", category: "리더십", subcate: "", title: "자기 관점의 힘", type: "main", bookmark: false, keywords: [], gauge: 0 },
         ];
-        var modalManager = new VideoModalManager({ videos: videos });
-        document.querySelectorAll(".bookshelf-section--text-only .books-list, .bookshelf-section--with-check .books-list").forEach(function(list) {
-          list.addEventListener("click", function(e) {
-            var item = e.target.closest(".books-item");
-            if (!item || e.target.closest(".bookmark")) return;
-            e.preventDefault();
-            var id = parseInt(item.getAttribute("data-video-id"), 10);
-            if (!isNaN(id) && id >= 1) modalManager.loadVideoModal(id);
+        if (typeof VideoModalManager !== "undefined") {
+          var modalManager = new VideoModalManager({ videos: videos });
+          document.querySelectorAll(".bookshelf-section .books-list").forEach(function(list) {
+            list.addEventListener("click", function(e) {
+              var item = e.target.closest(".books-item");
+              if (!item || e.target.closest(".bookmark")) return;
+              e.preventDefault();
+              var id = parseInt(item.getAttribute("data-video-id"), 10);
+              if (!isNaN(id) && id >= 1) modalManager.loadVideoModal(id);
+            });
           });
+        }
+
+        /* ── GSAP ScrollTrigger (내부 스크롤 + CSS snap) ── */
+        gsap.registerPlugin(ScrollTrigger);
+
+        var contentEl    = document.querySelector(".myclass-page-06 .myclass-content");
+        var mainEl       = document.querySelector(".myclass-page-06 .myclass-main");
+        var sections     = gsap.utils.toArray(".myclass-page-06 .scroll-section");
+        var sidebarGoals = gsap.utils.toArray(".myclass-page-06 .sidebar-goal-item");
+        var progressFill = document.querySelector(".scroll-timeline .timeline-progress-fill");
+        var timelineDots = gsap.utils.toArray(".scroll-timeline .timeline-dot");
+        var timelineEl   = document.querySelector(".scroll-timeline");
+        var headerEl     = document.querySelector("header");
+
+        if (!contentEl || !mainEl || sections.length < 2) return;
+
+        /* 헤더 높이 */
+        function getHeaderH() {
+          return headerEl ? headerEl.offsetHeight : 0;
+        }
+
+        /* 높이 일괄 설정 – contentEl과 mainEl 모두 1섹션 높이로 고정 */
+        function setHeights() {
+          var h = window.innerHeight - getHeaderH();
+          contentEl.style.height = h + "px";
+          mainEl.style.height    = h + "px";     /* 내부 스크롤 컨테이너 높이 */
+          sections.forEach(function(s) { s.style.height = h + "px"; });
+          if (timelineEl) timelineEl.style.height = h + "px";
+        }
+
+        /* 타임라인 도트 위치 */
+        function positionDots() {
+          if (!timelineEl) return;
+          var h   = timelineEl.offsetHeight;
+          var pad = 24;
+          var gap = (h - pad * 2) / (sections.length - 1);
+          timelineDots.forEach(function(dot, i) {
+            dot.style.top = (pad + i * gap - 6) + "px";
+          });
+        }
+
+        /* 활성 상태 업데이트 */
+        function updateActive(index) {
+          sidebarGoals.forEach(function(g, i) {
+            g.classList.toggle("is-active", i === index);
+          });
+          timelineDots.forEach(function(d, i) {
+            d.classList.toggle("is-active", i === index);
+          });
+        }
+
+        /* GSAP ScrollTrigger – scroller를 mainEl(내부)로 지정 */
+        var stInstances = [];
+        function initGSAP() {
+          stInstances.forEach(function(st) { st.kill(); });
+          stInstances = [];
+          ScrollTrigger.clearScrollMemory();
+
+          setHeights();
+          positionDots();
+
+          /* mainEl 스크롤을 GSAP에 등록 */
+          ScrollTrigger.defaults({ scroller: mainEl });
+
+          /* 각 섹션 진입 시 활성 상태 업데이트 */
+          sections.forEach(function(section, i) {
+            stInstances.push(
+              ScrollTrigger.create({
+                trigger: section,
+                start: "top center",
+                end:   "bottom center",
+                onEnter:     function() { updateActive(i); },
+                onEnterBack: function() { updateActive(i); }
+              })
+            );
+          });
+
+          /* 타임라인 진행선: mainEl 전체 스크롤 범위 추적 */
+          if (progressFill) {
+            stInstances.push(
+              ScrollTrigger.create({
+                trigger: sections[0],
+                start: "top top",
+                endTrigger: sections[sections.length - 1],
+                end: "bottom bottom",
+                scrub: true,
+                onUpdate: function(self) {
+                  progressFill.style.height = (self.progress * 100) + "%";
+                }
+              })
+            );
+          }
+        }
+
+        setHeights();
+        positionDots();
+        updateActive(0);
+
+        /* 이미지/폰트 로드 완료 후 초기화 (레이아웃 확정 후) */
+        window.addEventListener("load", function() {
+          setHeights();
+          positionDots();
+          initGSAP();
         });
 
-        /* 사이드바 목표 ↔ 책장 섹션 연동 */
-        var sidebarGoals = document.querySelectorAll(".sidebar-goal-item");
-        var sections = document.querySelectorAll("#bookshelf-section-communication, #bookshelf-section-self");
-
-        sidebarGoals.forEach(function(goal) {
+        /* 사이드바 클릭 → mainEl 내부 스크롤 */
+        sidebarGoals.forEach(function(goal, i) {
           goal.addEventListener("click", function(e) {
             if (e.target.closest(".btn-reset-goal")) return;
             e.preventDefault();
-            var sectionId = this.getAttribute("data-section");
-            var section = document.getElementById(sectionId);
-            if (section) {
-              section.scrollIntoView({ behavior: "smooth", block: "start" });
-              sidebarGoals.forEach(function(g) { g.classList.remove("is-active"); });
-              this.classList.add("is-active");
-            }
+            mainEl.scrollTo({ top: i * mainEl.offsetHeight, behavior: "smooth" });
           });
         });
 
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (!entry.isIntersecting) return;
-            var id = entry.target.id;
-            if (!id) return;
-            sidebarGoals.forEach(function(goal) {
-              if (goal.getAttribute("data-section") === id) {
-                goal.classList.add("is-active");
-              } else {
-                goal.classList.remove("is-active");
-              }
-            });
-          });
-        }, { rootMargin: "-20% 0px -60% 0px", threshold: 0 });
+        /* 리사이즈 */
+        window.addEventListener("resize", function() {
+          setHeights();
+          positionDots();
+          ScrollTrigger.refresh();
+        });
 
-        sections.forEach(function(s) { observer.observe(s); });
       });
     </script>
   </body>
