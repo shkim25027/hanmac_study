@@ -13,7 +13,7 @@ import imagemin from "gulp-imagemin"; //PNG, JPEG, GIF, SVG 이미지 용량 최
 import includer from "gulp-file-include"; //Gulp 빌드 시 정적 HTML 조립
 import prettier from "gulp-prettier"; //JS/CSS/HTML 코드 자동 포맷팅
 import { deleteAsync } from "del";
-import { existsSync } from "fs";
+import { existsSync, rmSync } from "fs";
 
 const babel = await import("gulp-babel").then((mod) => mod.default || mod);
 const CacheBuster = await import("gulp-cachebust").then(
@@ -79,9 +79,17 @@ const paths = {
 // Tasks
 // ------------------------------------
 
-// Clean dist
+// Clean dist (Windows EPERM 대응: del 실패 시 Node 내장 rmSync 사용)
 async function clean() {
-  return deleteAsync([paths.build + "**/*"], { force: true });
+  try {
+    return await deleteAsync([paths.build + "**/*"], { force: true });
+  } catch (err) {
+    if (err?.code === "EPERM" && existsSync(paths.build)) {
+      rmSync(paths.build, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+    } else {
+      throw err;
+    }
+  }
 }
 
 // Fonts
