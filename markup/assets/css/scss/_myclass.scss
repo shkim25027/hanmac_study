@@ -1472,13 +1472,15 @@ $card-colors: (
   .sidebar-quarter {
     position: relative;
     font-size: 34px;
-    color: var(--text-primary);
+    color: #000;
 
-    /* CSS 삼각형: 채움 #FFA149, 아웃라인 #fff 0.4, 중심 정렬 */
+    
+  }
+/* CSS 삼각형: 채움 #FFA149, 아웃라인 #fff 0.4, 중심 정렬 */
     .ico-quarter-triangle {
       position: absolute;
       top: calc(50% - 8px);
-      left: -26px;
+      left: 0px;
       display: inline-block;
       width: 0;
       height: 0;
@@ -1501,8 +1503,6 @@ $card-colors: (
         z-index: -1;
       }
     }
-  }
-
   .sidebar-goal-list {
     display: flex;
     flex-direction: column;
@@ -1524,10 +1524,6 @@ $card-colors: (
 
     &:last-child {
       border-bottom: none;
-    }
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.02);
     }
 
     &:not(.is-active) {
@@ -2031,11 +2027,10 @@ $card-colors: (
     .books-item-completed .book-postit {
       display: block;
       position: absolute;
-      bottom: 10%;
-      width: 100%;
-      max-width: 92%;
+      bottom: 4%;
       margin: 6px auto 8px;
       padding: 8px 14px;
+      min-height: 33.3%;
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 30.81%), #FFEF84;
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 2px;
@@ -2069,27 +2064,41 @@ $card-colors: (
 
     /* books-item별 포스트잇 회전·배경 개별 스타일 */
     .books-item:nth-child(1) .book-postit {
+      width: 100%;
+      max-width: 92%;
+      left:-4%;
       transform: rotate(4.083deg);
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 39.09%), #FFEF84;
     }
     .books-item:nth-child(2) .book-postit {
+      width: 120%;
+      max-width: 120%;
       transform: rotate(-2.037deg);
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 30.81%), #F9FFFF;
     }
     .books-item:nth-child(3) .book-postit {
+      width: 110%;
+      max-width: 110%;
       transform: rotate(-0.373deg);
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 30.81%), #FFEF84;
     }
     .books-item:nth-child(4) .book-postit {
+      width: 100%;
+      max-width: 100%;
       transform: rotate(2.845deg);
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 30.81%), #F9FFFF;
     }
     .books-item:nth-child(5) .book-postit {
+      width: 120%;
+      max-width: 120%;
       transform: rotate(-0.841deg);
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 30.81%), #C7FDFF;
     }
     .books-item:nth-child(6) .book-postit {
-      transform: rotate(0.072deg);
+      width: 110%;
+      max-width: 110%;
+      left: 4%;
+      transform: rotate(0.72deg);
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.20) 0%, rgba(0, 0, 0, 0.00) 30.81%), #FFF196;
     }
 
@@ -2127,7 +2136,7 @@ $card-colors: (
       li {
         position: relative;
         padding-left: 12px;
-
+        margin-bottom: 8px;
         &::before {
           content: "";
           position: absolute;
@@ -2552,7 +2561,7 @@ body.layer-open {
     flex-direction: column;
     justify-content: center;
     align-self: stretch;
-    padding: 24px 24px 24px 0;
+    padding: 24px 24px 24px 40px;
     box-sizing: border-box;
   }
 
@@ -2649,19 +2658,120 @@ body.layer-open {
     box-sizing: border-box;
     transition: background 0.3s, border-color 0.3s, transform 0.3s, box-shadow 0.3s;
     z-index: 1;
-    pointer-events: auto;
-
-    &:hover {
-      border-color: #FFA149;
-      box-shadow: 0 0 16px rgba(255, 161, 73, 0.35);
-    }
 
     &.is-active {
       background: #FFA149;
       border-color: #FFA149;
       transform: translateX(-50%) scale(1.35);
-      box-shadow: 0 0 0 4px rgba(255, 161, 73, 0.25), 0 0 16px rgba(255, 161, 73, 0.4);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.40), 0 0 16px rgba(255, 255, 255, 0.40);
     }
+
+    /* .sidebar-quarter 없는 섹션: 삼각형 아이콘으로 표시 */
+    &.timeline-dot--triangle {
+      width: auto;
+      height: auto;
+      border: none;
+      background: none;
+      border-radius: 0;
+
+      .ico-quarter-triangle {
+        display: block;
+        opacity: 0.35;
+        transition: opacity 0.3s, transform 0.3s;
+      }
+
+      &.is-active {
+        background: none;
+        border: none;
+        box-shadow: none;
+        transform: translateX(-50%);
+
+        .ico-quarter-triangle {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  /* ── 오른쪽 분기 네비게이션 ── */
+  .quarter-nav {
+    position: relative;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 20px 0 12px;
+  }
+
+  /* 회색 배경 라인 + 주황 fill (JS로 top/left/height 설정) */
+  .quarter-nav-track {
+    position: absolute;
+    width: 1px;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 1px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .quarter-nav-fill {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to bottom, #FFA149, #FF7A00);
+    transition: height 0.15s ease-out;
+  }
+
+  .quarter-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    padding: 4px 0;
+    cursor: pointer;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.3);
+    transition: color 0.2s;
+
+    &:hover {
+      color: rgba(0, 0, 0, 0.6);
+    }
+
+    &.is-active {
+      
+
+      .quarter-nav-dot {
+        position: relative;
+        background: #F5651D;
+        border-color: #F5651D;
+        box-shadow: 0 0 0 3px rgba(246, 107, 37, 0.1);
+      }
+
+      .quarter-nav-label {
+        font-weight: 700;
+        color: #F5651D;
+      }
+    }
+  }
+
+  .quarter-nav-dot {
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid rgba(162, 148, 121, 0.2);
+    background: transparent;
+    box-sizing: border-box;
+    background: #A29479;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .quarter-nav-label {
+    font-size: 12px;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    color: #A29479;
   }
 
   /* ── 2번째 섹션 활성 시 타이틀 즉시 숨김 ── */
