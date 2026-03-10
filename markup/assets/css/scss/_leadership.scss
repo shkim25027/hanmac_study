@@ -22,7 +22,7 @@
       padding: 0 24px;
     }
     @include mq(tablet-wide, max) {
-      padding: 0 16px;
+      padding: 0;
     }
   }
 
@@ -37,7 +37,7 @@
   // --------------------------
   .leadership-hero {
     position: relative;
-    padding: 20px 0 72px;
+    padding: 20px 0 0;
     background: linear-gradient(
       180deg,
       #f5f2f0 0%,
@@ -66,17 +66,41 @@
       .breadcrumb {
         margin: 0;
       }
+      @include mq(tablet-wide, max) {
+        &.hero-breadcrumb {
+          display: none;
+        }
+      }
+    }
+
+    // 리더십 고정 배너: PC 1442×460 / 모바일 360×234
+    .hero-banner {
+      max-width: 1442px;
+      width: 100%;
+      height: 610px;
+      padding-bottom: 60px;
+      margin: 0 auto;
+      position: relative;
+
+      @include mq(tablet-wide, max) {
+        max-width: 360px;
+        height: auto;
+        margin-left: auto;
+        margin-right: auto;
+        padding-bottom: 33px;
+      }
     }
 
     .hero-swiper {
-      overflow: visible;
+      overflow: hidden;
+      height: 100%;
 
       .swiper-wrapper {
         align-items: stretch;
       }
 
       .swiper-slide {
-        height: auto;
+        height: 100%;
       }
     }
 
@@ -86,14 +110,22 @@
       grid-template-columns: 1.1fr 0.9fr;
       align-items: center;
       gap: 40px;
-      padding: 72px 0 44px;
+      height: 100%;
+      min-height: 460px;
+      padding: 0 40px;
+      box-sizing: border-box;
 
       @include mq(desktop-wide, max) {
         grid-template-columns: 1fr 0.9fr;
+        min-height: 460px;
+        padding: 0 24px;
       }
       @include mq(tablet-wide, max) {
         grid-template-columns: 1fr;
-        padding: 44px 0 28px;
+        grid-template-rows: auto 1fr;
+        min-height: 234px;
+        padding: 16px 16px 12px;
+        gap: 12px;
       }
     }
 
@@ -113,6 +145,12 @@
       background-blend-mode: overlay, normal, normal;
       width: max-content;
       margin-bottom: 18px;
+
+      @include mq(tablet-wide, max) {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
     }
 
     .hero-title {
@@ -126,8 +164,16 @@
         font-weight: 800;
       }
 
-      @include mq(tablet-wide, max) {
+      @include mq(desktop-wide, max) {
         font-size: 28px;
+      }
+      @include mq(tablet-wide, max) {
+        font-size: 16px;
+        line-height: 1.3;
+
+        strong {
+          font-weight: 700;
+        }
       }
     }
 
@@ -137,8 +183,14 @@
       line-height: 1.4;
       letter-spacing: -0.3px;
       color: rgba(0, 0, 0, 0.9);
-      @include mq(tablet-wide, max) {
+
+      @include mq(desktop-wide, max) {
         font-size: 18px;
+      }
+      @include mq(tablet-wide, max) {
+        margin-top: 6px;
+        font-size: 12px;
+        line-height: 1.35;
       }
     }
 
@@ -148,45 +200,93 @@
       align-items: center;
 
       img {
-        width: min(504px, 100%);
-        height: auto;
+        width: 504px;
+        height: 408px;
+        object-fit: contain;
         opacity: 0.92;
       }
 
       @include mq(tablet-wide, max) {
         justify-content: center;
-        margin-top: 10px;
+        grid-row: 2;
+        align-self: end;
+
+        img {
+          max-height: 100px;
+          width: auto;
+        }
       }
     }
 
+    // 게이지바형 페이지네이션 (인사이트와 동일: 불릿 + 활성 시 채워지는 게이지)
     .hero-pagination {
-      position: relative;
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
-      margin-top: 18px;
 
-      // Swiper bullet 기본 스타일 초기화
       &.swiper-pagination {
-        bottom: auto;
-        left: auto;
+        bottom: 24px;
+        left: 50%;
         width: auto;
+        transform: translateX(-50%);
       }
 
       .swiper-pagination-bullet {
         width: 6px;
         height: 6px;
         border-radius: 999px;
-        background: rgba(126, 90, 15, 0.3);
-        opacity: 1;
+        background: rgba(126, 90, 15, 0.3)
         margin: 0;
-        transition: width 0.3s ease, background 0.3s ease;
+        transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
 
         &.swiper-pagination-bullet-active {
           width: 62px;
-          background: #ff8922;
-          border-radius: 999px;
+          height: 6px;
+          border-radius: 3px;
+          background: rgba(126, 90, 15, 0.3);
+          position: relative;
+          overflow: hidden;
+
+          &::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: #ff8922;
+            border-radius: 3px;
+            animation: fillGauge 3.9s linear forwards; // autoplay delay 4000ms에 맞춤
+          }
+        }
+      }
+
+      @include mq(tablet-wide, max) {
+        bottom: 12px;
+        gap: 6px;
+
+        &.swiper-pagination {
+          bottom: 12px;
+        }
+
+        .swiper-pagination-bullet {
+          width: 5px;
+          height: 5px;
+
+          &.swiper-pagination-bullet-active {
+            width: 40px;
+            height: 4px;
+
+            &::after {
+              animation-duration: 3.9s;
+            }
+          }
         }
       }
     }
@@ -196,16 +296,24 @@
   // Tabs
   // --------------------------
   .leadership-tabs {
-    margin-top: -6px;
     position: relative;
+    @include mq(tablet-wide, min) {
+      margin-top: -58px;
+    }
+    @include mq(tablet-wide, max) {
+      .leadership-inner {
+        overflow: visible;
+      }
+    }
   }
 
   .leadership-tabs-list {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 0;
+    gap: 2px;
     align-items: end;
     border-bottom: 1px solid rgba(207, 104, 0, 0.4);
+    width: 100%;
   }
 
   .leadership-tab {
@@ -219,6 +327,16 @@
     border-radius: 6px 6px 0 0;
     cursor: pointer;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    .tab-icon {
+      display: none;
+    }
+    .tab-text {
+      display: inline;
+    }
 
     &:focus-visible {
       outline: 2px solid rgba(207, 104, 0, 0.55);
@@ -226,12 +344,23 @@
     }
 
     &.is-active {
+      position: relative;
       background: #fefefe;
       border-left: 1px solid #cf6800;
       border-right: 1px solid #cf6800;
       border-top: 1px solid #cf6800;
       z-index: 2;
+      &::after{
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: #fff;
+      }
     }
+
   }
 
   // --------------------------
@@ -240,6 +369,9 @@
   .leadership-video-list {
     padding: 36px 0 56px;
 
+    @include mq(tablet-wide, max) {
+      padding: 24px 16px 32px;
+    }
     .list-head {
       @include flex(row, center, space-between);
       margin-bottom: 20px;
@@ -280,7 +412,7 @@
     }
   }
 
-  // 반응형: 2열
+  // 반응형: 2열 (태블릿)
   @media (max-width: 1200px) {
     .video-grid {
       grid-template-columns: repeat(2, 1fr);
@@ -288,7 +420,6 @@
       row-gap: 32px;
     }
     .leadership-tabs-list {
-      grid-template-columns: repeat(3, 1fr);
       row-gap: 8px;
       border-bottom: none;
     }
@@ -300,10 +431,70 @@
     }
   }
 
-  // 반응형: 1열
-  @media (max-width: 768px) {
+  // 모바일: 탭 가로 스크롤 + 아이콘, 카드 2열 유지
+  @include mq(tablet-wide, max) {
+    .leadership-tabs-list {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 0 8px 0;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .leadership-tab {
+      flex: 0 0 auto;
+      height: auto;
+      min-height: 48px;
+      padding: 10px 4px 12px;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      font-size: 14px;
+      letter-spacing: -0.4px;
+      flex-direction: column;
+      gap: 4px;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1px;
+      @include mq(tablet-small, max) {
+        font-size: 12px;
+      }
+
+      .tab-icon {
+        display: block;
+        width: 24px;
+        height: 24px;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          opacity: 0.5;
+        }
+      }
+      &.is-active {
+        color: #121212;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        border-bottom-color: #cf6800;
+        .tab-icon img {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  // 모바일: 카드 2열 유지 (시안과 동일)
+  @include mq(tablet-small, max) {
     .video-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 10px;
+      row-gap: 20px;
+    }
+    .video-item .item-title {
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .video-item .item-desc {
+      font-size: 12px;
     }
   }
 }
