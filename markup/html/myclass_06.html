@@ -6,13 +6,14 @@
   </head>
   <body>
     <div class="wrap myclass myclass-page-06">
+      <div id="scroll-progress" class="scroll-progress-bar" aria-hidden="true"></div>
       @@include("_include/_header.html")
 
       <div class="container">
         <div class="myclass-wrap myclass-layout">
 
           <!-- 상단바: 좌(사용자/연도) + 우(환영 문구) -->
-          <div class="myclass-top-bar">
+          <div class="myclass-top-bar top-bar-absolute">
             <div class="top-bar-left">
               <div class="user-rank-area">
                 <div class="user-rank-area-inner">
@@ -73,19 +74,18 @@
 
           <!-- 타임라인 + 섹션 그룹 -->
           <div class="myclass-content">
-            <!-- 수직 타임라인 인디케이터 -->
-            <div class="scroll-timeline" aria-hidden="true">
-              <div class="timeline-track">
-                <div class="timeline-progress-fill"></div>
-              </div>
-              <div class="timeline-dot is-active" data-index="0"></div>
-              <div class="timeline-dot" data-index="1"></div>
-            </div>
-
             <div class="myclass-main">
+              <!-- 수직 타임라인 인디케이터: myclass-main 스크롤 콘텐츠 기준 absolute -->
+              <div class="scroll-timeline" aria-hidden="true">
+                <div class="timeline-track">
+                  <div class="timeline-progress-fill"></div>
+                </div>
+                <div class="timeline-dot is-active" data-index="0"></div>
+                <div class="timeline-dot" data-index="1"></div>
+              </div>
 
             <!-- ── 섹션 1: 효과적인 의사소통 배우기 ── -->
-            <div class="scroll-section">
+            <div class="scroll-section scroll-section-reveal">
               <aside class="scroll-section-sidebar">
                 <div class="year-selector">
                   <button class="btn-year" type="button" id="btnYearToggle" aria-haspopup="listbox" aria-expanded="false" aria-controls="yearListPopup">
@@ -120,7 +120,7 @@
               <section id="bookshelf-section-communication" class="bookshelf-section" aria-label="효과적인 의사소통 배우기 책장">
               <div class="bookshelf">
                 <div class="books-list books-list--same-height">
-                  <div class="books-item books-item-completed" data-video-id="1">
+                  <div class="books-item" data-video-id="1">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
                       <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
@@ -150,7 +150,7 @@
                       </span>
                     </button>
                   </div>
-                  <div class="books-item books-item-completed" data-video-id="2">
+                  <div class="books-item " data-video-id="2">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_02.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
                       <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
@@ -180,7 +180,7 @@
                       </span>
                     </button>
                   </div>
-                  <div class="books-item books-item-completed" data-video-id="3">
+                  <div class="books-item" data-video-id="3">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_03.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
                       <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
@@ -210,7 +210,7 @@
                       </span>
                     </button>
                   </div>
-                  <div class="books-item books-item-completed" data-video-id="4">
+                  <div class="books-item" data-video-id="4">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_04.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
                       <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
@@ -240,7 +240,7 @@
                       </span>
                     </button>
                   </div>
-                  <div class="books-item books-item-completed" data-video-id="5">
+                  <div class="books-item" data-video-id="5">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_05.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
                       <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
@@ -270,7 +270,7 @@
                       </span>
                     </button>
                   </div>
-                  <div class="books-item books-item-completed" data-video-id="6">
+                  <div class="books-item" data-video-id="6">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_06.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
                       <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
@@ -318,7 +318,7 @@
             </div><!-- // scroll-section 1 -->
 
             <!-- ── 섹션 2: 자기이해와 강점 찾기 ── -->
-            <div class="scroll-section">
+            <div class="scroll-section scroll-section-reveal">
               <aside class="scroll-section-sidebar">
                 <a href="#bookshelf-section-self" class="sidebar-goal-item" data-index="1">
                   <span class="sidebar-goal-icon" aria-hidden="true">
@@ -596,30 +596,63 @@
         function setHeights() {
           var h = window.innerHeight - getHeaderH();
           contentEl.style.height = h + "px";
-          mainEl.style.height    = h + "px";     /* 내부 스크롤 컨테이너 높이 */
+          mainEl.style.height    = h + "px";
           sections.forEach(function(s) { s.style.height = h + "px"; });
-          if (timelineEl) timelineEl.style.height = h + "px";
         }
 
-        /* 타임라인 도트 위치 */
-        function positionDots() {
-          if (!timelineEl) return;
-          var h   = timelineEl.offsetHeight;
-          var pad = 24;
-          var gap = (h - pad * 2) / (sections.length - 1);
+        /* 타임라인 위치/크기 설정 — myclass-main 스크롤 콘텐츠 기준
+           ┌ top/left  = 첫 섹션 .sidebar-goal-icon 중심 (mainEl 기준 absolute)
+           ├ height    = (섹션 수 - 1) * 섹션 높이
+           │             → 첫 아이콘 ~ 마지막 아이콘까지 스크롤 콘텐츠 내에서 연결
+           └ 도트[i]   = i * sectionH — 각 섹션 아이콘 위치에 정확히 배치 */
+        function positionTimeline() {
+          if (!timelineEl || !sections.length) return;
+
+          var sectionH = mainEl.clientHeight;
+          var halfDot  = 6;
+
+          /* section 0 기준으로 측정 */
+          var savedScroll = mainEl.scrollTop;
+          mainEl.scrollTop = 0;
+
+          var firstIcon = sections[0].querySelector(".sidebar-goal-icon");
+          if (!firstIcon) { mainEl.scrollTop = savedScroll; return; }
+
+          var mainRect = mainEl.getBoundingClientRect();
+          var iconRect = firstIcon.getBoundingClientRect();
+
+          mainEl.scrollTop = savedScroll;
+
+          /* 아이콘 중심 — mainEl 클라이언트 기준 (scrollTop=0 상태) */
+          var iconTop  = iconRect.top  + iconRect.height / 2 - mainRect.top;
+          var iconLeft = iconRect.left + iconRect.width  / 2 - mainRect.left;
+
+          /* 타임라인: 스크롤 콘텐츠 안에서 첫 ~ 마지막 아이콘 연결 */
+          var timelineH = (sections.length - 1) * sectionH;
+
+          timelineEl.style.top    = iconTop  + "px";
+          timelineEl.style.left   = (iconLeft - 14) + "px";
+          timelineEl.style.height = timelineH + "px";
+
+          /* 도트[i]: 각 섹션 아이콘 위치 = i * sectionH (타임라인 top 기준) */
           timelineDots.forEach(function(dot, i) {
-            dot.style.top = (pad + i * gap - 6) + "px";
+            dot.style.top = (i * sectionH - halfDot) + "px";
           });
         }
 
         /* 활성 상태 업데이트 */
+        var currentIndex = -1;
         function updateActive(index) {
+          if (index === currentIndex) return;
+          currentIndex = index;
           sidebarGoals.forEach(function(g, i) {
             g.classList.toggle("is-active", i === index);
           });
           timelineDots.forEach(function(d, i) {
             d.classList.toggle("is-active", i === index);
           });
+          /* 2번째 섹션(index > 0) 활성 시 page-intro 숨김 */
+          document.querySelector(".myclass-page-06").classList.toggle("intro-hidden", index > 0);
         }
 
         /* GSAP ScrollTrigger – scroller를 mainEl(내부)로 지정 */
@@ -630,7 +663,7 @@
           ScrollTrigger.clearScrollMemory();
 
           setHeights();
-          positionDots();
+          positionTimeline();
 
           /* mainEl 스크롤을 GSAP에 등록 */
           ScrollTrigger.defaults({ scroller: mainEl });
@@ -648,32 +681,48 @@
             );
           });
 
-          /* 타임라인 진행선: mainEl 전체 스크롤 범위 추적 */
-          if (progressFill) {
-            stInstances.push(
-              ScrollTrigger.create({
-                trigger: sections[0],
-                start: "top top",
-                endTrigger: sections[sections.length - 1],
-                end: "bottom bottom",
-                scrub: true,
-                onUpdate: function(self) {
-                  progressFill.style.height = (self.progress * 100) + "%";
-                }
-              })
-            );
-          }
+        }
+
+        /* 타임라인 진행선 + 상단 진행 바: mainEl 스크롤 비율로 직접 업데이트 */
+        function updateProgress() {
+          var maxScroll = mainEl.scrollHeight - mainEl.clientHeight;
+          var progress = maxScroll > 0 ? mainEl.scrollTop / maxScroll : 0;
+          if (progressFill) progressFill.style.height = (progress * 100) + "%";
+          var progressBar = document.getElementById("scroll-progress");
+          if (progressBar) progressBar.style.width = (progress * 100) + "%";
         }
 
         setHeights();
-        positionDots();
+        positionTimeline();
         updateActive(0);
+
+        /* ── 섹션 스크롤 등장 애니메이션 (Intersection Observer) ── */
+        var revealSections = document.querySelectorAll(".myclass-page-06 .scroll-section-reveal");
+        if (mainEl && revealSections.length) {
+          var revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                setTimeout(function() { entry.target.classList.add("is-visible"); }, 80);
+                revealObserver.unobserve(entry.target);
+              }
+            });
+          }, { root: mainEl, rootMargin: "0px", threshold: 0.15 });
+          revealSections.forEach(function(s) { revealObserver.observe(s); });
+        }
+
+        /* mainEl 스크롤 → progress fill + 섹션 인덱스 직접 계산으로 active 업데이트 */
+        mainEl.addEventListener("scroll", function() {
+          updateProgress();
+          var idx = Math.round(mainEl.scrollTop / mainEl.clientHeight);
+          updateActive(Math.min(idx, sections.length - 1));
+        }, { passive: true });
 
         /* 이미지/폰트 로드 완료 후 초기화 (레이아웃 확정 후) */
         window.addEventListener("load", function() {
           setHeights();
-          positionDots();
+          positionTimeline();
           initGSAP();
+          updateProgress();
         });
 
         /* 사이드바 클릭 → mainEl 내부 스크롤 */
@@ -688,7 +737,7 @@
         /* 리사이즈 */
         window.addEventListener("resize", function() {
           setHeights();
-          positionDots();
+          positionTimeline();
           ScrollTrigger.refresh();
         });
 
