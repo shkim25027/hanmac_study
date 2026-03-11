@@ -154,16 +154,27 @@
       @include select-sort(16px);
     }
 
-    // [공통] 비디오 카드 그리드 (4열, 20px 제목)
+    // [공통] 비디오 카드 그리드 (4열, 18px 제목) - 인사이트와 동일
     @include video-card-grid(4, 24px, 56px, 18px);
 
-    // 반응형: 검색결과 전용
+    // 반응형: 인사이트와 동일 (태블릿 3열, 모바일 2열)
     .video-grid {
-      @include mq("tablet-wide", max) {
-        grid-template-columns: repeat(2, 1fr);
+      @include mq(desktop, max) {
+        grid-template-columns: repeat(3, 1fr);
+        column-gap: 12px;
+        row-gap: 32px;
       }
-      @include mq("tablet", max) {
-        grid-template-columns: 1fr;
+    }
+
+    @include mq(tablet-small, max) {
+      .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 10px;
+        row-gap: 20px;
+      }
+      .video-item .item-title {
+        font-size: 13px;
+        line-height: 1.35;
       }
     }
 
