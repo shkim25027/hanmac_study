@@ -544,6 +544,20 @@
     color: #fff;
     font-weight: 600;
     text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.15), 1px -1px 0 rgba(0, 0, 0, 0.15), -1px 1px 0 rgba(0, 0, 0, 0.15), 1px 1px 0 rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    justify-content: flex-end;
+    .ico-info {
+       height: 12px;
+       aspect-ratio: 11/11;
+       border-radius: 50%;
+       border: 1px solid #fff;
+       text-align: center;
+       font-size: 8px;
+       line-height: 11px;
+    }
   }
 
   .average-label {
