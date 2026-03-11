@@ -278,14 +278,28 @@
     }
   }
 
-  // 모바일: 탭 가로 스크롤 + 아이콘 (리더십과 동일)
+  // 모바일: 탭 가로 슬라이드(스크롤) + 아이콘 (리더십과 동일)
   @include mq(tablet-wide, max) {
+    .leadership-tabs {
+      .leadership-inner {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 16px;
+        scroll-snap-type: x proximity;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+    }
     .leadership-tabs-list {
       display: flex;
       flex-wrap: nowrap;
-      overflow-x: auto;
+      width: max-content;
+      min-width: 100%;
       border-bottom: 1px solid rgba(0, 0, 0, 0.08);
       padding: 0 8px 0;
+      gap: 12px;
       &::-webkit-scrollbar {
         display: none;
       }
@@ -293,7 +307,8 @@
     .leadership-tab {
       flex: 0 0 auto;
       height: auto;
-      min-height: 48px;
+      min-height: 58px;
+      min-width: 58px;
       padding: 10px 4px 12px;
       border-radius: 0;
       background: transparent;
@@ -302,6 +317,7 @@
       letter-spacing: -0.4px;
       flex-direction: column;
       gap: 4px;
+      scroll-snap-align: start;
       @include mq(tablet-small, max) {
         font-size: 12px;
       }
