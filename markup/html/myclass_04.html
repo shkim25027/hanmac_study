@@ -5,21 +5,22 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
   </head>
   <body>
-    <div class="wrap myclass myclass-page-03">
+    <div class="wrap myclass myclass-page-06">
+      <div id="scroll-progress" class="scroll-progress-bar" aria-hidden="true"></div>
       @@include("_include/_header.html")
 
       <div class="container">
         <div class="myclass-wrap myclass-layout">
 
           <!-- 상단바: 좌(사용자/연도) + 우(환영 문구) -->
-          <div class="myclass-top-bar">
+          <div class="myclass-top-bar top-bar-absolute">
             <div class="top-bar-left">
               <div class="user-rank-area">
                 <div class="user-rank-area-inner">
                   <div class="user-profile">
                     <img src="./assets/images/insight/profile.png" alt="프로필 이미지" />
                   </div>
-                  <span class="rank-text">홍길동님 현재 <em>1250</em>등 <span class="rank-change">(지난 주 대비 4↑)</span></span>
+                  <span class="rank-text">홍길동님 현재 <em>128</em>등 <span class="rank-change">(지난 주 대비 4↑)</span></span>
                 </div>
                 <div class="rank-toggle-wrap">
                   <button class="btn-rank-toggle" type="button" aria-label="순위 상세 보기" aria-expanded="false" aria-controls="rankListPopup">
@@ -61,9 +62,9 @@
                   </div>
                 </div>
               </div>
-              
+
             </div>
-            <div class="page-intro page-intro--completed" id="pageIntro">
+            <div class="page-intro" id="pageIntro">
               <!-- 상태: 목표 완료 -->
               <div class="page-title">
                 <h3>축하합니다. <strong>[자기이해와 강점찾기]</strong>, 빛나는 책장을 완성했어요.</h3>
@@ -73,42 +74,30 @@
             </div>
           </div>
 
-          <!-- 좌측: 분기·목표 | 우측: 메인 콘텐츠 -->
+          <!-- 타임라인 + 섹션 그룹 -->
           <div class="myclass-content">
-            <aside class="myclass-sidebar">
-              <div class="year-selector">
-                <button class="btn-year" type="button" id="btnYearToggle" aria-haspopup="listbox" aria-expanded="false" aria-controls="yearListPopup">
-                  <span>
-                    <span class="year-display">20<strong>26</strong></span><small>년</small>
-                  </span>
-                  <i class="ico-year-arrow" aria-hidden="true"></i>
-                </button>
-                <div class="year-list-wrap" id="yearListPopup" role="listbox" aria-label="연도 선택" hidden>
-                  <ul class="year-list">
-                    <li class="year-item"><button type="button" class="year-option" data-year="2026">2026년</button></li>
-                    <li class="year-item"><button type="button" class="year-option" data-year="2025">2025년</button></li>
-                    <li class="year-item"><button type="button" class="year-option" data-year="2024">2024년</button></li>
-                    <li class="year-item"><button type="button" class="year-option" data-year="2023">2023년</button></li>
-                  </ul>
-                </div>
-              </div>
-              <p class="sidebar-quarter">
-                <span class="ico-quarter-triangle" aria-hidden="true"></span> <strong>1</strong>분기
-              </p>
-              <div class="sidebar-goal-detail">
-                <span class="sidebar-goal-icon" aria-hidden="true">
-                  <img src="./assets/images/myclass/ico_medal_completed.svg" alt="">
-                  <span class="badge-text">완독</span>
-                </span>
-                <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
-                <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
-                <button class="btn-reset-goal hidden" type="button">
-                  <span class="ico-arrow-back" aria-hidden="true"></span> 목표 다시 선택
-                </button>
-              </div>
-            </aside>
-
             <div class="myclass-main">
+              <!-- 수직 타임라인 인디케이터: myclass-main 스크롤 콘텐츠 기준 absolute -->
+              <div class="scroll-timeline" aria-hidden="true">
+                <div class="timeline-track">
+                  <div class="timeline-progress-fill"></div>
+                </div>
+                <!-- dot은 JS에서 섹션별로 동적 생성 -->
+              </div>
+
+             <!-- ── 섹션 1: 자기이해와 강점 찾기 ── -->
+            <div class="scroll-section scroll-section-reveal" data-quarter="3">
+              <aside class="scroll-section-sidebar">
+                <a href="#bookshelf-section-self" class="sidebar-goal-item" data-index="1">
+                  <span class="sidebar-goal-icon" aria-hidden="true">
+                    <img src="./assets/images/myclass/ico_medal_completed.svg" alt="완독">
+                  </span>
+                  <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
+                  <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
+                </a>
+              </aside>
+
+              <div class="scroll-section-content">
             <!-- 완성된 책장: 연필 아이콘, 하트, 노란 포스트잇(CHECK!) -->
             <section class="bookshelf-section" aria-label="완성된 추천 도서 책장">
               <div class="bookshelf">
@@ -309,9 +298,16 @@
                 </div>
               </div>
             </section>
+              </div><!-- // scroll-section-content -->
+            </div><!-- // scroll-section 1 -->
+
+
 
             </div>
             <!-- // myclass-main -->
+
+            <!-- 오른쪽 분기 네비게이션 (JS로 동적 생성) -->
+            <nav class="quarter-nav" aria-label="분기 이동"></nav>
 
           </div>
           <!-- // myclass-content -->
@@ -322,22 +318,30 @@
       <!-- // container -->
 
     </div>
-    <!-- // wrap.myclass (완성 화면) -->
+    <!-- // wrap.myclass (두 책장) -->
 
     <script src="./assets/js/main/Videomodalmanager.js" defer></script>
+    <!-- GSAP + ScrollTrigger -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
+
         // ====================================================
         // Lottie 아이콘 초기화 (.lottie-icon)
         // ====================================================
         (function initLottieIcons() {
+          function getLottieApi() {
+            return window.lottie || window.bodymovin;
+          }
+
           function loadLottieScript() {
-            if (typeof window.lottie !== 'undefined') return Promise.resolve(true);
+            if (typeof getLottieApi() !== 'undefined') return Promise.resolve(true);
 
             return new Promise(function (resolve) {
               const existing = document.querySelector('script[data-lottie-loader="true"]');
               if (existing) {
-                existing.addEventListener('load', function () { resolve(typeof window.lottie !== 'undefined'); });
+                existing.addEventListener('load', function () { resolve(typeof getLottieApi() !== 'undefined'); });
                 existing.addEventListener('error', function () { resolve(false); });
                 return;
               }
@@ -346,7 +350,7 @@
               s.src = './assets/js/lib/lottie.min.js';
               s.async = true;
               s.dataset.lottieLoader = 'true';
-              s.addEventListener('load', function () { resolve(typeof window.lottie !== 'undefined'); });
+              s.addEventListener('load', function () { resolve(typeof getLottieApi() !== 'undefined'); });
               s.addEventListener('error', function () { resolve(false); });
               document.head.appendChild(s);
             });
@@ -365,7 +369,10 @@
             el.dataset.lottieInited = 'true';
 
             try {
-              const anim = window.lottie.loadAnimation({
+              const api = getLottieApi();
+              if (!api || typeof api.loadAnimation !== 'function') throw new Error('Lottie API not available');
+
+              const anim = api.loadAnimation({
                 container: el,
                 renderer: 'svg',
                 loop: !reduceMotion,
@@ -387,7 +394,7 @@
           }
 
           loadLottieScript().then(function (ok) {
-            if (!ok || typeof window.lottie === 'undefined') return;
+            if (!ok || typeof getLottieApi() === 'undefined') return;
             icons.forEach(initOne);
           });
         })();
@@ -416,6 +423,7 @@
           });
         }
 
+        /* ── 비디오 모달 ── */
         var videos = [
           { id: 1, url: "KE_MeQZgnPM", category: "IT 테크", subcate: "", title: "조직도가 리셋된다!", type: "main", bookmark: false, keywords: [], gauge: 0 },
           { id: 2, url: "a2l1uZfsRi0", category: "웰니스", subcate: "", title: "혈당 스파이크", type: "main", bookmark: false, keywords: [], gauge: 0 },
@@ -424,14 +432,289 @@
           { id: 5, url: "CRKwszz6l2M", category: "웰니스", subcate: "", title: "살찌고 망가진몸 되살리는 방법", type: "main", bookmark: false, keywords: [], gauge: 0 },
           { id: 6, url: "Gf5WoZ3BmgI", category: "리더십", subcate: "", title: "자기 관점의 힘", type: "main", bookmark: false, keywords: [], gauge: 0 },
         ];
-        var modalManager = new VideoModalManager({ videos: videos });
-        document.querySelector(".books-list").addEventListener("click", function(e) {
-          var item = e.target.closest(".books-item");
-          if (!item || e.target.closest(".bookmark")) return;
-          e.preventDefault();
-          var id = parseInt(item.getAttribute("data-video-id"), 10);
-          if (!isNaN(id) && id >= 1) modalManager.loadVideoModal(id);
+        if (typeof VideoModalManager !== "undefined") {
+          var modalManager = new VideoModalManager({ videos: videos });
+          document.querySelectorAll(".bookshelf-section .books-list").forEach(function(list) {
+            list.addEventListener("click", function(e) {
+              var item = e.target.closest(".books-item");
+              if (!item || e.target.closest(".bookmark")) return;
+              e.preventDefault();
+              var id = parseInt(item.getAttribute("data-video-id"), 10);
+              if (!isNaN(id) && id >= 1) modalManager.loadVideoModal(id);
+            });
+          });
+        }
+
+        /* ── GSAP ScrollTrigger (내부 스크롤 + CSS snap) ── */
+        gsap.registerPlugin(ScrollTrigger);
+
+        var contentEl      = document.querySelector(".myclass-page-06 .myclass-content");
+        var mainEl         = document.querySelector(".myclass-page-06 .myclass-main");
+        var sections       = gsap.utils.toArray(".myclass-page-06 .scroll-section");
+        var sidebarGoals   = gsap.utils.toArray(".myclass-page-06 .sidebar-goal-item");
+        var progressFill   = document.querySelector(".scroll-timeline .timeline-progress-fill");
+        var timelineDots   = []; /* JS에서 동적 생성 후 채움 */
+        var absYList       = []; /* 각 섹션 기준점의 스크롤 콘텐츠 내 절대 Y (positionTimeline에서 설정) */
+        var timelineH      = 0;  /* 타임라인 전체 높이 (lastY - firstY) */
+        var timelineEl     = document.querySelector(".scroll-timeline");
+        var quarterNavEl   = document.querySelector(".myclass-page-06 .quarter-nav");
+        var headerEl       = document.querySelector("header");
+
+        /* 섹션이 1개여도 레이아웃·타임라인·활성 상태는 동작하도록 조건 완화 (원래 2개 이상 필요) */
+        if (!contentEl || !mainEl || sections.length < 1) return;
+
+        /* 섹션별로 dot 동적 생성
+           - .sidebar-quarter 있음 → 일반 dot
+           - .sidebar-quarter 없음 → ico-quarter-triangle 아이콘 dot */
+        (function buildTimelineDots() {
+          if (!timelineEl) return;
+          sections.forEach(function(section, i) {
+            var dot = document.createElement("div");
+            dot.className  = "timeline-dot" + (i === 0 ? " is-active" : "");
+            dot.dataset.index = i;
+            if (!section.querySelector(".sidebar-quarter")) {
+              dot.classList.add("timeline-dot--triangle");
+              dot.innerHTML = '<span class="ico-quarter-triangle" aria-hidden="true"></span>';
+            }
+            timelineEl.appendChild(dot);
+            timelineDots.push(dot);
+          });
+        })();
+
+        /* 헤더 높이 */
+        function getHeaderH() {
+          return headerEl ? headerEl.offsetHeight : 0;
+        }
+
+        /* 높이 일괄 설정 – contentEl과 mainEl 모두 1섹션 높이로 고정 */
+        function setHeights() {
+          var h = window.innerHeight - getHeaderH();
+          contentEl.style.height = h + "px";
+          mainEl.style.height    = h + "px";
+          sections.forEach(function(s) { s.style.height = h + "px"; });
+        }
+
+        /* 타임라인 위치/크기 설정 — myclass-main 스크롤 콘텐츠 기준
+           섹션마다 기준 요소(.sidebar-quarter 또는 .sidebar-goal-icon)의
+           실제 Y를 측정해서 정확히 연결
+           scrollTop=0 상태에서 section.getBoundingClientRect() 기준으로
+           각 섹션 내 offset을 계산 → i*sectionH 오차 없음 */
+        function positionTimeline() {
+          if (!timelineEl || !sections.length) return;
+
+          var sectionH = mainEl.clientHeight;
+          var halfDot  = 6;
+
+          var savedScroll = mainEl.scrollTop;
+          mainEl.scrollTop = 0;
+
+          var mainRect = mainEl.getBoundingClientRect();
+
+          /* 각 섹션의 기준 요소 절대 Y (mainEl 스크롤 콘텐츠 기준) 수집
+             → 외부 변수 absYList에 저장해 updateProgress()에서 보간에 사용 */
+          absYList = sections.map(function(section, i) {
+            var el = section.querySelector(".sidebar-quarter") ||
+                     section.querySelector(".sidebar-goal-icon");
+            if (!el) return i * sectionH;
+            var sectionRect = section.getBoundingClientRect();
+            var elRect      = el.getBoundingClientRect();
+            var offsetInSection = elRect.top + elRect.height / 2 - sectionRect.top;
+            return i * sectionH + offsetInSection;
+          });
+
+          /* 타임라인 X: 첫 섹션 사이드바 왼쪽 기준 */
+          var sidebarEl   = sections[0].querySelector(".scroll-section-sidebar");
+          var sidebarRect = sidebarEl ? sidebarEl.getBoundingClientRect() : mainRect;
+          var timelineLeft = (sidebarRect.left - mainRect.left) + 6;
+
+          mainEl.scrollTop = savedScroll;
+
+          var firstY = absYList[0];
+          var lastY  = absYList[absYList.length - 1];
+          timelineH  = Math.max(lastY - firstY, 0); /* 외부 변수에 저장 */
+
+          timelineEl.style.top    = firstY       + "px";
+          timelineEl.style.left   = timelineLeft + "px";
+          timelineEl.style.height = timelineH    + "px";
+
+          /* 도트[i]: 각 기준 요소 실제 Y → 타임라인 top 기준 상대 위치 */
+          timelineDots.forEach(function(dot, i) {
+            dot.style.top = (absYList[i] - firstY - halfDot) + "px";
+          });
+        }
+
+        /* 오른쪽 분기 nav 동적 생성 */
+        var quarterNavItems = [];
+        var quarterNavFill  = null;
+        (function buildQuarterNav() {
+          if (!quarterNavEl) return;
+          /* track + fill 엘리먼트 삽입 */
+          var trackEl = document.createElement("div");
+          trackEl.className = "quarter-nav-track";
+          trackEl.setAttribute("aria-hidden", "true");
+          trackEl.innerHTML = '<div class="quarter-nav-fill"></div>';
+          quarterNavEl.appendChild(trackEl);
+          quarterNavFill = trackEl.querySelector(".quarter-nav-fill");
+
+          sections.forEach(function(section, i) {
+            var q = section.dataset.quarter || (i + 1);
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "quarter-nav-item" + (i === 0 ? " is-active" : "");
+            btn.setAttribute("aria-label", q + "분기로 이동");
+            btn.innerHTML =
+              '<span class="quarter-nav-dot" aria-hidden="true"></span>' +
+              '<span class="quarter-nav-label">' + q + '분기</span>';
+            btn.addEventListener("click", function() {
+              mainEl.scrollTo({ top: i * mainEl.offsetHeight, behavior: "smooth" });
+            });
+            quarterNavEl.appendChild(btn);
+            quarterNavItems.push(btn);
+          });
+        })();
+
+        /* 분기 nav track 위치 설정: 첫 dot 중심 ~ 마지막 dot 중심 */
+        function positionQuarterNav() {
+          if (!quarterNavEl || quarterNavItems.length < 2) return;
+          var trackEl = quarterNavEl.querySelector(".quarter-nav-track");
+          if (!trackEl) return;
+
+          var firstDot = quarterNavItems[0].querySelector(".quarter-nav-dot");
+          var lastDot  = quarterNavItems[quarterNavItems.length - 1].querySelector(".quarter-nav-dot");
+          var navRect  = quarterNavEl.getBoundingClientRect();
+          var fRect    = firstDot.getBoundingClientRect();
+          var lRect    = lastDot.getBoundingClientRect();
+
+          var top    = fRect.top  + fRect.height  / 2 - navRect.top;
+          var left   = fRect.left + fRect.width   / 2 - navRect.left;
+          var height = (lRect.top + lRect.height / 2 - navRect.top) - top;
+
+          trackEl.style.top    = top    + "px";
+          trackEl.style.left   = left   + "px";
+          trackEl.style.height = Math.max(height, 0) + "px";
+        }
+
+        /* 활성 상태 업데이트 */
+        var currentIndex = -1;
+        function updateActive(index) {
+          if (index === currentIndex) return;
+          currentIndex = index;
+          sidebarGoals.forEach(function(g, i) {
+            g.classList.toggle("is-active", i === index);
+          });
+          timelineDots.forEach(function(d, i) {
+            d.classList.toggle("is-active", i === index);
+          });
+          quarterNavItems.forEach(function(btn, i) {
+            btn.classList.toggle("is-active", i <= index); /* 현재 + 지나간 항목 모두 활성 */
+          });
+          /* 2번째 섹션(index > 0) 활성 시 page-intro 숨김 */
+          document.querySelector(".myclass-page-06").classList.toggle("intro-hidden", index > 0);
+        }
+
+        /* GSAP ScrollTrigger – scroller를 mainEl(내부)로 지정 */
+        var stInstances = [];
+        function initGSAP() {
+          stInstances.forEach(function(st) { st.kill(); });
+          stInstances = [];
+          ScrollTrigger.clearScrollMemory();
+
+          setHeights();
+          positionTimeline();
+
+          /* mainEl 스크롤을 GSAP에 등록 */
+          ScrollTrigger.defaults({ scroller: mainEl });
+
+          /* 각 섹션 진입 시 활성 상태 업데이트 */
+          sections.forEach(function(section, i) {
+            stInstances.push(
+              ScrollTrigger.create({
+                trigger: section,
+                start: "top center",
+                end:   "bottom center",
+                onEnter:     function() { updateActive(i); },
+                onEnterBack: function() { updateActive(i); }
+              })
+            );
+          });
+
+        }
+
+        /* 타임라인 진행선 + 분기 nav fill + 상단 진행 바
+           fill을 단순 scrollTop 비율이 아닌 섹션별 도트 위치 간 보간으로 계산
+           → 섹션마다 기준 요소(sidebar-quarter / sidebar-goal-icon)의 Y가 달라도
+             스크롤 위치에 정확히 대응하는 fill 높이를 유지 */
+        function updateProgress() {
+          var sectionH  = mainEl.clientHeight;
+          var scrollTop = mainEl.scrollTop;
+          var fillPct   = 0;
+
+          if (absYList.length >= 2 && timelineH > 0) {
+            /* 현재 scrollTop이 어느 두 섹션 사이인지 계산 */
+            var rawIdx = scrollTop / sectionH;
+            var i0 = Math.max(0, Math.min(Math.floor(rawIdx), absYList.length - 2));
+            var i1 = i0 + 1;
+            var t  = rawIdx - i0; /* 두 섹션 사이 비율 0~1 */
+
+            /* 두 도트 위치(타임라인 top 기준 px) 사이를 보간 */
+            var pos0  = absYList[i0] - absYList[0];
+            var pos1  = absYList[i1] - absYList[0];
+            var fillPx = pos0 + t * (pos1 - pos0);
+            fillPct = Math.min(fillPx / timelineH * 100, 100);
+          }
+
+          var pct = fillPct + "%";
+          if (progressFill)   progressFill.style.height  = pct;
+          if (quarterNavFill) quarterNavFill.style.height = pct;
+          var progressBar = document.getElementById("scroll-progress");
+          if (progressBar) progressBar.style.width = pct;
+        }
+
+        setHeights();
+        positionTimeline();
+        positionQuarterNav();
+        updateActive(0);
+
+        /* ── 섹션 스크롤 등장 애니메이션 (Intersection Observer) ── */
+        var revealSections = document.querySelectorAll(".myclass-page-06 .scroll-section-reveal");
+        if (mainEl && revealSections.length) {
+          var revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+              if (entry.isIntersecting) {
+                setTimeout(function() { entry.target.classList.add("is-visible"); }, 80);
+                revealObserver.unobserve(entry.target);
+              }
+            });
+          }, { root: mainEl, rootMargin: "0px", threshold: 0.15 });
+          revealSections.forEach(function(s) { revealObserver.observe(s); });
+        }
+
+        /* mainEl 스크롤 → progress fill + 섹션 인덱스 직접 계산으로 active 업데이트 */
+        mainEl.addEventListener("scroll", function() {
+          updateProgress();
+          var idx = Math.round(mainEl.scrollTop / mainEl.clientHeight);
+          updateActive(Math.min(idx, sections.length - 1));
+        }, { passive: true });
+
+        /* 이미지/폰트 로드 완료 후 초기화 (레이아웃 확정 후) */
+        window.addEventListener("load", function() {
+          setHeights();
+          positionTimeline();
+          positionQuarterNav();
+          initGSAP();
+          updateProgress();
         });
+
+        /* 사이드바 클릭 이동 없음 — 네비게이션은 오른쪽 분기 버튼으로만 동작 */
+
+        /* 리사이즈 */
+        window.addEventListener("resize", function() {
+          setHeights();
+          positionTimeline();
+          positionQuarterNav();
+          ScrollTrigger.refresh();
+        });
+
       });
     </script>
   </body>

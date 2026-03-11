@@ -890,7 +890,8 @@
         var quarterNavEl   = document.querySelector(".myclass-page-06 .quarter-nav");
         var headerEl       = document.querySelector("header");
 
-        if (!contentEl || !mainEl || sections.length < 2) return;
+        /* 섹션이 1개여도 레이아웃·타임라인·활성 상태는 동작하도록 조건 완화 (원래 2개 이상 필요) */
+        if (!contentEl || !mainEl || sections.length < 1) return;
 
         /* 섹션별로 dot 동적 생성
            - .sidebar-quarter 있음 → 일반 dot
