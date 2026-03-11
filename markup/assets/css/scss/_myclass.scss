@@ -80,10 +80,16 @@ $card-colors: (
   // =======================================
   // 상단 바: 좌(사용자/연도) + 우(인트로)
   // =======================================
+  .lottie-icon {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
   .myclass-top-bar {
     @include flex(row, flex-start, space-between);
     gap: 24px;
-    margin-bottom: 106px;
+    margin-bottom: 70px;
     z-index: 2;
     &.top-bar-absolute {
       position: absolute;
@@ -95,6 +101,38 @@ $card-colors: (
       }
     }
 
+  }
+
+  // myclass_02: 읽기 화면(책장) 상단 타이틀은 중앙 정렬로 내려오도록
+  .myclass-page-02 {
+    .myclass-top-bar {
+      flex-direction: column;
+      align-items: stretch;
+      margin-bottom: 32px;
+    }
+
+    .top-bar-left {
+      position: static;
+      height: auto;
+    }
+
+    .page-intro {
+      margin-top: 18px;
+    }
+
+    .quarter-nav {
+      align-self: center;
+    }
+
+    .quarter-nav-track {
+      left: 16px;
+      top: 12px;
+      bottom: 12px;
+    }
+
+    .quarter-nav-fill {
+      height: 36%;
+    }
   }
 
   .top-bar-left {
@@ -551,8 +589,8 @@ $card-colors: (
     background-position: center bottom;
     background-repeat: no-repeat;
     background-size: calc(100% - 12px) auto;
-    padding-bottom: 4px;
-    aspect-ratio: 524/242;
+    padding-bottom: 8px;
+    aspect-ratio: 524/244;
   }
 
   // -------
@@ -799,6 +837,7 @@ $card-colors: (
     align-items: center;
     justify-content: center;
     gap: 12px;
+    
   }
 
   .card-icon-wrap {
@@ -810,8 +849,39 @@ $card-colors: (
     display: block;
     width: 56px;
     height: 56px;
-    overflow: hidden;
-    
+    .lottie-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .lottie {
+      &-target{
+        width: 210%;
+        height: 210%;
+        padding-bottom: 10%;
+      }
+      &-email{
+        width: 240%;
+        height: 240%;
+        padding-bottom: 10%;
+        padding-right: 50%;
+      }
+       &-emoji{
+        width: 460%;
+        height: 460%;
+      }
+      &-lightbulb{
+        width: 210%;
+        height: 210%;
+        padding-bottom: 30%;
+      }
+      &-puzzle{
+        width: 200%;
+        height: 200%;
+      }
+    }
     svg {
       width: 100%;
       height: 100%;
@@ -840,7 +910,7 @@ $card-colors: (
     letter-spacing: -0.03em;
     color: #fff;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    text-align: center;
+    text-align: left;
   }
 
   .card-desc {
@@ -909,7 +979,7 @@ $card-colors: (
     width: 100%;
     height: 76.5957%;
     z-index: -1;
-    padding: 0 42px; /* goal-list padding과 맞춤 */
+    padding: 0 20px; /* goal-list padding과 맞춤 */
     @include flex(row, flex-start, space-between);
     &:before{
       content: "";
@@ -927,7 +997,7 @@ $card-colors: (
       display: block;
       width: 20px;
       height: 100%;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='396' viewBox='0 0 20 396' fill='none'%3E%3Cpath d='M5.78975 3.94033C5.82236 1.75471 7.60343 0 9.7893 0H11.4396C13.6309 0 15.4142 1.763 15.4394 3.95409L19.893 391.954C19.9186 394.181 18.1204 396 15.8933 396H3.99959C1.7671 396 -0.0332778 394.173 3.14675e-05 391.94L5.78975 3.94033Z' fill='%237A5230'/%3E%3C/svg%3E");
+      background-image: url(../images/myclass/img_shelf_leg.svg);
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center top;
@@ -2850,5 +2920,398 @@ body.layer-open {
   /* ── 2번째 섹션 활성 시 타이틀 즉시 숨김 ── */
   &.intro-hidden .page-intro {
     display: none;
+  }
+}
+
+// =======================================
+// 모바일 전용: 목표설정 (Figma 360px)
+// =======================================
+.myclass-mobile {
+  max-width: 360px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: rgba(255, 255, 255, 0.2);
+
+  .mobile-header {
+    position: relative;
+    height: 91px;
+    padding: 17px 0 0;
+    z-index: 10;
+
+    .mobile-header-bg {
+      position: absolute;
+      top: -9px;
+      right: 0;
+      width: 360px;
+      height: 91px;
+      background: linear-gradient(90deg, #0f3025 0%, #194335 38%, #0b221b 87.5%, #0d231c 100%);
+    }
+
+    .mobile-logo {
+      position: absolute;
+      left: 16px;
+      top: 17px;
+      width: 76px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 1;
+
+      .logo-union,
+      .logo-symbol {
+        height: 100%;
+        width: auto;
+        max-height: 20px;
+        object-fit: contain;
+      }
+    }
+
+    .mobile-header-actions {
+      position: absolute;
+      top: 4px;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      z-index: 1;
+    }
+
+    .btn-icon {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+
+      &.btn-search {
+        background: url("http://localhost:3845/assets/eb225ec7e4d2cb3066bb0df2271cc31f3322c0f8.svg") center/24px no-repeat;
+      }
+      &.btn-alert {
+        background: url("http://localhost:3845/assets/54fd7cb470e4a6f5b2ff36e86980cf9b0f813243.svg") center/24px no-repeat;
+      }
+      &.btn-menu {
+        right: 0;
+        background: url("http://localhost:3845/assets/6847ca4cf01a84703575bb37cfaf116090ebfa96.svg") center/24px no-repeat;
+      }
+      .alert-dot {
+        position: absolute;
+        top: 15px;
+        right: 12px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #f5651d;
+      }
+    }
+  }
+
+  .mobile-container {
+    position: relative;
+    min-height: calc(100vh - 91px);
+    overflow: hidden;
+    box-shadow: 0 -5px 4px 0 rgba(0, 0, 0, 0.5);
+  }
+
+  .mobile-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 360px;
+    height: 734px;
+    z-index: 0;
+
+    .mobile-bg-svg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .mobile-bg-leaves {
+    position: absolute;
+    left: 50%;
+    top: 27px;
+    transform: translateX(-50%) scaleY(-1) rotate(180deg);
+    width: 224px;
+    height: 150px;
+    mix-blend-mode: multiply;
+    z-index: 1;
+    pointer-events: none;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .mobile-goal-intro {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding-top: 43px;
+    padding-bottom: 8px;
+  }
+
+  .mobile-dday {
+    margin: 0 0 2px;
+    font-family: "Noto Sans KR", "Inter", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -1px;
+    color: #f5651d;
+  }
+
+  .mobile-goal-copy {
+    margin: 0;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    color: #3a200d;
+  }
+
+  .mobile-quarter {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #5d4a3d;
+    line-height: 1.09;
+  }
+
+  .mobile-bookshelf {
+    position: relative;
+    z-index: 2;
+    padding: 0 15px;
+    padding-bottom: 20px;
+  }
+
+  .mobile-shelf-row {
+    position: relative;
+    margin-bottom: 0;
+  }
+
+  .mobile-goal-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 12px;
+    min-height: 171px;
+  }
+
+  .mobile-goal-item {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-goal-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 171px;
+    padding: 12px 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+    text-align: center;
+    background: transparent;
+  }
+
+  .mobile-card-bars {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2px;
+    padding: 0 4px 8px;
+    z-index: 0;
+  }
+
+  .mobile-bar {
+    display: block;
+    width: 100%;
+    max-width: 24px;
+    min-width: 18px;
+    border-radius: 1px;
+    background: #b7b2a9;
+    flex: 1;
+  }
+
+  .mobile-card-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(44, 110, 190, 0) 0%, rgba(44, 110, 190, 0.4) 100%), linear-gradient(90deg, #0aa07a 0%, #0aa07a 100%);
+    opacity: 0.8;
+    z-index: 1;
+  }
+
+  .mobile-card-icon {
+    position: relative;
+    z-index: 2;
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    margin-bottom: 6px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  }
+
+  .mobile-card-title {
+    position: relative;
+    z-index: 2;
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.6px;
+    color: #fff;
+    display: block;
+  }
+
+  .mobile-shelf-board {
+    width: 100%;
+    height: 14px;
+    margin: 0 0 8px;
+    border-radius: 1px;
+    background: #483422;
+    background-image: url("../images/myclass/img_shelf.png");
+    background-repeat: repeat;
+    background-size: auto;
+    box-shadow: inset 0 -1px 1px 0 #794731, inset 0 1px 1px 0 #794731;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(39, 34, 26, 0.2);
+      border-radius: 1px;
+      pointer-events: none;
+    }
+  }
+
+  .mobile-floating-card {
+    position: absolute;
+    left: 50%;
+    bottom: 80px;
+    transform: translateX(-50%);
+    z-index: 5;
+    width: 328px;
+    padding: 7px 11px 7px 29px;
+    border-radius: 109px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8.5px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 7px 11px 0 rgba(217, 202, 190, 0.5);
+  }
+
+  .mobile-floating-card-inner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .mobile-floating-thumb {
+    flex-shrink: 0;
+    width: 117px;
+    height: 117px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .mobile-floating-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    justify-content: center;
+  }
+
+  .mobile-floating-badge {
+    display: inline-block;
+    width: 41px;
+    padding: 4px 0;
+    font-size: 11px;
+    font-weight: 700;
+    color: #252525;
+    background: #ded7cf;
+    border-radius: 4px;
+    letter-spacing: -0.44px;
+  }
+
+  .mobile-floating-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #3c3321;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .mobile-floating-meta {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    color: #747474;
+    letter-spacing: -0.48px;
+    display: flex;
+    justify-content: space-between;
+    max-width: 113px;
+  }
+
+  .mobile-pagination {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    color: #503312;
+    z-index: 2;
+
+    strong {
+      font-weight: 700;
+      color: #000;
+    }
   }
 }

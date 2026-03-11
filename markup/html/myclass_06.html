@@ -25,7 +25,8 @@
                 <div class="rank-toggle-wrap">
                   <button class="btn-rank-toggle" type="button" aria-label="순위 상세 보기" aria-expanded="false" aria-controls="rankListPopup">
                     <span class="ico-trophy" aria-hidden="true">
-                      <img src="./assets/images/myclass/ico_trophy.png" alt="트로피 아이콘" />
+                      <img class="lottie-fallback" src="./assets/images/myclass/ico_trophy.gif" alt="" aria-hidden="true" />
+                      <span class="lottie-icon lottie-trophy" data-lottie-url="./assets/images/myclass/ico_trophy.json"></span>
                     </span>
                     <span class="ico-chevron-down" aria-hidden="true"></span>
                   </button>
@@ -92,7 +93,8 @@
                 </p>
                 <a href="#bookshelf-section-communication" class="sidebar-goal-item is-active" data-index="0">
                   <span class="sidebar-goal-icon" aria-hidden="true">
-                    <img src="./assets/images/myclass/icon_communication.png" alt="효과적인 의사소통 배우기 아이콘">
+                    <img class="lottie-fallback" src="./assets/images/myclass/ico_email.gif" alt="" aria-hidden="true" />
+                    <span class="lottie-icon lottie-email" data-lottie-url="./assets/images/myclass/ico_email.json"></span>
                   </span>
                   <h3 class="sidebar-goal-title">효과적인 의사소통 배우기</h3>
                   <p class="sidebar-goal-desc">말과 글, 경청과 공감을 통해 관계를 풍성하게 만드는 과정</p>
@@ -308,7 +310,7 @@
               <aside class="scroll-section-sidebar">
                 <a href="#bookshelf-section-self" class="sidebar-goal-item" data-index="1">
                   <span class="sidebar-goal-icon" aria-hidden="true">
-                    <img src="./assets/images/myclass/icon_self.png" alt="자기이해와 강점 찾기 아이콘">
+                    <img src="./assets/images/myclass/ico_medal_completed.svg" alt="완독">
                   </span>
                   <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
                   <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
@@ -521,7 +523,7 @@
               <aside class="scroll-section-sidebar">
                 <a href="#bookshelf-section-self" class="sidebar-goal-item" data-index="1">
                   <span class="sidebar-goal-icon" aria-hidden="true">
-                    <img src="./assets/images/myclass/icon_self.png" alt="자기이해와 강점 찾기 아이콘">
+                    <img src="./assets/images/myclass/ico_medal_completed.svg" alt="완독">
                   </span>
                   <h3 class="sidebar-goal-title">자기이해와 강점 찾기</h3>
                   <p class="sidebar-goal-desc">나의 성향, 가치관, 강점 등을 탐색하고 이해하며 자기인식을 높이는 과정</p>
@@ -754,6 +756,102 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", function() {
+
+        // ====================================================
+        // Lottie 아이콘 초기화 (.lottie-icon)
+        // ====================================================
+        (function initLottieIcons() {
+          function getLottieApi() {
+            return window.lottie || window.bodymovin;
+          }
+
+          function loadLottieScript() {
+            if (typeof getLottieApi() !== 'undefined') return Promise.resolve(true);
+
+            return new Promise(function (resolve) {
+              const existing = document.querySelector('script[data-lottie-loader="true"]');
+              if (existing) {
+                existing.addEventListener('load', function () { resolve(typeof getLottieApi() !== 'undefined'); });
+                existing.addEventListener('error', function () { resolve(false); });
+                return;
+              }
+
+              const s = document.createElement('script');
+              s.src = './assets/js/lib/lottie.min.js';
+              s.async = true;
+              s.dataset.lottieLoader = 'true';
+              s.addEventListener('load', function () { resolve(typeof getLottieApi() !== 'undefined'); });
+              s.addEventListener('error', function () { resolve(false); });
+              document.head.appendChild(s);
+            });
+          }
+
+          const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const icons = document.querySelectorAll('.lottie-icon[data-lottie-url]');
+
+          function initOne(el) {
+            const url = el.getAttribute('data-lottie-url');
+            if (!url) return;
+            if (el.dataset.lottieInited === 'true') return;
+
+            const fallbackImg = el.parentElement ? el.parentElement.querySelector('.lottie-fallback') : null;
+
+            el.dataset.lottieInited = 'true';
+
+            try {
+              const api = getLottieApi();
+              if (!api || typeof api.loadAnimation !== 'function') throw new Error('Lottie API not available');
+
+              const anim = api.loadAnimation({
+                container: el,
+                renderer: 'svg',
+                loop: !reduceMotion,
+                autoplay: !reduceMotion,
+                path: url,
+                rendererSettings: { progressiveLoad: true },
+              });
+
+              if (fallbackImg) fallbackImg.style.display = 'none';
+
+              anim.addEventListener('data_failed', function () {
+                el.dataset.lottieInited = 'false';
+                if (fallbackImg) fallbackImg.style.display = '';
+              });
+            } catch (e) {
+              el.dataset.lottieInited = 'false';
+              if (fallbackImg) fallbackImg.style.display = '';
+            }
+          }
+
+          loadLottieScript().then(function (ok) {
+            if (!ok || typeof getLottieApi() === 'undefined') return;
+            icons.forEach(initOne);
+          });
+        })();
+
+        // ====================================================
+        // 순위 목록 토글
+        // ====================================================
+        const btnRankToggle = document.querySelector('.btn-rank-toggle');
+        const rankListPopup = document.getElementById('rankListPopup');
+
+        if (btnRankToggle && rankListPopup) {
+          btnRankToggle.addEventListener('click', function () {
+            const isOpen = this.classList.toggle('is-open');
+            rankListPopup.hidden = !isOpen;
+            this.setAttribute('aria-expanded', isOpen);
+          });
+
+          document.addEventListener('click', function (e) {
+            if (btnRankToggle.classList.contains('is-open') &&
+                !btnRankToggle.contains(e.target) &&
+                !rankListPopup.contains(e.target)) {
+              btnRankToggle.classList.remove('is-open');
+              rankListPopup.hidden = true;
+              btnRankToggle.setAttribute('aria-expanded', 'false');
+            }
+          });
+        }
 
         /* ── 비디오 모달 ── */
         var videos = [

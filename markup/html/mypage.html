@@ -11,7 +11,7 @@
       ========================================
       [좌측] aside.mypage-sidebar  : 프로필 + 컨텐츠 제안
       [우측] main.mypage-main     : 학습 활동 + 시청/저장/소감 목록
-    -->
+    --> 
     <div class="wrap mypage">
       @@include("_include/_header.html")
       <div class="container">
@@ -21,7 +21,7 @@
             수정 시: profile-card 내 이름, 직급, 학습레벨 등 변경
           -->
           <aside class="mypage-sidebar">
-            <h2 class=" ">마이페이지</h2>
+            <h2 class="mypage-title">마이페이지</h2>
             <div class="profile-area">
               <div class="profile-card">
                 <div class="profile-photo">
@@ -135,7 +135,7 @@
                   <div class="progress-track">
                     <div class="gauge-bar">
                       <div class="gauge-fill" style="width: 80%"></div>
-                      <p class="activity-note"><span class="ico-info">!</span> 필수 시청 : 26.01.14</p>
+                      <p class="activity-note"><span class="activity-note-num">①</span> 필수 시청: 26.01.14</p>
                     </div>
                     <div class="gauge-value">
                       <span class="gauge-start">0</span>
@@ -790,17 +790,17 @@
                 </div>
               </div>
 
-              <!-- 한줄 소감: 사용자가 작성한 짧은 리뷰 목록 -->
+              <!-- 한줄 소감: 사용자가 작성한 짧은 리뷰 목록 (Figma: 우측 열, 16개) -->
               <section class="review-section">
-                <h3 class="section-title"> 
-                  <i class="ico-comment"></i>   
-                  한줄 소감 <span class="count">6</span>
+                <h3 class="section-title">
+                  <i class="ico-pin-list" aria-hidden="true"></i>
+                  한줄 소감 <span class="count">16</span>
                 </h3>
                 <ul class="review-list">
                   <li class="review-item">
                     <div class="review-head">
                       <span class="category-tag insight">인사이트 &gt; 기술과 미래</span>
-                      <p class="review-text">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 법 무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 법</p>
+                      <p class="review-text">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 법 최재천의 관계</p>
                     </div>
                     <div class="review-comment">
                       <div class="review-user">
@@ -815,7 +815,7 @@
                       <p class="review-text">회계를 조금이라도 이해하면 인생이 달라지는 이..</p>
                     </div>
                     <div class="review-comment">
-                       <div class="review-user">
+                      <div class="review-user">
                         <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
                       </div>
                       <span class="review-comment-text"><strong>홍길동</strong> 숫자가 말하는 힘을 알게 되니, 결정도 훨씬 똑똑해졌어요.</span>
@@ -827,7 +827,7 @@
                       <p class="review-text">프로그래머는 코딩하는 사람이 아닙니다.</p>
                     </div>
                     <div class="review-comment">
-                       <div class="review-user">
+                      <div class="review-user">
                         <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
                       </div>
                       <span class="review-comment-text"><strong>홍길동</strong> 문제를 정의하고 구조화하는 사고가 진짜 실력이더라고요.</span>
@@ -839,10 +839,10 @@
                       <p class="review-text">숨겨진 가능성을 무한히 발견하는 법</p>
                     </div>
                     <div class="review-comment">
-                       <div class="review-user">
+                      <div class="review-user">
                         <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
                       </div>
-                      <span class="review-comment-text"><strong>홍길동</strong> 시야를 넓히는 법보다, 시야를 바꾸는 법을 배운 느낌이에요.</span>
+                      <span class="review-comment-text"><strong>홍길동</strong> 시야를 넓히는 법보다, 시야를 바꾸는 법을 배운 느낌이..</span>
                     </div>
                   </li>
                   <li class="review-item">
@@ -851,7 +851,7 @@
                       <p class="review-text">변화의 시대에 변화하지 않는게 리스크더라구..</p>
                     </div>
                     <div class="review-comment">
-                       <div class="review-user">
+                      <div class="review-user">
                         <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
                       </div>
                       <span class="review-comment-text"><strong>홍길동</strong> 실무에 바로 적용할 수 있는 인사이트를 얻었어요.</span>
@@ -859,14 +859,134 @@
                   </li>
                   <li class="review-item">
                     <div class="review-head">
-                      <span class="category-tag insight">인사이트 &gt; 경제와 사회</span>
+                      <span class="category-tag insight">인사이트 &gt; 기술과 미래</span>
                       <p class="review-text">프로와 아마추어를 가르는 차이점!</p>
                     </div>
                     <div class="review-comment">
-                       <div class="review-user">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 같은 일을 해도, 접근 방식이 다르면 결과가 완전히 달라..</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag leader">리더십 &gt; 관계리더십</span>
+                      <p class="review-text">회계를 조금이라도 이해하면 인생이 달라지는 이..</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 숫자가 말하는 힘을 알게 되니, 결정도 훨씬 똑똑해졌어요.</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag leader">리더십 &gt; 관계리더십</span>
+                      <p class="review-text">프로그래머는 코딩하는 사람이 아닙니다.</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 문제를 정의하고 구조화하는 사고가 진짜 실력이더라고요.</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag insight">인사이트 &gt; 경제와 사회</span>
+                      <p class="review-text">숨겨진 가능성을 무한히 발견하는 법</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 시야를 넓히는 법보다, 시야를 바꾸는 법을 배운 느낌이..</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag insight">인사이트 &gt; 경제와 사회</span>
+                      <p class="review-text">변화의 시대에 변화하지 않는게 리스크더라구..</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 실무에 바로 적용할 수 있는 인사이트를 얻었어요.</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag insight">인사이트 &gt; 기술과 미래</span>
+                      <p class="review-text">프로와 아마추어를 가르는 차이점!</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
                         <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
                       </div>
                       <span class="review-comment-text"><strong>홍길동</strong> 같은 일을 해도, 접근 방식이 다르면 결과가 완전히 달라지네요.</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag insight">인사이트 &gt; 기술과 미래</span>
+                      <p class="review-text">무슨 말을 해야 할지 모르겠어요, 스몰토크 잘하는 법</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 사소한 말이 관계를 살린다는 걸 느꼈습니다.</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag leader">리더십 &gt; 관계리더십</span>
+                      <p class="review-text">한국에서 가장 유명한 회계사의 조언</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 숫자가 말하는 힘을 알게 되니, 결정도 훨씬 똑똑해졌어요.</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag leader">리더십</span>
+                      <p class="review-text">창의적 캠페인의 시작</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 문제를 정의하고 구조화하는 사고가 진짜 실력이더라고요.</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag insight">인사이트</span>
+                      <p class="review-text">톤은 인격체다 | 클래스-김승호의 《톤의 속성》</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 시야를 넓히는 법보다, 시야를 바꾸는 법을 배운 느낌이에요.</span>
+                    </div>
+                  </li>
+                  <li class="review-item">
+                    <div class="review-head">
+                      <span class="category-tag insight">인사이트 &gt; 경제와 사회</span>
+                      <p class="review-text">변화의 시대에</p>
+                    </div>
+                    <div class="review-comment">
+                      <div class="review-user">
+                        <img src="./assets/images/insight/profile.png" alt="홍길동 프로필">
+                      </div>
+                      <span class="review-comment-text"><strong>홍길동</strong> 실무에 바로 적용할 수 있는 인사이트를 얻었어요.</span>
                     </div>
                   </li>
                 </ul>

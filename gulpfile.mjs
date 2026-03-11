@@ -50,7 +50,7 @@ const paths = {
   },
   jscopy: { src: "./markup/assets/js/lib/**/*", dest: "./dist/assets/js/lib" },
   img: {
-    src: "./markup/assets/images/**/*.{png,jpg,jpeg,svg}",
+    src: "./markup/assets/images/**/*.{png,jpg,jpeg,svg,gif,json}",
     dest: "./dist/assets/images",
   },
   fonts: { src: "./markup/assets/fonts/**/*", dest: "./dist/assets/fonts" },

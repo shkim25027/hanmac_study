@@ -52,7 +52,7 @@
 
   .mypage-title {
     margin: 0 0 24px;
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--text-primary);
   }
@@ -68,8 +68,8 @@
   }
 
   .profile-photo {
-    width: 144px;
-    height: 144px;
+    width: 132px;
+    height: 132px;
     margin: 0 auto 18px;
     border-radius: 50%;
     overflow: hidden;
@@ -361,7 +361,7 @@
   .activity-section {
     flex-shrink: 0;
     position: relative;
-    margin-bottom: 48px;
+    margin-bottom: 28px;
     padding: 0 18px 0 32px;
     .section-title{
       margin-bottom: 8px;
@@ -549,14 +549,11 @@
     gap: 4px;
     width: 100%;
     justify-content: flex-end;
-    .ico-info {
-       height: 12px;
-       aspect-ratio: 11/11;
-       border-radius: 50%;
-       border: 1px solid #fff;
-       text-align: center;
-       font-size: 8px;
-       line-height: 11px;
+
+    .activity-note-num {
+      flex-shrink: 0;
+      font-size: 11px;
+      line-height: 1;
     }
   }
 
@@ -677,40 +674,39 @@
   }
 
   // ---------------------------------------
-  // 콘텐츠 탭
+  // 콘텐츠 탭 (그리드 열 배치는 .mylist-area 내부에서 지정)
   // ---------------------------------------
   .content-tab-wrap {
     display: flex;
     flex-direction: column;
     min-height: 0;
     min-width: 0;
-    grid-column: 1 / 3;
   }
 
   .content-tabs {
     display: flex;
-    gap: 0;
-    margin-bottom: 16px;
+    gap: 2px;
+    margin-bottom: 0;
     flex-shrink: 0;
-    
+    border-bottom: 1px solid #CF6800;
+    width: 100%;
   }
 
   .content-tab {
     position: relative;
     padding: 12px 20px;
-    border: none;
-    background: transparent;
-    font-size: 15px;
+    border: 0;
+    background: rgba(227, 220, 207, 0.34);
+    font-size: 16px;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: #121212;
     cursor: pointer;
     transition: all 0.2s ease;
     @include flex(row, center, center);
     gap: 8px;
-    border-bottom: 1px solid #CF6800;
-    border-radius: 8px 8px 0 0;
-    background: rgb(227, 220, 207,0.34);
+    border-radius: 6px 6px 0 0;
     width: 100%;
+
     .ico-play,
     .ico-check,
     .ico-bookmark {
@@ -730,11 +726,22 @@
     }
 
     &.active {
-      color: var(--text-primary);
-      font-weight: 700;
-      border:1px solid #CF6800;
-      background: linear-gradient(180deg, #F7E8D7 0%, rgb(247, 232, 215, 0) 100%);
+      border-left: 1px solid #cf6800;
+      border-right: 1px solid #cf6800;
+      border-top: 1px solid #cf6800;
       border-bottom: none;
+      background: linear-gradient(180deg, #F7E8D7 0%, rgba(247, 232, 215, 0.00) 100%);
+      z-index: 2;
+
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: #F9F6F0; 
+      }
     }
   }
 
@@ -744,6 +751,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    margin-top: 16px;
   }
 
   .content-panel {
@@ -758,21 +766,55 @@
   }
 
   // ---------------------------------------
-  // 콘텐츠 카드 그리드
+  // 콘텐츠 탭 + 한줄 소감 2열 레이아웃 (Figma: 좌 콘텐츠 그리드, 우 한줄 소감)
   // ---------------------------------------
   .mylist-area {
     flex: 1;
+    min-width: 0;
     min-height: 0;
-    padding-left: 46px;
+    padding-left: 32px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    grid-template-columns: 1fr 392px;
+    gap: 0;
+    align-items: stretch;
 
-    // 그리드 아이템이 내용 때문에 늘어나지 않도록
-    .content-section,
-    .review-section {
+    .content-tab-wrap {
+      grid-column: 1;
       min-width: 0;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .review-section {
+      grid-column: 2;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .content-section {
+      min-width: 0;
+      min-height: 0;
+    }
+
+    /* 1024px 미만에서만 1열, 그 이상은 좌|우 2열 유지 */
+    @include mq("tablet-wide", max) {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr auto;
+
+      .content-tab-wrap {
+        grid-column: 1;
+        border-right: none;
+        background: none;
+      }
+
+      .review-section {
+        grid-column: 1;
+        padding-left: 0;
+        border-left: none;
+        max-height: 400px;
+      }
     }
   }
 
@@ -937,17 +979,25 @@
   @include gauge-bar();
 
   // ---------------------------------------
-  // 한줄 소감
+  // 한줄 소감 (Figma: 우측 열, 카드 + 카테고리/제목/핀/소감 텍스트)
   // ---------------------------------------
   .review-section {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    margin-bottom: 24px;
+    padding-left: 18px;
     overflow: hidden;
-
     .section-title {
       flex-shrink: 0;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+
+    .section-title .ico-pin-list {
+      width: 21px;
+      height: 21px;
+      flex-shrink: 0;
+      @include svgIconMask("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='21' height='12' viewBox='0 0 21 12' fill='none'%3E%3Cg opacity='0.4' clip-path='url(%23clip0_3959_17680)'%3E%3Cpath d='M18.5161 2.4706L16.2898 0.408153C15.9992 0.155313 15.6185 0.0102366 15.22 0.00052145C14.8215 -0.0091937 14.433 0.11713 14.1285 0.355463L6.81592 7.12991C6.55329 7.37527 6.38977 7.69686 6.35279 8.0407L6.00341 11.1795C5.99247 11.2898 6.00791 11.4009 6.04864 11.505C6.08937 11.6091 6.15438 11.7036 6.23904 11.7817C6.31496 11.8515 6.405 11.9067 6.504 11.9441C6.60299 11.9816 6.70899 12.0006 6.81592 12H6.88905L10.2772 11.714C10.6484 11.6797 10.9955 11.5282 11.2603 11.2849L18.5729 4.51046C18.8568 4.23268 19.0101 3.862 18.9995 3.47964C18.9888 3.09728 18.815 2.73443 18.5161 2.4706ZM10.131 10.2085L7.69343 10.4193L7.91281 8.16113L12.5035 3.96098L14.6973 5.99331L10.131 10.2085ZM15.7535 4.98467L13.576 2.96739L15.1604 1.46196L17.3785 3.51687L15.7535 4.98467Z' fill='black'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_3959_17680'%3E%3Crect width='21' height='12' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E", currentColor, 21px);
     }
   }
 
@@ -959,49 +1009,48 @@
     padding: 0 4px 4px 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     overflow-y: auto;
     @include scrollbar-mypage();
   }
 
   .review-item {
     flex-shrink: 0;
-    padding: 10px 14px;
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 
     .review-head {
       @include flex(row, center, flex-start);
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin-bottom: 10px;
       min-width: 0;
       overflow: hidden;
     }
 
     .category-tag {
       flex-shrink: 0;
-      padding: 2px 8px 2px 8px;
+      padding: 2px 8px;
       border-radius: 4px;
       font-size: 11px;
       font-weight: 500;
       white-space: nowrap;
-      color: rgba(0, 0, 0, 0.5);
+      color: rgba(0, 0, 0, 0.6);
       margin-bottom: 0;
       background: rgba(0, 0, 0, 0.06);
 
-      // 한줄 소감 전용 컬러 (pill)
       &.insight {
         background: #DAE6E5;
-        opacity: 1;
+        color: #000;
       }
       &.leader {
         background: #DED7CF;
-        opacity: 1;
+        color: #000;
       }
       &.biz {
         background: #DED7CF;
-        opacity: 1;
+        color: #000;
       }
     }
   }
@@ -1011,8 +1060,8 @@
     min-width: 0;
     margin: 0;
     font-size: 12px;
-    line-height: 1.5;
-    color: rgba(0, 0, 0, 0.30);
+    line-height: 1.4;
+    color: rgba(0, 0, 0, 0.5);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1023,14 +1072,15 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 400;
+    color: #000;
+    line-height: 1.4;
 
     .review-comment-text {
       min-width: 0;
       flex: 1;
-      @include ellipsis(1);
+      @include ellipsis(2);
     }
 
     .review-user {
@@ -1038,12 +1088,19 @@
       width: 20px;
       height: 20px;
       border-radius: 50%;
+      align-self: flex-start;
       overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
 
     strong {
-      color: var(--text-primary);
-      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 700;
     }
   }
 }
