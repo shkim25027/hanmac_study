@@ -77,16 +77,12 @@
     .hero-banner {
       max-width: 1442px;
       width: 100%;
-      height: 610px;
+      height: auto;
       padding-bottom: 60px;
       margin: 0 auto;
       position: relative;
 
       @include mq(tablet-wide, max) {
-        max-width: 360px;
-        height: auto;
-        margin-left: auto;
-        margin-right: auto;
         padding-bottom: 33px;
       }
     }
@@ -101,6 +97,17 @@
 
       .swiper-slide {
         height: 100%;
+      }
+      .banner-img {
+        max-width: 1442px;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        img {
+          width: 100%;
+          height: auto;
+          object-fit: cover;
+        }
       }
     }
 
@@ -221,26 +228,20 @@
     // 게이지바형 페이지네이션 (인사이트와 동일: 불릿 + 활성 시 채워지는 게이지)
     .hero-pagination {
       position: absolute;
-      bottom: 24px;
       left: 50%;
+      bottom: 84px;
       transform: translateX(-50%);
       z-index: 2;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
-
-      &.swiper-pagination {
-        bottom: 24px;
-        left: 50%;
-        width: auto;
-        transform: translateX(-50%);
-      }
-
+      width: auto;
       .swiper-pagination-bullet {
         width: 6px;
         height: 6px;
         border-radius: 999px;
+        opacity: 1;
         background: rgba(126, 90, 15, 0.3);
         margin: 0;
         transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
@@ -336,6 +337,7 @@
     }
     .tab-text {
       display: inline;
+      color: #555;
     }
 
     &:focus-visible {
@@ -358,6 +360,10 @@
         width: 100%;
         height: 1px;
         background: #fff;
+      }
+      .tab-text {
+         color: #121212;
+         font-weight: 600;
       }
     }
 
@@ -413,21 +419,11 @@
   }
 
   // 반응형: 2열 (태블릿)
-  @media (max-width: 1200px) {
+  @include mq(desktop, max) {
     .video-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       column-gap: 12px;
       row-gap: 32px;
-    }
-    .leadership-tabs-list {
-      row-gap: 8px;
-      border-bottom: none;
-    }
-    .leadership-tab {
-      border-radius: 8px;
-      &.is-active {
-        border-bottom: 1px solid #cf6800;
-      }
     }
   }
 
@@ -452,21 +448,21 @@
       letter-spacing: -0.4px;
       flex-direction: column;
       gap: 4px;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -1px;
       @include mq(tablet-small, max) {
         font-size: 12px;
       }
 
       .tab-icon {
         display: block;
-        width: 24px;
-        height: 24px;
+        max-width: 48px;
+        width: 55.1724%;
+        min-width: 32px;
+        min-height: 32px;
+        aspect-ratio: 1 / 1;
         img {
           width: 100%;
           height: 100%;
           object-fit: contain;
-          opacity: 0.5;
         }
       }
       &.is-active {
@@ -474,9 +470,16 @@
         border-left: none;
         border-right: none;
         border-top: none;
-        border-bottom-color: #cf6800;
-        .tab-icon img {
-          opacity: 1;
+        background: none;
+        &::after{
+          content: "";
+          position: absolute;
+          bottom: 0px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 79.310344%;
+          height: 1px;
+          background: #FF8922;
         }
       }
     }

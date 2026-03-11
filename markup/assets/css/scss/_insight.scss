@@ -12,53 +12,331 @@
     background-color: #fff;
   }
 
-  // [공통] 페이지 헤더
-  .page-header {
-    @include page-header;
-  }
-
-  // [공통] 브레드크럼
-  .breadcrumb {
-    @include breadcrumb;
-  }
-
-  // 인사이트 전용: inner 레이아웃
-  .insight-inner,
-  .editor-pick-inner {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+  // [공통] inner (leadership-inner 패턴)
+  .insight-inner {
     max-width: 1600px;
     margin: 0 auto;
-  }
-
-  .insight-inner {
-    padding: 24px 40px 48px;
-  }
-
-  // ---------------------------------------
-  // Editor's Pick
-  // ---------------------------------------
-  .editor-pick {
-    position: relative;
-    margin-bottom: 48px;
-    overflow: hidden;
-    &::before {
-      content: " ";
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 100%;
-      max-width: 1920px;
-      aspect-ratio: 1920 / 544;
-      background: linear-gradient(to bottom right, rgba(251, 215, 139, 0.30) 0%, #FFE5AC 27%, rgba(251, 215, 139, 0.00) 50%) bottom right / 50% 50% no-repeat, linear-gradient(to bottom left, rgba(251, 215, 139, 0.30) 0%, #FFE5AC 27%, rgba(251, 215, 139, 0.00) 50%) bottom left / 50% 50% no-repeat, linear-gradient(to top left, rgba(251, 215, 139, 0.30) 0%, #FFE5AC 27%, rgba(251, 215, 139, 0.00) 50%) top left / 50% 50% no-repeat, linear-gradient(to top right, rgba(251, 215, 139, 0.30) 0%, #FFE5AC 27%, rgba(251, 215, 139, 0.00) 50%) top right / 50% 50% no-repeat;
-      opacity: 0.56;
-      translate: -50% -50%;
+    padding: 0 40px;
+    @include mq(desktop-wide, max) {
+      padding: 0 24px;
+    }
+    @include mq(tablet-wide, max) {
+      padding: 0 16px;
     }
   }
-  .editor-pick-swiper{
+
+  // [공통] 브레드크럼 (리더십과 동일: 우측 정렬)
+  .breadcrumb {
+    @include breadcrumb;
+    justify-content: flex-end;
+  }
+
+  // ---------------------------------------
+  // Hero (leadership-hero 패턴 적용)
+  // ---------------------------------------
+  .insight-hero {
+    position: relative;
+    padding: 20px 0 0;
+    background: #fff;
     overflow: hidden;
+    
+
+
+    .hero-top {
+      position: relative;
+      padding-top: 8px;
+
+      .breadcrumb {
+        margin: 0;
+      }
+
+      @include mq(tablet-wide, max) {
+        &.hero-breadcrumb {
+          display: none;
+        }
+      }
+    }
+
+    // 히어로 영역 inner 모바일 패딩 (리더십과 동일: 0)
+    @include mq(tablet-wide, max) {
+      .insight-inner.hero-breadcrumb {
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+
+    // 히어로 배너 (리더십과 동일)
+    .hero-banner {
+      max-width: 1442px;
+      width: 100%;
+      height: auto;
+      padding-bottom: 60px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      &::before {
+        content: "";
+        position: absolute;
+        width: 1920px;
+        height: 544px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        opacity: 0.56;
+        background: linear-gradient(to bottom right, rgba(251, 215, 139, 0.30) 0%, #FFE5AC 27%, rgba(251, 215, 139, 0.00) 50%) bottom right / 50% 50% no-repeat, linear-gradient(to bottom left, rgba(251, 215, 139, 0.30) 0%, #FFE5AC 27%, rgba(251, 215, 139, 0.00) 50%) bottom left / 50% 50% no-repeat, linear-gradient(to top left, rgba(251, 215, 139, 0.30) 0%, #FFE5AC 27%, rgba(251, 215, 139, 0.00) 50%) top left / 50% 50% no-repeat, linear-gradient(to top right, rgba(251, 215, 139, 0.30) 0%, #FFE5AC 27%, rgba(251, 215, 139, 0.00) 50%) top right / 50% 50% no-repeat;
+        z-index: 0;
+      }
+
+      @include mq(tablet-wide, max) {
+        padding-bottom: 33px;
+        &::before {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+    .hero-swiper {
+      overflow: hidden;
+      height: 100%;
+
+      .swiper-wrapper {
+        align-items: stretch;
+      }
+
+      .swiper-slide {
+        height: 100%;
+      }
+
+      .banner-img {
+        max-width: 1442px;
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        img {
+          width: 100%;
+          height: auto;
+          object-fit: cover;
+        }
+      }
+    }
+
+    // 게이지바형 페이지네이션 (리더십과 동일)
+    .hero-pagination {
+      position: absolute;
+      left: 50%;
+      bottom: 30px;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      width: auto;
+
+      .swiper-pagination-bullet {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        opacity: 1;
+        background: rgba(126, 90, 15, 0.3);
+        margin: 0;
+        transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
+
+        &.swiper-pagination-bullet-active {
+          width: 62px;
+          height: 6px;
+          border-radius: 3px;
+          background: rgba(126, 90, 15, 0.3);
+          position: relative;
+          overflow: hidden;
+
+          &::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: #ff8922;
+            border-radius: 3px;
+            animation: fillGauge 3.9s linear forwards;
+          }
+        }
+      }
+
+      @include mq(tablet-wide, max) {
+        bottom: 12px;
+        gap: 6px;
+
+        .swiper-pagination-bullet {
+          width: 5px;
+          height: 5px;
+
+          &.swiper-pagination-bullet-active {
+            width: 40px;
+            height: 4px;
+
+            &::after {
+              animation-duration: 3.9s;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 인사이트에서 탭 영역용 inner (leadership-inner와 동일 너비)
+  .leadership-inner {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 40px;
+    @include mq(desktop-wide, max) {
+      padding: 0 24px;
+    }
+    @include mq(tablet-wide, max) {
+      padding: 0 16px;
+    }
+  }
+
+  // --------------------------
+  // Tabs (리더십과 동일)
+  // --------------------------
+  .leadership-tabs {
+    position: relative;
+    @include mq(tablet-wide, min) {
+      margin-top: 30px;
+    }
+    @include mq(tablet-wide, max) {
+      .leadership-inner {
+        padding: 0;
+        overflow: visible;
+      }
+    }
+  }
+
+  .leadership-tabs-list {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr); // 인사이트 6개 탭
+    gap: 2px;
+    align-items: end;
+    border-bottom: 1px solid rgba(207, 104, 0, 0.4);
+    width: 100%;
+  }
+
+  .leadership-tab {
+    height: 58px;
+    border: 0;
+    background: rgba(227, 220, 207, 0.34);
+    color: #121212;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.9px;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    .tab-icon {
+      display: none;
+    }
+
+    .tab-text {
+      display: inline;
+      color: #555;
+    }
+
+    &:focus-visible {
+      outline: 2px solid rgba(207, 104, 0, 0.55);
+      outline-offset: 2px;
+    }
+
+    &.is-active {
+      position: relative;
+      background: #fefefe;
+      border-left: 1px solid #cf6800;
+      border-right: 1px solid #cf6800;
+      border-top: 1px solid #cf6800;
+      z-index: 2;
+      &::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: #fff;
+      }
+      .tab-text {
+        color: #121212;
+        font-weight: 600;
+      }
+    }
+  }
+
+  // 모바일: 탭 가로 스크롤 + 아이콘 (리더십과 동일)
+  @include mq(tablet-wide, max) {
+    .leadership-tabs-list {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 0 8px 0;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .leadership-tab {
+      flex: 0 0 auto;
+      height: auto;
+      min-height: 48px;
+      padding: 10px 4px 12px;
+      border-radius: 0;
+      background: transparent;
+      border: none;
+      font-size: 14px;
+      letter-spacing: -0.4px;
+      flex-direction: column;
+      gap: 4px;
+      @include mq(tablet-small, max) {
+        font-size: 12px;
+      }
+
+      .tab-icon {
+        display: block;
+        max-width: 48px;
+        width: 55.1724%;
+        min-width: 32px;
+        min-height: 32px;
+        aspect-ratio: 1 / 1;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+      &.is-active {
+        color: #121212;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        background: none;
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 79.310344%;
+          height: 1px;
+          background: #ff8922;
+        }
+      }
+    }
   }
 
   .swiper-slide {
@@ -374,9 +652,15 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
   }
 }
   // ---------------------------------------
-  // Video List
+  // Video List (leadership-video-list 패턴)
   // ---------------------------------------
   .insight-video-list {
+    padding: 36px 0 56px;
+
+    @include mq(tablet-wide, max) {
+      padding: 24px 0 32px;
+    }
+
     .list-head {
       @include flex(row, center, space-between);
       margin-bottom: 20px;
@@ -385,19 +669,14 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
     }
 
     .total {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 400;
-      color: var(--text-secondary);
-      @include mq(tablet-wide, max) {
-        font-size: 14px;
-      }
+      color: rgba(0, 0, 0, 0.4);
       em {
         font-style: normal;
         font-weight: 700;
         font-size: 20px;
-        @include mq(tablet-wide, max) {
-          font-size: 16px;
-        }
+        color: rgba(0, 0, 0, 0.85);
       }
     }
 
@@ -445,39 +724,28 @@ $svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2
   }
 }
 
-// 반응형: 중간 이하에서 2열
-@media (max-width: 1200px) {
+// 반응형: 리더십과 동일 (태블릿 3열, 모바일 2열)
+@include mq(desktop, max) {
   .insight .video-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     column-gap: 12px;
     row-gap: 32px;
   }
 }
 
-// 반응형: 작은 화면에서 1열, 에디터픽 세로 배치
-@media (max-width: 768px) {
+@include mq(tablet-small, max) {
   .insight {
-    .insight-inner {
-      padding: 16px 16px 32px;
-    }
-
-    .pick-body {
-      flex-direction: column-reverse;
-    }
-
-    .pick-profile {
-      order: -1; // 모바일에서 프로필을 맨 위에 표시
-    }
-
-    .pick-desc {
-      flex: none;
-      width: 100%;
-    }
-
-
-
     .video-grid {
-      //grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 10px;
+      row-gap: 20px;
+    }
+    .video-item .item-title {
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .video-item .item-desc {
+      font-size: 12px;
     }
   }
 }

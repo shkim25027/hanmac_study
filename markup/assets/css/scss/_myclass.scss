@@ -36,10 +36,13 @@ $card-colors: (
 .myclass {
 
   // -------
-  // container 배경
+  // container 배경 (Figma: 마이클래스 > 목표설정)
   // -------
   .container {
-    background: linear-gradient(180deg, #F4F1EB 0%, #EDE5D8 100%);
+    background: #ece3d2;
+    background: linear-gradient(180deg, #f9f6f0 0%, #e6ddcc 100%);
+    border-top: 2px solid #f3dba8;
+    box-shadow: 0 -2px 3px 0 rgba(0, 0, 0, 0.05);
   }
 
   // -------
@@ -348,6 +351,72 @@ $card-colors: (
     padding: 0;
   }
 
+  // 목표설정 페이지 인트로: 전체 너비 + 중앙 정렬 (Figma 마이클래스)
+  .page-intro--goal {
+    width: 100%;
+    text-align: center;
+  }
+
+  // 목표설정 페이지 전용 타이틀 (Figma: 중앙 정렬, 2026년도 3분기 + 오렌지 강조)
+  .page-title--goal {
+    text-align: center;
+    width: 100%;
+    max-width: 1004px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: clamp(24px, 1.666vw, 32px);
+      font-weight: 500;
+      line-height: 1.65;
+      letter-spacing: -0.05em;
+      color: #000;
+
+      em {
+        font-style: normal;
+        font-weight: 500;
+      }
+      strong {
+        font-weight: 700;
+      }
+    }
+
+    p {
+      margin: 0;
+      font-size: clamp(20px, 2.083vw, 40px);
+      font-weight: 400;
+      line-height: 1.22;
+      letter-spacing: -0.05em;
+      color: #000;
+
+      em {
+        font-style: normal;
+        font-weight: 700;
+        color: #f5651d;
+      }
+    }
+
+    .page-title-deadline {
+      margin: 0;
+      font-size: clamp(20px, 2.083vw, 40px);
+      font-weight: 400;
+      line-height: 1.22;
+      letter-spacing: -0.05em;
+      color: #000;
+    }
+
+    .deadline-highlight {
+      font-weight: 700;
+      color: #f5651d;
+
+      small {
+        font-size: 0.8em;
+        font-weight: 400;
+      }
+    }
+  }
+
   .intro-state {
     @include flex(column, flex-end, flex-end);
     gap: 4px;
@@ -491,8 +560,6 @@ $card-colors: (
   // -------
   .goal-item-completed-preview,
   .goal-item--selected-preview {
-    background-image: none;
-
     .shelf-plank {
       height: 10px !important;
     }
@@ -573,9 +640,10 @@ $card-colors: (
       left: 50%;
       width: auto;
       height: auto;
-      font-size: 12px;
+      font-size: 16.808px;
       font-weight: 900;
       color: #9F6400;
+      letter-spacing: -0.02em;
       translate: -50% -50%;
     }
   }
@@ -660,7 +728,7 @@ $card-colors: (
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    text-align: left;
+    text-align: center;
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
    // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -701,6 +769,7 @@ $card-colors: (
     height: 100%;
     @include flex(column, flex-start, center);
     gap: 12px;
+    align-items: center;
   }
 
   // 선택 후: 완료 프리뷰 형태로 보여줄 영역 (myclass_05)
@@ -756,7 +825,7 @@ $card-colors: (
   }
 
   .card-body {
-    @include flex(column, flex-start, flex-start);
+    @include flex(column, flex-start, center);
     gap: 8px;
     @include mq(tablet-wide, max) {
       display: none;
@@ -767,17 +836,20 @@ $card-colors: (
     display: block;
     font-size: clamp(18px, 1.35416vw, 26px);
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
     color: #fff;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    text-align: center;
   }
 
   .card-desc {
     margin: 0;
     font-size: clamp(14px, 1.0416vw, 20px);
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.85);
-    text-align: center; 
+    letter-spacing: -0.02em;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: center;
     word-break: keep-all;
     text-wrap: balance;
   }
@@ -809,7 +881,8 @@ $card-colors: (
     margin-top: -2px;
     width: 100%;
     height: 20px;
-    background: url("../images/myclass/img_shelf.png") ;
+    background-color: #6c3d20; /* Figma 목표설정 선반 */
+    background-image: url("../images/myclass/img_shelf.png");
     background-position: center bottom;
     background-repeat: repeat;
     background-size: auto;
