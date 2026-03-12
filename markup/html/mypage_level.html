@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    @@include("_include/_head.html")
+    <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
+  </head>
+  <body>
+    <!--
+      ========================================
+      마이페이지 레이아웃 구조
+      ========================================
+      [좌측] aside.mypage-sidebar  : 프로필 + 컨텐츠 제안
+      [우측] main.mypage-main     : 학습 활동 + 시청/저장/소감 목록
+    --> 
+    <div class="wrap mypage">
+      @@include("_include/_header.html")
+      <div class="container">
+        <div class="mypage-inner">
+
+          <aside style=" padding:60px 20px; background: #fff; display: flex; gap:12px; flex-direction: column;">
+            <div class="badge-level ">
+                  <span class="badge-level-title">학습레벨</span>
+                  <span class="badge-level-value"> 
+                    <i class="ico-level">
+                      <img src="./assets/images/mypage/ico_level_rookie.svg" alt="학습레벨" />
+                    </i>
+                    Rookie
+                  </span>
+                  <span class="ico-info-wrap">
+                    <i class="ico-info" aria-describedby="level-tooltip"></i>
+                    <span class="ico-info-tooltip" role="tooltip" id="level-tooltip">
+                      <span class="ico-info-tooltip-desc">누적된 학습 시간에 따라<br>4단계의 레벨이<br>자동 설정됩니다.</span>
+                      <ul class="ico-info-tooltip-list">
+                        <li><em>Master</em><span>40시간 이상</span></li>
+                        <li><em>Elite</em><span>20 ~ 40시간</span></li>
+                        <li><em>Learner</em><span>8 ~ 20시간</span></li>
+                        <li><em>Rookie</em><span>0 ~ 8시간</span></li>
+                      </ul>
+                    </span>
+                  </span>
+                </div>
+
+                 <div class="badge-level ">
+                  <span class="badge-level-title">학습레벨</span>
+                  <span class="badge-level-value"> 
+                    <i class="ico-level">
+                      <img src="./assets/images/mypage/ico_level_learner.svg" alt="학습레벨" />
+                    </i>
+                    Learner
+                  </span>
+                  <span class="ico-info-wrap">
+                    <i class="ico-info" aria-describedby="level-tooltip"></i>
+                    <span class="ico-info-tooltip" role="tooltip" id="level-tooltip">
+                      <span class="ico-info-tooltip-desc">누적된 학습 시간에 따라<br>4단계의 레벨이<br>자동 설정됩니다.</span>
+                      <ul class="ico-info-tooltip-list">
+                        <li><em>Master</em><span>40시간 이상</span></li>
+                        <li><em>Elite</em><span>20 ~ 40시간</span></li>
+                        <li><em>Learner</em><span>8 ~ 20시간</span></li>
+                        <li><em>Rookie</em><span>0 ~ 8시간</span></li>
+                      </ul>
+                    </span>
+                  </span>
+                </div>
+
+                 <div class="badge-level ">
+                  <span class="badge-level-title">학습레벨</span>
+                  <span class="badge-level-value"> 
+                    <i class="ico-level">
+                      <img src="./assets/images/mypage/ico_level_elite.svg" alt="학습레벨" />
+                    </i>
+                    Elite
+                  </span>
+                  <span class="ico-info-wrap">
+                    <i class="ico-info" aria-describedby="level-tooltip"></i>
+                    <span class="ico-info-tooltip" role="tooltip" id="level-tooltip">
+                      <span class="ico-info-tooltip-desc">누적된 학습 시간에 따라<br>4단계의 레벨이<br>자동 설정됩니다.</span>
+                      <ul class="ico-info-tooltip-list">
+                        <li><em>Master</em><span>40시간 이상</span></li>
+                        <li><em>Elite</em><span>20 ~ 40시간</span></li>
+                        <li><em>Learner</em><span>8 ~ 20시간</span></li>
+                        <li><em>Rookie</em><span>0 ~ 8시간</span></li>
+                      </ul>
+                    </span>
+                  </span>
+                </div>
+
+                 <div class="badge-level master">
+                  <span class="badge-level-title">학습레벨</span>
+                  <span class="badge-level-value"> 
+                    <i class="ico-level">
+                      <img src="./assets/images/mypage/ico_level_master.svg" alt="학습레벨" />
+                    </i>
+                    Master
+                  </span>
+                  <span class="ico-info-wrap">
+                    <i class="ico-info" aria-describedby="level-tooltip"></i>
+                    <span class="ico-info-tooltip" role="tooltip" id="level-tooltip">
+                      <span class="ico-info-tooltip-desc">누적된 학습 시간에 따라<br>4단계의 레벨이<br>자동 설정됩니다.</span>
+                      <ul class="ico-info-tooltip-list">
+                        <li><em>Master</em><span>40시간 이상</span></li>
+                        <li><em>Elite</em><span>20 ~ 40시간</span></li>
+                        <li><em>Learner</em><span>8 ~ 20시간</span></li>
+                        <li><em>Rookie</em><span>0 ~ 8시간</span></li>
+                      </ul>
+                    </span>
+                  </span>
+                </div>
+                
+          </aside>
+
+        </div>
+      </div>
+      <!-- // container -->
+    </div>
+    <!-- 마이페이지 전용 스크립트: 제안 폼 버튼 활성화, 제안현황 아코디언 -->
+    <script src="./assets/js/mypage.js" defer></script>
+  </body>
+</html>
