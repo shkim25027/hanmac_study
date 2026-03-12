@@ -8,10 +8,15 @@
     <!--// header -->
     <nav class="nav">@@include("_include/_nav.html")</nav>
     <div class="item-area">
+      <!-- 모바일에서만 보이는 검색 아이콘 버튼 -->
+      <div class="item-box">
+        <button class="btn-search" type="button" title="검색 열기"></button>
+      </div>
+      <!-- 데스크톱 기본 검색 인풋 -->
       <div class="input-group">
         <input type="text" value="" placeholder="검색" />
         <i class="ico-search"></i>
-        <button class="btn-clear"></button>
+        <button class="btn-clear" type="button"></button>
         <div class="search-suggestions">
           <ul class="search-suggestions-list">
             <li>
@@ -142,6 +147,39 @@
           </li>
         </ul>
 
+      </div>
+    </div>
+
+    <!-- 모바일 검색 오버레이 -->
+    <div class="mo-search-layer" aria-hidden="true">
+      <div class="mo-search-inner">
+        <div class="mo-search-header">
+          <span class="mo-search-title">최근 검색어</span>
+          <button type="button" class="btn-close-search" aria-label="검색 닫기"></button>
+        </div>
+        <div class="mo-search-body">
+          <div class="mo-search-input">
+            <div class="input-group">
+              <input type="text" value="" placeholder="검색어를 입력해주세요" />
+              <i class="ico-search"></i>
+              <button class="btn-clear" type="button"></button>
+            </div>
+          </div>
+          <div class="mo-search-history">
+            <ul class="search-suggestions-list">
+              <li>
+                <i class="ico-history" aria-hidden="true"></i>
+                <span>피그마 AI</span>
+                <button type="button" class="btn-remove" title="삭제"></button>
+              </li>
+              <li>
+                <i class="ico-history" aria-hidden="true"></i>
+                <span>UXUI</span>
+                <button type="button" class="btn-remove" title="삭제"></button>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

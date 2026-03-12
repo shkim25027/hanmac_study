@@ -33,7 +33,7 @@
                 <p class="profile-role">바론컨설턴트</p>
                 <div class="badge-level">
                   <span class="badge-level-title">학습레벨</span>
-                  <span class="badge-level-value"> 
+                  <span class="badge-level-value">
                     <i class="ico-level">
                       <img src="./assets/images/ico/ico_level_master.svg" alt="학습레벨" />
                     </i>
@@ -41,6 +41,10 @@
                   </span>
                   <i class="ico-info" title="레벨 안내"></i>
                 </div>
+                <!-- MOBILE: 총 학습시간 버튼 (모바일에서만 표시, 클릭 시 활동 모달 오픈) -->
+                <button class="mobile-total-time-btn" type="button" id="mobileActivityBtn" aria-label="총 학습시간 상세보기">
+                  총 학습시간 <strong>340</strong>분 <span class="mobile-total-time-chevron" aria-hidden="true"></span>
+                </button>
               </div>
               <section class="suggest-section">
                 <h3 class="suggest-title">컨텐츠 제안하기</h3>
@@ -215,6 +219,18 @@
             </section>
 
             <div class="mylist-area">
+              <!-- MOBILE: 2탭 네비게이션 (시청완료 <> 슬라이더 + 한줄소감) -->
+              <div class="mobile-list-tab-header">
+                <button class="mobile-list-tab active" type="button" id="mobileTabContent" data-mobile-tab="content" aria-selected="true">
+                  <span class="mobile-tab-arrow mobile-tab-prev" aria-label="이전" aria-hidden="true">&#8249;</span>
+                  <span class="mobile-tab-label">시청완료</span>
+                  <span class="mobile-tab-arrow mobile-tab-next" aria-label="다음" aria-hidden="true">&#8250;</span>
+                </button>
+                <button class="mobile-list-tab" type="button" id="mobileTabReview" data-mobile-tab="review" aria-selected="false">
+                  <span class="ico-mobile-pencil" aria-hidden="true"></span>
+                  한줄 소감
+                </button>
+              </div>
               <!-- 콘텐츠 탭 영역 -->
               <div class="content-tab-wrap">
                 <div class="content-tabs" role="tablist">
@@ -993,10 +1009,83 @@
               </section>
             </div>
           </main>
+
+          <!-- MOBILE: 하단 목록 카운트 + 컨텐츠 제안 바 (모바일에서만 표시) -->
+          <nav class="mobile-bottom-nav" aria-label="모바일 콘텐츠 탐색">
+            <button class="mobile-nav-item mobile-nav-item--suggest" type="button" id="mobileSuggestBtn">
+              <span class="mobile-nav-ico mobile-nav-ico--send" aria-hidden="true"></span>
+              <span class="mobile-nav-label">컨텐츠 제안하기</span>
+              <span class="mobile-nav-chevron mobile-nav-chevron--right" aria-hidden="true"></span>
+            </button>
+          </nav>
         </div>
       </div>
       <!-- // container -->
     </div>
+
+    <!-- MOBILE: 학습 활동 팝업 모달 -->
+    <div class="mobile-activity-modal" id="mobileActivityModal" role="dialog" aria-modal="true" aria-labelledby="mobileModalTitle" hidden>
+      <div class="modal-backdrop" id="mobileActivityBackdrop"></div>
+      <div class="modal-panel">
+        <div class="modal-header">
+          <p class="modal-title" id="mobileModalTitle">총 학습시간 <strong>340분</strong></p>
+          <button class="modal-close-btn" type="button" id="mobileActivityClose" aria-label="닫기">&#10005;</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-gauge-wrap">
+            <div class="gauge-bar">
+              <div class="gauge-fill" style="width: 63%"></div>
+            </div>
+            <span class="modal-average-badge">전체 평균</span>
+          </div>
+          <ul class="modal-activity-list">
+            <li>
+              <span class="modal-label">마이클라스</span>
+              <span class="modal-value modal-value--green"><em>74</em>분(33%)</span>
+            </li>
+            <li>
+              <span class="modal-label">온보딩 <span class="modal-required"><i class="ico-info-xs" aria-hidden="true"></i> 필수 시청 26.01.14</span></span>
+              <span class="modal-value modal-value--green"><em>110</em>분(80%)</span>
+            </li>
+            <li>
+              <span class="modal-label">법정교육 <span class="modal-required"><i class="ico-info-xs" aria-hidden="true"></i> 필수 시청 26.01.14</span></span>
+              <span class="modal-value modal-value--green"><em>30</em>분(20%)</span>
+            </li>
+            <li>
+              <span class="modal-label">리더십</span>
+              <span class="modal-value modal-value--brown"><em>60</em>분</span>
+            </li>
+            <li>
+              <span class="modal-label">인사이트</span>
+              <span class="modal-value modal-value--brown"><em>43</em>분</span>
+            </li>
+            <li>
+              <span class="modal-label">비즈트렌드</span>
+              <span class="modal-value modal-value--brown"><em>23</em>분</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE: 컨텐츠 제안 바텀시트 -->
+    <div class="mobile-suggest-sheet" id="mobileSuggestSheet" role="dialog" aria-modal="true" hidden>
+      <div class="sheet-backdrop" id="mobileSuggestBackdrop"></div>
+      <div class="sheet-panel">
+        <div class="sheet-header">
+          <span class="sheet-header-ico" aria-hidden="true"></span>
+          <p class="sheet-title">컨텐츠 제안하기</p>
+        </div>
+        <div class="sheet-body">
+          <div class="suggest-fields">
+            <input type="url" class="suggest-input sheet-url" placeholder="URL" id="sheet-url" />
+            <textarea class="suggest-input sheet-reason" placeholder="추천이유" rows="5" id="sheet-reason"></textarea>
+          </div>
+          <button type="button" class="btn-sheet-confirm" id="btnSheetConfirm" disabled>확인</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 마이페이지 전용 스크립트: 제안 폼 버튼 활성화, 제안현황 아코디언 -->
     <script src="./assets/js/mypage.js" defer></script>
   </body>

@@ -3,3 +3,7 @@ dist/
 
 # node_modules 제외 
 node_modules/
+
+# Windows 예약 장치명 파일 무시
+nul
+nul.map

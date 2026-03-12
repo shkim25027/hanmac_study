@@ -381,6 +381,50 @@ function initCommonEvents() {
       }
     });
   }
+
+  // ----------------------------------------
+  // 모바일 검색 오버레이
+  // ----------------------------------------
+  const searchOpenBtn = document.querySelector(".btn-search");
+  const searchLayer = document.querySelector(".mo-search-layer");
+  const searchCloseBtn = searchLayer ? searchLayer.querySelector(".btn-close-search") : null;
+  const searchInput = searchLayer ? searchLayer.querySelector('input[type="text"]') : null;
+
+  const openSearch = () => {
+    if (!searchLayer) return;
+    searchLayer.classList.add("is-open");
+    searchLayer.setAttribute("aria-hidden", "false");
+    scrollManager.lock();
+
+    if (searchInput) {
+      setTimeout(() => {
+        searchInput.focus();
+      }, 50);
+    }
+  };
+
+  const closeSearch = () => {
+    if (!searchLayer) return;
+    searchLayer.classList.remove("is-open");
+    searchLayer.setAttribute("aria-hidden", "true");
+    scrollManager.unlock();
+  };
+
+  if (searchOpenBtn && searchLayer) {
+    searchOpenBtn.addEventListener("click", openSearch);
+  }
+
+  if (searchCloseBtn) {
+    searchCloseBtn.addEventListener("click", closeSearch);
+  }
+
+  if (searchLayer) {
+    searchLayer.addEventListener("click", (e) => {
+      if (e.target === searchLayer) {
+        closeSearch();
+      }
+    });
+  }
 }
 
 // DOMContentLoaded 시 초기화

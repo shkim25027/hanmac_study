@@ -1104,3 +1104,621 @@
     }
   }
 }
+
+// =======================================
+// My Page – Mobile Responsive
+// =======================================
+@include mq("tablet-small", max) {
+  .mypage {
+    // ---- 레이아웃 재구성 ----
+    .container {
+      padding-top: 64px; // 헤더 높이
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .mypage-inner {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      min-height: 0;
+    }
+
+    // ---- 사이드바 → 프로필 카드 ----
+    .mypage-sidebar {
+      width: 100%;
+      max-width: 100%;
+      padding: 16px 16px 0;
+      overflow: visible;
+
+      &::after {
+        display: none; // 구분선 제거
+      }
+    }
+
+    .mypage-title {
+      display: none; // 모바일에서 타이틀 숨김
+    }
+
+    .profile-area {
+      margin: 0;
+      max-width: 100%;
+    }
+
+    .profile-card {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      grid-template-rows: auto auto auto auto;
+      gap: 0 12px;
+      align-items: start;
+      padding: 16px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+      text-align: left;
+    }
+
+    .profile-photo {
+      grid-column: 1;
+      grid-row: 1 / 4;
+      width: 72px;
+      height: 72px;
+      margin: 0;
+    }
+
+    .profile-name {
+      grid-column: 2;
+      grid-row: 1;
+      margin: 2px 0 0;
+      font-size: 15px;
+    }
+
+    .profile-role {
+      grid-column: 2;
+      grid-row: 2;
+      margin: 2px 0 4px;
+      font-size: 13px;
+    }
+
+    .badge-level {
+      display: none; // 모바일에서 레벨 배지 숨김
+    }
+
+    // 총 학습시간 버튼 (모바일 전용)
+    .mobile-total-time-btn {
+      grid-column: 2;
+      grid-row: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: #CF6800;
+      cursor: pointer;
+      white-space: nowrap;
+
+      strong {
+        font-size: 16px;
+        font-weight: 700;
+      }
+    }
+
+    .mobile-total-time-chevron {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      @include svgIconMask("../images/ico/ico_chevron.svg", #CF6800, 10px);
+      transform: rotate(-90deg);
+    }
+
+    // 사이드바의 제안 섹션은 모바일에서 숨김 (바텀시트로 대체)
+    .suggest-section {
+      display: none;
+    }
+
+    // ---- 메인 콘텐츠 ----
+    .mypage-main {
+      padding-top: 12px;
+      overflow: visible;
+    }
+
+    // 학습 활동 섹션은 모바일에서 숨김 (팝업으로 대체)
+    .activity-section {
+      display: none;
+    }
+
+    // ---- mylist-area: 2탭 카드 ----
+    .mylist-area {
+      display: flex;
+      flex-direction: column;
+      padding: 0 16px;
+      gap: 0;
+
+      .content-tab-wrap {
+        order: 2;
+        display: flex;
+        flex-direction: column;
+        overflow: visible;
+        border-radius: 0 0 16px 16px;
+        background: #fff;
+        padding: 12px 12px 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+
+        &.is-mobile-hidden {
+          display: none;
+        }
+      }
+
+      .review-section {
+        order: 3;
+        display: none; // 기본 숨김; 탭 클릭 시 표시
+        flex-direction: column;
+        overflow: visible;
+        padding: 12px 12px 16px;
+        background: #fff;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+
+        &.is-mobile-active {
+          display: flex;
+        }
+      }
+    }
+
+    // 기존 콘텐츠 탭(3탭) 모바일에서 숨김
+    .content-tab-wrap .content-tabs {
+      display: none;
+    }
+
+    // 콘텐츠 그리드: 2열
+    .content-grid {
+      grid-template-columns: repeat(2, 1fr);
+      overflow: visible;
+      padding: 0;
+    }
+
+    .review-list {
+      overflow: visible;
+      padding: 0;
+    }
+
+    // 기존 한줄 소감 섹션 타이틀 숨김 (탭 헤더로 대체)
+    .review-section .section-title {
+      display: none;
+    }
+
+    // ---- MOBILE: 2탭 헤더 ----
+    .mobile-list-tab-header {
+      order: 1;
+      display: flex;
+      gap: 0;
+      border-radius: 16px 16px 0 0;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .mobile-list-tab {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 14px 12px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #999;
+      background: #f5f4f2;
+      border: 2px solid transparent;
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:first-child {
+        border-radius: 16px 0 0 0;
+      }
+      &:last-child {
+        border-radius: 0 16px 0 0;
+      }
+
+      &.active {
+        color: #CF6800;
+        background: #fff;
+        border-color: #CF6800;
+        border-bottom-color: transparent;
+        z-index: 1;
+      }
+    }
+
+    .mobile-tab-arrow {
+      display: inline-flex;
+      align-items: center;
+      font-size: 20px;
+      line-height: 1;
+      color: #CF6800;
+      font-weight: 300;
+    }
+
+    .mobile-tab-label {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .ico-mobile-pencil {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      @include svgIconMask("../images/ico/ico_pin.svg", currentColor, 14px);
+    }
+
+    // ---- MOBILE: 하단 내비게이션 ----
+    .mobile-bottom-nav {
+      display: flex;
+      flex-direction: column;
+      margin: 0 16px 80px; // 하단 여백 (sticky 제안 바 공간)
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
+      width: 100%;
+      background: none;
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      color: #111;
+      text-align: left;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.mobile-nav-item--suggest {
+        color: #CF6800;
+        font-weight: 600;
+        padding: 18px;
+      }
+    }
+
+    .mobile-nav-ico {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+
+      &.mobile-nav-ico--play {
+        @include svgIconMask("../images/ico/ico_watch.svg", #111, 18px);
+      }
+      &.mobile-nav-ico--heart {
+        @include svgIconMask("../images/ico/ico_like.svg", #111, 18px);
+      }
+      &.mobile-nav-ico--pencil {
+        @include svgIconMask("../images/ico/ico_pin.svg", #111, 18px);
+      }
+      &.mobile-nav-ico--send {
+        @include svgIconMask("../images/ico/ico_arrow_suggest.svg", #CF6800, 18px);
+      }
+    }
+
+    .mobile-nav-label {
+      flex: 1;
+    }
+
+    .mobile-nav-count {
+      font-size: 14px;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .mobile-nav-chevron {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      @include svgIconMask("../images/ico/ico_chevron.svg", #aaa, 12px);
+      transform: rotate(180deg); // 아래 방향
+
+      &.mobile-nav-chevron--right {
+        transform: rotate(-90deg); // 오른쪽 방향
+        @include svgIconMask("../images/ico/ico_chevron.svg", #CF6800, 12px);
+      }
+    }
+  }
+
+  // ---- 데스크탑 전용 요소 숨김 ----
+  .mypage .mobile-activity-modal,
+  .mypage .mobile-suggest-sheet {
+    display: none; // hidden attr 사용, but 선언 유지
+  }
+}
+
+// ---- MOBILE: 모달 & 바텀시트 (브레이크포인트 외부 – 항상 숨김이 기본) ----
+
+.mobile-total-time-btn {
+  display: none; // 데스크탑에서 숨김
+}
+
+.mobile-list-tab-header {
+  display: none; // 데스크탑에서 숨김
+}
+
+.mobile-bottom-nav {
+  display: none; // 데스크탑에서 숨김
+}
+
+// ---- 활동 팝업 모달 ----
+.mobile-activity-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 60px;
+
+  &[hidden] {
+    display: none !important;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+  }
+
+  .modal-panel {
+    position: relative;
+    width: calc(100% - 32px);
+    max-width: 420px;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    background: #FDF5EB;
+    border-bottom: 1px solid rgba(207, 104, 0, 0.15);
+  }
+
+  .modal-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #111;
+
+    strong {
+      font-size: 22px;
+      font-weight: 800;
+      color: #CF6800;
+    }
+  }
+
+  .modal-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #888;
+    cursor: pointer;
+    border-radius: 50%;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.06);
+      color: #333;
+    }
+  }
+
+  .modal-body {
+    padding: 16px 20px 20px;
+  }
+
+  .modal-gauge-wrap {
+    position: relative;
+    margin-bottom: 16px;
+
+    .gauge-bar {
+      height: 10px;
+      border-radius: 10px;
+      background: rgba(230, 191, 145, 0.4);
+
+      .gauge-fill {
+        height: 100%;
+        border-radius: 10px;
+        background: #CF6800;
+        position: relative;
+      }
+    }
+  }
+
+  .modal-average-badge {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 2px 10px;
+    font-size: 11px;
+    color: #D0B290;
+    background: #F9F6F0;
+    border: 1px solid #D0B290;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .modal-activity-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      gap: 8px;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .modal-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .modal-required {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #CF6800;
+  }
+
+  .ico-info-xs {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    @include svgIconMask("../images/ico/ico_info.svg", #CF6800, 12px);
+  }
+
+  .modal-value {
+    font-size: 14px;
+    font-weight: 400;
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    em {
+      font-size: 18px;
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    &.modal-value--green {
+      color: #1B8B6F;
+      em { color: #1B8B6F; }
+    }
+
+    &.modal-value--brown {
+      color: #7C590D;
+      em { color: #7C590D; }
+    }
+  }
+}
+
+// ---- 컨텐츠 제안 바텀시트 ----
+.mobile-suggest-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+
+  &[hidden] {
+    display: none !important;
+  }
+
+  .sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .sheet-panel {
+    position: relative;
+    width: 100%;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1;
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+
+  .sheet-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 20px 20px 14px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .sheet-header-ico {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    @include svgIconMask("../images/ico/ico_arrow_suggest.svg", #111, 20px);
+  }
+
+  .sheet-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .sheet-body {
+    padding: 0 16px 20px;
+
+    .suggest-fields {
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .suggest-input {
+      font-size: 15px;
+    }
+  }
+
+  .btn-sheet-confirm {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: #CF6800;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    &:not(:disabled):hover {
+      background: #b05800;
+    }
+  }
+}
