@@ -203,12 +203,54 @@
         animationDelay: 50,
       });
 
-      // 슬라이더 초기화 (PC: 6카드/페이지, MO: 3카드/페이지)
+      // ========================================
+      // 키워드 필터링 기능
+      // ========================================
+      function filterVideosByKeywords() {
+        // 체크 해제된 키워드 수집
+        const uncheckedKeywords = [];
+        document.querySelectorAll('.keyword-list input[type="checkbox"]').forEach(function(checkbox) {
+          if (!checkbox.checked) {
+            const label = checkbox.closest('label');
+            if (label) {
+              const kw = label.textContent.trim().replace(/^#/, '').trim();
+              uncheckedKeywords.push(kw);
+            }
+          }
+        });
+
+        // 체크 해제된 키워드가 하나라도 포함된 영상은 제외
+        const filteredVideos = videos.filter(function(video) {
+          if (!video.keywords || !Array.isArray(video.keywords)) return true;
+          return !video.keywords.some(function(kw) {
+            return uncheckedKeywords.includes(kw);
+          });
+        });
+
+        // 슬라이더 재렌더링
+        slider.videos = filteredVideos;
+        slider._renderSlides(slider.currentPerPage);
+        if (slider.swiper) {
+          slider.swiper.update();
+          slider.swiper.slideTo(0, 0);
+        }
+      }
+
       const slider = new VideoSlider({
         videos: videos,
         renderer: renderer,
       });
       slider.init();
+
+      // 초기 체크 상태 반영
+      filterVideosByKeywords();
+
+      // 키워드 체크박스 변경 시 필터 적용 (이벤트 위임)
+      document.querySelector('.keyword-area').addEventListener('change', function(e) {
+        if (e.target.matches('.keyword-list input[type="checkbox"]')) {
+          filterVideosByKeywords();
+        }
+      });
 
       // 비디오 모달 매니저 초기화
       const modalManager = new VideoModalManager({
@@ -322,6 +364,9 @@
             allowArea.appendChild(label);
           });
         }
+
+        // 키워드 표시 업데이트 후 필터 재적용
+        filterVideosByKeywords();
       }
 
       // 최대 개수 초과 메시지

@@ -1802,6 +1802,7 @@ $card-colors: (
 // 팝업 외부 하단 설정 버튼 — Figma: #ff8200, white border, shadow
 // -------
 .btn-set-goal {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1815,12 +1816,22 @@ $card-colors: (
   background: #ff8200;
   background: radial-gradient(117.51% 77.94% at 48.87% 100%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 24.58%, rgba(255,255,255,0) 100%), #ff8200;
   background-blend-mode: screen, normal;
-  border: 2px solid #fff;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.15s;
-  box-shadow: 3.59px 3.59px 10.77px -3.59px rgba(220, 196, 172, 0.85), inset 0 -3.59px 3.59px 0 #e18d36;
-
+  box-shadow: 0 -3.59px 3.59px 0 #E18D36 inset, 3.59px 3.59px 10.769px -3.59px rgba(0, 0, 0, 0.75);
+  &::before{
+    @include maskContents();
+    content: " "; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 2px;
+    background: linear-gradient(65deg, rgba(255,255,255,0.6) 0%, transparent 100%) #ff8200;
+    box-sizing: border-box;
+  }
   &:hover {
     background-color: #e87500;
     transform: translateY(-2px);
