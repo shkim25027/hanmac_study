@@ -332,6 +332,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
+    min-width: max-content;
     .tab-icon {
       display: none;
     }

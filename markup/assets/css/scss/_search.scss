@@ -29,15 +29,28 @@
   .page-header {
     @include page-header;
     padding-bottom: 15px;
+    .page-title {
+      @include mq(tablet-small, max) {
+        padding-top: 34px;
+        padding-bottom: 18px;
+        
+      }
+    }
   }
 
   .page-title {
+
     h3 { margin: 0 0 12px; }
 
     .search-summary {
-      font-size: 27px;
+      font-size: 18px;
       line-height: 2;
       margin: 0;
+      @include mq(tablet-small, max) {
+        font-size: 20px;
+        text-wrap: balance;
+        line-height: 1.5;
+      }
 
       em { font-weight: 700; }
 
@@ -60,6 +73,7 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    
 
     .filter-tab {
       position: relative;
@@ -72,6 +86,10 @@
       color: #333333;
       @include flex(row, flex-end, center);
       gap: 8px;
+      @include mq(tablet-small, max) {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
 
       .ico-check,
       .ico-heart {
@@ -113,6 +131,9 @@
     display: flex;
     flex-direction: column;
     gap: 140px;
+    @include mq(tablet-small, max) {
+      gap: 48px;
+    }
   }
 
   .content-section {
@@ -128,6 +149,9 @@
         color: var(--text-primary);
         @include flex(row, center, center);
         gap: 8px;
+        @include mq(tablet-small, max) {
+          font-size: 14px;
+        }
 
         .ico-check,
         .ico-heart {
@@ -147,11 +171,17 @@
         .section-count {
           font-size: 16px;
           font-weight: 700;
+          @include mq(tablet-small, max) {
+            font-size: 14px;
+          }
         }
       }
 
       // [공통] 정렬 셀렉트 박스
       @include select-sort(16px);
+      @include mq(tablet-small, max) {
+        @include select-sort(14px);
+      }
     }
 
     // [공통] 비디오 카드 그리드 (4열, 18px 제목) - 인사이트와 동일

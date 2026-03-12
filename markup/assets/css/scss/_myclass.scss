@@ -395,6 +395,11 @@ $card-colors: (
     text-align: center;
   }
 
+  // 모바일 전용 인트로 블록 (데스크톱에서 숨김)
+  .page-intro-mobile {
+    display: none;
+  }
+
   // 목표설정 페이지 전용 타이틀 (Figma: 중앙 정렬, 2026년도 3분기 + 오렌지 강조)
   .page-title--goal {
     text-align: center;
@@ -1087,16 +1092,49 @@ $card-colors: (
     }
 
     .top-bar-left {
-      position: static;
-      height: auto;
-      order: 2;
-      padding: 8px 16px 0;
+      display: none;
+    }
+
+    .recs-list {
+      display: none;
     }
 
     .page-intro {
+      display: none;
+    }
+
+    .page-intro-mobile {
+      display: block;
       order: 1;
       text-align: center;
       padding: 24px 16px 20px;
+      width: 100%;
+
+      .page-title--goal {
+        display: flex;
+        flex-direction: column-reverse;
+        max-width: 100%;
+        margin: 0;
+
+        h3 {
+          margin: 0 0 8px;
+          font-size: 20px;
+          font-weight: 400;
+          color: #3A200D;
+          line-height: 1.4;
+          strong {
+            font-weight: 700;
+          }
+        }
+
+        .page-title-deadline {
+          margin: 0;
+          font-size: 20px;
+          font-weight: 900;
+          line-height: 1.4;
+          color: #f5651d;
+        }
+      }
     }
 
     .page-title--goal {
@@ -1574,7 +1612,9 @@ $card-colors: (
     flex-shrink: 0;
     width: 56px;
     height: 56px;
-
+    @include mq(tablet-wide, max) {
+      display: none;
+    }
     svg, img {
       width: 100%;
       height: 100%;
@@ -1624,6 +1664,9 @@ $card-colors: (
     width: 100%;
     padding-left: 32px;
     border-left: 1px solid #E0E0E0;
+    @include mq(tablet-wide, max) {
+      display: none;
+    }
   }
 
   .rec-item {
@@ -2494,11 +2537,17 @@ $card-colors: (
       overflow: visible; /* 좌우 쉐도우가 잘리지 않도록 */
     }
 
-    .book-img {
+    .book-img,
+    .book-img-picture .book-img {
       display: block;
       width: 100%;
       height: auto;
       object-fit: contain;
+    }
+
+    .book-img-picture {
+      display: block;
+      width: 100%;
     }
 
     /* 전체 book-info 영역 클릭 시 팝업 오픈 */
@@ -3213,11 +3262,50 @@ body.layer-open {
 
 // =======================================
 // myclass_06: GSAP 원페이지 스크롤 + 타임라인
+// 세로 스크롤 없음: 뷰포트 고정, 내부만 스크롤
 // =======================================
+html:has(body .myclass-page-06),
+body:has(.myclass-page-06) {
+  height: 100%;
+  overflow-y: hidden;
+}
+
+.wrap.myclass-page-06 {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .myclass-page-06 {
-  /* 컨텐츠 영역: 높이 = 1섹션 (JS 설정), 내부 스크롤 클리핑 */
-  .myclass-content {
+  /* 모바일 플로팅 카드: 데스크톱에서는 숨김 */
+  .mo-floating-card {
+    display: none;
+  }
+
+  .container {
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .myclass-wrap {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 컨텐츠 영역: PC는 가로(메인|quarter-nav), 높이 제한으로 세로 스크롤 없음 */
+  .myclass-content {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
     align-items: stretch;
     gap: 0;
   }
@@ -3228,6 +3316,7 @@ body.layer-open {
     position: relative;
     flex: 1;
     min-width: 0;
+    min-height: 0;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     display: flex;
@@ -3471,6 +3560,583 @@ body.layer-open {
   /* ── 2번째 섹션 활성 시 타이틀 즉시 숨김 ── */
   &.intro-hidden .page-intro {
     display: none;
+  }
+}
+
+// =======================================
+// myclass-page-06 모바일 (Figma 360px MO)
+// =======================================
+@media (max-width: 767px) {
+  .myclass-page-06 {
+    /* Figma MO: 상단 헤더 영역 그라디언트 배경 */
+    header {
+      background: linear-gradient(90deg, #0f3025 0%, #194335 38%, #0b221b 87.5%, #0d231c 100%);
+    }
+
+    .container {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .myclass-wrap {
+      padding: 0 0 16px;
+      max-width: 360px;
+      margin: 0 auto;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    /* 상단바: 모바일에서는 좌측 순위 숨기고 인트로만 */
+    .myclass-top-bar {
+      position: relative;
+      left: 0;
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      margin-bottom: 0;
+      padding: 0 16px;
+    }
+
+    .top-bar-left {
+      display: none;
+    }
+
+    .page-intro {
+      text-align: center;
+      padding: 24px 0 16px;
+      margin-top: 0;
+    }
+
+    .page-title {
+      h3 {
+        display: none;
+      }
+      p {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 1.4;
+        color: #3a200d;
+        letter-spacing: -0.02em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+      .intro-dday {
+        display: block;
+        font-size: 22px;
+        font-weight: 700;
+        color: #f5651d;
+        letter-spacing: -1px;
+      }
+    }
+
+    /* 컨텐츠: flex로 남은 높이만 사용, 세로 스크롤 없음 */
+    .myclass-content {
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* 메인: 가로 스크롤 컨테이너 (섹션 간 좌우 스와이프) */
+    .myclass-main {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex: 1;
+      min-height: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-x;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .scroll-timeline {
+      display: none !important;
+    }
+
+    /* 모바일: 섹션 reveal 애니메이션 비활성 (가로 스와이프 시 즉시 표시) */
+    .scroll-section-reveal {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* 모바일 quarter-nav: 하단 고정 수평 인디케이터 */
+    .quarter-nav {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 100px;
+      padding: 8px 14px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .quarter-nav-track {
+      display: none;
+    }
+
+    .quarter-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+
+      .quarter-nav-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #ccc;
+        border: 1.5px solid #bbb;
+        box-shadow: none;
+        transition: background 0.2s, transform 0.2s;
+      }
+
+      .quarter-nav-label {
+        font-size: 10px;
+        color: #999;
+        font-weight: 400;
+        white-space: nowrap;
+      }
+
+      &.is-active {
+        .quarter-nav-dot {
+          background: #F5651D;
+          border-color: #F5651D;
+          transform: scale(1.3);
+          box-shadow: 0 0 0 3px rgba(245, 101, 29, 0.15);
+        }
+        .quarter-nav-label {
+          color: #F5651D;
+          font-weight: 700;
+        }
+      }
+    }
+
+    /* 섹션: 가로 스와이프 카드 (100% 너비 고정), 내부만 세로 스크롤 */
+    .scroll-section {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      min-width: 100%;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-snap-align: start;
+      overscroll-behavior-x: contain;
+      padding: 0 16px;
+      box-sizing: border-box;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .scroll-section-sidebar {
+      flex: none;
+      width: 100%;
+      padding: 0 0 16px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 16px;
+    }
+
+    .sidebar-quarter {
+      order: 0;
+      margin: 0;
+      padding: 8px 14px;
+      min-width: 108px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: #ece0ca;
+      border-radius: 23px;
+      font-size: 15px;
+      font-weight: 500;
+      color: #5d4a3d;
+      line-height: 1.09;
+      border: none;
+
+      &::after {
+        content: "";
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        margin-left: 2px;
+        background: url("../images/ico/ico_chevron.svg") center/contain no-repeat;
+        transform: rotate(180deg);
+        opacity: 0.7;
+        flex-shrink: 0;
+      }
+    }
+
+    .sidebar-goal-item {
+      display: contents;
+    }
+
+    .sidebar-goal-icon,
+    .sidebar-goal-desc {
+      display: none;
+    }
+
+    .sidebar-goal-title {
+      display: block !important;
+      order: 1;
+      width: 100%;
+      flex-basis: 100%;
+      margin: 8px 0 6px;
+      padding: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: -0.66px;
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .btn-reset-goal {
+      order: 2;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin: 0;
+      padding: 0;
+      border: none;
+      background: none;
+      font-size: 13px;
+      font-weight: 700;
+      color: #4a4040;
+      letter-spacing: -0.26px;
+      opacity: 0.54;
+      cursor: pointer;
+    }
+
+    .btn-reset-goal .ico-arrow-back {
+      width: 19px;
+      height: 19px;
+      background: url("../images/ico/ico_arrow_back.svg") center/contain no-repeat;
+    }
+
+    .scroll-section-content {
+      height: auto;
+      padding: 0;
+    }
+
+    .scroll-section .bookshelf-section {
+      padding: 0;
+      margin: 0;
+      justify-content: flex-end;
+    }
+
+    .scroll-section .bookshelf-section .bookshelf {
+      padding: 0;
+      margin: 0;
+    }
+
+    /* 책 목록: 세로 밴드 스택 (Figma MO) */
+    .scroll-section .bookshelf-section .books-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 0;
+    }
+
+    .scroll-section .bookshelf-section .books-item {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      width: 100%;
+      min-height: 74px;
+      padding: 0;
+      margin-bottom: 0;
+      transform: none;
+      filter: none;
+    }
+
+    .scroll-section .bookshelf-section .books-item:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .scroll-section .bookshelf-section .books-item .book-img-wrap {
+      flex-shrink: 0;
+      overflow: hidden;
+
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+
+    .book-img-picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+
+      img,
+      .book-img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .scroll-section .bookshelf-section .books-item .book-ico-pencil {
+      width: 28px;
+      height: 28px;
+      top: 4px;
+      right: 4px;
+      background-size: contain;
+    }
+
+    .scroll-section .bookshelf-section .books-item .book-ico-pencil-completed {
+      width: 36px;
+      height: 36px;
+      top: 2px;
+      right: 2px;
+    }
+
+    .scroll-section .bookshelf-section .book-info-btn {
+      left: 0;
+      top: 0;
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      height: auto;
+      padding: 8px 12px 8px 30px;
+      text-align: left;
+      align-items: center;
+      justify-content: center;
+      top: auto;
+      left: auto;
+      transform: none;
+    }
+
+    .scroll-section .bookshelf-section .book-info-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      width: 100%;
+      gap: 0;
+    }
+
+    .scroll-section .bookshelf-section .book-video-area,
+    .scroll-section .bookshelf-section .book-desc,
+    .scroll-section .bookshelf-section .book-postit,
+    .scroll-section .bookshelf-section .book-tag {
+      width: 56px;
+    }
+
+    .scroll-section .bookshelf-section .book-title {
+      margin: 0;
+      height: auto;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #060606;
+      text-shadow: 0.852px 0.852px 0.852px rgba(255, 255, 255, 0.4);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-align: left;
+      letter-spacing: -0.72px;
+    }
+
+    /* 선반: 모바일 풀폭, 나무 질감 */
+    .scroll-section .bookshelf-section .shelf-plank {
+      height: 17px;
+      margin-top: 0;
+      border-radius: 0;
+      background-color: #56401a;
+      background-image: url("../images/myclass/img_shelf.png");
+      background-repeat: repeat;
+      background-size: auto;
+      box-shadow: inset 0 2px 2px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 2px 0 rgba(255, 255, 255, 0.5);
+
+      &::before {
+        display: none;
+      }
+      &::after {
+        top: -8px;
+        height: 8px;
+      }
+    }
+
+    .scroll-section .bookshelf-section .shelf-tags {
+      top: 50%;
+      transform: translateY(-50%);
+      left: 12px;
+      height: auto;
+      font-size: 11px;
+
+      span {
+        padding: 0 8px;
+        font-size: 11px;
+      }
+      ul {
+        font-size: 10px;
+      }
+    }
+
+    /* 선반 풀폭 */
+    .scroll-section .bookshelf-section .shelf-plank {
+      margin: 0 -16px;
+    }
+
+    /* 홍길동님 Pick! 라벨 (Figma MO) */
+    .mo-pick-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 12px 0 0;
+      padding: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: #2b5045;
+      letter-spacing: -0.56px;
+      line-height: 1.09;
+    }
+
+    .ico-pick-star {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background: url("../images/ico/ico_pick.svg") center/contain no-repeat;
+      flex-shrink: 0;
+    }
+
+    /* 모바일 플로팅 카드 (Figma 360px MO 스펙) */
+    .mo-floating-card {
+      display: block;
+      margin: 20px 0 16px;
+      padding: 7px 29px 7px 11px;
+      border-radius: 109px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8.5px);
+      -webkit-backdrop-filter: blur(8.5px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 7px 11px 0 rgba(217, 202, 190, 0.5);
+      max-width: 328px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .mo-floating-card-inner {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .mo-floating-thumb {
+      flex-shrink: 0;
+      width: 117px;
+      height: 117px;
+      border-radius: 50%;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .mo-floating-body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mo-floating-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #252525;
+      background: #ded7cf;
+      border-radius: 4px;
+      letter-spacing: -0.44px;
+    }
+
+    .mo-floating-title {
+      display: block;
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #3c3321;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      letter-spacing: -0.72px;
+    }
+
+    .mo-floating-meta {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #747474;
+      letter-spacing: -0.48px;
+      display: flex;
+      gap: 8px;
+
+      span + span::before {
+        content: "·";
+        margin-right: 8px;
+      }
+    }
+
+    /* 하단 페이지네이션 1 / 26 (Figma MO) */
+    .mo-pagination {
+      margin: 16px 0 24px;
+      padding: 0;
+      font-size: 15px;
+      font-weight: 400;
+      color: #503312;
+      text-align: center;
+      line-height: 1;
+
+      strong, b {
+        font-weight: 700;
+        font-size: 19px;
+        color: #000;
+      }
+    }
   }
 }
 
