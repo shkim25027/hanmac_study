@@ -196,7 +196,7 @@
       padding: 0 24px;
     }
     @include mq(tablet-wide, max) {
-      padding: 0 16px;
+      padding: 0px 16px;
     }
   }
 
@@ -210,7 +210,8 @@
     }
     @include mq(tablet-wide, max) {
       .leadership-inner {
-        padding: 0;
+        padding: 0 16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         overflow: visible;
       }
     }
@@ -297,7 +298,7 @@
       flex-wrap: nowrap;
       width: max-content;
       min-width: 100%;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      border-bottom: none;
       padding: 0 8px 0;
       gap: 12px;
       &::-webkit-scrollbar {

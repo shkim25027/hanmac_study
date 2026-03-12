@@ -413,6 +413,53 @@
 
 
   // ---------------------------------------------------------------------------
+  // 7-1. 월 구분선 (.article-grid-month-sep)
+  //      - 무한 스크롤로 다음 달이 추가될 때 표시
+  // ---------------------------------------------------------------------------
+  .article-grid-month-sep {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: -12px; // article-grid-body gap과 상쇄하여 시각적 간격 조정
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #CBCACA;
+    }
+  }
+
+  .article-grid-month-label {
+    flex-shrink: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #8C7B6A;
+    white-space: nowrap;
+  }
+
+  // 7-2. 빈 셀 (.article-card.is-empty)
+  //      - 월 첫 날이 월요일이 아닐 때 앞 빈 공간
+  // ---------------------------------------------------------------------------
+  .article-card.is-empty {
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  // 7-3. 무한 스크롤 센티넬
+  // ---------------------------------------------------------------------------
+  .article-grid-sentinel {
+    height: 1px;
+    margin-top: -1px;
+  }
+
+  .article-grid-sentinel-top {
+    height: 1px;
+    margin-bottom: -1px;
+  }
+
+  // ---------------------------------------------------------------------------
   // 8. 기사 카드 (.article-card)
   //    - 날짜 숫자 + 성공예감 콘텐츠 + 별책부록 콘텐츠로 구성
   //    - 상태 클래스: .weekend / .is-future / .today
