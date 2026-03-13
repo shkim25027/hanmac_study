@@ -906,16 +906,14 @@ html {
 }
 
 // =============================================================================
-// 모바일 검색 레이어
+// 모바일 검색 레이어 (Figma: 오른쪽 슬라이드 패널)
 // =============================================================================
 .mo-search-layer {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 99;
-  background: #f5efe1;
   @include mq("tablet-wide", min) {
-    // 태블릿 이상에서는 사용하지 않음
     display: none !important;
   }
 
@@ -923,54 +921,78 @@ html {
     display: block;
   }
 
+  // 배경 딤드 (클릭 시 닫기)
+  .mo-search-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+  }
+
   .mo-search-inner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    width: 100%;
     height: 100%;
-    padding: 16px 16px 24px;
     display: flex;
     flex-direction: column;
+    border-radius: 16px 16px 0 0;
+    background: radial-gradient(164.66% 55.74% at 50% 44.26%, #fdfaf0 62.61%, #ede2d4 100%);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
   }
 
   .mo-search-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 44px;
-    margin-bottom: 8px;
-  }
+    flex-shrink: 0;
+    height: 63px;
+    padding: 0 16px;
+    background: linear-gradient(90deg, #0f3025 0%, #194335 38%, #0b221b 87.5%, #0d231c 100%);
 
-  .mo-search-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #4a402f;
-  }
-
-  .btn-close-search {
-    width: 28px;
-    height: 28px;
-    border: none;
-    border-radius: 16px;
-    background: transparent;
-    cursor: pointer;
-    position: relative;
-
-    &::before,
-    &::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 14px;
-      height: 1px;
-      background: rgba(0, 0, 0, 0.45);
-      transform-origin: center;
+    .mo-search-logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.02em;
     }
 
-    &::before {
-      transform: translate(-50%, -50%) rotate(45deg);
-    }
+    // 검색 닫기: 사이트맵 닫기(.btn-sitemap)와 동일한 X 스타일
+    .btn-close-search {
+      position: relative;
+      width: 42px;
+      height: 38px;
+      padding: 0;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
 
-    &::after {
-      transform: translate(-50%, -50%) rotate(-45deg);
+      &::before,
+      &::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        width: 22px;
+        height: 2px;
+        background: #fff;
+        border-radius: 1px;
+        translate: -50% 0;
+        transition: transform 0.3s ease, top 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      &::before {
+        top: 50%;
+        transform: translateY(-50%) rotate(45deg);
+      }
+
+      &::after {
+        top: 50%;
+        transform: translateY(-50%) rotate(-45deg);
+      }
     }
   }
 
@@ -978,52 +1000,81 @@ html {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    padding-top: 8px;
+    min-height: 0;
+    overflow-y: auto;
+    border-radius: 16px 16px 0 0;
+    padding: 16px;
   }
 
   .mo-search-input {
+    flex-shrink: 0;
+    border-bottom: 2px solid #163d30;
+    padding: 10px 8px 10px 17px;
+
     .input-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       width: 100%;
+      position: relative;
     }
 
     input[type="text"] {
-      width: 100%;
-      background: #fff;
+      flex: 1;
+      min-width: 0;
+      height: 24px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      color: #000;
       box-shadow: none;
-      filter: none;
 
       &::placeholder {
-        color: rgba(0, 0, 0, 0.3);
+        color: rgba(0, 0, 0, 0.5);
       }
     }
 
     .ico-search {
-      left: 16px;
-      top: 50%;
-      transform: translateY(-50%);
+      position: static;
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      transform: none;
+      @include bgImg("../images/ico/ico_search.svg", contain);
+    }
+
+    .btn-clear {
+      position: static;
+      flex-shrink: 0;
+      margin-left: auto;
     }
   }
 
   .mo-search-history {
     flex: 1;
     overflow-y: auto;
+    padding: 17px 17px 24px;
 
     .search-suggestions-list {
       list-style: none;
       margin: 0;
-      padding: 12px 0 0;
-      border-top: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 17px;
 
       li {
         @include flex(row, center, flex-start);
-        gap: 8px;
-        padding: 10px 0;
-        font-size: 15px;
+        gap: 9px;
+        padding: 3px 3px 3px 0;
+        font-size: 16px;
         font-weight: 500;
-        color: rgba(0, 0, 0, 0.9);
+        color: #000;
+        letter-spacing: -0.48px;
         cursor: pointer;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        border: none;
 
         span {
           flex: 1;
@@ -1031,21 +1082,22 @@ html {
         }
 
         .ico-history {
-          width: 16px;
-          height: 16px;
+          width: 20px;
+          height: 20px;
           flex-shrink: 0;
           background: url("../images/ico/ico_history.svg") center/contain no-repeat;
-          opacity: 0.7;
+          opacity: 0.85;
         }
 
         .btn-remove {
-          width: 16px;
-          height: 16px;
+          width: 13px;
+          height: 13px;
           padding: 0;
           border: none;
           background: transparent;
-          opacity: 0.4;
-          @include bgImg("../images/ico/ico_clear.svg", 10px auto, center);
+          flex-shrink: 0;
+          margin-left: auto;
+          @include bgImg("../images/ico/ico_clear.svg", 13px auto, center);
         }
 
         &:last-child {

@@ -419,8 +419,9 @@ function initCommonEvents() {
   }
 
   if (searchLayer) {
+    const searchBackdrop = searchLayer.querySelector(".mo-search-backdrop");
     searchLayer.addEventListener("click", (e) => {
-      if (e.target === searchLayer) {
+      if (e.target === searchLayer || e.target === searchBackdrop) {
         closeSearch();
       }
     });

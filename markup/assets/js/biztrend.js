@@ -24,6 +24,8 @@
   var scrollObserver = null;  // 하단 무한 스크롤 (IntersectionObserver)
   var topObserver = null;     // 상단 무한 스크롤 (IntersectionObserver)
   var labelObserver = null;   // 라벨 업데이트
+  var articleData = {};       // 날짜별 기사 데이터
+  var videoModal = null;      // 공통 비디오 모달 (VideoModalBase)
 
   // ------------------------------
   // 날짜 값 읽기/쓰기
@@ -122,6 +124,83 @@
     return rows;
   }
 
+  // ------------------------------
+  // 기사 데이터 로드
+  // ------------------------------
+
+  /** HTML의 #biztrend-data JSON을 읽어 articleData에 저장 */
+  function loadArticleData() {
+    var el = document.getElementById("biztrend-data");
+    if (!el) return;
+    try { articleData = JSON.parse(el.textContent); } catch (e) { articleData = {}; }
+  }
+
+  /** XSS 방지용 HTML 이스케이프 */
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /**
+   * 기사 콘텐츠 블록 HTML을 반환합니다.
+   * @param {Object} item     - articleData의 항목 하나
+   * @param {string} dateKey  - 날짜 키 (예: "2026-02-01")
+   * @param {number} idx      - 해당 날짜 내 인덱스
+   */
+  function createContentHTML(item, dateKey, idx) {
+    // 제목 + 게이지 + 배지
+    var titleBoxHTML =
+      '<div class="article-card-title-box">' +
+      '<h4 class="article-card-title">' + escapeHtml(item.title) + "</h4>";
+
+    if (item.badge) {
+      titleBoxHTML += '<span class="article-card-badge">' + escapeHtml(item.badge) + "</span>";
+    }
+    if (item.gauge != null) {
+      titleBoxHTML +=
+        '<div class="gauge-bar"><div class="gauge-fill" style="width:' + item.gauge + '%"></div></div>';
+    }
+    titleBoxHTML += "</div>";
+
+    // 리스트
+    var listHTML = "";
+    if (item.list && item.list.length) {
+      listHTML = '<ul class="article-card-list">';
+      item.list.forEach(function (li) {
+        listHTML += "<li>" + escapeHtml(li) + "</li>";
+      });
+      listHTML += "</ul>";
+    }
+
+    // 이미지 여부에 따라 내부 구조 분기
+    var bodyHTML = item.image
+      ? '<div class="article-card-image">' +
+        '<div class="article-card-image-placeholder" aria-hidden="true">' +
+        '<img src="' + escapeHtml(item.image) + '" alt="' + escapeHtml(item.title) + '">' +
+        "</div>" +
+        listHTML +
+        "</div>"
+      : listHTML;
+
+    var likedClass = item.liked ? " is-active" : "";
+    var likedLabel = item.liked ? "좋아요 취소" : "좋아요";
+
+    var dkAttr = dateKey ? ' data-date-key="' + escapeHtml(dateKey) + '" data-item-idx="' + idx + '"' : "";
+
+    return (
+      '<div class="article-card-content"' + dkAttr + '>' +
+      '<a href="#" class="article-card-link" data-video-id="' + escapeHtml(item.videoId || "") + '">' +
+      titleBoxHTML +
+      bodyHTML +
+      "</a>" +
+      '<button type="button" class="article-card-like' + likedClass + '" aria-label="' + likedLabel + '"></button>' +
+      "</div>"
+    );
+  }
+
   /**
    * 날짜 카드 HTML을 반환합니다.
    */
@@ -142,9 +221,21 @@
     if (isToday) classes.push("today");
     if (isFuture) classes.push("is-future");
 
+    // 날짜 키로 기사 데이터 조회 (예: "2026-02-01")
+    var dateKey =
+      year + "-" +
+      String(month).padStart(2, "0") + "-" +
+      String(day).padStart(2, "0");
+    var items = articleData[dateKey] || [];
+
+    var contentsHTML = items.map(function (item, idx) {
+      return createContentHTML(item, dateKey, idx);
+    }).join("");
+
     return (
       '<article class="' + classes.join(" ") + '">' +
       '<span class="article-card-num" aria-hidden="true">' + day + "</span>" +
+      contentsHTML +
       "</article>"
     );
   }
@@ -431,6 +522,104 @@
   }
 
   // ------------------------------
+  // 모달 팝업
+  // ------------------------------
+
+  /**
+   * 공통 비디오 모달 인스턴스를 준비합니다.
+   */
+  function initModal() {
+    if (videoModal) return;
+    if (typeof VideoModalBase === "undefined") {
+      console.warn("[biztrend] VideoModalBase를 찾을 수 없습니다.");
+      return;
+    }
+
+    videoModal = new VideoModalBase({
+      modalPath: "./_modal/video.html",
+      modalPathTemplate: "./_modal/video-{type}.html",
+    });
+  }
+
+  /**
+   * 비디오 팝업을 열고 item 데이터를 채웁니다. (공통 비디오 모달 사용)
+   */
+  function openModal(dateKey, idx) {
+    var items = articleData[dateKey];
+    if (!items || !items[idx]) return;
+
+    var item  = items[idx];
+    if (!item.videoId) {
+      if (typeof alert === "function") alert("방송 영상을 준비 중입니다.");
+      return;
+    }
+
+    initModal();
+    if (!videoModal) return;
+
+    var descText = "";
+    if (item.list && item.list.length) {
+      descText = item.list.join("\n");
+    }
+
+    var videoData = {
+      id: item.videoId,
+      url: item.videoId,
+      title: item.title || "",
+      category: "비즈트렌드",
+      subcate: "성공예감&별책부록",
+      type: "main",
+      _biztrendDesc: descText,
+    };
+
+    videoModal.openVideo(videoData).then(function (instance) {
+      var modalEl = instance && instance.currentModalElement ? instance.currentModalElement : null;
+      if (!modalEl) return;
+
+      var descEl = modalEl.querySelector(".video-info .desc");
+      if (!descEl) return;
+
+      if (videoData._biztrendDesc) {
+        descEl.innerHTML = escapeHtml(videoData._biztrendDesc).replace(/\n/g, "<br />");
+      } else {
+        descEl.textContent = "";
+      }
+    }).catch(function () {
+      // openVideo 내부에서 에러 처리(알림)하므로 여기서는 조용히 무시
+    });
+  }
+
+  /**
+   * 그리드 클릭 이벤트 위임 — 주말 카드 제외, article-card-content 클릭 시 비디오 팝업 오픈
+   */
+  function initModalEvents() {
+    var grid = document.querySelector(".biztrend .article-grid");
+    if (!grid) return;
+
+    grid.addEventListener("click", function (e) {
+      // 링크 기본 동작 막기
+      var link = e.target.closest(".article-card-link");
+      if (link) e.preventDefault();
+
+      // 좋아요 버튼 클릭은 무시
+      if (e.target.closest(".article-card-like")) return;
+
+      var content = e.target.closest(".article-card-content");
+      if (!content) return;
+
+      // 주말(별책부록) 카드는 팝업 없음
+      var card = e.target.closest(".article-card");
+      if (card && card.classList.contains("weekend")) return;
+
+      var dateKey = content.dataset.dateKey;
+      var idx     = parseInt(content.dataset.itemIdx, 10);
+      if (!dateKey || isNaN(idx)) return;
+
+      openModal(dateKey, idx);
+    });
+  }
+
+  // ------------------------------
   // 날짜피커 휠 (연·월)
   // ------------------------------
 
@@ -617,6 +806,9 @@
   function initBiztrendCalendar() {
     if (!document.querySelector(".wrap.biztrend")) return;
 
+    // 기사 데이터 로드 (#biztrend-data JSON)
+    loadArticleData();
+
     // 현재 날짜로 날짜피커 라벨 초기화
     var now = new Date();
     var initYear = now.getFullYear();
@@ -626,10 +818,13 @@
     // 현재 달 기준 동적 그리드 렌더링
     renderCalendar(initYear, initMonth);
 
-    // 위로 스크롤 시 이전 달 추가가 가능하도록 10px 내린 상태로 시작
-    window.scrollTo(0, 10);
+    // 그리드 스크롤을 54px 아래에서 시작 (위로 스크롤 시 이전 달 추가 가능하도록)
+    var grid = document.querySelector(".biztrend .article-grid");
+    if (grid) grid.scrollTop = 54;
 
     initDatepickerDropdown();
+    initModal();
+    initModalEvents();
   }
 
   if (document.readyState === "loading") {

@@ -150,19 +150,20 @@
       </div>
     </div>
 
-    <!-- 모바일 검색 오버레이 -->
+    <!-- 모바일 검색 오버레이 (Figma 디자인: 오른쪽 슬라이드 패널) -->
     <div class="mo-search-layer" aria-hidden="true">
+      <div class="mo-search-backdrop" aria-hidden="true"></div>
       <div class="mo-search-inner">
         <div class="mo-search-header">
-          <span class="mo-search-title">최근 검색어</span>
+          <a href="./index.html" class="mo-search-logo">배움터</a>
           <button type="button" class="btn-close-search" aria-label="검색 닫기"></button>
         </div>
         <div class="mo-search-body">
           <div class="mo-search-input">
             <div class="input-group">
               <input type="text" value="" placeholder="검색어를 입력해주세요" />
-              <i class="ico-search"></i>
-              <button class="btn-clear" type="button"></button>
+              <button class="btn-clear" type="button" aria-label="입력 지우기"></button>
+              <i class="ico-search" aria-hidden="true"></i>
             </div>
           </div>
           <div class="mo-search-history">
