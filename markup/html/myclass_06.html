@@ -1084,13 +1084,25 @@
           var fRect    = firstDot.getBoundingClientRect();
           var lRect    = lastDot.getBoundingClientRect();
 
-          var top    = fRect.top  + fRect.height  / 2 - navRect.top;
-          var left   = fRect.left + fRect.width   / 2 - navRect.left;
-          var height = (lRect.top + lRect.height / 2 - navRect.top) - top;
-
-          trackEl.style.top    = top    + "px";
-          trackEl.style.left   = left   + "px";
-          trackEl.style.height = Math.max(height, 0) + "px";
+          if (window.innerWidth <= 767) {
+            /* 모바일: 가로 track */
+            var top   = fRect.top  + fRect.height / 2 - navRect.top;
+            var left  = fRect.left + fRect.width  / 2 - navRect.left;
+            var width = (lRect.left + lRect.width / 2 - navRect.left) - left;
+            trackEl.style.top    = top  + "px";
+            trackEl.style.left   = left + "px";
+            trackEl.style.width  = Math.max(width, 0) + "px";
+            trackEl.style.height = "";
+          } else {
+            /* 데스크톱: 세로 track */
+            var top    = fRect.top  + fRect.height / 2 - navRect.top;
+            var left   = fRect.left + fRect.width  / 2 - navRect.left;
+            var height = (lRect.top + lRect.height / 2 - navRect.top) - top;
+            trackEl.style.top    = top    + "px";
+            trackEl.style.left   = left   + "px";
+            trackEl.style.height = Math.max(height, 0) + "px";
+            trackEl.style.width  = "";
+          }
         }
 
         /* 활성 상태 업데이트 */
@@ -1105,9 +1117,7 @@
             d.classList.toggle("is-active", i === index);
           });
           quarterNavItems.forEach(function(btn, i) {
-            /* 모바일: 현재 섹션만 활성, 데스크톱: 현재+지나간 항목 활성 */
-            var isMo = window.innerWidth <= 767;
-            btn.classList.toggle("is-active", isMo ? i === index : i <= index);
+            btn.classList.toggle("is-active", i <= index);
           });
           /* 2번째 섹션(index > 0) 활성 시 page-intro 숨김 */
           document.querySelector(".myclass-page-06").classList.toggle("intro-hidden", index > 0);
@@ -1170,7 +1180,10 @@
 
           var pct = fillPct + "%";
           if (progressFill)   progressFill.style.height  = pct;
-          if (quarterNavFill) quarterNavFill.style.height = pct;
+          if (quarterNavFill) {
+            if (isMo) quarterNavFill.style.width  = pct;
+            else      quarterNavFill.style.height = pct;
+          }
         }
 
         setHeights();
@@ -1210,6 +1223,29 @@
             currentIndex = -1; /* guard 초기화 → 강제 업데이트 */
             updateActive(Math.min(idx, sections.length - 1));
           }, 350);
+        }, { passive: true });
+
+        /* 모바일: 스와이프로 섹션 이동
+           touch-action: pan-y 로 네이티브 가로 스크롤이 막혀 있어서
+           JS로 직접 감지 후 scrollTo() 호출 */
+        var moSwipeStartX = 0;
+        var moSwipeStartY = 0;
+
+        mainEl.addEventListener("touchstart", function(e) {
+          if (window.innerWidth > 767) return;
+          moSwipeStartX = e.touches[0].clientX;
+          moSwipeStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        mainEl.addEventListener("touchend", function(e) {
+          if (window.innerWidth > 767) return;
+          var dx = e.changedTouches[0].clientX - moSwipeStartX;
+          var dy = e.changedTouches[0].clientY - moSwipeStartY;
+          if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+          var idx = Math.round(mainEl.scrollLeft / mainEl.clientWidth);
+          if (dx < 0) idx = Math.min(idx + 1, sections.length - 1);
+          else        idx = Math.max(idx - 1, 0);
+          mainEl.scrollTo({ left: idx * mainEl.clientWidth, behavior: "smooth" });
         }, { passive: true });
 
         /* 이미지/폰트 로드 완료 후 초기화 (레이아웃 확정 후) */
