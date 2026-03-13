@@ -397,25 +397,55 @@ html {
             var(--h) 0 0 0;
         }
 
-        a {
-          &:hover {
-             background-color: rgba(24, 143, 107, 0.05);
+        .alert-item {
+          @include flex(column, flex-start, flex-start);
+          gap: 4px;
+          padding: 8px 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          transition: background-color 0.2s;
+          &:first-child { padding-top: 0; }
+          &:last-child { padding-bottom: 0; border-bottom: none; }
+          &.is-open {
+            background-color: rgba(24, 143, 107, 0.08);
+            border-radius: 4px;
+            padding: 8px;
+            margin: 0 -8px;
+            .alert-title {
+              color: #188F6B;
+            }
+            .alert-desc{
+            display: block;
+            overflow: visible;
+            white-space: normal;
+            -webkit-line-clamp: none;
+            line-clamp: none;
+            text-overflow: clip;
+            color: #123328;
+          }
+          .btn-alert-toggle {
+            color: #123328;
+          }
           }
         }
-        dl {
-          @include flex(column, flex-start, center);
-        }
-        dt {
-          margin-bottom: 4px;
+        .alert-title {
           font-size: 14px;
           font-weight: 700;
           color: var(--text-base);
-          @include ellipsis(1);
         }
-        dd {
+        .alert-desc {
           font-size: 13px;
           color: var(--text-secondary);
-          @include ellipsis(4);
+          @include ellipsis(2);
+        }
+        .btn-alert-toggle {
+          margin-top: 2px;
+          font-size: 12px;
+          color: var(--text-secondary);
+          background: none;
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          &:hover { color: var(--text-base); }
         }
         .badge {
           &-danger {

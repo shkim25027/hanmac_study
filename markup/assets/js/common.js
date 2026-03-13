@@ -893,6 +893,16 @@ const siteMapManager = new SiteMapManager();
 
 document.addEventListener('DOMContentLoaded', () => {
   siteMapManager.init();
+
+  // 알림 더보기/접기 토글
+  document.querySelectorAll('.btn-alert-toggle').forEach((btn) => {
+    btn.addEventListener('click', function () {
+      const item = this.closest('.alert-item');
+      if (!item) return;
+      const isOpen = item.classList.toggle('is-open');
+      this.innerHTML = isOpen ? '접기 <span aria-hidden="true">∧</span>' : '더보기 <span aria-hidden="true">∨</span>';
+    });
+  });
 });
 
 // 전역으로 내보내기 (선택사항)
