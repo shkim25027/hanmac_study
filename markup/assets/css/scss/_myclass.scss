@@ -2,13 +2,30 @@
 
 @use "base" as *;
 
-// =======================================
-// 마이클래스 페이지 (myclass.html)
-// =======================================
+// =============================================================================
+// 마이클래스 (myclass) 스타일
+// =============================================================================
+// 사용 페이지: myclass.html, myclass_02~06, 목표설정 팝업(goal-layer)
+// 브레이크포인트: mq(tablet-small, max) = 768px 이하 모바일, mq(tablet-wide) 등
+// =============================================================================
 
-// -------
-// 색상 변수
-// -------
+// -----------------------------------------------------------------------------
+// 목차 (TOC) — 검색: .goal-slide-bookshelf | .bookshelf-section | .book-info-btn
+// -----------------------------------------------------------------------------
+// 1. 변수 (색상, $goal-bg-gradient, $goal-accent)
+// 2. .myclass — 목표설정 페이지 (상단바, 목표 카드 그리드, .goal-list)
+// 3. .goal-layer — 목표 상세 레이어 (팝업 오버레이)
+// 4. .goal-popup — 목표 팝업 (.goal-main-slider, 추천 도서 책장)
+// 5. @mq(tablet-small,max) — 목표 팝업 모바일 (바텀시트, goal-slide-bookshelf)
+// 6. .myclass — myclass_03~05 책장 (사이드바, .bookshelf-section, .shelf-plank)
+// 7. .myclass-page-06 — 원페이지 스크롤, .scroll-section, .quarter-nav
+// 8. @media (max-width:767px) — myclass_06 모바일 (가로 스와이프)
+// 9. .myclass-mobile — 모바일 전용 목표설정 (360px)
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// 1. 색상·테마 변수
+// -----------------------------------------------------------------------------
 $card-bg-start:   #46B8A5;
 $card-bg-end:     #2D9180;
 $shelf-bg-start:  #8B5E3C;
@@ -16,9 +33,13 @@ $shelf-bg-end:    #6A4628;
 $shelf-leg-color: #7A5230;
 $popup-border:    #FF7020;
 
-// -------
+// 목표 팝업·마이클래스 공통 배경 (재사용)
+$goal-bg-gradient: linear-gradient(180deg, #f9f6f0 0%, #e6ddcc 100%);
+$goal-accent:      #f5651d;
+
+// -----------------------------------------------------------------------------
 // 카드 배경 그라디언트 (각 카드 색 변형)
-// -------
+// -----------------------------------------------------------------------------
 $card-colors: (
   1: (#46B8A5, #2D9180),
   2: (#3EAEBC, #2089A0),
@@ -30,9 +51,9 @@ $card-colors: (
   8: (#40B2A2, #268C84),
 );
 
-// =======================================
-// .myclass 페이지 래퍼
-// =======================================
+// =============================================================================
+// 2. .myclass — 목표설정 페이지 래퍼 (myclass.html)
+// =============================================================================
 .myclass {
 
   // -------
@@ -1316,9 +1337,9 @@ $card-colors: (
 
 } // .myclass
 
-// =======================================
-// 목표 상세 레이어 (전체 오버레이) — Figma: 마이클래스 > 목표설정 팝업
-// =======================================
+// =============================================================================
+// 3. 목표 상세 레이어 (전체 오버레이) — Figma: 마이클래스 > 목표설정 팝업
+// =============================================================================
 .goal-layer {
   display: none;
   position: fixed;
@@ -1338,7 +1359,7 @@ $card-colors: (
   @include flex(column, center, center);
   gap: 20px;
   width: 100%;
-  max-width:max-content;
+  max-width: max-content;
   max-height: 100%;
 }
 
@@ -1359,9 +1380,9 @@ $card-colors: (
   text-align: center;
 }
 
-// =======================================
-// 목표 팝업 박스
-// =======================================
+// =============================================================================
+// 4. 목표 팝업 박스 (.goal-popup 내부)
+// =============================================================================
 .goal-layer-header {
   display: flex;
   justify-content: flex-end;
@@ -1379,9 +1400,9 @@ $card-colors: (
     &::after {
       content: "";
       position: absolute;
-      width: 28px;
-      height: 3px;
-      background: #fff;
+      width: 20px;
+      height: 2px;
+      background: #000;
       border-radius: 2px;
     }
     &::before { transform: rotate(45deg); }
@@ -1398,39 +1419,42 @@ $card-colors: (
   display: flex;
   flex-direction: column;
   padding: 4px;
-  /* 좌우 슬라이드(목표) 노출을 위해 — Figma 배경 그라디언트 */
+  /* 좌우 슬라이드(목표) 노출 — Figma 배경 그라디언트 */
   .goal-main-slider {
     position: relative;
     border-radius: 12px;
     overflow: visible !important;
-    background: linear-gradient(180deg, #f9f6f0 0%, #e6ddcc 100%);
+    background: $goal-bg-gradient;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
     z-index: 2;
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      width: 100%;
-      height: 100%;
-      @include maskContents();
-      padding: 4px;
-      background: linear-gradient(180deg, #F5651D 75%, rgba(245, 101, 29, 0.2) 100%);
-      box-sizing: border-box;
+    @include mq(tablet-wide, min) {
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        @include maskContents();
+        padding: 4px;
+        background: linear-gradient(180deg, #F5651D 75%, rgba(245, 101, 29, 0.2) 100%);
+        box-sizing: border-box;
+      }
+      // 썸네일이 메인 뒤로 지나가게: 하단에 덮는 레이어 (Figma #e6ddcc)
+      &::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 72px;
+        background: linear-gradient(180deg, transparent 0%, #e6ddcc 30%, #e6ddcc 100%);
+        border-radius: 0 0 12px 12px;
+        pointer-events: none;
+        z-index: 1;
+      }
     }
-    // 썸네일이 메인 뒤로 지나가게: 하단에 덮는 레이어 (Figma #e6ddcc)
-    &::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 72px;
-      background: linear-gradient(180deg, transparent 0%, #e6ddcc 30%, #e6ddcc 100%);
-      border-radius: 0 0 12px 12px;
-      pointer-events: none;
-      z-index: 1;
-    }
+ 
   }
 
   // 메인 Swiper: 좌우 미니 카드 + 중앙 풀 카드 (단일 스와이퍼)
@@ -1706,25 +1730,82 @@ $card-colors: (
     color: var(--text-primary);
   }
 
-  // -------
-  // 추천 도서 책장 영역
-  // -------
-
+  // --- 추천 도서 책장 (팝업 내) — 데스크톱: 그리드 6열, 모바일: 5번 섹션에서 세로 카드 ---
   .goal-slide-bookshelf {
     .books-item {
+      position: relative; /* absolute인 .book-info-btn의 기준이 되도록 */
+      min-width: 0;
+      max-width: 100%;
+
       .book-video-area {
         margin-bottom: 16px;
       }
-      .book-info-wrap{
-        padding: 42px 4px 12px;
-        max-width: 116px;
+
+      .book-info-btn {
+        position: absolute !important;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        padding: 12px 8px 12px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font: inherit;
+        transform: translateX(0);
+      }
+
+      .book-info-wrap {
+        padding: 32px 4px 12px;
+        position: static;
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        align-content: flex-start;
+        gap: 12px;
+        transform: translateX(0);
+        overflow: hidden;
+      }
+
+      .book-video-area {
+        flex-shrink: 0;
+        max-width: 100%;
+        min-width: 0;
       }
 
       .book-title {
         font-size: 16px;
-        height: calc(16px * 1.2 * 2);
-        margin: 0 0 12px;
+        height: auto;
+        margin: 0;
+        flex: 1;
+        min-width: 0;
+        max-width: 100%;
+        text-align: left;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
+
+      .book-desc,
+      .book-postit,
+      .book-tag {
+        flex-basis: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+
       .book-desc {
          gap: 18px;
          &::before {
@@ -1785,9 +1866,21 @@ $card-colors: (
         height: 18px;
         top: calc(50% - 8px);
         padding-right: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         span {
           padding: 2px 10px 0;
-          margin-right: 8px;
+          margin-right: 0;
+          font-size: 10px;
+        }
+        ul {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0 8px;
+          list-style: none;
+          margin: 0;
+          padding: 0;
           font-size: 10px;
         }
         font-size: 10px;
@@ -1835,14 +1928,13 @@ $card-colors: (
       cursor: pointer;
 
       &.is-active {
-        background: #f5651d;
+        background: $goal-accent;
       }
     }
   }
 }
 
-// -------
-// 팝업 외부 하단 설정 버튼 — Figma: #ff8200, white border, shadow
+// --- 팝업 외부 하단 설정 버튼 — Figma: #ff8200, white border, shadow
 // -------
 .btn-set-goal {
   position: relative;
@@ -1885,9 +1977,9 @@ $card-colors: (
   }
 }
 
-// =======================================
-// 목표 팝업 모달 - 모바일 (바텀시트 + 세로 리스트)
-// =======================================
+// =============================================================================
+// 5. 목표 팝업 모달 — 모바일 (바텀시트 + 세로 리스트)
+// =============================================================================
 @include mq(tablet-small, max) {
 
   // 오버레이: 하단 정렬 (바텀시트)
@@ -1903,7 +1995,7 @@ $card-colors: (
     max-height: 92vh;
     border-radius: 20px 20px 0 0;
     overflow: hidden;
-    background: linear-gradient(180deg, #f9f6f0 0%, #e6ddcc 100%);
+    background: $goal-bg-gradient;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -1933,11 +2025,11 @@ $card-colors: (
     flex-direction: column;
   }
 
-  // Swiper 컨테이너: 활성 슬라이드만 표시
+  // Swiper 컨테이너: 활성 슬라이드만 표시 (모바일: 라운드 제거)
   .goal-main-slider {
     flex: 1;
     min-height: 0;
-    border-radius: 0;
+    border-radius: 0 !important;
     box-shadow: none;
     background: transparent;
     overflow: hidden !important;
@@ -2027,10 +2119,8 @@ $card-colors: (
     display: none;
   }
 
-  // -------
-  // 추천 콘텐츠 - 세로 카드 리스트
-  // -------
-  .goal-slide-bookshelf {
+  // --- goal-slide-bookshelf 모바일: .goal-popup 붙여 구체성 확보 (팝업 내 적용) ---
+  .goal-popup .goal-slide-bookshelf {
     .bookshelf {
       max-width: 100%;
       padding: 0;
@@ -2038,113 +2128,133 @@ $card-colors: (
     }
 
     .shelf-plank {
-      display: none;
+      //display: none;
     }
 
     .books-list {
       display: flex !important;
       flex-direction: column;
-      gap: 8px;
+      gap: 0;
+      padding: 0;
     }
 
     .books-item {
-      position: relative;
-      border-radius: 12px;
-      overflow: hidden;
-      flex: none;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
       width: 100%;
+      padding: 0;
+      margin-bottom: 0;
+      border-radius: 0;
+      overflow: hidden;
+      transform: none;
+      filter: none;
 
-      // 책 표지 이미지 숨김
       .book-img-wrap {
-        display: none;
-      }
+        flex-shrink: 0;
+        overflow: hidden;
+        display: block;
 
-      // 카드 본문: 썸네일(좌) + 제목(우)
-      .book-info-wrap {
-        position: static !important;
-        transform: none !important;
-        top: auto !important;
-        left: auto !important;
-        width: 100% !important;
-        height: auto !important;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 12px;
-        padding: 10px 16px 10px 10px;
-        border-radius: 12px;
-        text-align: left;
-
-        .book-video-area {
-          flex-shrink: 0;
-          width: 96px;
-          height: 68px;
-          position: static !important;
-          margin: 0;
-
-          .book-video-thumb-btn {
-            display: block;
-            width: 100%;
-            height: 100%;
-            padding: 0;
-            border-radius: 8px;
-            overflow: hidden;
-
-            .book-video-thumb {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-            }
-          }
-
-          .bookmark {
-            display: none;
-          }
-        }
-
-        .book-title {
-          flex: 1;
-          font-size: 17px;
-          font-weight: 700;
-          line-height: 1.3;
-          height: auto;
-          margin: 0;
-        }
-
-        .book-desc,
-        .book-tag,
-        .book-brand {
+        &::before,
+        &::after {
           display: none;
         }
       }
 
-      // 카드 배경색 + 텍스트 색상
-      &:nth-child(1) .book-info-wrap {
-        background: #4A9580;
-        .book-title { color: #fff; }
+    .book-img-picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+
+      img,
+      .book-img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
-      &:nth-child(2) .book-info-wrap {
-        background: #E8D4A0;
-        .book-title { color: #3A2000; }
-      }
-      &:nth-child(3) .book-info-wrap {
-        background: #D4A0B0;
-        .book-title { color: #3A2000; }
-      }
-      &:nth-child(4) .book-info-wrap {
-        background: #44A090;
-        .book-title { color: #fff; }
-      }
-      &:nth-child(5) .book-info-wrap {
-        background: #D8C070;
-        .book-title { color: #3A2000; }
-      }
-      &:nth-child(6) .book-info-wrap {
-        background: #EDE8DE;
-        .book-title { color: #3A2000; }
+    }
+
+      .book-info-btn {
+        left: 0;
+        top: 0;
+        flex: 1;
+        min-width: 0;
+        width: 100%;
+        height: 100%;
+        padding: 8px 44px 8px 12px;
+        text-align: left;
+        align-items: center;
+        justify-content: center;
+        position: static;
+        transform: none;
       }
 
-      // 호버 효과 비활성화
+      .book-info-wrap {
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 16px;
+        position: static !important;
+        transform: none !important;
+        height: auto !important;
+      }
+
+      .book-desc,
+      .book-desc-sub,
+      .book-desc-main,
+      .book-postit,
+      .book-tag {
+        display: none !important;
+      }
+
+      .book-video-area {
+        position: relative;
+        margin: 0;
+        align-self: center;
+        height: 100%;
+        aspect-ratio: 16 / 9;
+        width: auto;
+        flex-shrink: 0;
+        overflow: hidden;
+
+        .book-video-thumb-wrap {
+          position: relative;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          padding: 0;
+
+          .book-video-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+
+      .book-title {
+        margin: 0;
+        height: auto;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #060606;
+        text-shadow: 0.852px 0.852px 0.852px rgba(255, 255, 255, 0.4);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-align: left;
+        letter-spacing: -0.72px;
+        align-self: center;
+        flex: 1;
+        min-width: 0;
+      }
+
       &:hover {
         transform: none !important;
         z-index: auto !important;
@@ -2162,8 +2272,8 @@ $card-colors: (
   // 하단 설정 버튼
   .goal-layer-foot {
     flex-shrink: 0;
-    padding: 8px 16px env(safe-area-inset-bottom, 20px);
-    background: #f9f6f0;
+    width: 100%;
+    padding: 16px;
   }
 
   .btn-set-goal {
@@ -2177,9 +2287,9 @@ $card-colors: (
   }
 }
 
-// =======================================
-// myclass_03: 책장 뷰 (이미지/텍스트 변형용)
-// =======================================
+// =============================================================================
+// 6. myclass_03 ~ 05: 책장 뷰 (사이드바, bookshelf-section, 선반/포스트잇)
+// =============================================================================
 .myclass {
   .myclass-layout {
     display: flex;
@@ -2434,6 +2544,9 @@ $card-colors: (
   // 책장 섹션: Component 1040.svg 기준 (myclass_03)
   .bookshelf-section {
     margin: auto;
+    @include mq(tablet-wide, max) {
+      padding-bottom: 20px;
+    }
     &:not(:last-child) {
       margin-bottom: 80px;
     }
@@ -3253,17 +3366,16 @@ $card-colors: (
   }
 }
 
-// =======================================
+// -----------------------------------------------------------------------------
 // 레이어 오픈 시 body 스크롤 방지
-// =======================================
+// -----------------------------------------------------------------------------
 body.layer-open {
   overflow: hidden;
 }
 
-// =======================================
-// myclass_06: GSAP 원페이지 스크롤 + 타임라인
-// 세로 스크롤 없음: 뷰포트 고정, 내부만 스크롤
-// =======================================
+// =============================================================================
+// 7. myclass_06: 원페이지 스크롤 + 타임라인 (뷰포트 고정, 내부만 스크롤)
+// =============================================================================
 html:has(body .myclass-page-06),
 body:has(.myclass-page-06) {
   height: 100%;
@@ -3563,9 +3675,9 @@ body:has(.myclass-page-06) {
   }
 }
 
-// =======================================
-// myclass-page-06 모바일 (Figma 360px MO)
-// =======================================
+// =============================================================================
+// 8. myclass_06 모바일 (Figma 360px MO — 가로 스와이프, scroll-section)
+// =============================================================================
 @media (max-width: 767px) {
   .myclass-page-06 {
     /* Figma MO: 상단 헤더 영역 그라디언트 배경 */
@@ -3921,7 +4033,7 @@ body:has(.myclass-page-06) {
     .scroll-section .bookshelf-section .books-item .book-ico-pencil-completed {
       width: 36px;
       height: 36px;
-      top: 2px;
+      top: -2px;
       right: 2px;
     }
 
@@ -3930,28 +4042,64 @@ body:has(.myclass-page-06) {
       top: 0;
       flex: 1;
       min-width: 0;
-      width: auto;
-      height: auto;
-      padding: 8px 12px 8px 30px;
+      width: 100%;
+      height: 100%;
+      padding: 12px 44px 12px 12px;
       text-align: left;
       align-items: center;
       justify-content: center;
       top: auto;
       left: auto;
       transform: none;
+
     }
 
+    /* 모바일: book-info-wrap 가로 배치 */
     .scroll-section .bookshelf-section .book-info-wrap {
       display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: center;
+      flex-direction: row;
+      align-items: stretch;
+      justify-content: flex-start;
       width: 100%;
-      gap: 0;
+      gap: 16px;
     }
 
-    .scroll-section .bookshelf-section .book-video-area,
+    /* 모바일: book-desc 영역 숨김 */
     .scroll-section .bookshelf-section .book-desc,
+    .scroll-section .bookshelf-section .book-desc-sub,
+    .scroll-section .bookshelf-section .book-desc-main,
+    .scroll-section .bookshelf-section .book-postit,
+    .scroll-section .bookshelf-section .book-tag {
+      display: none !important;
+    }
+
+    /* 모바일: book-video-area 썸네일 비율(16:9) 유지, 행 높이에 맞춤 */
+    .scroll-section .bookshelf-section .book-video-area {
+      position: relative;
+      margin: 0;
+      align-self: stretch;
+      height: 100%;
+
+      aspect-ratio: 16 / 9;
+      width: auto;
+      flex-shrink: 0;
+      overflow: hidden;
+
+      .book-video-thumb-wrap {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+
+
+        .book-video-thumb {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+
     .scroll-section .bookshelf-section .book-postit,
     .scroll-section .bookshelf-section .book-tag {
       width: 56px;
@@ -3971,6 +4119,7 @@ body:has(.myclass-page-06) {
       overflow: hidden;
       text-align: left;
       letter-spacing: -0.72px;
+      align-self: center;
     }
 
     /* 선반: 모바일 풀폭, 나무 질감 */
@@ -3993,20 +4142,9 @@ body:has(.myclass-page-06) {
       }
     }
 
+    /* 모바일: shelf-tags 숨김 */
     .scroll-section .bookshelf-section .shelf-tags {
-      top: 50%;
-      transform: translateY(-50%);
-      left: 12px;
-      height: auto;
-      font-size: 11px;
-
-      span {
-        padding: 0 8px;
-        font-size: 11px;
-      }
-      ul {
-        font-size: 10px;
-      }
+      display: none !important;
     }
 
     /* 선반 풀폭 */
@@ -4140,9 +4278,9 @@ body:has(.myclass-page-06) {
   }
 }
 
-// =======================================
-// 모바일 전용: 목표설정 (Figma 360px)
-// =======================================
+// =============================================================================
+// 9. .myclass-mobile — 모바일 전용 목표설정 (Figma 360px)
+// =============================================================================
 .myclass-mobile {
   max-width: 360px;
   margin: 0 auto;
