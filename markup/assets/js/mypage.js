@@ -82,6 +82,26 @@
 
   function openActivityModal() {
     if (!mobileActivityModal) return;
+
+    // 버튼 위치 기준으로 모달 패널 위치 계산
+    var panel = mobileActivityModal.querySelector(".modal-panel");
+    if (panel && mobileActivityBtn) {
+      var rect = mobileActivityBtn.getBoundingClientRect();
+      var gap = 8;
+      var panelWidth = Math.min(window.innerWidth - 32, 420);
+
+      // 버튼 왼쪽 기준 정렬, 화면 밖으로 나가지 않도록 보정
+      var left = rect.left;
+      if (left + panelWidth > window.innerWidth - 16) {
+        left = window.innerWidth - panelWidth - 16;
+      }
+      if (left < 16) left = 16;
+
+      panel.style.top = (rect.bottom + gap) + "px";
+      panel.style.left = left + "px";
+      panel.style.width = panelWidth + "px";
+    }
+
     mobileActivityModal.hidden = false;
     document.body.style.overflow = "hidden";
   }

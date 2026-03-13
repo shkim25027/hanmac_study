@@ -76,7 +76,8 @@
       },
 
       "마이페이지": {
-        "마이페이지": ["../mypage.html", "mainframe", "컨펌대기", ""]
+        "마이페이지": ["../mypage.html", "mainframe", "컨펌대기", ""],
+        "학습레벨": ["../mypage_level.html", "mainframe", "컨펌대기", ""]
       }
     }
   }

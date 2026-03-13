@@ -28,9 +28,16 @@
                   <img src="./assets/images/insight/profile.png" alt="홍길동 프로필" />
                 </div>
                 <p class="profile-name">
-                 <em>홍길동</em> 선임연구원
-                </p>
-                <p class="profile-role">바론컨설턴트</p>
+                    <em>
+                      <span class="ico-level">
+                        <img src="./assets/images/ico/ico_level_master.svg" alt="학습레벨" />
+                      </span>
+                      홍길동
+                    </em> 
+                    <span>선임연구원</span>
+                  </p>
+                  <p class="profile-role">바론컨설턴트</p>
+                
                 <div class="badge-level">
                   <span class="badge-level-title">학습레벨</span>
                   <span class="badge-level-value">
@@ -39,11 +46,22 @@
                     </i>
                     Master
                   </span>
-                  <i class="ico-info" title="레벨 안내"></i>
+                   <span class="ico-info-wrap">
+                    <i class="ico-info" aria-describedby="level-tooltip"></i>
+                    <span class="ico-info-tooltip" role="tooltip" id="level-tooltip">
+                      <span class="ico-info-tooltip-desc">누적된 학습 시간에 따라<br>4단계의 레벨이<br>자동 설정됩니다.</span>
+                      <ul class="ico-info-tooltip-list">
+                        <li><em>Master</em><span>40시간 이상</span></li>
+                        <li><em>Elite</em><span>20 ~ 40시간</span></li>
+                        <li><em>Learner</em><span>8 ~ 20시간</span></li>
+                        <li><em>Rookie</em><span>0 ~ 8시간</span></li>
+                      </ul>
+                    </span>
+                  </span>
                 </div>
                 <!-- MOBILE: 총 학습시간 버튼 (모바일에서만 표시, 클릭 시 활동 모달 오픈) -->
                 <button class="mobile-total-time-btn" type="button" id="mobileActivityBtn" aria-label="총 학습시간 상세보기">
-                  총 학습시간 <strong>340</strong>분 <span class="mobile-total-time-chevron" aria-hidden="true"></span>
+                  <span>총 학습시간 <strong>340</strong>분</span> <span class="mobile-total-time-chevron" aria-hidden="true"></span>
                 </button>
               </div>
               <section class="suggest-section">
@@ -1028,27 +1046,28 @@
       <div class="modal-backdrop" id="mobileActivityBackdrop"></div>
       <div class="modal-panel">
         <div class="modal-header">
-          <p class="modal-title" id="mobileModalTitle">총 학습시간 <strong>340분</strong></p>
-          <button class="modal-close-btn" type="button" id="mobileActivityClose" aria-label="닫기">&#10005;</button>
-        </div>
-        <div class="modal-body">
+          <p class="modal-title" id="mobileModalTitle">
+            <span class="titile-label">총 학습시간</span> <strong>340</strong><span>분</span></p>
           <div class="modal-gauge-wrap">
             <div class="gauge-bar">
               <div class="gauge-fill" style="width: 63%"></div>
             </div>
             <span class="modal-average-badge">전체 평균</span>
           </div>
+          <button class="modal-close-btn" type="button" id="mobileActivityClose" aria-label="닫기">&#10005;</button>
+        </div>
+        <div class="modal-body">
           <ul class="modal-activity-list">
             <li>
-              <span class="modal-label">마이클라스</span>
+              <span class="modal-label">마이클래스</span>
               <span class="modal-value modal-value--green"><em>74</em>분(33%)</span>
             </li>
             <li>
-              <span class="modal-label">온보딩 <span class="modal-required"><i class="ico-info-xs" aria-hidden="true"></i> 필수 시청 26.01.14</span></span>
+              <span class="modal-label">온보딩 <span class="modal-required"><i class="ico-info-xs" aria-hidden="true"></i> 필수 시청 <em>26.01.14</em></span></span>
               <span class="modal-value modal-value--green"><em>110</em>분(80%)</span>
             </li>
             <li>
-              <span class="modal-label">법정교육 <span class="modal-required"><i class="ico-info-xs" aria-hidden="true"></i> 필수 시청 26.01.14</span></span>
+              <span class="modal-label">법정교육 <span class="modal-required"><i class="ico-info-xs" aria-hidden="true"></i> 필수 시청 <em>26.01.14</em></span></span>
               <span class="modal-value modal-value--green"><em>30</em>분(20%)</span>
             </li>
             <li>
