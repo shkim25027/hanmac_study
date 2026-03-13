@@ -6,6 +6,7 @@
   </head>
   <body>
     <div class="wrap myclass myclass-page-06">
+      <div id="scroll-progress" class="scroll-progress-bar" aria-hidden="true"></div>
       @@include("_include/_header.html")
 
       <div class="container">
@@ -68,6 +69,12 @@
               <div class="page-title">
                 <h3>두 번째 목표 <strong class="intro-goal-name">[효과적인 의사소통 배우기]</strong>로 새로운 책장이 열렸어요.</h3>
                 <p><em class="intro-dday">D-64<small>(3월 30일)</small></em> 까지 지금부터 또 하나의 지식을 쌓아보세요.</p>
+              </div>
+            </div>
+            <div class="page-intro-mobile">
+              <div class="page-title">
+                <h3>새로운 책장이 열렸어요.</h3>
+                <p><em class="intro-dday">D-64</em> 까지 지식을 쌓아보세요.</p>
               </div>
             </div>
           </div>
@@ -1164,6 +1171,8 @@
           var pct = fillPct + "%";
           if (progressFill)   progressFill.style.height  = pct;
           if (quarterNavFill) quarterNavFill.style.height = pct;
+          var progressBar = document.getElementById("scroll-progress");
+          if (progressBar) progressBar.style.width = pct;
         }
 
         setHeights();

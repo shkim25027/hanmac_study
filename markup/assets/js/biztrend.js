@@ -26,6 +26,7 @@
   var labelObserver = null;   // 라벨 업데이트
   var articleData = {};       // 날짜별 기사 데이터
   var videoModal = null;      // 공통 비디오 모달 (VideoModalBase)
+  var topLoadReady = false;   // 상단 스크롤 활성화 플래그
 
   // ------------------------------
   // 날짜 값 읽기/쓰기
@@ -343,6 +344,26 @@
       var newTop = document.getElementById("article-grid-sentinel-top");
       if (newTop) topObserver.observe(newTop);
     }
+
+    // 새로 추가된 달이 화면 중앙에 올 때까지 상단 로드 비활성화
+    topLoadReady = false;
+    var newSep = gridBody.querySelector(
+      '.article-grid-month-sep[data-year="' + year + '"][data-month="' + month + '"]'
+    );
+    if (newSep) {
+      var centerObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              topLoadReady = true;
+              centerObserver.disconnect();
+            }
+          });
+        },
+        { root: null, rootMargin: "0px", threshold: 0 }
+      );
+      centerObserver.observe(newSep);
+    }
   }
 
   /**
@@ -399,6 +420,7 @@
 
     // 상태 초기화
     loadedMonths = [];
+    topLoadReady = false;
     gridBody.innerHTML = "";
 
     // 첫 달 렌더링
@@ -476,6 +498,11 @@
           if (entry.isIntersecting && loadedMonths.length > 0) {
             var last = loadedMonths[loadedMonths.length - 1];
             var next = getNextMonth(last.year, last.month);
+            // 현재 달 이후는 로드하지 않음
+            var now = new Date();
+            var nowYear = now.getFullYear();
+            var nowMonth = now.getMonth() + 1;
+            if (next.year > nowYear || (next.year === nowYear && next.month > nowMonth)) return;
             appendMonth(next.year, next.month);
           }
         });
@@ -486,7 +513,9 @@
     scrollObserver.observe(sentinel);
   }
 
-  /** 상단: 이전 달 추가 (IntersectionObserver — 로드 직후 즉시 발화는 setTimeout으로 방지) */
+  /** 상단: 이전 달 추가 (IntersectionObserver — 로드 직후 즉시 발화는 setTimeout으로 방지)
+   * 이전 달이 로드된 후에는 해당 달이 화면 중앙에 올 때까지 추가 로드 비활성화
+   */
   function initTopScroll() {
     var gridBody = document.querySelector(".biztrend .article-grid-body");
     if (!gridBody) return;
@@ -499,26 +528,24 @@
 
     if (topObserver) topObserver.disconnect();
 
-    var ready = false; // 로드 직후 즉시 발화 방지 플래그
-
     topObserver = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
-          if (!entry.isIntersecting || !ready || loadedMonths.length === 0) return;
+          if (!entry.isIntersecting || !topLoadReady || loadedMonths.length === 0) return;
           var first = loadedMonths[0];
           var prev = getPrevMonth(first.year, first.month);
           if (prev.year < YEAR_START) return;
           prependMonth(prev.year, prev.month);
         });
       },
-      { root: null, rootMargin: "200px 0px 0px 0px", threshold: 0 }
+      { root: null, rootMargin: "0px", threshold: 0 }
     );
 
     var topSentinel = document.getElementById("article-grid-sentinel-top");
     if (topSentinel) topObserver.observe(topSentinel);
 
     // 페이지가 안정화된 후 활성화 (로드 시 즉시 발화 방지)
-    setTimeout(function () { ready = true; }, 300);
+    setTimeout(function () { topLoadReady = true; }, 300);
   }
 
   // ------------------------------

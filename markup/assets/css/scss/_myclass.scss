@@ -65,6 +65,7 @@ $card-colors: (
     border-top: 2px solid #f3dba8;
     box-shadow: 0 -2px 3px 0 rgba(0, 0, 0, 0.05);
   }
+  .page-title {padding-top: 24px;}
 
   // -------
   // 내부 전체 래퍼
@@ -1104,16 +1105,34 @@ $card-colors: (
       }
     }
 
-    .myclass-top-bar {
+    // 모바일 상단바: .myclass-top-bar.top-bar-absolute 하위로 적용
+    .myclass-top-bar.top-bar-absolute {
+      position: relative;
       flex-direction: column;
       align-items: stretch;
       gap: 0;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       padding: 0;
-    }
+      width: 100%;
+      left: 0;
 
-    .top-bar-left {
-      display: none;
+      .page-intro-mobile {
+        width: 100%;
+        .page-title {
+          padding-top: 0;
+          h3 {
+            display: block;
+            color: #3A200D;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 1.4;
+            letter-spacing: -0.02em;
+          }
+        }
+      }
+      .top-bar-left {
+        display: none;
+      }
     }
 
     .recs-list {
@@ -2297,13 +2316,13 @@ $card-colors: (
     gap: 0;
     //max-width: 1506px;
     margin: 0 auto;
-    padding: 24px 48px 48px;
+    padding: 24px 48px 24px;
   }
 
   .myclass-content {
     display: flex;
     gap: 2rem;
-    margin-top: 1rem;
+    margin-top: 56px;
   }
 
   .myclass-sidebar {
@@ -2434,23 +2453,25 @@ $card-colors: (
   }
 
   .btn-reset-goal {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    font-size: 18px;
-    font-weight: 700;
-    height: 50px;
-    width: 166px;
-    border-radius: 8px;
-    color: var(--text-primary);
-    background: radial-gradient(117.51% 77.94% at 48.87% 100%, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.30) 24.58%, rgba(255, 255, 255, 0.00) 100%), #FFCF70;
-    background-blend-mode: screen, normal;
-    box-shadow: 0 -3.59px 3.59px 0 rgba(225, 141, 54, 0.50) inset, 3.59px 3.59px 10.769px -3.59px rgba(220, 196, 172, 0.85);
-    cursor: pointer;
-    padding: 0;
-    margin-top: 44px;
-
+    @include mq(tablet-wide, min) {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 18px;
+      font-weight: 700;
+      height: 50px;
+      width: 166px;
+      border-radius: 8px;
+      color: var(--text-primary);
+      background: radial-gradient(117.51% 77.94% at 48.87% 100%, rgba(255, 255, 255, 0.60) 0%, rgba(255, 255, 255, 0.30) 24.58%, rgba(255, 255, 255, 0.00) 100%), #FFCF70;
+      background-blend-mode: screen, normal;
+      box-shadow: 0 -3.59px 3.59px 0 rgba(225, 141, 54, 0.50) inset, 3.59px 3.59px 10.769px -3.59px rgba(220, 196, 172, 0.85);
+      cursor: pointer;
+      padding: 0;
+      margin-top: 44px;
+    }
+   
     .ico-arrow-back {
       display: inline-block;
       width: 24px;
@@ -3679,6 +3700,15 @@ body:has(.myclass-page-06) {
 // 8. myclass_06 모바일 (Figma 360px MO — 가로 스와이프, scroll-section)
 // =============================================================================
 @media (max-width: 767px) {
+  /* 공용(모바일): 상단바 좌측 영역 숨김 */
+  .myclass {
+    .myclass-top-bar {
+      .top-bar-left {
+        display: none;
+      }
+    }
+  }
+
   .myclass-page-06 {
     /* Figma MO: 상단 헤더 영역 그라디언트 배경 */
     header {
@@ -3691,8 +3721,7 @@ body:has(.myclass-page-06) {
     }
 
     .myclass-wrap {
-      padding: 0 0 16px;
-      max-width: 360px;
+      padding: 0 0 4px;
       margin: 0 auto;
 
       &::after {
@@ -3746,10 +3775,16 @@ body:has(.myclass-page-06) {
       }
     }
 
+    .btn-next-growth {
+      font-size: 16px;
+      height: 40px;
+    }
+
     /* 컨텐츠: flex로 남은 높이만 사용, 세로 스크롤 없음 */
     .myclass-content {
       flex: 1;
       min-height: 0;
+      margin-top: 0;
     }
 
     /* 메인: 가로 스크롤 컨테이너 (섹션 간 좌우 스와이프) */
@@ -3846,10 +3881,12 @@ body:has(.myclass-page-06) {
       }
     }
 
-    /* 섹션: 가로 스와이프 카드 (100% 너비 고정), 내부만 세로 스크롤 */
+    /* 섹션: 가로 스와이프 카드 (100% 너비), 모바일에서 콘텐츠 하단 정렬 */
     .scroll-section {
       display: flex;
       flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-end;
       flex-shrink: 0;
       min-width: 100%;
       width: 100%;
@@ -3872,11 +3909,13 @@ body:has(.myclass-page-06) {
       flex: none;
       width: 100%;
       padding: 0 0 16px;
+      margin-top: auto;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
       gap: 8px 16px;
+      gap: 0;
     }
 
     .sidebar-quarter {
@@ -4023,18 +4062,19 @@ body:has(.myclass-page-06) {
     }
 
     .scroll-section .bookshelf-section .books-item .book-ico-pencil {
-      width: 28px;
-      height: 28px;
+      width: 18px;
+      height: 18px;
       top: 4px;
-      right: 4px;
+      right: 12px;
       background-size: contain;
     }
 
     .scroll-section .bookshelf-section .books-item .book-ico-pencil-completed {
-      width: 36px;
-      height: 36px;
-      top: -2px;
-      right: 2px;
+      width: 24px;
+      height: 26px;
+      top: -3px;
+      right: 8px;
+      background-size: contain;
     }
 
     .scroll-section .bookshelf-section .book-info-btn {
@@ -4124,7 +4164,6 @@ body:has(.myclass-page-06) {
 
     /* 선반: 모바일 풀폭, 나무 질감 */
     .scroll-section .bookshelf-section .shelf-plank {
-      height: 17px;
       margin-top: 0;
       border-radius: 0;
       background-color: #56401a;
@@ -4132,13 +4171,17 @@ body:has(.myclass-page-06) {
       background-repeat: repeat;
       background-size: auto;
       box-shadow: inset 0 2px 2px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 2px 0 rgba(255, 255, 255, 0.5);
+      margin: 0 -20px;
+      width: calc(100vw + 4px);
+      height: 32px;
 
       &::before {
         display: none;
       }
       &::after {
-        top: -8px;
-        height: 8px;
+        top: -28px;
+        width: 100%;
+        height: 28px;
       }
     }
 
@@ -4147,10 +4190,6 @@ body:has(.myclass-page-06) {
       display: none !important;
     }
 
-    /* 선반 풀폭 */
-    .scroll-section .bookshelf-section .shelf-plank {
-      margin: 0 -16px;
-    }
 
     /* 홍길동님 Pick! 라벨 (Figma MO) */
     .mo-pick-label {
