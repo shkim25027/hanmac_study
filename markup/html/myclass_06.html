@@ -6,7 +6,6 @@
   </head>
   <body>
     <div class="wrap myclass myclass-page-06">
-      <div id="scroll-progress" class="scroll-progress-bar" aria-hidden="true"></div>
       @@include("_include/_header.html")
 
       <div class="container">
@@ -109,9 +108,12 @@
               <div class="bookshelf">
                 <div class="books-list books-list--same-height">
                   <div class="books-item" data-video-id="1">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png'); --book-img-m: url('./assets/images/myclass/img_book_01_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_01_m.png">
+                        <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="1" aria-label="영상 상세 보기 - 조직도가 리셋된다!">
                       <span class="book-info-wrap">
@@ -139,9 +141,12 @@
                     </button>
                   </div>
                   <div class="books-item " data-video-id="2">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_02.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_02.png'); --book-img-m: url('./assets/images/myclass/img_book_02_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_02_m.png">
+                        <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="2" aria-label="영상 상세 보기 - 혈당 스파이크">
                       <span class="book-info-wrap">
@@ -169,9 +174,12 @@
                     </button>
                   </div>
                   <div class="books-item" data-video-id="3">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_03.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_03.png'); --book-img-m: url('./assets/images/myclass/img_book_03_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_03_m.png">
+                        <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="3" aria-label="영상 상세 보기 - 제대로 쉬는 방법">
                       <span class="book-info-wrap">
@@ -199,9 +207,12 @@
                     </button>
                   </div>
                   <div class="books-item" data-video-id="4">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_04.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_04.png'); --book-img-m: url('./assets/images/myclass/img_book_04_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_04_m.png">
+                        <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="4" aria-label="영상 상세 보기 - 'AI 도파민'의 바다에 빠진 이유">
                       <span class="book-info-wrap">
@@ -229,9 +240,12 @@
                     </button>
                   </div>
                   <div class="books-item" data-video-id="5">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_05.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_05.png'); --book-img-m: url('./assets/images/myclass/img_book_05_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_05_m.png">
+                        <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="5" aria-label="영상 상세 보기 - 살찌고 망가진몸 되살리는 방법">
                       <span class="book-info-wrap">
@@ -259,9 +273,12 @@
                     </button>
                   </div>
                   <div class="books-item" data-video-id="6">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_06.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_06.png'); --book-img-m: url('./assets/images/myclass/img_book_06_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_06_m.png">
+                        <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="6" aria-label="영상 상세 보기 - 자기 관점의 힘">
                       <span class="book-info-wrap">
@@ -322,9 +339,12 @@
               <div class="bookshelf">
                 <div class="books-list">
                   <div class="books-item books-item-completed" data-video-id="1">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png'); --book-img-m: url('./assets/images/myclass/img_book_01_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_01_m.png">
+                        <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="1" aria-label="영상 상세 보기 - 조직도가 리셋된다!">
                       <span class="book-info-wrap">
@@ -352,9 +372,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="2">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_02.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_02.png'); --book-img-m: url('./assets/images/myclass/img_book_02_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_02_m.png">
+                        <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="2" aria-label="영상 상세 보기 - 혈당 스파이크">
                       <span class="book-info-wrap">
@@ -382,9 +405,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="3">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_03.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_03.png'); --book-img-m: url('./assets/images/myclass/img_book_03_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_03_m.png">
+                        <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="3" aria-label="영상 상세 보기 - 제대로 쉬는 방법">
                       <span class="book-info-wrap">
@@ -412,9 +438,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="4">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_04.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_04.png'); --book-img-m: url('./assets/images/myclass/img_book_04_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_04_m.png">
+                        <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="4" aria-label="영상 상세 보기 - 'AI 도파민'의 바다에 빠진 이유">
                       <span class="book-info-wrap">
@@ -442,9 +471,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="5">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_05.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_05.png'); --book-img-m: url('./assets/images/myclass/img_book_05_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_05_m.png">
+                        <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="5" aria-label="영상 상세 보기 - 살찌고 망가진몸 되살리는 방법">
                       <span class="book-info-wrap">
@@ -472,9 +504,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="6">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_06.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_06.png'); --book-img-m: url('./assets/images/myclass/img_book_06_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_06_m.png">
+                        <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="6" aria-label="영상 상세 보기 - 자기 관점의 힘">
                       <span class="book-info-wrap">
@@ -535,9 +570,12 @@
               <div class="bookshelf">
                 <div class="books-list">
                   <div class="books-item books-item-completed" data-video-id="1">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png'); --book-img-m: url('./assets/images/myclass/img_book_01_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_01_m.png">
+                        <img src="./assets/images/myclass/img_book_01.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="1" aria-label="영상 상세 보기 - 조직도가 리셋된다!">
                       <span class="book-info-wrap">
@@ -565,9 +603,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="2">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_02.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_02.png'); --book-img-m: url('./assets/images/myclass/img_book_02_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_02_m.png">
+                        <img src="./assets/images/myclass/img_book_02.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="2" aria-label="영상 상세 보기 - 혈당 스파이크">
                       <span class="book-info-wrap">
@@ -595,9 +636,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="3">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_03.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_03.png'); --book-img-m: url('./assets/images/myclass/img_book_03_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_03_m.png">
+                        <img src="./assets/images/myclass/img_book_03.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="3" aria-label="영상 상세 보기 - 제대로 쉬는 방법">
                       <span class="book-info-wrap">
@@ -625,9 +669,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="4">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_04.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_04.png'); --book-img-m: url('./assets/images/myclass/img_book_04_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_04_m.png">
+                        <img src="./assets/images/myclass/img_book_04.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="4" aria-label="영상 상세 보기 - 'AI 도파민'의 바다에 빠진 이유">
                       <span class="book-info-wrap">
@@ -655,9 +702,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="5">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_05.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_05.png'); --book-img-m: url('./assets/images/myclass/img_book_05_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_05_m.png">
+                        <img src="./assets/images/myclass/img_book_05.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="5" aria-label="영상 상세 보기 - 살찌고 망가진몸 되살리는 방법">
                       <span class="book-info-wrap">
@@ -685,9 +735,12 @@
                     </button>
                   </div>
                   <div class="books-item books-item-completed" data-video-id="6">
-                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_06.png')">
+                    <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_06.png'); --book-img-m: url('./assets/images/myclass/img_book_06_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
-                      <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
+                      <picture class="book-img-picture">
+                        <source media="(max-width: 767px)" srcset="./assets/images/myclass/img_book_06_m.png">
+                        <img src="./assets/images/myclass/img_book_06.png" alt="추천 도서 이미지" class="book-img">
+                      </picture>
                     </div>
                     <button type="button" class="book-info-btn" data-video-id="6" aria-label="영상 상세 보기 - 자기 관점의 힘">
                       <span class="book-info-wrap">
@@ -916,8 +969,15 @@
           return headerEl ? headerEl.offsetHeight : 0;
         }
 
-        /* 높이 일괄 설정 – contentEl과 mainEl 모두 1섹션 높이로 고정 */
+        /* 높이 일괄 설정 – contentEl과 mainEl 모두 1섹션 높이로 고정 (데스크톱만) */
         function setHeights() {
+          var isMo = window.innerWidth <= 767;
+          if (isMo) {
+            contentEl.style.height = "";
+            mainEl.style.height   = "";
+            sections.forEach(function(s) { s.style.height = ""; });
+            return;
+          }
           var h = window.innerHeight - getHeaderH();
           contentEl.style.height = h + "px";
           mainEl.style.height    = h + "px";
@@ -1106,8 +1166,6 @@
           var pct = fillPct + "%";
           if (progressFill)   progressFill.style.height  = pct;
           if (quarterNavFill) quarterNavFill.style.height = pct;
-          var progressBar = document.getElementById("scroll-progress");
-          if (progressBar) progressBar.style.width = pct;
         }
 
         setHeights();
