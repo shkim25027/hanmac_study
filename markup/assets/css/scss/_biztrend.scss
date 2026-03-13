@@ -38,8 +38,22 @@
   // 2. 공통 컴포넌트 (mixin 호출)
   //    - _common-components.scss 에 정의된 mixin 을 불러옴
   // ---------------------------------------------------------------------------
-  .page-header { @include page-header; }
-  .breadcrumb  { @include breadcrumb;  }
+  .page-header { 
+    @include page-header;   
+    @include mq(tablet-wide,max){
+      padding-bottom: 16px;
+      .page-title {
+        padding-top: 14px;
+        }
+      }
+    
+  }
+
+
+  .breadcrumb  { @include breadcrumb;  
+  
+    @include mq(tablet-wide,max){display: none;}
+  }
 
 
   // ---------------------------------------------------------------------------
@@ -282,13 +296,16 @@
       cursor: pointer;
       @include flex(row, center, flex-start);
       @include mq(tablet-wide, max) {
-        
+        align-items: center;
+        justify-content: center;
       }
 
       // "2025년" + "12월" 레이블 묶음
       .date-select-label {
         gap: 8px;
         @include flex(row, flex-end, flex-start);
+
+        
       }
 
       .date-year  { color: #979797; font-size: 20px; }  // 연도: 회색·작게
@@ -807,58 +824,100 @@
   // ===========================================================================
   @include mq(tablet-wide, max) {
 
+    // ----- 한 화면에 맞춤: 세로 스크롤 없음 -----
+    .container {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .page-header {
+      flex-shrink: 0;
+      padding-bottom: 8px;
+      .page-title { padding-top: 8px; }
+    }
+
+    .biztrend-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .biztrend-inner {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
     // 소개 텍스트 영역 숨김
     .biztrend-sub-title { display: none; }
 
     // 헤더: 세로 방향으로 변경
     .biztrend-header {
+      flex-shrink: 0;
       flex-direction: column;
       align-items: flex-start;
-      gap: 16px;
+      gap: 12px;
     }
 
-    // 그리드 스크롤 해제 (내부 body 에서 처리)
+    // 그리드: 가로 100vw, 남은 높이만 사용, 세로 스크롤 없음
     .article-grid {
+      width: 100vw;
+      flex: 1;
+      min-height: 0;
       max-height: none;
-      overflow: visible;
+      overflow: hidden;
       padding: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     // 요일 헤더(왼쪽 고정) + 카드 바디(오른쪽 스크롤)를 가로로 배치
     .article-grid-inner {
+      flex: 1;
+      min-height: 0;
       flex-direction: row;
       gap: 0;
       overflow: hidden;
     }
 
-    // ── 좌측: 요일 헤더 (고정 48px 너비) ──
+    // ── 좌측: 요일 헤더 (고정 48px 너비), 세로 전체 채움 ──
     .article-grid-head {
       position: relative;
-      flex-shrink: 0;  // 너비 줄지 않게 고정
-      width: 32px;
+      flex-shrink: 0;
+      width: 48px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
       z-index: 2;
       background: #fff;
     }
 
-    // 요일 헤더: .article-grid-row 안 6개 카드와 동일한 비율(gap 12px, 셀 min-height 80px)
+    // 요일 헤더: 세로 전체를 6등분 균등 분할
     .article-grid-days {
+      flex: 1;
+      min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;           // article-grid-row와 동일
+      gap: 0;
       width: 48px;
 
       &::after { display: none; }  // '&' 구분자 숨김
 
       li {
-        min-height: 80px;  // article-card와 동일
-        padding: 12px 0;
+        flex: 1;
+        min-height: 0;
+        padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 600;
         color: #C3C3C3;
-        flex-shrink: 0;
 
         // 데스크톱용 구분선 숨김
         &::before,
@@ -866,43 +925,47 @@
       }
     }
 
-    // ── 우측: 카드 바디 — MO에서는 행(.article-grid-row)을 가로로 배열, 가로 스크롤 ──
+    // ── 우측: 카드 바디 — MO에서는 행(.article-grid-row)을 가로로 배열, 가로 스크롤만 ──
     .article-grid-body {
       flex: 1;
+      min-height: 0;
       min-width: 0;
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-      gap: 12px;
+      gap: 8px;
       overflow-x: auto;
-      overflow-y: visible;
-      padding-bottom: 16px;
+      overflow-y: hidden;
+      padding-bottom: 8px;
       -webkit-overflow-scrolling: touch;
       @include scrollbar-style();
     }
 
-    // 행: MO에서는 화면 너비에 딱 맞춤 (한 행 = 한 화면), 안에는 6개 카드 세로 쌓기
+    // 행: 가로 = 화면 전체 − article-grid-head(48px), 한 행이 보이는 영역에 딱 맞춤
     .article-grid-row {
       display: flex;
       flex-direction: column;
-      flex: 0 0 100%;     // 부모(.article-grid-body) 보이는 영역 전체 너비
-      min-width: 100%;
-      gap: 12px;
-      padding-bottom: 12px;
+      flex: 0 0 calc(100vw - 48px);
+      width: calc(100vw - 48px);
+      min-width: calc(100vw - 48px);
+      height: 100%;
+      gap: 8px;
+      padding-bottom: 8px;
       box-sizing: border-box;
 
       &::before { display: none; }
     }
 
-    // ── 기사 카드: 날짜 배지(.article-card-num)는 PC와 동일하게 좌상단 절대 배치, 콘텐츠 가로 배치 ──
+    // ── 기사 카드: 한 화면에 맞춰 높이 균등 분배 ──
     .article-card {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
-      gap: 8px;
-      min-height: 80px;
-      padding: 8px 10px;
-      margin-left: 0;  // 데스크톱 6n 마진 초기화
+      gap: 6px;
+      flex: 1;
+      min-height: 0;
+      padding: 6px 8px;
+      margin-left: 0;
 
       &:nth-child(6n) { margin-left: 0; }
 
@@ -921,6 +984,21 @@
       // 토요일 카드 제목 바 색상 (연갈색 유지)
       &.weekend .article-card-content .article-card-title-box {
         background: #EDDFD1;
+      }
+
+      // 한 화면에 맞춰 카드 내부 폰트·패딩 축소
+      .article-card-title-box { padding: 4px 6px; }
+      .article-card-content:first-of-type .article-card-title-box { padding-left: 26px; }
+      .article-card-title { font-size: 12px; line-height: 1.3; }
+      .article-card-list {
+        padding: 0 8px;
+        font-size: 11px;
+        line-height: 1.4;
+        li {
+          padding-left: 10px;
+          @include ellipsis(1);
+          &::before { top: 6px; }
+        }
       }
     }
 
