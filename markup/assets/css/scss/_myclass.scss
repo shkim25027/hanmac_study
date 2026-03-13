@@ -2317,6 +2317,16 @@ $card-colors: (
     //max-width: 1506px;
     margin: 0 auto;
     padding: 24px 48px 24px;
+
+     @include mq("tablet-wide", max) {
+            &:has(.quarter-nav){
+      .top-bar-absolute {
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+    }
+     }
+
   }
 
   .myclass-content {
@@ -3401,6 +3411,7 @@ html:has(body .myclass-page-06),
 body:has(.myclass-page-06) {
   height: 100%;
   overflow-y: hidden;
+  overflow-x: hidden; // 가로 스크롤 방지: 섹션이 뷰포트 밖으로 넘치지 않도록
 }
 
 .wrap.myclass-page-06 {
@@ -3425,6 +3436,7 @@ body:has(.myclass-page-06) {
   }
 
   .myclass-wrap {
+    position: relative; /* quarter-nav absolute 기준점 */
     flex: 1;
     min-height: 0;
     overflow: hidden;
@@ -3432,7 +3444,7 @@ body:has(.myclass-page-06) {
     flex-direction: column;
   }
 
-  /* 컨텐츠 영역: PC는 가로(메인|quarter-nav), 높이 제한으로 세로 스크롤 없음 */
+  /* 컨텐츠 영역: PC는 가로(메인), 높이 제한으로 세로 스크롤 없음 */
   .myclass-content {
     flex: 1;
     min-height: 0;
@@ -3596,10 +3608,12 @@ body:has(.myclass-page-06) {
     }
   }
 
-  /* ── 오른쪽 분기 네비게이션 ── */
+  /* ── 오른쪽 분기 네비게이션: myclass-wrap 기준 absolute 우측 고정 ── */
   .quarter-nav {
-    position: relative;
-    flex: 0 0 auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -3787,22 +3801,19 @@ body:has(.myclass-page-06) {
       -webkit-overflow-scrolling: touch;
       touch-action: pan-x;
       scrollbar-width: none;
-
+      max-width: 100vw;
       &::-webkit-scrollbar {
         display: none;
       }
     }
 
-    /* 모바일에서 04와 동일하게: 첫 번째 섹션만 표시, 가로 스와이프·분기 네비 숨김 */
+    /* 모바일에서 04와 동일하게: 첫 번째 섹션만 표시, 가로 스와이프 숨김 */
     .myclass-page-06.mobile-single-section {
       .myclass-main {
         overflow-x: hidden;
         scroll-snap-type: none;
       }
       .scroll-section:not(:first-child) {
-        display: none !important;
-      }
-      .quarter-nav {
         display: none !important;
       }
     }
@@ -3817,24 +3828,19 @@ body:has(.myclass-page-06) {
       transform: none;
     }
 
-    /* 모바일 quarter-nav: 하단 고정 수평 인디케이터 */
+    /* 모바일 quarter-nav: page-intro-mobile 아래 인라인 배치 */
     .quarter-nav {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 100;
+      position: static;
+      transform: none;
+      align-self: center;
+      flex-shrink: 0;
+      margin: 6px auto 4px;
+      height: 10px;
+      z-index: 1;
       display: flex;
       flex-direction: row;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.75);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-      border-radius: 100px;
-      padding: 8px 14px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
     .quarter-nav-track {
@@ -3866,6 +3872,7 @@ body:has(.myclass-page-06) {
         color: #999;
         font-weight: 400;
         white-space: nowrap;
+        display: none;
       }
 
       &.is-active {
@@ -3897,6 +3904,7 @@ body:has(.myclass-page-06) {
       overflow-x: hidden;
       scroll-snap-align: start;
       overscroll-behavior-x: contain;
+      touch-action: pan-y; /* 세로는 섹션 내 스크롤, 가로 스와이프는 myclass-main으로 전달 */
       padding: 0 16px;
       box-sizing: border-box;
       scrollbar-width: none;

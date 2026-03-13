@@ -396,6 +396,12 @@ html {
             var(--r) max(var(--b), var(--p) - var(--h) * tan(var(--a) / 2)) /
             var(--h) 0 0 0;
         }
+
+        a {
+          &:hover {
+             background-color: rgba(24, 143, 107, 0.05);
+          }
+        }
         dl {
           @include flex(column, flex-start, center);
         }

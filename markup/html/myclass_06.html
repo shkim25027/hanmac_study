@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
   </head>
   <body>
-    <div class="wrap myclass myclass-page-06 mobile-single-section">
+    <div class="wrap myclass myclass-page-06">
       @@include("_include/_header.html")
 
       <div class="container">
@@ -72,11 +72,14 @@
             </div>
             <div class="page-intro-mobile">
               <div class="page-title">
-                <h3>새로운 책장이 열렸어요.</h3>
-                <p><em class="intro-dday">D-64</em> 까지 지식을 쌓아보세요.</p>
+                <h3>나만의 빛나는 책장을 완성했어요.</h3>
+                <button type="button" class="btn-next-growth">다음 성장 이어가기 →</button>
               </div>
             </div>
           </div>
+
+          <!-- 분기 네비게이션: 모바일에서 page-intro-mobile 아래, 데스크톱에서 우측 고정 -->
+          <nav class="quarter-nav" aria-label="분기 이동"></nav>
 
           <!-- 타임라인 + 섹션 그룹 -->
           <div class="myclass-content">
@@ -793,8 +796,6 @@
             </div>
             <!-- // myclass-main -->
 
-            <!-- 오른쪽 분기 네비게이션 (JS로 동적 생성) -->
-            <nav class="quarter-nav" aria-label="분기 이동"></nav>
 
           </div>
           <!-- // myclass-content -->

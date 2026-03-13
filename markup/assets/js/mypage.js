@@ -226,4 +226,37 @@
 
   // 초기 레이블 설정
   updateMobileContentLabel();
+
+  // ------------------------------
+  // 7. 모바일: content-panels 스와이프로 탭 전환
+  // ------------------------------
+  var contentPanelsEl = document.querySelector(".content-panels");
+  var swipeStartX = 0;
+  var swipeStartY = 0;
+
+  if (contentPanelsEl) {
+    contentPanelsEl.addEventListener("touchstart", function (e) {
+      swipeStartX = e.touches[0].clientX;
+      swipeStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    contentPanelsEl.addEventListener("touchend", function (e) {
+      // 모바일 환경에서만 동작 (터치 지원 기기)
+      var deltaX = e.changedTouches[0].clientX - swipeStartX;
+      var deltaY = e.changedTouches[0].clientY - swipeStartY;
+
+      // 수직 스크롤보다 수평 이동이 클 때만 탭 전환
+      if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+
+      if (deltaX < 0) {
+        // 왼쪽 스와이프 → 다음 탭
+        currentPanelIndex = (currentPanelIndex + 1) % contentPanelNames.length;
+      } else {
+        // 오른쪽 스와이프 → 이전 탭
+        currentPanelIndex = (currentPanelIndex - 1 + contentPanelNames.length) % contentPanelNames.length;
+      }
+      updateMobileContentLabel();
+      switchMobileTab("content");
+    }, { passive: true });
+  }
 })();
