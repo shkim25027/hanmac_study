@@ -5,8 +5,7 @@
     <link rel="stylesheet" type="text/css" href="./assets/css/main.css" />
   </head>
   <body>
-    <div class="wrap myclass myclass-page-06">
-      <div id="scroll-progress" class="scroll-progress-bar" aria-hidden="true"></div>
+    <div class="wrap myclass myclass-page-06 mobile-single-section">
       @@include("_include/_header.html")
 
       <div class="container">
@@ -344,7 +343,7 @@
               <div class="scroll-section-content">
               <section id="bookshelf-section-self" class="bookshelf-section" aria-label="자기이해와 강점 찾기 책장">
               <div class="bookshelf">
-                <div class="books-list">
+                <div class="books-list books-list--same-height">
                   <div class="books-item books-item-completed" data-video-id="1">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png'); --book-img-m: url('./assets/images/myclass/img_book_01_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
@@ -575,7 +574,7 @@
               <div class="scroll-section-content">
               <section id="bookshelf-section-self" class="bookshelf-section" aria-label="자기이해와 강점 찾기 책장">
               <div class="bookshelf">
-                <div class="books-list">
+                <div class="books-list books-list--same-height">
                   <div class="books-item books-item-completed" data-video-id="1">
                     <div class="book-img-wrap" style="--book-img: url('./assets/images/myclass/img_book_01.png'); --book-img-m: url('./assets/images/myclass/img_book_01_m.png')">
                       <span class="book-ico-pencil book-ico-pencil-completed" aria-hidden="true" title="감상문 작성 완료"></span>
@@ -1171,8 +1170,6 @@
           var pct = fillPct + "%";
           if (progressFill)   progressFill.style.height  = pct;
           if (quarterNavFill) quarterNavFill.style.height = pct;
-          var progressBar = document.getElementById("scroll-progress");
-          if (progressBar) progressBar.style.width = pct;
         }
 
         setHeights();

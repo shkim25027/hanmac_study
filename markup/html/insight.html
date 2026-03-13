@@ -51,6 +51,8 @@
               
             </div>
             <div class="swiper-pagination hero-pagination" aria-hidden="true"></div>
+            <button type="button" class="swiper-button-prev hero-prev btn-prev" aria-label="이전 슬라이드"></button>
+              <button type="button" class="swiper-button-next hero-next btn-next" aria-label="다음 슬라이드"></button>
           </div>
         </section>
                 <!-- Tabs -->
@@ -226,6 +228,10 @@
           pagination: {
             el: '.hero-pagination',
             clickable: true,
+          },
+          navigation: {
+            nextEl: '.hero-next',
+            prevEl: '.hero-prev',
           },
         });
 

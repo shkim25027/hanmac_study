@@ -6,7 +6,6 @@
   </head>
   <body>
     <div class="wrap myclass myclass-page-06">
-      <div id="scroll-progress" class="scroll-progress-bar" aria-hidden="true"></div>
       @@include("_include/_header.html")
 
       <div class="container">
@@ -715,8 +714,6 @@
           var pct = fillPct + "%";
           if (progressFill)   progressFill.style.height  = pct;
           if (quarterNavFill) quarterNavFill.style.height = pct;
-          var progressBar = document.getElementById("scroll-progress");
-          if (progressBar) progressBar.style.width = pct;
         }
 
         setHeights();

@@ -3508,19 +3508,6 @@ body:has(.myclass-page-06) {
     }
   }
 
-  /* ── 상단 스크롤 진행 바 (예시 Chronos 스타일) ── */
-  .scroll-progress-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 2px;
-    width: 0%;
-    background: linear-gradient(to right, #7c6bff, #FFA149);
-    z-index: 200;
-    transition: width 0.1s linear;
-    pointer-events: none;
-  }
-
   /* ── 섹션 스크롤 등장 애니메이션 (opacity + translateY) ── */
   .scroll-section-reveal {
     opacity: 0;
@@ -3806,6 +3793,20 @@ body:has(.myclass-page-06) {
       }
     }
 
+    /* 모바일에서 04와 동일하게: 첫 번째 섹션만 표시, 가로 스와이프·분기 네비 숨김 */
+    .myclass-page-06.mobile-single-section {
+      .myclass-main {
+        overflow-x: hidden;
+        scroll-snap-type: none;
+      }
+      .scroll-section:not(:first-child) {
+        display: none !important;
+      }
+      .quarter-nav {
+        display: none !important;
+      }
+    }
+
     .scroll-timeline {
       display: none !important;
     }
@@ -3913,6 +3914,7 @@ body:has(.myclass-page-06) {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+      justify-content: flex-start;
       align-items: center;
       gap: 8px 16px;
       gap: 0;

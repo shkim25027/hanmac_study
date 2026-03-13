@@ -9,6 +9,7 @@
 
 @use "sass:map";
 @use "base" as *;
+@use "svg-arrows" as *;
 @forward "_guide";
 // =======================================
 // Variables
@@ -33,13 +34,7 @@ $circle-opacities: (
   4: 0.5,
 );
 
-// SVG Arrow URLs
-$svg-arrow-prev-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23DD842F'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-$svg-arrow-prev-disabled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23EFE7D7'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-$svg-arrow-prev-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23D34D00'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-$svg-arrow-next-default: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61160)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61160' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23DD842F'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-$svg-arrow-next-disabled: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61162)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61162' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23EFE7D7'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
-$svg-arrow-next-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61162)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61162' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23D34D00'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E");
+// SVG Arrow URLs → _svg-arrows.scss (main·insight 공통)
 
 // =======================================
 // Mixins
