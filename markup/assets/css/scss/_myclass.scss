@@ -624,6 +624,12 @@ $card-colors: (
     background-size: calc(100% - 12px) auto;
     padding-bottom: 8px;
     aspect-ratio: 524/244;
+    &.goal-item-completed-preview {
+       background-image: url("../images/myclass/bg_books_completed.svg");
+      background-position: center bottom;
+      background-repeat: no-repeat;
+      background-size: calc(100% - 12px) auto;
+    }
   }
 
   // -------
@@ -694,6 +700,9 @@ $card-colors: (
     justify-content: center;
     gap: 16px;
     margin-top: 10%;
+    @include mq(tablet-small, max){
+      flex-direction: column;
+    }
   }
 
   .goal-preview-badge {
@@ -707,6 +716,10 @@ $card-colors: (
       width: 64px;
       height: 80px;
       object-fit: contain;
+      @include mq(tablet-small, max){
+      width: 35px;
+      height: 44px;
+    }
     }
 
     .badge-text {
@@ -729,6 +742,10 @@ $card-colors: (
     font-weight: 700;
     color: #07855C;
     line-height: 1.2;
+     @include mq(tablet-small, max){ 
+      font-size: 20px;
+      text-wrap: balance;
+     }
   }
 
   .goal-preview-books {
@@ -983,6 +1000,14 @@ $card-colors: (
   .shelf-row {
     z-index: 1;
   }
+  .sub-title {
+    display: none;
+  }
+
+  .shelf-board-mobile {
+    display: none;
+  }
+
   .shelf-board {
     position: relative;
     margin-top: -2px;
@@ -1233,19 +1258,32 @@ $card-colors: (
       margin-top: 0;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px 12px;
+      gap: 0px 12px;
+
     }
 
     .shelf-legs {
       position: absolute;
       padding: 0 0;
       bottom: -8%;
-      height: 72%;
+      height: 94%;
       grid-column: 1 / -1; // 그리드 안에서도 전체 너비
 
       .shelf-leg {
-        width: 14px;
-
+        width: 18px;
+        background-image: url(../images/myclass/img_shelf_leg_m.svg);
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center top;
+        &-left {
+          margin-left: -14px;
+        }
+        &-right {
+           margin-right: -14px;
+        }
+        &-center {
+          height: 94%;
+        } 
         &:nth-child(3) {
           display: none;
         }
@@ -1265,6 +1303,8 @@ $card-colors: (
     .shelf-board {
       grid-column: 1 / -1;
     }
+   
+
 
     // PC 3열 → 모바일 2열 재배열: [1,2] | shelf | [3,6] | shelf | [4,5]
     .goal-item[data-goal-id="1"] { order: 1; }
@@ -1275,10 +1315,23 @@ $card-colors: (
     .shelf-row:nth-child(3) .shelf-board  { order: 6; }
     .goal-item[data-goal-id="4"] { order: 7; }
     .goal-item[data-goal-id="5"] { order: 8; }
+    .shelf-row:nth-child(3) .shelf-board.shelf-board-mobile  { order: 9; }
 
     .goal-item {
       aspect-ratio: auto;
-      min-height: 220px;
+      min-height: 160px;
+      aspect-ratio: 1/1;
+      background-image: url(../images/myclass/bg_books_m.svg);
+      background-position: center bottom;
+      background-repeat: no-repeat;
+      background-size: calc(100% - 8px) auto;
+      padding-top: 10px;
+      &.goal-item-completed-preview {
+         background-image: url(../images/myclass/bg_books_completed_m.svg);
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        background-size: calc(100% - 8px) auto;
+      }
     }
 
     .goal-card {
@@ -1304,8 +1357,8 @@ $card-colors: (
     }
 
     .card-icon {
-      width: 68px;
-      height: 68px;
+      width: 58px;
+      height: 58px;
     }
 
     .card-body {
@@ -1313,12 +1366,13 @@ $card-colors: (
     }
 
     .card-title {
-      font-size: 24px;
+      font-size: 20px;
       line-height: 1.35;
       letter-spacing: -0.8px;
       text-align: center;
       word-break: keep-all;
       overflow-wrap: break-word;
+      text-wrap: balance;
     }
 
     .shelf-board {
@@ -1331,6 +1385,23 @@ $card-colors: (
         top: 3px;
         left: 4px;
         width: calc(100% - 10px);
+      }
+    }
+
+    .shelf-board-mobile {
+      display: block;
+    }
+
+    .sub-title {
+      display: block;
+      h4 {
+        font-size: 15px;
+        color: #5D4A3D;
+        padding: 0 16px;
+        font-weight: 500;
+      }
+      strong {
+        font-weight: 700;
       }
     }
 
@@ -3713,6 +3784,7 @@ body:has(.myclass-page-06) {
   /* 공용(모바일): 상단바 좌측 영역 숨김 */
   .myclass {
     .myclass-top-bar {
+      margin-bottom: 34px;
       .top-bar-left {
         display: none;
       }
