@@ -613,29 +613,69 @@ html body {
   background: var(--c2) content-box;
   border-image: conic-gradient(var(--c2) 0 0) fill 0/0 max(var(--b), 100% - var(--p) - var(--h) * tan(var(--a) / 2)) var(--r) max(var(--b), var(--p) - var(--h) * tan(var(--a) / 2))/var(--h) 0 0 0;
 }
-.nav-wrap .alerts-list dl {
+.nav-wrap .alerts-list .alert-item {
   display: flex;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color 0.2s;
 }
-.nav-wrap .alerts-list dt {
-  margin-bottom: 4px;
+.nav-wrap .alerts-list .alert-item:first-child {
+  padding-top: 0;
+}
+.nav-wrap .alerts-list .alert-item:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.nav-wrap .alerts-list .alert-item.is-open {
+  background-color: rgba(24, 143, 107, 0.08);
+  border-radius: 4px;
+  padding: 8px;
+  margin: 0 -8px;
+}
+.nav-wrap .alerts-list .alert-item.is-open .alert-title {
+  color: #188F6B;
+}
+.nav-wrap .alerts-list .alert-item.is-open .alert-desc {
+  display: block;
+  overflow: visible;
+  white-space: normal;
+  -webkit-line-clamp: none;
+  line-clamp: none;
+  text-overflow: clip;
+  color: #123328;
+}
+.nav-wrap .alerts-list .alert-item.is-open .btn-alert-toggle {
+  color: #123328;
+}
+.nav-wrap .alerts-list .alert-title {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-base);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
-.nav-wrap .alerts-list dd {
+.nav-wrap .alerts-list .alert-desc {
   font-size: 13px;
   color: var(--text-secondary);
   display: -webkit-box;
   overflow: hidden;
   text-overflow: ellipsis;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 2;
+}
+.nav-wrap .alerts-list .btn-alert-toggle {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.nav-wrap .alerts-list .btn-alert-toggle:hover {
+  color: var(--text-base);
 }
 .nav-wrap .alerts-list .badge-danger {
   display: inline-block;
@@ -3041,11 +3081,6 @@ html body {
 .insight .leadership-tabs {
   position: relative;
 }
-@media only screen and (min-width: 1024px) {
-  .insight .leadership-tabs {
-    margin-top: 30px;
-  }
-}
 @media only screen and (max-width: 1023px) {
   .insight .leadership-tabs .leadership-inner {
     padding: 0 16px;
@@ -3483,7 +3518,7 @@ html body {
 }
 .insight .hero-banner .swiper-button-prev,
 .insight .hero-banner .btn-prev {
-  left: 40px;
+  left: -120px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23DD842F'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E") !important;
   transition: left 0.2s linear;
 }
@@ -3494,12 +3529,12 @@ html body {
 }
 .insight .hero-banner .swiper-button-prev:not(.swiper-button-disabled):not(.disabled):hover,
 .insight .hero-banner .btn-prev:not(.swiper-button-disabled):not(.disabled):hover {
-  left: 30px;
+  left: -130px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M94.6499 3C88.3166 26.9504 62.8499 78.281 11.6499 92C39.3166 99.3333 94.6499 127.5 94.6499 181.5' stroke='url(%23paint0_linear_1337_60932)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_60932' x1='94.6499' y1='92.25' x2='11.6499' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23D34D00'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E") !important;
 }
 .insight .hero-banner .swiper-button-next,
 .insight .hero-banner .btn-next {
-  right: 40px;
+  right: -130px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61160)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61160' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23DD842F'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E") !important;
   transition: right 0.2s linear;
 }
@@ -3510,7 +3545,7 @@ html body {
 }
 .insight .hero-banner .swiper-button-next:not(.swiper-button-disabled):not(.disabled):hover,
 .insight .hero-banner .btn-next:not(.swiper-button-disabled):not(.disabled):hover {
-  right: 30px;
+  right: -140px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='98' height='185' viewBox='0 0 98 185' fill='none'%3E%3Cpath d='M3.00098 3C9.33431 26.9504 34.801 78.281 86.001 92C58.3343 99.3333 3.00098 127.5 3.00098 181.5' stroke='url(%23paint0_linear_1337_61162)' stroke-width='6' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='paint0_linear_1337_61162' x1='3.00098' y1='92.25' x2='86.001' y2='92.25' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23CBAF94' stop-opacity='0'/%3E%3Cstop offset='1' stop-color='%23D34D00'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E") !important;
 }
 @keyframes fillGauge {
@@ -4880,10 +4915,14 @@ html body {
   margin-bottom: 24px;
   text-align: center;
 }
+.mypage .profile-photo-wrap {
+  position: relative;
+  width: 132px;
+  margin: 0 auto 18px;
+}
 .mypage .profile-photo {
   width: 132px;
   height: 132px;
-  margin: 0 auto 18px;
   border-radius: 50%;
   overflow: hidden;
   background: var(--bg-video);
@@ -4893,6 +4932,38 @@ html body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.mypage .profile-photo-badges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.mypage .badge-item {
+  position: absolute;
+  display: block;
+  line-height: 0;
+}
+.mypage .badge-item img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.mypage .badge-item-hat {
+  /* 원 위로 살짝 걸쳐 보이도록 위치 조정 */
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 54px;
+}
+.mypage .badge-item-pencil {
+  right: -10px;
+  bottom: -14px;
+  width: 54px;
+}
+.mypage .badge-item-pick {
+  left: -24px;
+  bottom: 0;
+  width: 64px;
 }
 .mypage .profile-name {
   margin: 0 0 4px;
@@ -6062,15 +6133,20 @@ html body {
     text-align: left;
     margin-bottom: 0;
   }
-  .mypage .profile-photo {
+  .mypage .profile-photo-wrap {
     grid-column: 1;
     grid-row: 1/4;
+  }
+  .mypage .profile-photo {
     width: 84px;
     max-width: 100%;
     height: 84px;
     margin: 0;
     border: 4px solid #fff;
     box-shadow: 3px 1px 11.6px 10px rgba(210, 205, 194, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.2) inset;
+  }
+  .mypage .profile-photo-badges {
+    display: none;
   }
   .mypage .profile-name {
     grid-column: 2;
@@ -9463,6 +9539,12 @@ html body {
   margin: 0 auto;
   padding: 24px 48px 24px;
 }
+@media only screen and (max-width: 1023px) {
+  .myclass .myclass-layout:has(.quarter-nav) .top-bar-absolute {
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
 .myclass .myclass-content {
   display: flex;
   gap: 2rem;
@@ -9741,49 +9823,51 @@ html body {
 .myclass .bookshelf-section .books-item-progress .book-video-thumb-wrap .book-video-thumb, .myclass .bookshelf-section .books-item-completed .book-video-thumb-wrap .book-video-thumb {
   filter: grayscale(0%);
 }
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover {
-  transform: translateY(24px);
-  z-index: 5;
-  box-shadow: 0 -8px 24px rgba(255, 255, 255, 0.35), 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-video-area .book-video-thumb-wrap .book-video-thumb {
-  filter: grayscale(0%);
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap::before, .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  height: calc(100% - 20px);
-  width: 50%;
-  pointer-events: none;
-  z-index: 1;
-  filter: blur(4px);
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap {
-  /* left: SVG path M6 486.8 L87 504 V6 L6 22.1 - 상단 좌하/우상, 하단 좌상/우하 */
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap::before {
-  width: 20%;
-  left: calc(-20% + 4px);
-  background: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.25) 100%);
-  clip-path: polygon(6.5% 4.3%, 93.5% 1.2%, 93.5% 98.8%, 6.5% 95.5%);
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap {
-  /* right: SVG path 좌우 반전 (책 쪽=우측에 위치하므로) */
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap::after {
-  right: calc(-50% + 0px);
-  background: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, 0.25) 100%);
-  clip-path: polygon(100% 4.3%, 0 1.1%, 0 98.9%, 100% 95.5%);
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover:first-child .book-img-wrap::before {
-  display: none;
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover:last-child .book-img-wrap::after {
-  display: none;
-}
-.myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover):has(.books-item:hover) .books-item:not(:hover) {
-  filter: brightness(0.6);
+@media (hover: hover) and (pointer: fine) {
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover {
+    transform: translateY(24px);
+    z-index: 5;
+    box-shadow: 0 -8px 24px rgba(255, 255, 255, 0.35), 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-video-area .book-video-thumb-wrap .book-video-thumb {
+    filter: grayscale(0%);
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap::before, .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    height: calc(100% - 20px);
+    width: 50%;
+    pointer-events: none;
+    z-index: 1;
+    filter: blur(4px);
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap {
+    /* left: SVG path M6 486.8 L87 504 V6 L6 22.1 - 상단 좌하/우상, 하단 좌상/우하 */
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap::before {
+    width: 20%;
+    left: calc(-20% + 4px);
+    background: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.25) 100%);
+    clip-path: polygon(6.5% 4.3%, 93.5% 1.2%, 93.5% 98.8%, 6.5% 95.5%);
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap {
+    /* right: SVG path 좌우 반전 (책 쪽=우측에 위치하므로) */
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover .book-img-wrap::after {
+    right: calc(-50% + 0px);
+    background: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, 0.25) 100%);
+    clip-path: polygon(100% 4.3%, 0 1.1%, 0 98.9%, 100% 95.5%);
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover:first-child .book-img-wrap::before {
+    display: none;
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover) .books-item:hover:last-child .book-img-wrap::after {
+    display: none;
+  }
+  .myclass .bookshelf-section:not(.goal-slide-bookshelf):not(.books-list--no-hover):has(.books-item:hover) .books-item:not(:hover) {
+    filter: brightness(0.6);
+  }
 }
 .myclass .bookshelf-section .book-img-wrap {
   position: relative;
@@ -10518,6 +10602,7 @@ html:has(body .myclass-page-06),
 body:has(.myclass-page-06) {
   height: 100%;
   overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .wrap.myclass-page-06 {
@@ -10541,6 +10626,7 @@ body:has(.myclass-page-06) {
   flex-direction: column;
 }
 .myclass-page-06 .myclass-wrap {
+  position: relative; /* quarter-nav absolute 기준점 */
   flex: 1;
   min-height: 0;
   overflow: hidden;
@@ -10548,7 +10634,7 @@ body:has(.myclass-page-06) {
   flex-direction: column;
 }
 .myclass-page-06 {
-  /* 컨텐츠 영역: PC는 가로(메인|quarter-nav), 높이 제한으로 세로 스크롤 없음 */
+  /* 컨텐츠 영역: PC는 가로(메인), 높이 제한으로 세로 스크롤 없음 */
 }
 .myclass-page-06 .myclass-content {
   flex: 1;
@@ -10712,11 +10798,19 @@ body:has(.myclass-page-06) {
   opacity: 1;
 }
 .myclass-page-06 {
-  /* ── 오른쪽 분기 네비게이션 ── */
+  /* 분기 셀렉트는 모바일 전용 */
+}
+.myclass-page-06 .quarter-select-wrap {
+  display: none;
+}
+.myclass-page-06 {
+  /* ── 오른쪽 분기 네비게이션: myclass-wrap 기준 absolute 우측 고정 ── */
 }
 .myclass-page-06 .quarter-nav {
-  position: relative;
-  flex: 0 0 auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10881,9 +10975,20 @@ body:has(.myclass-page-06) {
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x;
     scrollbar-width: none;
+    max-width: 100vw;
   }
   .myclass-page-06 .myclass-main::-webkit-scrollbar {
     display: none;
+  }
+  .myclass-page-06 {
+    /* 모바일에서 04와 동일하게: 첫 번째 섹션만 표시, 가로 스와이프 숨김 */
+  }
+  .myclass-page-06 .myclass-page-06.mobile-single-section .myclass-main {
+    overflow-x: hidden;
+    scroll-snap-type: none;
+  }
+  .myclass-page-06 .myclass-page-06.mobile-single-section .scroll-section:not(:first-child) {
+    display: none !important;
   }
   .myclass-page-06 .scroll-timeline {
     display: none !important;
@@ -10896,28 +11001,69 @@ body:has(.myclass-page-06) {
     transform: none;
   }
   .myclass-page-06 {
-    /* 모바일 quarter-nav: 하단 고정 수평 인디케이터 */
+    /* 모바일 분기 셀렉트 */
+  }
+  .myclass-page-06 .quarter-select-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0px 0;
+    flex-shrink: 0;
+  }
+  .myclass-page-06 .quarter-select-wrap .quarter-select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    max-width: 320px;
+    height: 40px;
+    padding: 0 36px 0 16px;
+    border: 1.5px solid #e0d5cb;
+    border-radius: 20px;
+    background-color: #ece0ca;
+    background-image: url("../images/ico/ico_chevron.svg");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #5d4a3d;
+    cursor: pointer;
+    outline: none;
+  }
+  .myclass-page-06 .quarter-select-wrap .quarter-select:focus {
+    border-color: #FFA149;
+  }
+  .myclass-page-06 {
+    /* 모바일 quarter-nav: page-intro-mobile 아래 인라인 배치 */
   }
   .myclass-page-06 .quarter-nav {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
+    position: relative;
+    transform: none;
+    align-self: center;
+    flex-shrink: 0;
+    margin: 6px auto 4px;
+    height: 10px;
+    z-index: 1;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 100px;
-    padding: 8px 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
   .myclass-page-06 .quarter-nav-track {
-    display: none;
+    display: block;
+    position: absolute;
+    height: 1px;
+    width: 0; /* JS에서 설정 */
+    transform: none;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 1px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .myclass-page-06 .quarter-nav-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #FFA149, #FF7A00);
+    transition: width 0.15s ease-out;
   }
   .myclass-page-06 .quarter-nav-item {
     display: flex;
@@ -10943,6 +11089,7 @@ body:has(.myclass-page-06) {
     color: #999;
     font-weight: 400;
     white-space: nowrap;
+    display: none;
   }
   .myclass-page-06 .quarter-nav-item.is-active .quarter-nav-dot {
     background: #F5651D;
@@ -10971,7 +11118,8 @@ body:has(.myclass-page-06) {
     overflow-x: hidden;
     scroll-snap-align: start;
     overscroll-behavior-x: contain;
-    padding: 0 16px;
+    touch-action: pan-y; /* 세로는 섹션 내 스크롤, 가로 스와이프는 myclass-main으로 전달 */
+    padding: 0 24px;
     box-sizing: border-box;
     scrollbar-width: none;
   }
@@ -10992,33 +11140,7 @@ body:has(.myclass-page-06) {
     gap: 0;
   }
   .myclass-page-06 .sidebar-quarter {
-    order: 0;
-    margin: 0;
-    padding: 8px 14px;
-    min-width: 108px;
-    height: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    background: #ece0ca;
-    border-radius: 23px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #5d4a3d;
-    line-height: 1.09;
-    border: none;
-  }
-  .myclass-page-06 .sidebar-quarter::after {
-    content: "";
-    display: inline-block;
-    width: 9px;
-    height: 9px;
-    margin-left: 2px;
-    background: url("../images/ico/ico_chevron.svg") center/contain no-repeat;
-    transform: rotate(180deg);
-    opacity: 0.7;
-    flex-shrink: 0;
+    display: none;
   }
   .myclass-page-06 .sidebar-goal-item {
     display: contents;
@@ -11223,8 +11345,8 @@ body:has(.myclass-page-06) {
     background-repeat: repeat;
     background-size: auto;
     box-shadow: inset 0 2px 2px 0 rgba(255, 255, 255, 0.25), inset 0 -2px 2px 0 rgba(255, 255, 255, 0.5);
-    margin: 0 -20px;
-    width: calc(100vw + 4px);
+    margin: 0 -32px;
+    width: calc(100vw + 22px);
     height: 32px;
   }
   .myclass-page-06 .scroll-section .bookshelf-section .shelf-plank::before {
@@ -11709,3 +11831,5 @@ body:has(.myclass-page-06) {
   font-weight: 700;
   color: #000;
 }
+
+/*# sourceMappingURL=style.css.map */

@@ -98,6 +98,8 @@
                   <small><strong>26</strong>년</small>
                   <strong>1</strong>분기
                 </p>
+                <!-- 모바일 분기 셀렉트 (JS에서 동적 생성) -->
+                <div class="quarter-select-wrap" aria-label="분기 선택"></div>
                 <a href="#bookshelf-section-self" class="sidebar-goal-item is-active" data-index="0">
                   <span class="sidebar-goal-icon" aria-hidden="true">
                     <img src="./assets/images/myclass/ico_medal_completed.svg" alt="완독">
@@ -540,6 +542,41 @@
           });
         }
 
+        /* ── 모바일 분기 셀렉트 동적 생성 ── */
+        var quarterSelectEl = null;
+        var quarterSelectWrap = document.querySelector(".quarter-select-wrap");
+        (function buildQuarterSelect() {
+          if (!quarterSelectWrap || !sections.length) return;
+
+          var select = document.createElement("select");
+          select.className = "quarter-select";
+          select.setAttribute("aria-label", "분기 선택");
+
+          sections.forEach(function(section, i) {
+            var q = section.dataset.quarter || (i + 1);
+            var quarterEl = section.querySelector(".sidebar-quarter");
+            var label;
+            if (quarterEl) {
+              label = quarterEl.innerText.replace(/\s+/g, " ").trim();
+            } else {
+              label = q + "분기";
+            }
+            var opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = label;
+            select.appendChild(opt);
+          });
+
+          select.addEventListener("change", function() {
+            var idx = parseInt(this.value, 10);
+            if (isNaN(idx)) return;
+            mainEl.scrollTo({ left: idx * mainEl.offsetWidth, behavior: "smooth" });
+          });
+
+          quarterSelectWrap.appendChild(select);
+          quarterSelectEl = select;
+        })();
+
         /* 오른쪽 분기 nav 동적 생성 */
         var quarterNavItems = [];
         var quarterNavFill  = null;
@@ -611,6 +648,10 @@
             var isMo = window.innerWidth <= 767;
             btn.classList.toggle("is-active", isMo ? i === index : i <= index);
           });
+          /* 모바일 셀렉트 동기화 */
+          if (quarterSelectEl && window.innerWidth <= 767) {
+            quarterSelectEl.value = index;
+          }
           /* 2번째 섹션(index > 0) 활성 시 page-intro 숨김 */
           document.querySelector(".myclass-page-06").classList.toggle("intro-hidden", index > 0);
         }

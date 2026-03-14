@@ -1149,6 +1149,7 @@ $card-colors: (
       text-align: center;
       padding: 24px 16px 20px;
       width: 100%;
+      max-width: 100vw;
 
       .page-title--goal {
         display: flex;
@@ -3611,6 +3612,11 @@ body:has(.myclass-page-06) {
     }
   }
 
+  /* 분기 셀렉트는 모바일 전용 */
+  .quarter-select-wrap {
+    display: none;
+  }
+
   /* ── 오른쪽 분기 네비게이션: myclass-wrap 기준 absolute 우측 고정 ── */
   .quarter-nav {
     position: absolute;
@@ -3831,6 +3837,39 @@ body:has(.myclass-page-06) {
       transform: none;
     }
 
+    /* 모바일 분기 셀렉트 */
+    .quarter-select-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0px 0;
+      flex-shrink: 0;
+
+      .quarter-select {
+        appearance: none;
+        -webkit-appearance: none;
+        width: 100%;
+        max-width: 320px;
+        height: 40px;
+        padding: 0 36px 0 16px;
+        border: 1.5px solid #e0d5cb;
+        border-radius: 20px;
+        background-color: #ece0ca;
+        background-image: url("../images/ico/ico_chevron.svg");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 14px 14px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #5d4a3d;
+        cursor: pointer;
+        outline: none;
+
+        &:focus {
+          border-color: #FFA149;
+        }
+      }
+    }
+
     /* 모바일 quarter-nav: page-intro-mobile 아래 인라인 배치 */
     .quarter-nav {
       position: relative;
@@ -3947,34 +3986,7 @@ body:has(.myclass-page-06) {
     }
 
     .sidebar-quarter {
-      order: 0;
-      margin: 0;
-      padding: 8px 14px;
-      min-width: 108px;
-      height: 32px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      background: #ece0ca;
-      border-radius: 23px;
-      font-size: 15px;
-      font-weight: 500;
-      color: #5d4a3d;
-      line-height: 1.09;
-      border: none;
-
-      &::after {
-        content: "";
-        display: inline-block;
-        width: 9px;
-        height: 9px;
-        margin-left: 2px;
-        background: url("../images/ico/ico_chevron.svg") center/contain no-repeat;
-        transform: rotate(180deg);
-        opacity: 0.7;
-        flex-shrink: 0;
-      }
+      display: none;
     }
 
     .sidebar-goal-item {
